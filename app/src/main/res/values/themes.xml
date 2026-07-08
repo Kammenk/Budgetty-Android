@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Budgetty" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Pre-Compose window background, so the cold-start frame matches colorScheme.background.
+             DayNight: see values-night/themes.xml for the dark variant. -->
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+</resources>

@@ -1,0 +1,24 @@
+{
+  "_synthetic": true,
+  "_generator": "tools/gen-synthetic-receipts.mjs — regenerate: node eval/tools/gen-synthetic-receipts.mjs",
+  "_description": "SYNTHETIC German discounter receipt (fictional 'LANDMARKT DISCOUNT'), VAT-INCLUSIVE, comma decimals, two MwSt classes (A=19%, B=7%) plus a Pfand (Einweg deposit) line. Key trap: the printed MwSt table (0,56 + 0,45 = 1,01) is INCLUDED in the prices, so tax must read 0, not 1,01. Generated to unblock the eu-discounter-deposit family; replace with a real Lidl/Aldi receipt later.",
+  "tags": [
+    "region:eu",
+    "lang:de",
+    "type:discounter",
+    "tax:inclusive",
+    "feature:deposit",
+    "feature:multiVat"
+  ],
+  "readable": true,
+  "total": 10.29,
+  "discount": 0,
+  "_taxNote": "VAT-inclusive: tax not asserted (model may report the contained VAT; app adds nothing on top). See HaikuReceiptExtractor.isTaxOnTop.",
+  "printedItemCount": 9,
+  "expectedNames": [
+    "Vollmilch",
+    "Gouda",
+    "Coca-Cola",
+    "Pfand"
+  ]
+}

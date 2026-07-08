@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:name=".BudgettyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Budgetty">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Budgetty">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- App-launcher quick actions (long-press the icon): Scan receipt / Add manually. -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- Home-screen widgets. One receiver per type × size (Large 4×2 / Compact 2×2); the
+             system mediates widget broadcasts, so exported="false" is safe and recommended. -->
+        <receiver
+            android:name=".widget.BudgetLargeReceiver"
+            android:exported="false"
+            android:label="@string/widget_budget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_budget_large" />
+        </receiver>
+        <receiver
+            android:name=".widget.BudgetCompactReceiver"
+            android:exported="false"
+            android:label="@string/widget_budget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_budget_compact" />
+        </receiver>
+        <receiver
+            android:name=".widget.SummaryLargeReceiver"
+            android:exported="false"
+            android:label="@string/widget_summary">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_summary_large" />
+        </receiver>
+        <receiver
+            android:name=".widget.SummaryCompactReceiver"
+            android:exported="false"
+            android:label="@string/widget_summary">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_summary_compact" />
+        </receiver>
+        <receiver
+            android:name=".widget.ThisWeekLargeReceiver"
+            android:exported="false"
+            android:label="@string/widget_this_week">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_thisweek_large" />
+        </receiver>
+        <receiver
+            android:name=".widget.ThisWeekCompactReceiver"
+            android:exported="false"
+            android:label="@string/widget_this_week">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_thisweek_compact" />
+        </receiver>
+        <receiver
+            android:name=".widget.ScanLargeReceiver"
+            android:exported="false"
+            android:label="@string/widget_scan">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_scan_large" />
+        </receiver>
+        <receiver
+            android:name=".widget.ScanCompactReceiver"
+            android:exported="false"
+            android:label="@string/widget_scan">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_scan_compact" />
+        </receiver>
+        <receiver
+            android:name=".widget.TopCategoriesLargeReceiver"
+            android:exported="false"
+            android:label="@string/widget_topcat">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_topcat_large" />
+        </receiver>
+        <receiver
+            android:name=".widget.TopCategoriesCompactReceiver"
+            android:exported="false"
+            android:label="@string/widget_topcat">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_topcat_compact" />
+        </receiver>
+    </application>
+
+</manifest>

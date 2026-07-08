@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark window background; matches the Compose colorScheme.background (md_background_dark). -->
+    <color name="window_background">#FF141218</color>
+
+    <!-- Home-screen widgets (dark). Mirror ui/theme/Color.kt dark tokens. -->
+    <color name="widget_card">#FF211F26</color>
+    <color name="widget_on_surface">#FFE6E0E9</color>
+    <color name="widget_on_surface_variant">#FFCAC4D0</color>
+    <color name="widget_brand">#FFD0BCFF</color>
+    <color name="widget_on_brand">#FF381E72</color>
+    <color name="widget_track">#FF48454F</color>
+    <color name="widget_good">#FF7DD487</color>
+    <color name="widget_warn">#FFFBC02D</color>
+    <color name="widget_bad">#FFEF5350</color>
+</resources>

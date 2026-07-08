@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "design-preview",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8765", "--directory", "/tmp/budgetty_preview"],
+      "port": 8765
+    },
+    {
+      "name": "receipt-report",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8991", "--directory", "/Users/kamenkostov/test receipts"],
+      "port": 8991
+    }
+  ]
+}

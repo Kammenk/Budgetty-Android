@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- System widget-picker preview (API 31+) for the This Week widget. Static sample values.
+     Inflated as RemoteViews, so only @RemoteView view types are allowed (no <Space>/<View>). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_card_bg"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/widget_chip_brand"
+            android:src="@drawable/widget_ic_trend"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:tint="@color/widget_on_brand"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/widget_this_week"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/widget_on_surface"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Jun 24–30"
+            android:textColor="@color/widget_on_surface_variant"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="173 €"
+        android:textColor="@color/widget_on_surface"
+        android:textStyle="bold"
+        android:textSize="32sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="▼ 12% vs last week"
+        android:textColor="@color/widget_good"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:max="100"
+        android:progress="100"
+        android:progressTint="@color/widget_brand"
+        android:progressBackgroundTint="@color/widget_track" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:layout_marginTop="7dp"
+        android:max="100"
+        android:progress="84"
+        android:progressTint="@color/widget_on_surface_variant"
+        android:progressBackgroundTint="@color/widget_track" />
+</LinearLayout>

@@ -1,0 +1,11 @@
+# Real receipt images/PDFs are personal data — never commit them. Only expected.json is tracked.
+corpus/**/*.jpg
+corpus/**/*.jpeg
+corpus/**/*.png
+corpus/**/*.pdf
+
+# ...but SYNTHETIC, non-personal fixtures (built by tools/gen-synthetic-receipts.mjs) ARE tracked,
+# so the eval runs on a fresh clone. Add a line here for each generated receipt.
+!corpus/de-discounter-pfand/receipt.png
+!corpus/eu-supermarket-multivat/receipt.png
+!corpus/eu-delivery-glovo/receipt.png

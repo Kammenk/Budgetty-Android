@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- System widget-picker preview (API 31+) for the Top Categories widget. Static sample values.
+     Inflated as RemoteViews, so only @RemoteView view types are allowed (no <Space>/<View>). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_card_bg"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:background="@drawable/widget_chip_brand"
+            android:src="@drawable/widget_ic_pie"
+            android:scaleType="centerInside"
+            android:padding="6dp"
+            android:tint="@color/widget_on_brand"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="@string/widget_topcat"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/widget_on_surface"
+            android:textStyle="bold"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="14dp">
+        <ImageView android:layout_width="8dp" android:layout_height="8dp" android:background="@drawable/widget_dot" android:backgroundTint="#4FA85A" android:contentDescription="@null" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:text="Groceries" android:maxLines="1" android:ellipsize="end" android:textColor="@color/widget_on_surface" android:textSize="12sp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="242 €" android:textColor="@color/widget_on_surface" android:textStyle="bold" android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="9dp">
+        <ImageView android:layout_width="8dp" android:layout_height="8dp" android:background="@drawable/widget_dot" android:backgroundTint="#9A93A6" android:contentDescription="@null" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:text="Shopping" android:maxLines="1" android:ellipsize="end" android:textColor="@color/widget_on_surface" android:textSize="12sp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="117 €" android:textColor="@color/widget_on_surface" android:textStyle="bold" android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="9dp">
+        <ImageView android:layout_width="8dp" android:layout_height="8dp" android:background="@drawable/widget_dot" android:backgroundTint="#E0795B" android:contentDescription="@null" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:text="Dining" android:maxLines="1" android:ellipsize="end" android:textColor="@color/widget_on_surface" android:textSize="12sp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="114 €" android:textColor="@color/widget_on_surface" android:textStyle="bold" android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

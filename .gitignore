@@ -1,0 +1,40 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Release signing — never commit these
+keystore.properties
+*.jks
+*.keystore
+
+# Node / Firebase Cloud Functions
+node_modules/
+.firebase/
+firebase-debug.log
+*.log
+.runtimeconfig.json
+
+# Local env / secrets
+.env
+*.env
+
+# Build artifacts (app/build is already ignored; this is belt-and-suspenders)
+*.aab
+
+# Claude Code — keep shareable project config (launch.json), drop local overrides
+.claude/settings.local.json
+
+# Firebase config — not committed on a public repo; each dev provides their own
+google-services.json

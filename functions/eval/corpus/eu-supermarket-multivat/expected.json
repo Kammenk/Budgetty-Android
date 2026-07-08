@@ -1,0 +1,36 @@
+{
+  "_synthetic": true,
+  "_generator": "tools/gen-synthetic-receipts.mjs — regenerate: node eval/tools/gen-synthetic-receipts.mjs",
+  "_description": "SYNTHETIC Western-EU supermarket receipt (fictional French 'MARCHÉ DU SUD'), VAT-INCLUSIVE (TTC), comma decimals, two TVA rates (5,5% food / 20% non-food) plus a loyalty REMISE. Traps: the printed TVA total (2,31) is INCLUDED so tax=0; REMISE FIDÉLITÉ is a discount (1,49), not a product; the line prices are the printed TTC (sum 21,49) while the paid TOTAL is 20,00. Replace with a real Carrefour/Tesco/Albert Heijn receipt later.",
+  "tags": [
+    "region:eu",
+    "lang:fr",
+    "type:supermarket",
+    "tax:inclusive",
+    "feature:multiVat",
+    "feature:coupon"
+  ],
+  "readable": true,
+  "total": 20,
+  "discount": 1.49,
+  "_taxNote": "VAT-inclusive: tax not asserted (model may report the contained VAT; app adds nothing on top). See HaikuReceiptExtractor.isTaxOnTop.",
+  "itemCount": 9,
+  "printedItemCount": 9,
+  "lineTotals": [
+    1.1,
+    0.89,
+    2.35,
+    2.19,
+    1.95,
+    2.64,
+    1.89,
+    3.49,
+    4.99
+  ],
+  "expectedNames": [
+    "Baguette",
+    "Camembert",
+    "Papier",
+    "Piles"
+  ]
+}

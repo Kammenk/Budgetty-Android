@@ -1,0 +1,6 @@
+{
+  "_status": "STUB - drop a real receipt here, then fill the truth fields. Skipped until an image is added; shows in `--coverage`.",
+  "_description": "Bulgarian pharmacy / drugstore receipt (SOpharmacy, Remedium, Framar, dm): a meds + personal-care mix that tests Health & Pharmacy vs Personal Care categorisation, VAT-inclusive, Cyrillic.",
+  "tags": ["region:bg", "lang:bg", "type:pharmacy", "tax:inclusive"],
+  "_todo": "Fill at least one of: total, discount, itemCount, printedItemCount, lineTotals, expectedNames."
+}

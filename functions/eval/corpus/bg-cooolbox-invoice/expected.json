@@ -1,0 +1,14 @@
+{
+  "_description": "Bulgarian Cooolbox (Кулбокс АД) internet-service invoice (Фактура 9000407074, 02.07.2026), a text-layer PDF. TAX-EXCLUSIVE / net-priced: the single line 'Месечна такса ... cooolNet' is the 11.89 net (Стойност/Net Amount); VAT is added on top (Сума ДДС / VAT Amount 2.38) to reach the 14.27 grand total (Общо дължима сума / Total Due). Motivates the tax-on-top fix — the app must read tax=2.38 + total=14.27 so it can fold the VAT into the line price instead of saving the 11.89 net.",
+  "_image": "receipt.pdf here is the real invoice (gitignored — personal data).",
+  "tags": ["region:bg", "lang:bg", "type:service", "tax:onTop"],
+  "readable": true,
+  "printedItemCount": 0,
+  "itemCount": 1,
+  "lineTotals": [11.89],
+  "tax": 2.38,
+  "discount": 0,
+  "total": 14.27,
+  "_subtotalNote": "Data base / Данъчна основа is 11.89 (= the net line). subtotal 11.89 or 0 are both acceptable, so it isn't asserted here.",
+  "expectedNames": ["Месечна такса"]
+}

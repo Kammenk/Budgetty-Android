@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  App-launcher shortcuts (long-press the app icon). Each starts MainActivity with a distinct action
+  that MainActivity maps to a nav route (see MainActivity.toStartRoute). These are the app's own
+  quick actions and appear above the system-provided "Widgets" entry.
+-->
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="scan_receipt"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_scan"
+        android:shortcutShortLabel="@string/shortcut_scan_short"
+        android:shortcutLongLabel="@string/shortcut_scan_long">
+        <intent
+            android:action="com.budgetty.app.action.SCAN_RECEIPT"
+            android:targetPackage="com.budgetty.app"
+            android:targetClass="com.budgetty.app.MainActivity" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="add_manual"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_manual"
+        android:shortcutShortLabel="@string/shortcut_manual_short"
+        android:shortcutLongLabel="@string/shortcut_manual_long">
+        <intent
+            android:action="com.budgetty.app.action.ADD_MANUAL"
+            android:targetPackage="com.budgetty.app"
+            android:targetClass="com.budgetty.app.MainActivity" />
+    </shortcut>
+</shortcuts>

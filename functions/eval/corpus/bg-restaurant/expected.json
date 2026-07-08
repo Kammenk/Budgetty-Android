@@ -1,0 +1,6 @@
+{
+  "_status": "STUB - drop a real receipt here, then fill the truth fields. Skipped until an image is added; shows in `--coverage`.",
+  "_description": "Bulgarian restaurant / café bill with a service or tip line (and maybe a covers/table line). Tests the Restaurant & Dining category and that service/tip is NOT parsed as a product line item.",
+  "tags": ["region:bg", "lang:bg", "type:restaurant", "tax:inclusive"],
+  "_todo": "Fill at least one of: total, discount, itemCount, lineTotals, expectedNames."
+}

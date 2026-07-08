@@ -1,0 +1,15 @@
+{
+  "_description": "Bulgarian greengrocer fiscal receipt (СТАСИ, Plovdiv), 29.06.2026. Hard case that motivated the under-read fix: dual EUR/BGN totals, running 'МЕЖД. СУМА' subtotals, one 'КОРЕКЦИЯ' void, qty-x-unit printed above the product name. Line items + grand total are in EUR; the BGN total (27.03 @ 1.95583) must be ignored. The model previously misread 3 prices low (1.22->0.97, 0.23->0.21, 0.62->0.49) so items summed 13.42 vs the printed 13.82.",
+  "_image": "Drop the receipt photo here as receipt.jpg (gitignored — it's personal data).",
+  "tags": ["region:bg", "lang:bg", "type:supermarket", "tax:inclusive", "feature:weighted", "feature:voided", "feature:dualCurrency"],
+  "readable": true,
+  "printedItemCount": 10,
+  "itemCount": 10,
+  "total": 13.82,
+  "discount": 0,
+  "tax": 0,
+  "_subtotalNote": "No labelled SUBTOTAL line is printed (the last 'МЕЖД. СУМА' equals the total because prices are VAT-inclusive), so subtotal 0 or 13.82 are both acceptable — not asserted.",
+  "_voidedNote": "The 0.294 x 5.50 = 1.62 'Плодове' line is cancelled by КОРЕКЦИЯ and must NOT appear as an item.",
+  "lineTotals": [0.89, 1.22, 0.23, 2.41, 0.62, 1.47, 0.80, 1.04, 0.13, 5.01],
+  "expectedNames": ["Краставици", "Чушки", "Лук", "Домат", "Плодове"]
+}

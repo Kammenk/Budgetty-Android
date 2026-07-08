@@ -1,0 +1,14 @@
+{
+  "_status": "KNOWN-RED regression guard (Sonnet 5, 2026-07-07). Image present + truth hand-verified. Currently FAILS on ONE assertion set: Sonnet 5 now reads Deroni correctly (3.32, the originally-reported bug) but still mis-assigns the standalone '2.000 x 4.19' multiplier to 'Арменски хляб' (8.38 instead of its printed 1.63), so lineTotals + items-sum fail; total/discount/names all PASS. Left intentionally red as an aspirational target for this stacked-multiplier format — a run showing THIS specific failure is EXPECTED, not a new regression. Only investigate if the failure signature changes or a DIFFERENT case fails.",
+  "_description": "Kaufland Пловдив (Bulgaria) grocery photo — VAT-inclusive Cyrillic fiscal receipt. THE receipt that exposed the price-alignment bug: two interleaved 'N x unit' lines ('2.000 x 4.19' above 'Nivea Men деоспрей' = 8.38; '1.598 x 2.49' above 'K-Bio Банани кг' = 3.98) plus a mid-list discount block (#XTRA отстъпка / ОТСТЪПКИ 1.20) sitting BETWEEN product rows. The model mis-assigned Deroni's price (read 3.98 = the banana's line, should be 3.32), which then inflated the derived discount (items - printed total). lineTotals catch exactly that misread; discount asserts it doesn't leak the over-read into savings.",
+  "_image": "Drop the real photo as receipt.jpg here (gitignored).",
+  "tags": ["region:bg", "lang:bg", "type:supermarket", "tax:inclusive", "feature:coupon", "feature:weighed", "feature:multiplier"],
+  "readable": true,
+  "printedItemCount": 0,
+  "itemCount": 9,
+  "lineTotals": [8.68, 3.09, 2.19, 1.99, 1.63, 8.38, 3.32, 3.98, 0.25],
+  "tax": 0,
+  "discount": 1.2,
+  "total": 32.31,
+  "expectedNames": ["Familia", "Nivea", "Deroni", "Банани", "Торбичка"]
+}

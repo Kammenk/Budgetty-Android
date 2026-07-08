@@ -1,0 +1,22 @@
+{
+  "_synthetic": true,
+  "_generator": "tools/gen-synthetic-receipts.mjs — regenerate: node eval/tools/gen-synthetic-receipts.mjs",
+  "_description": "SYNTHETIC delivery-app order summary (fictional 'Zumo', Bulgarian, EUR) — a DIGITAL summary, not a fiscal receipt: product lines PLUS a delivery fee, service fee, a promo discount and a courier tip, with one substituted item. This case exists to expose an OPEN QUESTION: delivery/service fees + tip have no slot in the schema (items/discount/total/subtotal/tax), so 7,40 of fees+tip sits between the product sum and the paid total. Replace with a real Glovo/Wolt/Bolt export later.",
+  "tags": [
+    "region:bg",
+    "lang:bg",
+    "type:delivery",
+    "tax:inclusive",
+    "feature:coupon"
+  ],
+  "readable": true,
+  "total": 40.3,
+  "expectedNames": [
+    "Маргарита",
+    "Пеперони",
+    "Кока-Кола",
+    "Тирамису"
+  ],
+  "_openQuestion": "Delivery fees + tip have NO first-class slot in the schema (items/discount/total/subtotal/tax). Products 36,90; promo -4,00; fees 4,40 + tip 3,00 = +7,40; paid total 40,30. Only `total` and the 4 product names are asserted — decide how fees/tip should be modelled before asserting itemCount / lineTotals / discount.",
+  "_notItems": "Fees, tip and promo must NOT be invented as product line items; the products are the only real items."
+}

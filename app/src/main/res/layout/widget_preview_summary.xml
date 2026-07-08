@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- System widget-picker preview (API 31+) for the Monthly summary widget. Static sample values;
+     category colors match Categories.colorOf (Groceries / Shopping / Dining). Inflated as
+     RemoteViews, so dots use <ImageView> (not <View>). -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_card_bg"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/widget_this_month"
+            android:textColor="@color/widget_on_surface"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="18 receipts"
+            android:textColor="@color/widget_on_surface_variant"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="712.40 €"
+        android:textColor="@color/widget_on_surface"
+        android:textStyle="bold"
+        android:textSize="28sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+12% vs last month"
+        android:textColor="@color/widget_bad"
+        android:textSize="12sp" />
+
+    <!-- Groceries -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/widget_dot"
+            android:backgroundTint="#53B871"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Groceries"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/widget_on_surface"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="6dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:max="100"
+            android:progress="100"
+            android:progressTint="#53B871"
+            android:progressBackgroundTint="@color/widget_track" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="242 €"
+            android:textColor="@color/widget_on_surface"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Shopping -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/widget_dot"
+            android:backgroundTint="#9E53B8"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Shopping"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/widget_on_surface"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="6dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:max="100"
+            android:progress="48"
+            android:progressTint="#9E53B8"
+            android:progressBackgroundTint="@color/widget_track" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="117 €"
+            android:textColor="@color/widget_on_surface"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <!-- Dining -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/widget_dot"
+            android:backgroundTint="#B87153"
+            android:contentDescription="@null" />
+
+        <TextView
+            android:layout_width="72dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Dining"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textColor="@color/widget_on_surface"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="6dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:max="100"
+            android:progress="47"
+            android:progressTint="#B87153"
+            android:progressBackgroundTint="@color/widget_track" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="114 €"
+            android:textColor="@color/widget_on_surface"
+            android:textStyle="bold"
+            android:textSize="12sp" />
+    </LinearLayout>
+</LinearLayout>

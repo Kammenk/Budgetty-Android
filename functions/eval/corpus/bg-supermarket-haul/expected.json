@@ -1,0 +1,6 @@
+{
+  "_status": "STUB - no receipt yet. Drop a real receipt as receipt.jpg/.png here, then replace _todo with hand-verified truth (see eval/README.md). Until an image is added this case is SKIPPED by a run but still shows in `--coverage`.",
+  "_description": "Bulgarian supermarket big shop (Lidl / Kaufland / Billa / Fantastico): Cyrillic fiscal receipt, VAT-inclusive (prices already include ДДС, items sum to ОБЩА СУМА). Aim for 40+ lines with a Lidl Plus / loyalty coupon so this one receipt also covers the long-haul + coupon families. Stresses Cyrillic OCR at small font and the item-count + hallucination guards.",
+  "tags": ["region:bg", "lang:bg", "type:supermarket", "tax:inclusive", "feature:coupon", "feature:longHaul"],
+  "_todo": "Fill at least one of: total, discount, itemCount, printedItemCount, lineTotals, expectedNames. A case with an image but no assertions FAILs as an unlabeled stub."
+}

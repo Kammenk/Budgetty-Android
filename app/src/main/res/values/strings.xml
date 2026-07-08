@@ -1,0 +1,606 @@
+<resources>
+    <string name="app_name">Budgetty</string>
+
+    <!-- Common actions -->
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_done">Done</string>
+    <string name="action_apply">Apply</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_ok">OK</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_history">History</string>
+    <string name="nav_insights">Insights</string>
+    <string name="nav_account">Account</string>
+
+    <!-- Account screen -->
+    <string name="account_subscription">Subscription</string>
+    <string name="tier_free">Free</string>
+    <string name="tier_premium">Premium</string>
+    <string name="account_budget">Budget</string>
+    <string name="account_notifications">Push notifications</string>
+    <string name="account_currency">Currency</string>
+    <string name="account_export">Export data</string>
+    <string name="account_import">Import data</string>
+    <string name="account_widgets">Widgets</string>
+    <string name="widgets_soon_title">Coming soon</string>
+    <string name="widgets_soon_message">Home-screen widgets are coming in a future update.</string>
+
+    <!-- Add-widget picker screen -->
+    <string name="widgets_title">Add widget</string>
+    <string name="widgets_intro">Glanceable cards for your Android home screen. Pick a type and size, then add.</string>
+    <string name="widgets_size_large">Large · 4×2</string>
+    <string name="widgets_size_compact">Compact · 2×2</string>
+    <string name="widgets_add">Add to home screen</string>
+    <string name="widgets_added">Added ✓</string>
+    <string name="widgets_last_added">Last added: %1$s</string>
+    <string name="widgets_pin_unsupported">Your launcher can\'t add widgets this way — long-press the home screen to add one.</string>
+    <string name="widget_monthly_desc">Spending progress &amp; remaining</string>
+    <string name="widget_weekly_desc">This week\'s spend at a glance</string>
+    <string name="widget_summary">Monthly summary</string>
+    <string name="widget_summary_desc">Total + top categories</string>
+
+    <!-- App-launcher shortcuts (long-press the app icon) -->
+    <string name="shortcut_scan_short">Scan</string>
+    <string name="shortcut_scan_long">Scan receipt</string>
+    <string name="shortcut_manual_short">Manual</string>
+    <string name="shortcut_manual_long">Add manually</string>
+
+    <!-- Widget content -->
+    <string name="widget_monthly_budget">Monthly budget</string>
+    <string name="widget_weekly_budget">Weekly budget</string>
+    <string name="widget_budget">Budget</string>
+    <string name="widget_budget_desc">Spending vs your budget</string>
+    <string name="widget_scan">Scan receipt</string>
+    <string name="widget_scan_desc">Snap a receipt from anywhere</string>
+    <string name="widget_scan_body">Snap a photo or import a PDF</string>
+    <string name="widget_scan_action">Scan</string>
+    <string name="widget_scans_left">%1$d scans left this month</string>
+    <string name="widget_topcat">Top categories</string>
+    <string name="widget_topcat_desc">Where your money goes</string>
+    <string name="widget_other">Other</string>
+    <string name="widget_this_week">This week</string>
+    <string name="widget_this_month">This month</string>
+    <string name="widget_of_budget">of %1$s</string>
+    <string name="widget_approx_weekly">≈ %1$s / week</string>
+    <string name="widget_approx_monthly">≈ %1$s / month</string>
+    <string name="widget_pct_spent">%1$d%% spent</string>
+    <string name="widget_remaining">%1$s left</string>
+    <string name="widget_set_budget_title">Set a budget</string>
+    <string name="widget_set_budget_body">Tap to set a monthly or weekly limit</string>
+    <string name="widget_receipts">%1$d receipts</string>
+    <string name="widget_vs_last_month">%1$s vs last month</string>
+    <string name="widget_vs_last_week">%1$s vs last week</string>
+    <string name="widget_last_week">Last week</string>
+    <string name="widget_thisweek_desc">This week vs last week</string>
+    <string name="widget_no_spending">No spending yet</string>
+
+    <string name="section_preferences">Preferences</string>
+    <string name="account_theme">Theme</string>
+    <string name="account_accent">Accent color</string>
+    <string name="account_date_format">Date format</string>
+    <string name="account_language">Language</string>
+    <string name="section_privacy">Privacy &amp; Security</string>
+    <string name="account_biometric">Biometric authentication</string>
+    <string name="account_analytics">Analytics</string>
+    <string name="section_support">Support &amp; About</string>
+    <string name="account_help">Help &amp; FAQ</string>
+    <string name="account_contact">Contact support</string>
+    <string name="account_rate">Rate Budgetty</string>
+    <string name="account_privacy_policy">Privacy Policy</string>
+    <string name="account_sign_out">Sign out</string>
+    <string name="account_delete">Delete account</string>
+    <string name="account_edit_name">Edit name</string>
+    <string name="account_save_name">Save name</string>
+    <string name="account_discard_name">Discard changes</string>
+
+    <!-- Import backup dialog -->
+    <string name="import_title">Import backup</string>
+    <string name="import_message">Merge this backup on top of your current data, or replace everything.</string>
+    <string name="import_merge">Merge</string>
+    <string name="import_replace">Replace all</string>
+
+    <!-- Delete account dialogs -->
+    <string name="delete_title">Delete account?</string>
+    <string name="delete_message">This permanently deletes your account and erases all data on this device. This can\'t be undone.</string>
+    <string name="delete_failed_title">Couldn\'t delete account</string>
+    <string name="delete_reauth_message">For your security, please sign out and sign in again, then delete your account.</string>
+
+    <!-- Add receipt -->
+    <string name="add_receipt_title">Add receipt</string>
+    <string name="add_take_photo">Take a photo</string>
+    <string name="add_take_photo_sub">Snap the receipt with your camera</string>
+    <string name="add_upload_file">Upload a file</string>
+    <string name="add_upload_file_sub">Pick a PDF or image from your device</string>
+    <string name="add_manually">Add manually</string>
+
+    <!-- Common (more) -->
+    <string name="action_edit">Edit</string>
+    <string name="action_undo">Undo</string>
+
+    <!-- Period filter -->
+    <string name="period_this_month">This month</string>
+    <string name="period_last_month">Last month</string>
+    <string name="period_last_3_months">Last 3 months</string>
+    <string name="period_last_6_months">Last 6 months</string>
+
+    <!-- Insights period stepper -->
+    <string name="period_this_week">This week</string>
+    <string name="period_last_week">Last week</string>
+    <string name="period_this_quarter">This quarter</string>
+    <string name="period_last_quarter">Last quarter</string>
+    <string name="period_this_half">This half-year</string>
+    <string name="period_last_half">Last half-year</string>
+    <string name="period_unit_week">Week</string>
+    <string name="period_unit_month">Month</string>
+    <string name="period_unit_quarter">Quarter</string>
+    <string name="period_unit_half_year">Half-year</string>
+    <string name="period_unit_custom">Custom</string>
+    <string name="period_quarter_format">Q%1$d %2$d</string>
+    <string name="period_half_format">H%1$d %2$d</string>
+    <string name="period_custom_range">Custom range…</string>
+    <string name="cd_period_previous">Previous period</string>
+    <string name="cd_period_next">Next period</string>
+    <string name="date_range_selected_label">Selected range</string>
+    <string name="date_range_select_hint">Select dates</string>
+    <string name="cd_prev_month">Previous month</string>
+    <string name="cd_next_month">Next month</string>
+
+    <!-- Home -->
+    <string name="home_total_spent">Total spent - %1$s</string>
+    <string name="home_receipts">Receipts</string>
+    <string name="home_recent_receipts">Recent receipts</string>
+    <string name="home_view_all">View all</string>
+    <string name="home_no_receipts">No receipts yet</string>
+    <string name="home_budgets">Budgets</string>
+    <string name="home_monthly_progress">Monthly budget progress</string>
+    <string name="home_weekly_progress">Weekly budget progress</string>
+    <string name="home_budget_progress">Budget progress</string>
+    <string name="home_set_budget">Tap to set a budget</string>
+    <string name="home_this_week">This week</string>
+    <string name="home_section_total_spent">Total spent</string>
+    <string name="home_section_week">This week vs last week</string>
+    <string name="home_view_other_budgets">View other budgets</string>
+    <string name="home_view_all_budgets">View All Budgets</string>
+    <string name="home_daily_avg">Daily avg</string>
+    <string name="home_vs_last_month">vs last month</string>
+    <string name="home_vs_last_period">vs last period</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_view_insights">View Insights</string>
+    <string name="snackbar_receipt_deleted">Receipt deleted</string>
+    <string name="snackbar_item_deleted">Item deleted</string>
+
+    <!-- Upload / review -->
+    <string name="upload_title">Upload receipt</string>
+    <string name="upload_edit_title">Edit receipt</string>
+    <string name="upload_preparing">Preparing…</string>
+    <string name="upload_reading">Reading receipt…</string>
+    <string name="upload_saving">Saving…</string>
+    <string name="upload_store_name">Store name</string>
+    <string name="upload_store_hint">e.g. Lidl</string>
+    <string name="upload_add_transaction">Add transaction</string>
+    <string name="upload_product">Product</string>
+    <string name="upload_category">Category</string>
+    <string name="upload_select_category">Select category</string>
+    <string name="upload_price">Price</string>
+    <string name="upload_qty">Qty</string>
+    <string name="upload_discount">Discount</string>
+    <string name="receipt_vat_included">Incl. VAT %1$s</string>
+    <string name="upload_finalize">Finalize</string>
+    <string name="upload_total_mismatch">These items add up to %1$s, but the receipt shows %2$s. Double-check the item prices before saving.</string>
+    <string name="upload_error_title">Couldn\'t read that receipt</string>
+    <string name="upload_error_body">The photo may be too blurry, dark, or cropped to read. Retake it in good light with the receipt flat and fully in frame.</string>
+    <string name="upload_service_error_title">Scanning is temporarily unavailable</string>
+    <string name="upload_service_error_body">We couldn\'t reach the receipt scanner right now. Check your connection and try again in a little while.</string>
+    <string name="upload_go_back">Go back</string>
+    <string name="upload_try_again">Try again</string>
+    <string name="upload_date">Receipt date</string>
+    <string name="upload_error_no_items">Add at least one item before saving</string>
+    <string name="upload_error_no_amount">Enter a price for at least one item</string>
+    <string name="upload_from_rules">from your rules</string>
+
+    <!-- Category rules: propagate a category change to matching items + remember it -->
+    <string name="rule_prompt_title">Apply to matching items?</string>
+    <plurals name="rule_prompt_body">
+        <item quantity="one">%1$d other transaction named “%2$s” will be set to %3$s.</item>
+        <item quantity="other">%1$d other transactions named “%2$s” will be set to %3$s.</item>
+    </plurals>
+    <string name="rule_prompt_remember">Always use %1$s for “%2$s”</string>
+    <string name="rule_prompt_rule_exists">Updates your saved rule for this item</string>
+    <plurals name="rule_prompt_apply">
+        <item quantity="one">Update 1 other</item>
+        <item quantity="other">Update all %1$d</item>
+    </plurals>
+    <string name="rule_prompt_just_this">Just this one</string>
+    <!-- Category rules: nothing to update, but the item repeats — offer to remember it -->
+    <string name="rule_prompt_remember_title">Remember this category?</string>
+    <string name="rule_prompt_remember_body">Always use %1$s for “%2$s” on future receipts?</string>
+    <string name="rule_prompt_remember_confirm">Remember</string>
+    <string name="rule_prompt_not_now">Not now</string>
+
+    <!-- Category rules management screen (Account → Category rules) -->
+    <string name="account_category_rules">Category rules</string>
+    <string name="category_rules_title">Category rules</string>
+    <string name="category_rules_subtitle">Applied automatically when Budgetty scans a new receipt. Delete one to stop using it.</string>
+    <plurals name="category_rules_count">
+        <item quantity="one">%1$d transaction · set by you</item>
+        <item quantity="other">%1$d transactions · set by you</item>
+    </plurals>
+    <string name="category_rules_empty">No category rules yet</string>
+    <string name="category_rules_footer">Rules are created from the Review &amp; Edit screen when you reassign a category.</string>
+    <string name="category_rules_delete">Delete rule for “%1$s”</string>
+
+    <!-- Custom categories (create / edit in the category picker) -->
+    <string name="custom_your_categories">Your categories</string>
+    <string name="custom_count">%1$d of %2$d</string>
+    <string name="custom_create">Create</string>
+    <string name="custom_unlock_more">Unlock more</string>
+    <string name="custom_max_reached">Maximum reached</string>
+    <string name="custom_new_title">New category</string>
+    <string name="custom_edit_title">Edit category</string>
+    <string name="custom_name_hint">Name</string>
+    <string name="custom_color_label">Color</string>
+    <string name="custom_icon_label">Icon</string>
+    <string name="custom_name_taken">Name already exists — try something different</string>
+    <string name="custom_delete">Delete category</string>
+    <string name="custom_delete_confirm_title">Delete %1$s?</string>
+    <plurals name="custom_delete_confirm_body">
+        <item quantity="one">Move %1$d transaction to Other and delete this category?</item>
+        <item quantity="other">Move %1$d transactions to Other and delete this category?</item>
+    </plurals>
+    <string name="cd_edit_category">Edit %1$s</string>
+
+    <!-- Insights -->
+    <string name="insights_breakdown">Breakdown</string>
+    <string name="insights_summary">Summary</string>
+    <string name="insights_trend">Trend</string>
+    <string name="insights_period_comparison">Period comparison</string>
+    <string name="insights_top_categories">Top categories</string>
+    <string name="insights_top_stores">Top stores</string>
+    <string name="insights_budget">Budget</string>
+
+    <!-- Insights: income & recurring cards -->
+    <string name="insights_income_spending">Money in vs. out</string>
+    <string name="insights_savings_rate">Savings rate</string>
+    <string name="insights_fixed_flexible">Where your income goes</string>
+    <string name="insights_upcoming_bills">Upcoming bills</string>
+    <string name="insights_income_by_source">Income by source</string>
+    <string name="insights_go_to_budget">Go to Budget</string>
+    <!-- Money in vs. out -->
+    <string name="insights_income_in">In</string>
+    <string name="insights_income_out">Out</string>
+    <string name="insights_income_net">Net</string>
+    <string name="insights_income_read_positive">You kept %1$s.</string>
+    <string name="insights_income_read_negative">You spent %1$s more than you earned.</string>
+    <string name="insights_income_nudge_flow">Add your income in Budget to see how your money flows.</string>
+    <!-- Savings rate -->
+    <string name="insights_savings_tag_saved">of your income saved</string>
+    <string name="insights_savings_tag_over">overspent</string>
+    <string name="insights_savings_sub_saved">%1$s saved out of %2$s</string>
+    <string name="insights_savings_sub_over">Spent %1$s more than earned</string>
+    <string name="insights_savings_legend_great" formatted="false">≥ 20% great</string>
+    <string name="insights_savings_legend_ok" formatted="false">0–20% ok</string>
+    <string name="insights_savings_legend_bad">&lt; 0</string>
+    <string name="insights_savings_nudge">Add your income in Budget to track your savings rate.</string>
+    <!-- Where your income goes -->
+    <string name="insights_fixed_bills">Fixed bills</string>
+    <string name="insights_flexible_spending">Flexible spending</string>
+    <string name="insights_left">Left</string>
+    <string name="insights_fixed_read">Fixed bills are %1$d%% of your income.</string>
+    <string name="insights_fixed_nudge">Add your income in Budget to see where it all goes.</string>
+    <!-- Upcoming bills -->
+    <string name="insights_upcoming_7days">7 days</string>
+    <string name="insights_upcoming_30days">30 days</string>
+    <string name="insights_upcoming_due">due in the next %1$d days</string>
+    <string name="insights_upcoming_today">today</string>
+    <string name="insights_upcoming_tomorrow">tomorrow</string>
+    <string name="insights_upcoming_in_days">in %1$d days</string>
+    <string name="insights_upcoming_more">+ %1$d more</string>
+    <string name="insights_upcoming_empty_title">No recurring bills yet</string>
+    <string name="insights_upcoming_empty_sub">Add recurring payments in Budget to see what\'s due.</string>
+    <!-- Income by source -->
+    <string name="insights_income_total">Total</string>
+    <string name="insights_income_single">Only one source. Add another in Budget to see a breakdown.</string>
+    <string name="insights_income_nudge_sources">Add your income sources in Budget to see a breakdown.</string>
+    <plurals name="insights_budget_days_left">
+        <item quantity="one">%1$d day left</item>
+        <item quantity="other">%1$d days left</item>
+    </plurals>
+
+    <!-- Highlights (rule-based narrative callouts) -->
+    <string name="insights_highlights">Highlights</string>
+    <string name="insights_highlight_new">First spend in %1$s — %2$s</string>
+    <string name="insights_highlight_up">%1$s up %2$d%% vs %3$s</string>
+    <string name="insights_highlight_down">%1$s down %2$d%% vs %3$s</string>
+    <string name="insights_highlight_share">%1$s made up %2$d%% of spending</string>
+    <!-- Spending pace / projection (shown on the trend card for the current period) -->
+    <string name="insights_pace">On pace for about %1$s</string>
+    <string name="insights_biggest_purchases">Biggest purchases</string>
+    <!-- Per-period empty states -->
+    <string name="insights_empty_period">No spending recorded for %1$s</string>
+    <string name="insights_empty_period_sub">Try another period using the arrows above.</string>
+    <string name="insights_empty_no_data">No spending yet</string>
+    <string name="insights_empty_no_data_sub">Scan a receipt to start seeing your insights.</string>
+    <!-- Insights analytical labels (extracted from code) -->
+    <string name="insights_title">Insights</string>
+    <string name="insights_trend_daily">Daily spend</string>
+    <string name="insights_trend_monthly">Monthly spend</string>
+    <string name="insights_trend_empty">Not enough data yet</string>
+    <string name="insights_stat_avg_day">Avg / day</string>
+    <string name="insights_stat_avg_receipt">Avg / receipt</string>
+    <string name="insights_stat_saved">Saved</string>
+    <string name="insights_by_category">By category vs %1$s</string>
+    <string name="insights_prev_week">the previous week</string>
+    <string name="insights_prev_month">the previous month</string>
+    <string name="insights_prev_quarter">the previous quarter</string>
+    <string name="insights_prev_half">the previous half-year</string>
+    <string name="insights_prev_period">the previous period</string>
+    <string name="insights_compare_less">%1$d%% less than %2$s</string>
+    <string name="insights_compare_more">%1$d%% more than %2$s</string>
+    <string name="insights_compare_same">About the same as %1$s</string>
+
+    <!-- Customize sections (show / hide / reorder) -->
+    <string name="customize_sections_title">Customize sections</string>
+    <string name="customize_sections_subtitle">Show, hide, and reorder what appears on this screen.</string>
+    <string name="customize_sections_reset">Revert to default</string>
+
+    <!-- History -->
+    <string name="history_search">Search items</string>
+    <string name="history_today">Today</string>
+    <string name="history_yesterday">Yesterday</string>
+    <string name="history_tab_receipts">Receipts</string>
+    <string name="history_tab_items">Items</string>
+    <string name="history_tab_budgets">Budgets</string>
+    <string name="history_budgets_left_after_bills">Left after bills</string>
+    <string name="history_budgets_manage">Manage in Budget</string>
+    <string name="history_budgets_empty_title">No budget set up yet</string>
+    <string name="history_budgets_empty_subtitle">Add your income and bills in Budget to see your plan here.</string>
+    <string name="history_budgets_go_to_budget">Go to Budget</string>
+    <string name="filter_all">All</string>
+    <string name="filter_category">Category</string>
+    <string name="filter_store">Store</string>
+    <string name="filter_date">Date</string>
+    <string name="filter_all_time">All time</string>
+    <string name="filter_price">Price</string>
+    <string name="filter_sort">Sort</string>
+    <string name="sort_title">Sort by</string>
+    <string name="sort_newest">Newest first</string>
+    <string name="sort_oldest">Oldest first</string>
+    <string name="sort_price_high">Price: high to low</string>
+    <string name="sort_price_low">Price: low to high</string>
+    <string name="price_range_title">Price range</string>
+    <string name="price_presets">Quick presets</string>
+    <string name="price_range_any">Any amount</string>
+    <string name="price_range_value">%1$s – %2$s</string>
+    <string name="price_preset_under">Under %1$s</string>
+    <string name="price_preset_over">Over %1$s</string>
+    <string name="history_recent_searches">Recent searches</string>
+    <string name="history_clear_all">Clear all</string>
+    <string name="history_top_stores">Top stores</string>
+    <string name="history_top_categories">Top categories</string>
+    <string name="cd_remove_search">Remove</string>
+    <string name="cd_reset_price_range">Reset price range</string>
+
+    <!-- Common (more) -->
+    <string name="action_back">Back</string>
+    <string name="action_close">Close</string>
+
+    <!-- Budget -->
+    <string name="budget_monthly">Monthly budget</string>
+    <string name="budget_weekly">Weekly budget</string>
+    <string name="budget_period_monthly">Monthly</string>
+    <string name="budget_period_weekly">Weekly</string>
+    <string name="budget_approx_weekly">≈ %1$s / week</string>
+    <string name="budget_approx_monthly">≈ %1$s / month</string>
+    <string name="budget_categories">Categories</string>
+    <string name="budget_tap_sub">Tap to set sub-budgets</string>
+    <string name="budget_tap_set">Tap to set budget</string>
+    <string name="budget_spent_pct">%1$s spent · %2$d%%</string>
+    <string name="budget_left">%1$s left</string>
+    <string name="budget_over">%1$s over</string>
+    <string name="budget_spent">%1$s spent</string>
+    <string name="budget_no_spend">No spend</string>
+    <string name="budget_section_category">CATEGORY BUDGET</string>
+    <string name="budget_section_subcategories">SUBCATEGORIES</string>
+    <string name="budget_active_subs">Active sub-budgets</string>
+    <string name="budget_show_more">Show %1$d more</string>
+    <string name="budget_error_monthly_weekly">Monthly budget must be at least the weekly budget. Your change wasn\'t saved.</string>
+
+    <!-- Income & recurring payments -->
+    <string name="recurring_income">Income</string>
+    <string name="recurring_payments">Recurring payments</string>
+    <string name="recurring_add_income">Add income</string>
+    <string name="recurring_add_payment">Add recurring payment</string>
+    <string name="recurring_per_month">%1$s / mo</string>
+    <string name="recurring_upgrade_more">Upgrade to add more</string>
+    <string name="recurring_money_empty_hint">Add your income and bills to see what\'s left each month.</string>
+    <string name="recurring_this_month">This month</string>
+    <string name="recurring_breakdown_income">Income</string>
+    <string name="recurring_breakdown_bills">Recurring bills</string>
+    <string name="recurring_breakdown_spent">Spent so far</string>
+    <string name="recurring_breakdown_left">Left to spend</string>
+    <string name="recurring_monthly">Monthly</string>
+    <string name="recurring_weekly">Weekly</string>
+    <string name="recurring_yearly">Yearly</string>
+    <string name="recurring_once">Once</string>
+    <string name="recurring_payment_add_title">Add payment</string>
+    <string name="recurring_payment_edit_title">Edit payment</string>
+    <string name="recurring_income_edit_title">Edit income</string>
+    <string name="recurring_field_name">Name</string>
+    <string name="recurring_field_amount">Amount</string>
+    <string name="recurring_field_how_often">How often</string>
+    <string name="recurring_field_due_day">Due day</string>
+    <string name="recurring_field_payday">Payday</string>
+    <string name="recurring_field_day_of_week">Day of week</string>
+    <string name="recurring_field_category">Category</string>
+    <string name="recurring_name_hint_income">Salary</string>
+    <string name="recurring_name_hint_payment">Rent</string>
+    <string name="budget_spending_budget">Spending budget</string>
+    <string name="budget_spending_budget_hint">What you plan to spend, on top of your bills.</string>
+
+    <!-- Paywall -->
+    <string name="paywall_title">Budgetty Premium</string>
+    <string name="paywall_hero_title">Get more from Budgetty</string>
+    <string name="paywall_hero_subtitle">No free trial · cancel anytime</string>
+    <string name="paywall_benefit_scans">Unlimited receipt scans</string>
+    <string name="paywall_benefit_themes">Accent color themes</string>
+    <string name="paywall_benefit_cloud">Cloud backup &amp; sync</string>
+    <string name="paywall_premium_title">You\'re Premium</string>
+    <string name="paywall_premium_subtitle">Thanks for the support!</string>
+    <string name="paywall_unavailable_title">Not available yet</string>
+    <string name="paywall_unavailable_subtitle">Subscriptions will appear here once the store listing is live.</string>
+    <string name="paywall_restore">Restore purchases</string>
+    <string name="paywall_best_value">BEST VALUE</string>
+    <string name="paywall_subscribe">Subscribe</string>
+
+    <!-- Login -->
+    <string name="login_welcome">Welcome back</string>
+    <string name="login_create_subtitle">Create your account</string>
+    <string name="login_email">Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_show_password">Show password</string>
+    <string name="login_hide_password">Hide password</string>
+    <string name="login_forgot">Forgot password?</string>
+    <string name="login_reset_sent">Password reset email sent</string>
+    <string name="login_enter_both">Enter your email and password</string>
+    <string name="login_sign_in">Sign in</string>
+    <string name="login_create_account">Create account</string>
+    <string name="login_or">or</string>
+    <string name="login_google">Continue with Google</string>
+    <string name="login_have_account">Have an account?</string>
+    <string name="login_new_here">New here?</string>
+    <string name="login_create_account_link">Create an account</string>
+    <string name="login_google_failed">Google sign-in failed</string>
+    <string name="login_password_requirements">Password must</string>
+    <string name="login_password_req_length">be at least 8 characters</string>
+    <string name="login_password_req_case">use upper- and lowercase letters</string>
+    <string name="login_password_req_number">include a number</string>
+    <string name="login_password_weak">Please choose a stronger password</string>
+    <!-- Tablet split-login (English-only for now) -->
+    <string name="login_subtitle_signin">Sign in to your account</string>
+    <string name="login_subtitle_signup">Get started in seconds</string>
+    <string name="login_tagline">Receipt-driven personal budgeting</string>
+    <string name="login_feature_1">Snap a receipt — AI reads it</string>
+    <string name="login_feature_2">Auto-categorized line items</string>
+    <string name="login_feature_3">Budget tracking &amp; alerts</string>
+
+    <!-- Onboarding -->
+    <string name="onb1_title">Snap any receipt</string>
+    <string name="onb1_body">Photograph a paper receipt or upload a PDF. Capturing a purchase is always one tap away.</string>
+    <string name="onb2_title">We read &amp; categorize it</string>
+    <string name="onb2_body">Budgetty\'s AI pulls out the store, date, discount and every line item — each sorted into a category. You just review and save.</string>
+    <string name="onb3_title">See where your money goes</string>
+    <string name="onb3_body">Clear charts break your spending down by category, store and time, so the full picture is always a glance away.</string>
+    <string name="onb4_title">Set budgets that keep you on track</string>
+    <string name="onb4_body">Monthly, weekly and per-category budgets with friendly green-amber-red progress keep your goals in sight.</string>
+    <string name="onb_skip">Skip</string>
+    <string name="onb_next">Next</string>
+    <string name="onb_get_started">Get started</string>
+
+    <!-- Category picker -->
+    <string name="category_picker_title">Choose a category</string>
+    <string name="action_search">Search</string>
+    <string name="cd_selected">Selected</string>
+
+    <!-- Toasts -->
+    <string name="toast_backup_exported">Backup exported</string>
+    <string name="toast_export_failed">Export failed</string>
+    <string name="toast_read_file_failed">Couldn\'t read that file</string>
+    <string name="toast_backup_merged">Backup merged</string>
+    <string name="toast_import_failed">Import failed</string>
+    <string name="toast_data_replaced">Data replaced</string>
+    <string name="toast_account_deleted">Account deleted</string>
+    <string name="toast_no_link_app">No app can open this link</string>
+    <string name="toast_no_email_app">No email app found</string>
+    <string name="toast_tester_premium_unlocked">Premium unlocked 🎉</string>
+    <string name="toast_tester_premium_countdown">%1$d more to unlock Premium</string>
+    <string name="delete_error_message">Something went wrong deleting your account. Please try again.</string>
+
+    <!-- Add-receipt sheet quota + premium -->
+    <string name="go_premium">Go Premium</string>
+    <string name="see_all_categories">See all categories</string>
+    <string name="add_premium_unlimited">Premium — unlimited scans.</string>
+    <string name="add_scans_left">%1$d of %2$d free scans left (photo or file). Manual entry is always free.</string>
+    <string name="add_scans_used">You\'ve used all %1$d free scans. Go Premium to scan more — manual entry is always free.</string>
+    <string name="add_manually_sub">Enter the items yourself · always free</string>
+    <string name="upload_check_hint">%1$s · check each item, then finalize</string>
+
+    <!-- Accessibility content descriptions -->
+    <string name="cd_delete_item">Delete item</string>
+    <string name="cd_filter_period">Filter period</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_edit_store">Edit store name</string>
+    <string name="cd_edit_date">Edit receipt date</string>
+    <string name="cd_customize_sections">Customize sections</string>
+    <string name="cd_move_section_up">Move up</string>
+    <string name="cd_move_section_down">Move down</string>
+    <string name="cd_expand_day">Expand</string>
+    <string name="cd_collapse_day">Collapse</string>
+    <string name="cd_breakdown_show_groups">Show top categories</string>
+    <string name="cd_breakdown_show_all">Show all categories</string>
+
+    <string name="category_no_transactions">No transactions in this category</string>
+    <string name="store_no_transactions">No transactions</string>
+    <plurals name="item_count">
+        <item quantity="one">%1$d item</item>
+        <item quantity="other">%1$d items</item>
+    </plurals>
+    <plurals name="home_across_receipts">
+        <item quantity="one">across %1$d receipt</item>
+        <item quantity="other">across %1$d receipts</item>
+    </plurals>
+
+    <!-- Category display names (canonical DB/AI names stay English; these are display-only) -->
+    <string name="cat_groceries">Groceries</string>
+    <string name="cat_bakery">Bakery</string>
+    <string name="cat_dairy">Dairy</string>
+    <string name="cat_meat_poultry">Meat &amp; Poultry</string>
+    <string name="cat_fish_seafood">Fish &amp; Seafood</string>
+    <string name="cat_fruits_vegetables">Fruits &amp; Vegetables</string>
+    <string name="cat_snacks_sweets">Snacks &amp; Sweets</string>
+    <string name="cat_frozen_foods">Frozen Foods</string>
+    <string name="cat_nuts_snacks">Nuts &amp; Snacks</string>
+    <string name="cat_canned_preserved">Canned &amp; Preserved</string>
+    <string name="cat_grains_pasta">Grains &amp; Pasta</string>
+    <string name="cat_condiments_sauces">Condiments &amp; Sauces</string>
+    <string name="cat_beverages">Beverages</string>
+    <string name="cat_household_personal">Household &amp; Personal</string>
+    <string name="cat_household_cleaning">Household Cleaning</string>
+    <string name="cat_personal_care">Personal Care</string>
+    <string name="cat_beauty">Beauty</string>
+    <string name="cat_baby_products">Baby Products</string>
+    <string name="cat_pet_supplies">Pet Supplies</string>
+    <string name="cat_paper_products">Paper Products</string>
+    <string name="cat_kitchen_supplies">Kitchen Supplies</string>
+    <string name="cat_health_wellness">Health &amp; Wellness</string>
+    <string name="cat_health_pharmacy">Health &amp; Pharmacy</string>
+    <string name="cat_medical">Medical</string>
+    <string name="cat_sports_fitness">Sports &amp; Fitness</string>
+    <string name="cat_dining_entertainment">Dining &amp; Entertainment</string>
+    <string name="cat_restaurant_dining">Restaurant &amp; Dining</string>
+    <string name="cat_entertainment">Entertainment</string>
+    <string name="cat_shopping_lifestyle">Shopping &amp; Lifestyle</string>
+    <string name="cat_clothing_accessories">Clothing &amp; Accessories</string>
+    <string name="cat_electronics">Electronics</string>
+    <string name="cat_garden_plants">Garden &amp; Plants</string>
+    <string name="cat_home_improvement">Home Improvement</string>
+    <string name="cat_tobacco_alcohol">Tobacco &amp; Alcohol</string>
+    <string name="cat_transportation">Transportation</string>
+    <string name="cat_fuel">Fuel</string>
+    <string name="cat_car_maintenance">Car Maintenance</string>
+    <string name="cat_services_subscriptions">Services &amp; Subscriptions</string>
+    <string name="cat_subscriptions_services">Subscriptions &amp; Services</string>
+    <string name="cat_education">Education</string>
+    <string name="cat_travel_accommodation">Travel &amp; Accommodation</string>
+    <string name="cat_insurance_utilities">Insurance &amp; Utilities</string>
+    <string name="cat_rent">Rent</string>
+    <string name="cat_office_work_supplies">Office &amp; Work Supplies</string>
+    <string name="cat_gifts_donations">Gifts &amp; Charitable Donations</string>
+    <string name="cat_other">Other</string>
+
+    <!-- In-app update prompt (Google Play In-App Updates) -->
+    <string name="update_downloaded_message">An update has been downloaded.</string>
+    <string name="update_restart_action">Restart</string>
+</resources>

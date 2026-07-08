@@ -1,0 +1,6 @@
+{
+  "_status": "STUB - drop a real receipt here, then fill the truth fields. Skipped until an image is added; shows in `--coverage`.",
+  "_description": "Bulgarian fuel receipt (OMV, Lukoil, Shell, Eko): usually ONE fuel line = liters x price/L (e.g. 34.12 L x 2.85), maybe a coffee/wiper add-on. Tests liters-as-quantity, the Fuel category, and that liters aren't mistaken for money.",
+  "tags": ["region:bg", "lang:bg", "type:fuel", "tax:inclusive"],
+  "_todo": "Fill at least one of: total, discount, itemCount, lineTotals, expectedNames."
+}

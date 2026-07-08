@@ -1,0 +1,7 @@
+{
+  "_status": "STUB - drop a genuinely unreadable receipt photo here as receipt.jpg (blurry / crumpled / dark / glare-washed). The truth is already set below, so the case runs as soon as an image is present.",
+  "_description": "A deliberately unreadable receipt the model must REFUSE rather than hallucinate. Verifies the abstention guard: readable:false with an empty items array.",
+  "tags": ["feature:unreadable"],
+  "readable": false,
+  "itemCount": 0
+}
