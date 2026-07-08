@@ -698,7 +698,7 @@ private fun LoginScreenPreview() {
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
-private fun LoginScreenTabletPreview() {
+internal fun LoginScreenTabletPreview() {
     BudgettyTheme {
         LoginScreenContent(
             loading = false,

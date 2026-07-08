@@ -1554,7 +1554,7 @@ private fun HistoryScreenPreview() {
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800, name = "History · grouped by day (landscape)")
 @Composable
-private fun HistoryGroupedByDayPreview() {
+internal fun HistoryGroupedByDayPreview() {
     val zone = ZoneId.systemDefault()
     val today = LocalDate.now()
 
@@ -1609,8 +1609,8 @@ private fun HistoryGroupedByDayPreview() {
                 groups = listOf(thisMonth, lastMonth),
                 hasAnyTransactions = true,
             ),
-            isExpanded = true,
-            isWide = true,
+            isExpanded = isExpandedWidth(),
+            isWide = isWideWidth(),
             onNavigateToReceipt = {},
             onQueryChange = {},
             onClearFilters = {},

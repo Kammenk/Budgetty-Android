@@ -1510,12 +1510,12 @@ private fun ruleSentence(
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
-private fun UploadScreenPreview() {
+internal fun UploadScreenPreview() {
     BudgettyTheme {
         UploadScreenContent(
             state = UploadUiState(stage = UploadStage.REVIEW, storeName = "Kaufland"),
             isEdit = false,
-            isWide = true,
+            isWide = isWideWidth(),
             onStoreChange = {},
             onDateChange = {},
             onNameChange = { _, _ -> },
@@ -1536,12 +1536,12 @@ private fun UploadScreenPreview() {
 @Preview(name = "Upload error · phone", showBackground = true, heightDp = 740)
 @Preview(name = "Upload error · tablet", showBackground = true, widthDp = 840, heightDp = 740)
 @Composable
-private fun UploadErrorPreview() {
+internal fun UploadErrorPreview() {
     BudgettyTheme {
         UploadScreenContent(
             state = UploadUiState(stage = UploadStage.IDLE, error = "boom"),
             isEdit = false,
-            isWide = false,
+            isWide = isWideWidth(),
             onStoreChange = {},
             onDateChange = {},
             onNameChange = { _, _ -> },

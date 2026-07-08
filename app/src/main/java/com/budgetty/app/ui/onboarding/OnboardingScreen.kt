@@ -425,7 +425,7 @@ private fun OnboardingScreenPreview() {
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
-private fun OnboardingScreenTabletPreview() {
+internal fun OnboardingScreenTabletPreview() {
     BudgettyTheme {
         OnboardingScreen(onDone = {})
     }

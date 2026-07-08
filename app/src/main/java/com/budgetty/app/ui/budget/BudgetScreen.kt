@@ -1827,15 +1827,15 @@ private fun BudgetScreenPreview() {
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
-private fun BudgetScreenTabletPreview() {
+internal fun BudgetScreenTabletPreview() {
     BudgettyTheme {
         BudgetScreenContent(
             budgets = previewBudgets,
             spending = previewSpending,
             monthlySpent = BigDecimal("712.40"),
             weeklySpent = BigDecimal("73.20"),
-            isExpanded = true,
-            isWide = true,
+            isExpanded = isExpandedWidth(),
+            isWide = isWideWidth(),
             onNavigateBack = {},
             onSetBudget = { _, _ -> },
             onSaveSingleBudget = { _, _ -> },

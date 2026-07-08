@@ -1612,7 +1612,7 @@ private fun HomeScreenPreview() {
 
 @Preview(name = "Home – portrait tablet", showBackground = true, widthDp = 800, heightDp = 1100)
 @Composable
-private fun HomeScreenTabletPreview() {
+internal fun HomeScreenTabletPreview() {
     BudgettyTheme {
         HomeScreenContent(
             state = previewHomeState(),
@@ -1620,8 +1620,8 @@ private fun HomeScreenTabletPreview() {
             canScan = true,
             scanRemaining = 5,
             isPremium = false,
-            isExpanded = true,
-            isWide = false,
+            isExpanded = isExpandedWidth(),
+            isWide = isWideWidth(),
             initials = "AR",
             hiddenSections = emptySet(),
             sectionOrder = emptyList(),

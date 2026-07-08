@@ -1083,14 +1083,14 @@ private fun AccountScreenPreview() {
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
-private fun AccountScreenTabletPreview() {
+internal fun AccountScreenTabletPreview() {
     BudgettyTheme {
         AccountScreenContent(
             email = "alex@example.com",
             settings = AppSettings(),
             isPremium = false,
-            isExpanded = true,
-            isWide = true,
+            isExpanded = isExpandedWidth(),
+            isWide = isWideWidth(),
             onOpenPaywall = {},
             onOpenBudget = {},
             onOpenWidgets = {},

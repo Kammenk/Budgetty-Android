@@ -522,12 +522,12 @@ private fun PaywallScreenPreview() {
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
-private fun PaywallScreenLandscapePreview() {
+internal fun PaywallScreenLandscapePreview() {
     BudgettyTheme {
         PaywallScreenContent(
             products = emptyList(),
             isPremium = false,
-            isWide = true,
+            isWide = isWideWidth(),
             onNavigateBack = {},
             onPurchase = { _, _ -> },
             onRestore = {},

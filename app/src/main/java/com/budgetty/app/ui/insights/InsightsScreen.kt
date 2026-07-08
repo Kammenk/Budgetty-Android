@@ -1939,12 +1939,12 @@ private fun InsightsScreenPreview() {
 
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
-private fun InsightsScreenTabletPreview() {
+internal fun InsightsScreenTabletPreview() {
     BudgettyTheme {
         InsightsScreenContent(
             state = previewInsightsState,
-            isExpanded = true,
-            isWide = true,
+            isExpanded = isExpandedWidth(),
+            isWide = isWideWidth(),
             hiddenSections = emptySet(),
             sectionOrder = emptyList(),
             onToggleSection = { _, _ -> },

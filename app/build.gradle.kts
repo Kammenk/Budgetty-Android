@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.screenshot)
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -19,6 +20,11 @@ val keystoreProperties = Properties().apply {
 android {
     namespace = "com.budgetty.app"
     compileSdk = 36
+
+    // Turn on the Compose Preview Screenshot Testing source set (src/screenshotTest).
+    // Required by the com.android.compose.screenshot plugin in addition to the
+    // matching flag in gradle.properties.
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
 
     defaultConfig {
         applicationId = "com.budgetty.app"
@@ -130,6 +136,20 @@ dependencies {
     implementation(libs.app.update.ktx)
 
     testImplementation(libs.junit)
+
+    // Compose Preview Screenshot Testing — renders @Preview functions in
+    // src/screenshotTest to PNGs on the host JVM (no emulator) and diffs them.
+    // validation-api generates the per-preview test cases; ui-tooling provides the
+    // @Preview detector. Both pinned (via `screenshot`) to the alpha10 / Kotlin-2.1
+    // train so their metadata stays readable by this project's Kotlin 2.0.21 compiler.
+    screenshotTestImplementation(platform(libs.androidx.compose.bom))
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.androidx.ui.tooling)
+    // The JUnit-Platform TestEngine that actually reads the render inputs and rasterizes
+    // previews. Must be on the screenshotTest runtime classpath or the Test task's launcher
+    // loads no engine and reports 0 tests (rendering nothing).
+    screenshotTestRuntimeOnly(libs.screenshot.junit.engine)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
