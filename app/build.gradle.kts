@@ -129,6 +129,10 @@ dependencies {
     // Google Play In-App Updates — prompt eligible users to move to the latest build
     implementation(libs.app.update.ktx)
 
+    // ML Kit Document Scanner — high-quality receipt capture (auto edge-detect, deskew, glare
+    // handling + review/retake) in place of the raw camera intent, which produced marginal images.
+    implementation(libs.mlkit.document.scanner)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

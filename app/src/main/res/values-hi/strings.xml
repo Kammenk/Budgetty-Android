@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">सभी बजट देखें</string>
     <string name="receipt_vat_included">वैट सहित %1$s</string>
     <string name="upload_total_mismatch">इन वस्तुओं का योग %1$s है, लेकिन रसीद %2$s दिखाती है। सहेजने से पहले वस्तुओं की कीमतें जाँच लें।</string>
+    <string name="upload_items_missing_title">अपनी वस्तुएँ जाँचें</string>
+    <string name="upload_save_anyway">फिर भी सहेजें</string>
     <string name="upload_error_body">फ़ोटो पढ़ने के लिए बहुत धुँधली, गहरी या कटी हो सकती है। अच्छी रोशनी में, रसीद को समतल और पूरी तरह फ़्रेम में रखकर दोबारा लें।</string>
     <string name="upload_service_error_title">स्कैनिंग अस्थायी रूप से अनुपलब्ध</string>
     <string name="upload_service_error_body">अभी रसीद स्कैनर तक नहीं पहुँच सके। अपना कनेक्शन जाँचें और थोड़ी देर बाद फिर कोशिश करें।</string>

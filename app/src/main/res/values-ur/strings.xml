@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">تمام بجٹ دیکھیں</string>
     <string name="receipt_vat_included">VAT شامل %1$s</string>
     <string name="upload_total_mismatch">ان اشیاء کا مجموعہ %1$s ہے، لیکن رسید %2$s دکھاتی ہے۔ محفوظ کرنے سے پہلے اشیاء کی قیمتیں دوبارہ جانچیں۔</string>
+    <string name="upload_items_missing_title">اپنی اشیاء جانچیں</string>
+    <string name="upload_save_anyway">پھر بھی محفوظ کریں</string>
     <string name="upload_error_body">ہو سکتا ہے تصویر پڑھنے کے لیے بہت دھندلی، تاریک یا کٹی ہوئی ہو۔ اچھی روشنی میں، رسید کو ہموار اور مکمل فریم میں رکھ کر دوبارہ لیں۔</string>
     <string name="upload_service_error_title">اسکیننگ عارضی طور پر دستیاب نہیں</string>
     <string name="upload_service_error_body">ابھی رسید اسکینر تک نہیں پہنچ سکے۔ اپنا کنکشن جانچیں اور تھوڑی دیر بعد دوبارہ کوشش کریں۔</string>

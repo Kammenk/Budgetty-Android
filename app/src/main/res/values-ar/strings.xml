@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">عرض كل الميزانيات</string>
     <string name="receipt_vat_included">شامل ضريبة القيمة المضافة %1$s</string>
     <string name="upload_total_mismatch">مجموع هذه العناصر %1$s، لكن الإيصال يعرض %2$s. تحقّق من أسعار العناصر قبل الحفظ.</string>
+    <string name="upload_items_missing_title">تحقّق من العناصر</string>
+    <string name="upload_save_anyway">الحفظ على أي حال</string>
     <string name="upload_error_body">قد تكون الصورة ضبابية أو داكنة أو مقصوصة أكثر من اللازم للقراءة. أعِد التقاطها بإضاءة جيدة مع وضع الإيصال مسطّحاً وكاملاً في الإطار.</string>
     <string name="upload_service_error_title">المسح غير متاح مؤقتًا</string>
     <string name="upload_service_error_body">تعذّر الوصول إلى ماسح الإيصالات الآن. تحقّق من اتصالك وحاول مرة أخرى بعد قليل.</string>

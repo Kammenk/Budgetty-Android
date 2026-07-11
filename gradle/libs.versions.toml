@@ -23,6 +23,7 @@ okhttpLogging = "4.12.0"
 billing = "7.1.1"
 glance = "1.1.1"
 appUpdate = "2.1.0"
+mlkitDocScanner = "16.0.0-beta1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,7 @@ okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-i
 billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "appUpdate" }
+mlkit-document-scanner = { group = "com.google.android.gms", name = "play-services-mlkit-document-scanner", version.ref = "mlkitDocScanner" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">Alle budgetten bekijken</string>
     <string name="receipt_vat_included">Incl. btw %1$s</string>
     <string name="upload_total_mismatch">Deze items tellen op tot %1$s, maar de bon toont %2$s. Controleer de itemprijzen voordat je opslaat.</string>
+    <string name="upload_items_missing_title">Controleer je items</string>
+    <string name="upload_save_anyway">Toch opslaan</string>
     <string name="upload_error_body">De foto is mogelijk te wazig, donker of bijgesneden om te lezen. Maak een nieuwe met goed licht, met de bon plat en volledig in beeld.</string>
     <string name="upload_service_error_title">Scannen is tijdelijk niet beschikbaar</string>
     <string name="upload_service_error_body">We konden de bonscanner nu niet bereiken. Controleer je verbinding en probeer het straks opnieuw.</string>

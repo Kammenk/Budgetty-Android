@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">Ver todos os orçamentos</string>
     <string name="receipt_vat_included">Impostos incl. %1$s</string>
     <string name="upload_total_mismatch">Estes itens somam %1$s, mas o recibo mostra %2$s. Confira os preços dos itens antes de salvar.</string>
+    <string name="upload_items_missing_title">Confira seus itens</string>
+    <string name="upload_save_anyway">Salvar mesmo assim</string>
     <string name="upload_error_body">A foto pode estar borrada, escura ou cortada demais para ler. Tire outra com boa luz, com o recibo plano e totalmente no enquadramento.</string>
     <string name="upload_service_error_title">O escaneamento está temporariamente indisponível</string>
     <string name="upload_service_error_body">Não conseguimos acessar o scanner de recibos agora. Verifique sua conexão e tente novamente daqui a pouco.</string>

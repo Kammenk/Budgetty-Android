@@ -1,6 +1,7 @@
 package com.budgetty.app.ui.upload
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.category.Categories
@@ -53,6 +54,8 @@ data class UploadUiState(
     val extraCharges: BigDecimal = BigDecimal.ZERO,
     /** What the items should sum to per the receipt (subtotal/total); drives the soft price-mismatch warning. Null = no warning. */
     val expectedItemsTotal: BigDecimal? = null,
+    /** The receipt's printed subtotal (clean item-sum anchor); drives the blocking "a line may be missing" check. Null = no check. */
+    val receiptSubtotal: BigDecimal? = null,
     val error: String? = null,
     /** Which failure the full-screen error state should describe (only read when [stage] is IDLE with an [error]). */
     val errorKind: UploadErrorKind = UploadErrorKind.UNREADABLE,
@@ -169,11 +172,15 @@ class UploadViewModel(
                         taxOnTop = receipt.taxOnTop,
                         extraCharges = receipt.extraCharges,
                         expectedItemsTotal = receipt.expectedItemsTotal,
+                        receiptSubtotal = receipt.receiptSubtotal,
                         isManual = false,
                     )
                 }
                 scanQuota.increment()
             } catch (e: Exception) {
+                // Log (no receipt content) so a scan failure's real cause is visible in logcat — the
+                // on-screen SERVICE/UNREADABLE copy is deliberately generic. Tag: BudgettyScan.
+                Log.w("BudgettyScan", "Receipt extraction failed", e)
                 _uiState.update {
                     it.copy(
                         stage = UploadStage.IDLE,
@@ -223,6 +230,7 @@ class UploadViewModel(
                 taxOnTop = false,
                 extraCharges = BigDecimal.ZERO,
                 expectedItemsTotal = null,
+                receiptSubtotal = null,
                 error = null,
                 isManual = true,
             )
@@ -259,6 +267,7 @@ class UploadViewModel(
                     taxOnTop = meta?.taxOnTop == true,
                     extraCharges = meta?.extraCharges ?: BigDecimal.ZERO,
                     expectedItemsTotal = null,
+                    receiptSubtotal = null,
                     error = null,
                     // Only manual receipts offer "Add receipt" while editing.
                     isManual = meta?.isManual == true,
@@ -289,6 +298,7 @@ class UploadViewModel(
                 }
                 scanQuota.increment()
             } catch (e: Exception) {
+                Log.w("BudgettyScan", "Receipt attach-scan failed", e)
                 // Keep the manual data the user already had; just surface the error.
                 _uiState.update {
                     it.copy(stage = UploadStage.REVIEW, error = e.message ?: "Failed to read receipt")

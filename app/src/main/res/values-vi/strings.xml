@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">Xem tất cả ngân sách</string>
     <string name="receipt_vat_included">Đã gồm VAT %1$s</string>
     <string name="upload_total_mismatch">Các mục này cộng lại là %1$s, nhưng hóa đơn hiển thị %2$s. Hãy kiểm tra lại giá các mục trước khi lưu.</string>
+    <string name="upload_items_missing_title">Kiểm tra lại các mục</string>
+    <string name="upload_save_anyway">Vẫn lưu</string>
     <string name="upload_error_body">Ảnh có thể quá mờ, tối hoặc bị cắt nên không đọc được. Hãy chụp lại với ánh sáng tốt, hóa đơn phẳng và nằm trọn trong khung.</string>
     <string name="upload_service_error_title">Tính năng quét tạm thời không khả dụng</string>
     <string name="upload_service_error_body">Hiện không thể kết nối với trình quét hóa đơn. Hãy kiểm tra kết nối và thử lại sau ít phút.</string>

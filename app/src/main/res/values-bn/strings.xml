@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">সব বাজেট দেখুন</string>
     <string name="receipt_vat_included">ভ্যাটসহ %1$s</string>
     <string name="upload_total_mismatch">এই আইটেমগুলোর যোগফল %1$s, কিন্তু রসিদে %2$s দেখাচ্ছে। সংরক্ষণের আগে আইটেমের দাম যাচাই করুন।</string>
+    <string name="upload_items_missing_title">আইটেমগুলো যাচাই করুন</string>
+    <string name="upload_save_anyway">তবুও সংরক্ষণ করুন</string>
     <string name="upload_error_body">ছবিটি পড়ার জন্য খুব ঝাপসা, অন্ধকার বা কাটা হতে পারে। ভালো আলোয়, রসিদ সমতল ও সম্পূর্ণ ফ্রেমে রেখে আবার তুলুন।</string>
     <string name="upload_service_error_title">স্ক্যান সাময়িকভাবে অনুপলব্ধ</string>
     <string name="upload_service_error_body">এখন রসিদ স্ক্যানারে পৌঁছানো যায়নি। আপনার সংযোগ যাচাই করুন এবং একটু পরে আবার চেষ্টা করুন।</string>
