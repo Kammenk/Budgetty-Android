@@ -74,6 +74,10 @@ class HaikuReceiptExtractor(
             expectedItemsTotal =
                 if (taxOnTop) (response.subtotal ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) }
                 else expectedItemsTotal(response),
+            // The printed subtotal only (never reconstructed from the total), as the clean item-sum
+            // anchor for the blocking dropped-line check. Both tax modes print item prices that sum to
+            // this figure, so it works for tax-inclusive and tax-on-top receipts alike.
+            receiptSubtotal = (response.subtotal ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) },
             // Tax-on-top: the reported tax, added on top. Tax-inclusive: only when genuinely contained.
             tax = if (taxOnTop) BigDecimal.valueOf(response.tax ?: 0.0) else containedTax(response, gross),
             taxOnTop = taxOnTop,

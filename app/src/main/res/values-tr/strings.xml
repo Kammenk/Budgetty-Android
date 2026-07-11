@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">Tüm bütçeleri gör</string>
     <string name="receipt_vat_included">KDV dahil %1$s</string>
     <string name="upload_total_mismatch">Bu ürünler toplam %1$s ediyor, ancak fiş %2$s gösteriyor. Kaydetmeden önce ürün fiyatlarını kontrol et.</string>
+    <string name="upload_items_missing_title">Ürünleri kontrol et</string>
+    <string name="upload_save_anyway">Yine de kaydet</string>
     <string name="upload_error_body">Fotoğraf okunamayacak kadar bulanık, karanlık veya kırpılmış olabilir. İyi ışıkta, fiş düz ve tamamen kadrajda olacak şekilde yeniden çek.</string>
     <string name="upload_service_error_title">Tarama geçici olarak kullanılamıyor</string>
     <string name="upload_service_error_body">Şu anda fiş tarayıcısına ulaşamadık. Bağlantını kontrol et ve biraz sonra tekrar dene.</string>

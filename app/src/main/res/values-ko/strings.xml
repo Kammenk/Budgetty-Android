@@ -365,6 +365,8 @@
     <string name="home_view_all_budgets">모든 예산 보기</string>
     <string name="receipt_vat_included">부가세 포함 %1$s</string>
     <string name="upload_total_mismatch">이 항목들의 합계는 %1$s이지만 영수증에는 %2$s로 표시됩니다. 저장하기 전에 항목 가격을 다시 확인하세요.</string>
+    <string name="upload_items_missing_title">항목을 확인하세요</string>
+    <string name="upload_save_anyway">그대로 저장</string>
     <string name="upload_error_body">사진이 너무 흐리거나 어둡거나 잘려서 읽을 수 없을 수 있습니다. 밝은 곳에서 영수증을 평평하게 펴고 전체가 화면에 들어오도록 다시 찍으세요.</string>
     <string name="upload_service_error_title">스캔을 일시적으로 사용할 수 없음</string>
     <string name="upload_service_error_body">지금은 영수증 스캐너에 연결할 수 없습니다. 연결을 확인하고 잠시 후 다시 시도하세요.</string>

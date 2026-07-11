@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">Ver todos los presupuestos</string>
     <string name="receipt_vat_included">IVA incl. %1$s</string>
     <string name="upload_total_mismatch">Estos artículos suman %1$s, pero el recibo muestra %2$s. Comprueba los precios antes de guardar.</string>
+    <string name="upload_items_missing_title">Revisa tus artículos</string>
+    <string name="upload_save_anyway">Guardar de todos modos</string>
     <string name="upload_error_body">La foto puede estar demasiado borrosa, oscura o recortada para leerla. Vuelve a hacerla con buena luz, con el recibo plano y completo en el encuadre.</string>
     <string name="upload_service_error_title">El escaneo no está disponible temporalmente</string>
     <string name="upload_service_error_body">No pudimos conectar con el escáner de recibos ahora mismo. Comprueba tu conexión e inténtalo de nuevo en un rato.</string>

@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">Lihat semua anggaran</string>
     <string name="receipt_vat_included">Termasuk PPN %1$s</string>
     <string name="upload_total_mismatch">Item-item ini berjumlah %1$s, tetapi struk menunjukkan %2$s. Periksa kembali harga item sebelum menyimpan.</string>
+    <string name="upload_items_missing_title">Periksa item Anda</string>
+    <string name="upload_save_anyway">Tetap simpan</string>
     <string name="upload_error_body">Foto mungkin terlalu buram, gelap, atau terpotong untuk dibaca. Ambil ulang dengan cahaya bagus, struk rata dan sepenuhnya dalam bingkai.</string>
     <string name="upload_service_error_title">Pemindaian sementara tidak tersedia</string>
     <string name="upload_service_error_body">Kami tidak dapat menghubungi pemindai struk saat ini. Periksa koneksi Anda dan coba lagi sebentar lagi.</string>

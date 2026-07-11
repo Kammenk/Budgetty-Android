@@ -1,9 +1,12 @@
 package com.budgetty.app.ui.upload
 
 import com.budgetty.app.ui.theme.dimens
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -47,6 +50,7 @@ import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.WarningAmber
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -119,6 +123,9 @@ import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.ui.theme.BudgettyTheme
+import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
 import java.math.BigDecimal
@@ -164,17 +171,54 @@ fun UploadScreen(
     ) { uri -> if (uri != null) viewModel.attachAndScan(uri) }
     var showAddReceiptSheet by remember { mutableStateOf(false) }
 
+    // High-quality capture: the ML Kit Document Scanner (auto edge-detect, deskew, glare handling
+    // and a review/retake step) replaces the raw camera intent, whose marginal images caused the
+    // model to drop or merge lines. Its cleaned JPEG still flows through the same prepareUpload path.
+    // If the scanner can't start (no Play Services / too old) we fall back to the camera intent above.
+    val docScanner = remember {
+        GmsDocumentScanning.getClient(
+            GmsDocumentScannerOptions.Builder()
+                .setGalleryImportAllowed(false)
+                .setPageLimit(1)
+                .setResultFormats(GmsDocumentScannerOptions.RESULT_FORMAT_JPEG)
+                .setScannerMode(GmsDocumentScannerOptions.SCANNER_MODE_FULL)
+                .build(),
+        )
+    }
+    val scanLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+    ) { result ->
+        val scanned = GmsDocumentScanningResult.fromActivityResultIntent(result.data)?.pages?.firstOrNull()?.imageUri
+        // Re-host under our own FileProvider so extraction gets a readable, image/jpeg-typed uri.
+        val uri = scanned?.let { persistScannedImage(context, it) ?: it }
+        if (result.resultCode == Activity.RESULT_OK && uri != null) viewModel.onReceiptPicked(uri)
+        else onNavigateBack()
+    }
+    val addReceiptScanLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult(),
+    ) { result ->
+        val scanned = GmsDocumentScanningResult.fromActivityResultIntent(result.data)?.pages?.firstOrNull()?.imageUri
+        val uri = scanned?.let { persistScannedImage(context, it) ?: it }
+        // Cancelling "Add receipt" stays on the edit screen (mirrors addReceiptCameraLauncher).
+        if (result.resultCode == Activity.RESULT_OK && uri != null) viewModel.attachAndScan(uri)
+    }
+
     // Launches capture for the current source. Reused by the initial effect below and by "Try
-    // again" on the error state, which re-opens the camera/file picker to capture a new image.
+    // again" on the error state, which re-opens the scanner/file picker to capture a new image.
     val launchSource: () -> Unit = {
         when (source) {
             "edit" -> viewModel.startEdit(receiptId)
             "manual" -> viewModel.startManual()
-            "camera" -> {
-                val uri = createReceiptImageUri(context)
-                cameraUri = uri
-                cameraLauncher.launch(uri)
-            }
+            "camera" -> docScanner.getStartScanIntent(context.findActivity())
+                .addOnSuccessListener { sender ->
+                    scanLauncher.launch(IntentSenderRequest.Builder(sender).build())
+                }
+                .addOnFailureListener {
+                    // Fallback: plain system-camera capture to a cache file.
+                    val uri = createReceiptImageUri(context)
+                    cameraUri = uri
+                    cameraLauncher.launch(uri)
+                }
             else -> fileLauncher.launch(arrayOf("application/pdf", "image/*"))
         }
     }
@@ -219,9 +263,15 @@ fun UploadScreen(
             onDismiss = { showAddReceiptSheet = false },
             onTakePhoto = {
                 showAddReceiptSheet = false
-                val uri = createReceiptImageUri(context)
-                addReceiptUri = uri
-                addReceiptCameraLauncher.launch(uri)
+                docScanner.getStartScanIntent(context.findActivity())
+                    .addOnSuccessListener { sender ->
+                        addReceiptScanLauncher.launch(IntentSenderRequest.Builder(sender).build())
+                    }
+                    .addOnFailureListener {
+                        val uri = createReceiptImageUri(context)
+                        addReceiptUri = uri
+                        addReceiptCameraLauncher.launch(uri)
+                    }
             },
             onUploadFile = {
                 showAddReceiptSheet = false
@@ -303,6 +353,7 @@ private fun UploadScreenContent(
                     taxOnTop = state.taxOnTop,
                     extraCharges = state.extraCharges,
                     expectedItemsTotal = state.expectedItemsTotal,
+                    receiptSubtotal = state.receiptSubtotal,
                     isEdit = isEdit,
                     isManual = state.isManual,
                     error = state.error,
@@ -413,6 +464,37 @@ private fun createReceiptImageUri(context: Context): Uri {
     val dir = File(context.cacheDir, "receipts").apply { mkdirs() }
     val file = File(dir, "receipt_${System.currentTimeMillis()}.jpg")
     return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+}
+
+/**
+ * Copies the document scanner's output image into our own cache and returns a content:// uri for it.
+ * The scanner's own uri can report a null MIME type — which the ingest pipeline rejects as an
+ * unsupported type — and carries only a temporary read grant; re-hosting the bytes under our
+ * FileProvider as a .jpg guarantees a readable, image/jpeg-typed uri. Called from the result callback
+ * while that read grant is still live. Returns null if the copy fails (caller falls back to the raw uri).
+ */
+private fun persistScannedImage(context: Context, source: Uri): Uri? {
+    return try {
+        val dir = File(context.cacheDir, "receipts").apply { mkdirs() }
+        val file = File(dir, "scan_${System.currentTimeMillis()}.jpg")
+        val copied = context.contentResolver.openInputStream(source)?.use { input ->
+            file.outputStream().use { output -> input.copyTo(output) }
+            true
+        } ?: false
+        if (copied) FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file) else null
+    } catch (e: Exception) {
+        null
+    }
+}
+
+/** Walks the ContextWrapper chain to the hosting Activity — the document scanner needs one to start. */
+private fun Context.findActivity(): Activity {
+    var ctx: Context = this
+    while (ctx is ContextWrapper) {
+        if (ctx is Activity) return ctx
+        ctx = ctx.baseContext
+    }
+    error("No Activity found in the context chain")
 }
 
 @Composable
@@ -564,6 +646,7 @@ private fun ReviewList(
     taxOnTop: Boolean,
     extraCharges: BigDecimal,
     expectedItemsTotal: BigDecimal?,
+    receiptSubtotal: BigDecimal?,
     isEdit: Boolean,
     isManual: Boolean,
     error: String?,
@@ -598,6 +681,46 @@ private fun ReviewList(
     val priceMismatch = expectedItemsTotal?.takeIf {
         it.signum() > 0 &&
             (gross - it) > maxOf(it.multiply(MISMATCH_TOLERANCE_RATIO), MISMATCH_TOLERANCE_ABS)
+    }
+
+    // Blocking check for the opposite, data-losing direction: the read items sum to noticeably LESS
+    // than the receipt's own printed subtotal (the clean item-sum anchor — fees/deposits sit above it).
+    // That signature means a line was dropped or under-read; because the saved total anchors on the
+    // printed grand total, the shortfall would otherwise vanish silently into "extra charges". So we
+    // confirm before saving, rather than warn softly. Recomputes live, so fixing/adding the line clears
+    // it. Holds the subtotal to show when tripped.
+    val itemsShortfall = receiptSubtotal?.takeIf { sub ->
+        sub.signum() > 0 &&
+            (sub - gross) > maxOf(sub.multiply(MISMATCH_TOLERANCE_RATIO), MISMATCH_TOLERANCE_ABS)
+    }
+    var showMismatchDialog by remember { mutableStateOf(false) }
+    // Route Finalize through the dropped-line check: confirm on a shortfall, else save straight away.
+    val attemptFinalize: () -> Unit = {
+        if (itemsShortfall != null) showMismatchDialog = true else onFinalize()
+    }
+
+    if (showMismatchDialog && itemsShortfall != null) {
+        AlertDialog(
+            onDismissRequest = { showMismatchDialog = false },
+            icon = { Icon(Icons.Outlined.WarningAmber, contentDescription = null) },
+            title = { Text(stringResource(R.string.upload_items_missing_title)) },
+            text = {
+                Text(stringResource(R.string.upload_total_mismatch, gross.formatMoney(), itemsShortfall.formatMoney()))
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showMismatchDialog = false
+                        onFinalize()
+                    },
+                ) { Text(stringResource(R.string.upload_save_anyway)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showMismatchDialog = false }) {
+                    Text(stringResource(R.string.action_cancel))
+                }
+            },
+        )
     }
 
     val saveLabel = "${if (isEdit) stringResource(R.string.action_save) else stringResource(R.string.upload_finalize)} · ${total.formatMoney()}"
@@ -691,7 +814,7 @@ private fun ReviewList(
                         Text(stringResource(R.string.add_receipt_title), fontWeight = FontWeight.SemiBold)
                     }
                     Button(
-                        onClick = onFinalize,
+                        onClick = attemptFinalize,
                         modifier = Modifier
                             .weight(1f)
                             .height(MaterialTheme.dimens.buttonHeight),
@@ -706,7 +829,7 @@ private fun ReviewList(
                 }
             } else {
                 Button(
-                    onClick = onFinalize,
+                    onClick = attemptFinalize,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(MaterialTheme.dimens.buttonHeight),

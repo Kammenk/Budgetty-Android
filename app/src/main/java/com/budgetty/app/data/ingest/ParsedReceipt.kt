@@ -19,6 +19,14 @@ data class ParsedReceipt(
      */
     val expectedItemsTotal: BigDecimal? = null,
     /**
+     * The receipt's own printed SUBTOTAL (the sum of the line items before any fees/deposits) when it
+     * prints one, else null. Unlike [expectedItemsTotal] this is never reconstructed from the grand
+     * total, so it stays a clean item-sum anchor: fees and deposits sit *above* the subtotal, so a
+     * shortfall of the read items against it means a line was dropped or under-read — not that a fee
+     * went uncaptured. Drives the blocking "a line may be missing" check on review; null = no check.
+     */
+    val receiptSubtotal: BigDecimal? = null,
+    /**
      * The receipt's tax/VAT. When [taxOnTop] is false it is *contained in* the line prices (the common
      * tax-inclusive receipt); when true it is *added on top* of the printed, net line prices (a
      * tax-exclusive receipt). Either way it's persisted and shown as an "incl. VAT" line; 0 when the

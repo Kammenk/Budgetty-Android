@@ -367,6 +367,8 @@
     <string name="home_view_all_budgets">Показати всі бюджети</string>
     <string name="receipt_vat_included">Вкл. ПДВ %1$s</string>
     <string name="upload_total_mismatch">Ці позиції в сумі дають %1$s, але в чеку вказано %2$s. Перевірте ціни позицій перед збереженням.</string>
+    <string name="upload_items_missing_title">Перевірте позиції</string>
+    <string name="upload_save_anyway">Усе одно зберегти</string>
     <string name="upload_error_body">Фото може бути надто розмитим, темним або обрізаним для розпізнавання. Перезніміть за хорошого освітлення, розташувавши чек рівно й повністю в кадрі.</string>
     <string name="upload_service_error_title">Сканування тимчасово недоступне</string>
     <string name="upload_service_error_body">Наразі не вдається зв’язатися зі сканером чеків. Перевірте підключення та повторіть спробу трохи згодом.</string>

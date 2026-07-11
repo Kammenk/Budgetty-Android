@@ -365,6 +365,8 @@
     <string name="home_view_all_budgets">查看所有预算</string>
     <string name="receipt_vat_included">含增值税 %1$s</string>
     <string name="upload_total_mismatch">这些项目合计 %1$s，但收据显示 %2$s。保存前请核对项目价格。</string>
+    <string name="upload_items_missing_title">请核对项目</string>
+    <string name="upload_save_anyway">仍然保存</string>
     <string name="upload_error_body">照片可能太模糊、太暗或被裁切而无法识别。请在光线充足处重拍，让收据平整并完整出现在画面中。</string>
     <string name="upload_service_error_title">扫描暂时不可用</string>
     <string name="upload_service_error_body">目前无法连接到收据扫描器。请检查你的网络连接，稍后再试。</string>

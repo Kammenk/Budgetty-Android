@@ -365,6 +365,8 @@
     <string name="home_view_all_budgets">すべての予算を表示</string>
     <string name="receipt_vat_included">税込 %1$s</string>
     <string name="upload_total_mismatch">これらの項目の合計は %1$s ですが、レシートには %2$s と表示されています。保存する前に項目の価格を確認してください。</string>
+    <string name="upload_items_missing_title">項目を確認してください</string>
+    <string name="upload_save_anyway">そのまま保存</string>
     <string name="upload_error_body">写真がぼやけている、暗い、または見切れていて読み取れない可能性があります。明るい場所で、レシートを平らにし全体が収まるように撮り直してください。</string>
     <string name="upload_service_error_title">スキャンは一時的に利用できません</string>
     <string name="upload_service_error_body">現在レシートスキャナーに接続できません。接続を確認して、しばらくしてからもう一度お試しください。</string>
