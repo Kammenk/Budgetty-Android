@@ -296,8 +296,7 @@ class HaikuReceiptExtractor(
         // the app stores a per-UNIT price and multiplies by quantity everywhere (the review total,
         // Home, Insights, Budget, History). Split the line total back into a unit price so it isn't
         // counted twice: a whole count >= 2 (e.g. "2 x 2.04 = 4.08") becomes 2.04 at quantity 2; a
-        // single item or a weighed/fractional line keeps the line total at quantity 1. Mirrors
-        // ReceiptParser.applyMultiplier for the cloud path.
+        // single item or a weighed/fractional line keeps the line total at quantity 1.
         val lineTotal = price?.let { BigDecimal.valueOf(it) } ?: BigDecimal.ZERO
         val count = quantity?.toInt() ?: 1
         val wholeCount = count >= 2 && quantity == count.toDouble()

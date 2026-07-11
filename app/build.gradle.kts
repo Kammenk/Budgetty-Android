@@ -120,9 +120,6 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging.interceptor)
 
-    // Receipt ingestion
-    implementation(libs.pdfbox.android)
-
     // Glance — home-screen app widgets (Compose for widgets)
     implementation(libs.androidx.glance.appwidget)
 

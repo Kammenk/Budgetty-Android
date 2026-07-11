@@ -6,8 +6,6 @@ import android.net.Uri
 /**
  * Routes an uploaded receipt to the Haiku-backed extractor, which handles both images
  * and PDFs via the Cloud Function proxy.
- *
- * [PdfReceiptExtractor] (text-layer PDF parsing) is kept on disk but is not wired in here.
  */
 class ReceiptIngestManager(
     private val context: Context,

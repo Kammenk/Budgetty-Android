@@ -5,9 +5,7 @@ import com.budgetty.app.data.backup.BackupManager
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.data.ingest.HaikuReceiptExtractor
-import com.budgetty.app.data.ingest.PdfReceiptExtractor
 import com.budgetty.app.data.ingest.ReceiptIngestManager
-import com.budgetty.app.data.ingest.ReceiptParser
 import com.budgetty.app.data.local.BudgettyDatabase
 import com.budgetty.app.data.local.MIGRATION_1_2
 import com.budgetty.app.data.local.MIGRATION_2_3
@@ -116,8 +114,6 @@ val appModule = module {
     single<CoroutineScope> { CoroutineScope(SupervisorJob() + Dispatchers.IO) }
 
     // Ingestion
-    single { ReceiptParser() }
-    single { PdfReceiptExtractor(androidContext(), get()) }
     single { ReceiptIngestManager(androidContext(), get()) }
 
     // Networking + Haiku extraction (proxy). Lazy: no request fires until invoked.
