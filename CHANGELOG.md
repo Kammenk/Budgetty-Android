@@ -15,6 +15,18 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.3.0 (versionCode 1030) — 2026-07-11
+
+A feature (MINOR) release: much more accurate receipt scanning, plus a safety-net check before saving.
+
+### Changed
+- **Sharper receipt scanning** — the camera step now uses a guided document scanner that finds the receipt's edges, straightens and de-glares the image, and lets you review or retake before it's used. The cleaner picture means far fewer misread lines and prices — including the tricky cases where a weighed or multi-buy line (e.g. "2.000 x 4.19") was attached to the wrong product
+
+### Added
+- **"Double-check your items" prompt** — if your scanned items add up to less than the receipt's own printed subtotal (a sign a line was missed or misread), Budgetty now asks you to review before saving, so a dropped line doesn't slip through unnoticed
+
+> The new strings ship fully translated in every supported language (no English-only fallback this time).
+
 ## 10.2.0 (versionCode 1020) — 2026-07-08
 
 A feature (MINOR) release: two new spending categories and clearer category icons.
