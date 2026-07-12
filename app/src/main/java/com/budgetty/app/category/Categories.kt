@@ -27,10 +27,17 @@ object Categories {
     /** The catch-all category a custom category's transactions fall back to when it is deleted. */
     const val OTHER = "Other"
 
-    /** How many custom categories a user may create: [FREE_CUSTOM_LIMIT] on the free tier, up to
-     *  [MAX_CUSTOM_LIMIT] with Premium. */
+    /** Combined delivery + service + bag/booking fees — a scanned-receipt add-on the extractor
+     *  materializes as its own line item (see HaikuReceiptExtractor), not a product the model picks. */
+    const val DELIVERY = "Delivery"
+
+    /** Gratuity — a scanned-receipt add-on materialized as its own line item, kept apart from fees. */
+    const val TIPS = "Tips"
+
+    /** How many custom categories a user may create: [FREE_CUSTOM_LIMIT] on the free tier, and
+     *  effectively unlimited ([MAX_CUSTOM_LIMIT]) with Premium. */
     const val FREE_CUSTOM_LIMIT = 3
-    const val MAX_CUSTOM_LIMIT = 10
+    const val MAX_CUSTOM_LIMIT = Int.MAX_VALUE
 
     private data class Def(val name: String, val emoji: String, val parent: String?)
 
@@ -93,6 +100,10 @@ object Categories {
         // `children()` filters by parent, so they still render inside their own group.
         Def("Video Games", "🎮", "Dining & Entertainment"),
         Def("Investments", "📈", "Services & Subscriptions"),
+        // 🪙 Gratuity on a delivery/restaurant order — its own line, kept apart from the food.
+        Def("Tips", "🪙", "Dining & Entertainment"),
+        // 🛵 Combined delivery + service + bag/booking fees on a delivery-app order.
+        Def("Delivery", "🛵", "Other"),
         // 📦 Catch-all
         Def("Other", "📦", null),
     )

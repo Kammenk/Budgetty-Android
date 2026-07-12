@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.util.Base64
+import com.budgetty.app.R
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.remote.ExtractRequest
 import com.budgetty.app.data.remote.ExtractResponse
@@ -62,6 +63,19 @@ class HaikuReceiptExtractor(
         val gross = grossOf(items)
         val taxOnTop = isTaxOnTop(response, gross)
         val discount = reconcileDiscount(items, response.total, response.discount)
+
+        // Delivery/service/bag fees and a tip, each materialized as its own visible line item (in the
+        // Delivery / Tips categories) instead of vanishing into the invisible total-gap. Driven by the
+        // model's explicit amounts, so they're captured even when the printed grand total is misread.
+        val chargeItems = chargeItemsOf(response)
+        val chargesTotal = grossOf(chargeItems)
+
+        // The printed item-sum anchors describe the PRODUCT rows; the review screen sums all rows
+        // (products + these charges), so lift both anchors by the charges to keep the soft "prices too
+        // high" and blocking "line missing" checks aligned. Tax-on-top items anchor on the net SUBTOTAL.
+        val productsSubtotal = (response.subtotal ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) }
+        val productsExpected = if (taxOnTop) productsSubtotal else expectedItemsTotal(response)
+
         ParsedReceipt(
             // Collapse the raw header ("Кауфланд (Kaufland) Пловдив-Христо Боте") to its canonical
             // brand ("Kaufland") here, at the ingest boundary, so the review screen and everything
@@ -69,23 +83,40 @@ class HaikuReceiptExtractor(
             storeName = StoreNormalizer.normalize(response.storeName.orEmpty()),
             date = parseReceiptDate(response.date),
             discount = discount,
-            // Tax-on-top items should sum to the printed (net) SUBTOTAL, so anchor the soft price
-            // warning there; a tax-inclusive receipt anchors on its own subtotal/total as before.
-            expectedItemsTotal =
-                if (taxOnTop) (response.subtotal ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) }
-                else expectedItemsTotal(response),
-            // The printed subtotal only (never reconstructed from the total), as the clean item-sum
-            // anchor for the blocking dropped-line check. Both tax modes print item prices that sum to
-            // this figure, so it works for tax-inclusive and tax-on-top receipts alike.
-            receiptSubtotal = (response.subtotal ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) },
+            expectedItemsTotal = productsExpected?.let { it + chargesTotal },
+            receiptSubtotal = productsSubtotal?.let { it + chargesTotal },
             // Tax-on-top: the reported tax, added on top. Tax-inclusive: only when genuinely contained.
             tax = if (taxOnTop) BigDecimal.valueOf(response.tax ?: 0.0) else containedTax(response, gross),
             taxOnTop = taxOnTop,
-            // Anchor tracked spend on the printed grand total: capture whatever was paid beyond the
-            // items, discount and on-top tax (delivery/service fees, a courier tip, an uncaptured
-            // deposit) so summed spend equals what was paid, without inventing product line items.
-            extraCharges = extraChargesOf(response, gross, discount, taxOnTop),
-            items = items,
+            // The itemized charges come OUT of the total-gap; only a still-unexplained residual (an
+            // uncaptured deposit/fee) stays as the invisible add-on so the total still equals what was
+            // paid, without double-counting the delivery/tip rows we just added.
+            extraCharges = (extraChargesOf(response, gross, discount, taxOnTop) - chargesTotal)
+                .coerceAtLeast(BigDecimal.ZERO),
+            items = items + chargeItems,
+        )
+    }
+
+    /**
+     * Delivery/service/bag fees ([ExtractResponse.deliveryAndFees]) and a tip ([ExtractResponse.tip]),
+     * each turned into its own line item — a combined "Delivery & fees" row (Delivery category) and a
+     * "Tip" row (Tips category) — so they're visible and tracked rather than folded invisibly into the
+     * total. An amount below [EXTRA_CHARGES_MIN] is treated as noise and skipped.
+     */
+    private fun chargeItemsOf(response: ExtractResponse): List<ParsedTransaction> = buildList {
+        chargeItem(response.deliveryAndFees, R.string.upload_charge_delivery, Categories.DELIVERY)?.let(::add)
+        chargeItem(response.tip, R.string.upload_charge_tip, Categories.TIPS)?.let(::add)
+    }
+
+    private fun chargeItem(amount: Double?, nameRes: Int, category: String): ParsedTransaction? {
+        val value = BigDecimal.valueOf(amount ?: 0.0).setScale(2, RoundingMode.HALF_UP)
+        if (value < EXTRA_CHARGES_MIN) return null
+        return ParsedTransaction(
+            name = context.getString(nameRes),
+            price = value,
+            quantity = 1,
+            category = category,
+            categoryColor = colorFor(category),
         )
     }
 

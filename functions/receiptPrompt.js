@@ -8,8 +8,9 @@
 
 // The model's assignable categories: every name here must also exist in Categories.predefined on
 // the client (which validates the response and drops anything unknown). Kept in sync with that set,
-// EXCEPT "Investments" — a recurring-payments-only category, never a scanned receipt line item, so
-// it's deliberately omitted here so the model can't file a purchased item under it.
+// EXCEPT three client-only categories deliberately omitted so the model can't file a purchased item
+// under them: "Investments" (recurring-payments-only), and "Delivery"/"Tips" (materialized client-side
+// from the separate `deliveryAndFees`/`tip` amounts, never chosen by the model for a product line).
 const CATEGORIES = [
   "Groceries", "Bakery", "Dairy", "Meat & Poultry", "Fish & Seafood", "Fruits & Vegetables",
   "Snacks & Sweets", "Frozen Foods", "Nuts & Snacks", "Canned & Preserved", "Grains & Pasta",
@@ -65,6 +66,22 @@ const RECORD_RECEIPT_TOOL = {
           "Tax ADDED ON TOP of the item prices (added sales/VAT tax shown as a separate charge). " +
           "0 when prices already include tax or no tax is added. Read it; do not compute it.",
       },
+      deliveryAndFees: {
+        type: "number",
+        description:
+          "Delivery-app / restaurant ADD-ON charges that are not a product and not a tip — sum the " +
+          "delivery fee + service fee + bag/packaging fee + small-order/booking/priority fee + any " +
+          "surcharge into ONE number, in the receipt's currency. Already part of `total`. 0 if none " +
+          "is printed. Do NOT put a tip here (use `tip`), and do NOT include tax, discounts, or a " +
+          "bottle/container deposit.",
+      },
+      tip: {
+        type: "number",
+        description:
+          "Gratuity / tip printed on the receipt (TIP, GRATUITY, Бакшиш, Trinkgeld, …), in the " +
+          "receipt's currency. Already part of `total`. 0 if none is printed. Separate from " +
+          "`deliveryAndFees`.",
+      },
       readable: {
         type: "boolean",
         description:
@@ -114,7 +131,7 @@ const RECORD_RECEIPT_TOOL = {
         },
       },
     },
-    required: ["storeName", "date", "discount", "total", "subtotal", "tax", "readable", "confidence", "lowConfidenceFields", "printedItemCount", "items"],
+    required: ["storeName", "date", "discount", "total", "subtotal", "tax", "deliveryAndFees", "tip", "readable", "confidence", "lowConfidenceFields", "printedItemCount", "items"],
   },
 };
 
@@ -148,9 +165,15 @@ const PROMPT =
   "ALWAYS read the receipt's printed GRAND TOTAL — the final amount due / actually paid (e.g. TOTAL, " +
   "ОБЩА СУМА, ZU ZAHLEN, SUMME, MONTANT, סה\"כ) — into the `total` field whenever any grand total is " +
   "printed. Put it in `total`, never only in `subtotal`, and never leave `total` 0 when a grand total is " +
-  "shown. Deposits (Pfand), bag and service fees and tips are part of what was paid, so they belong in the " +
-  "total. Do NOT compute the total by subtracting change/return (Zurück, CHANGE, RESTO, עודף, ресто) from " +
+  "shown. A line labelled 'Product', 'Items', 'Subtotal' or the plain sum of the products is NOT the grand " +
+  "total when a larger final total (adding delivery, fees or a tip) is printed below it — the grand total is " +
+  "that final amount paid. Deposits (Pfand), bag and service fees and tips are part of what was paid, so they " +
+  "belong in the total. Do NOT compute the total by subtracting change/return (Zurück, CHANGE, RESTO, עודף, ресто) from " +
   "the cash tendered — read the printed total line itself. " +
+  "Separately report `deliveryAndFees` and `tip` as their own numbers: `deliveryAndFees` is the sum of every " +
+  "non-product, non-tip add-on charge — delivery fee, service fee, bag/packaging fee, small-order/booking/priority " +
+  "fee and any surcharge; `tip` is the gratuity. Report only amounts actually printed (0 when absent). They stay " +
+  "included in `total`, and you must NOT create product line items for these fees or the tip. " +
   "The total must be in the same currency as the line items (0 only if genuinely not printed). " +
   "Also capture the items subtotal — the receipt's printed sum of all line items " +
   "before tax and fees (commonly labelled SUBTOTAL); when item prices already include tax so nothing is added on " +

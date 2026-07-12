@@ -562,15 +562,7 @@ private fun BudgetAmountCard(
                 singleLine = true,
                 shape = RoundedCornerShape(14.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    errorContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                ),
+                colors = sheetFieldColors(),
                 modifier = Modifier.fillMaxWidth(),
             )
             if (hasBudget) {
@@ -1550,7 +1542,15 @@ private fun RecurringEntrySheet(
     val valid = name.isNotBlank() && amount.toBudgetAmount() != null
 
     AdaptiveSheet(onDismiss = onDismiss, containerColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
-        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.dimens.xl)) {
+        // Scrolls so the whole form (and the Save button) stays reachable on short screens and once the
+        // keyboard is up; weight(fill = false) keeps the sheet compact when the form is short.
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = MaterialTheme.dimens.xl),
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = stringResource(
@@ -1769,6 +1769,9 @@ private fun sheetFieldColors() = TextFieldDefaults.colors(
     unfocusedIndicatorColor = Color.Transparent,
     disabledIndicatorColor = Color.Transparent,
     errorIndicatorColor = Color.Transparent,
+    // Clearly-muted placeholder so an empty field reads as a hint, not as already-filled text.
+    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
 )
 
 /** Small uppercase section label used inside the sub-budget sheet. */

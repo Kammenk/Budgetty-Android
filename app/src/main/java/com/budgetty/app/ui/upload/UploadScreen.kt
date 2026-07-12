@@ -129,6 +129,7 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import org.koin.androidx.compose.koinViewModel
 import java.io.File
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -893,6 +894,9 @@ private fun reviewFieldColors() = TextFieldDefaults.colors(
     errorIndicatorColor = Color.Transparent,
     focusedLabelColor = MaterialTheme.colorScheme.primary,
     unfocusedLabelColor = MaterialTheme.colorScheme.primary,
+    // Clearly-muted placeholder (e.g. the "0.00" price/discount hint) so it never reads as filled-in.
+    focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
 )
 
 /**
@@ -1106,7 +1110,7 @@ private fun DiscountField(
     onDiscountChange: (String) -> Unit,
 ) {
     var discountText by remember {
-        mutableStateOf(if (discount.signum() == 0) "" else discount.toPlainString())
+        mutableStateOf(if (discount.signum() == 0) "" else discount.toEditableMoney())
     }
     Card(
         shape = RoundedCornerShape(MaterialTheme.dimens.radiusLg),
@@ -1137,15 +1141,12 @@ private fun DiscountField(
 }
 
 /**
- * Drops a redundant leading zero as the user types over the default "0" placeholder
- * (so "0" + "5" becomes "5", not "05"), while keeping a lone "0" and "0.x" decimals intact.
+ * A money value formatted for an editable field: always 2 decimals, so a scanned "3.20" shows as
+ * "3.20" (not "3.2") and whole amounts show "10.00". Uses a dot; [UploadViewModel.updatePrice]
+ * accepts either a dot or a comma when parsing the field back.
  */
-private fun stripLeadingZero(raw: String): String =
-    if (raw.length >= 2 && raw[0] == '0' && raw[1].isDigit()) {
-        raw.trimStart('0').ifEmpty { "0" }
-    } else {
-        raw
-    }
+private fun BigDecimal.toEditableMoney(): String =
+    setScale(2, RoundingMode.HALF_UP).toPlainString()
 
 @Composable
 private fun ReviewRow(
@@ -1161,8 +1162,11 @@ private fun ReviewRow(
 ) {
     // Local text state so the user can type freely (e.g. trailing "." while entering
     // a decimal) without the parsed BigDecimal snapping the field back.
+    // Show a scanned price to 2 decimals so trailing zeros survive — "3.20" stays "3.20" (not "3.2")
+    // and whole amounts read "10.00". A zero price shows as empty (the "0.00" placeholder) so a new
+    // manual row starts clean and the user can type freely.
     var priceText by remember(transaction.clientId) {
-        mutableStateOf(transaction.price.toPlainString())
+        mutableStateOf(if (transaction.price.signum() == 0) "" else transaction.price.toEditableMoney())
     }
     var qtyText by remember(transaction.clientId) {
         mutableStateOf(transaction.quantity.toString())
@@ -1218,11 +1222,11 @@ private fun ReviewRow(
                 TextField(
                     value = priceText,
                     onValueChange = {
-                        val normalized = stripLeadingZero(it)
-                        priceText = normalized
-                        onPriceChange(normalized)
+                        priceText = it
+                        onPriceChange(it)
                     },
                     label = { Text(stringResource(R.string.upload_price), fontWeight = FontWeight.SemiBold) },
+                    placeholder = { Text("0.00") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                     shape = FieldShape,

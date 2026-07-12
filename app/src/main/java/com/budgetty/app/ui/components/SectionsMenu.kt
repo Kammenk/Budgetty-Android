@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -106,9 +108,13 @@ private fun <T> CustomizeSectionsSheet(
     val ordered = resolveSectionOrder(order, sections, sectionKey)
     val keys = ordered.map(sectionKey)
     AdaptiveSheet(onDismiss = onDismiss) {
+        // Scrollable so a long section list (and the reset row) stays fully reachable on short
+        // screens; weight(fill = false) keeps the sheet compact when there are only a few sections.
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
                 .padding(start = MaterialTheme.dimens.xl, end = MaterialTheme.dimens.xl, bottom = 28.dp),
         ) {
             Text(

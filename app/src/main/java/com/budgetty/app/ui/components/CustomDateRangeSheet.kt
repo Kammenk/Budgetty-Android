@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -90,9 +92,13 @@ fun CustomDateRangeSheet(
     }
 
     AdaptiveSheet(onDismiss = onDismiss, sheetState = sheetState) {
+        // Scrolls so the calendar and action buttons stay reachable on short screens (e.g. landscape);
+        // weight(fill = false) keeps the sheet at its natural height otherwise.
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
                 .padding(horizontal = MaterialTheme.dimens.xl),
         ) {
             // ── Selected-range header ──

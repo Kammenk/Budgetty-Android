@@ -17,6 +17,13 @@ data class ExtractResponse(
     val subtotal: Double? = null,
     /** Tax added on top of the item prices (0 when prices already include tax); null/0 if none. */
     val tax: Double? = null,
+    /** Combined non-tip, non-product add-on charges — delivery + service + bag/booking/small-order
+     *  fees, summed. Already part of [total]; materialized client-side as a "Delivery & fees" line
+     *  item. null/0 when none is printed. */
+    val deliveryAndFees: Double? = null,
+    /** Gratuity/tip, kept separate from [deliveryAndFees]. Already part of [total]; materialized
+     *  client-side as its own "Tip" line item. null/0 when none is printed. */
+    val tip: Double? = null,
     /** Model's self-assessment: false when the image was too poor to read the line items reliably. */
     val readable: Boolean? = null,
     /** Article/item count printed on the receipt (e.g. "N АРТИКУЛА"); null/0 if not printed. */

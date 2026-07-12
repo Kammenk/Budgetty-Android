@@ -104,6 +104,15 @@ class UploadViewModel(
     private var editingReceiptId: Long? = null
 
     /**
+     * True while the receipt currently under review contains a fresh AI scan that hasn't yet been
+     * counted against the free scan quota. Set when an extraction succeeds, consumed (incremented)
+     * only when the receipt is actually finalized — so a failed read, or a scan the user reviews but
+     * abandons without saving, never burns a scan. Manual entry and editing an existing receipt leave
+     * this false, so they never count.
+     */
+    private var scanPendingCount = false
+
+    /**
      * Guards the one-time initial capture/load driven by [UploadScreen]'s launch effect. A
      * configuration change — rotating, or folding/unfolding a foldable — recreates the Activity and
      * re-runs that effect while this ViewModel is retained; without this guard the camera/file picker
@@ -153,6 +162,8 @@ class UploadViewModel(
 
     fun onReceiptPicked(uri: Uri) {
         editingReceiptId = null
+        // A brand-new capture: clear any pending count from a previous, abandoned scan on this VM.
+        scanPendingCount = false
         _uiState.update { it.copy(stage = UploadStage.EXTRACTING, error = null) }
         viewModelScope.launch {
             try {
@@ -176,7 +187,8 @@ class UploadViewModel(
                         isManual = false,
                     )
                 }
-                scanQuota.increment()
+                // Don't count the scan yet — only a finalized receipt counts (see [finalizeUpload]).
+                scanPendingCount = true
             } catch (e: Exception) {
                 // Log (no receipt content) so a scan failure's real cause is visible in logcat — the
                 // on-screen SERVICE/UNREADABLE copy is deliberately generic. Tag: BudgettyScan.
@@ -219,6 +231,7 @@ class UploadViewModel(
     /** Starts a manual entry: a single empty row to fill in (no AI scan, no quota use). */
     fun startManual() {
         editingReceiptId = null
+        scanPendingCount = false
         _uiState.update {
             it.copy(
                 stage = UploadStage.REVIEW,
@@ -243,6 +256,8 @@ class UploadViewModel(
      */
     fun startEdit(receiptId: Long) {
         editingReceiptId = receiptId
+        // Editing an existing receipt is not a new scan; only an attached scan (attachAndScan) counts.
+        scanPendingCount = false
         viewModelScope.launch {
             val meta = receiptRepository.getById(receiptId)
             val items = repository.getByReceiptId(receiptId)
@@ -296,7 +311,8 @@ class UploadViewModel(
                         transactions = (existing + scanned).ifEmpty { listOf(ParsedTransaction()) },
                     )
                 }
-                scanQuota.increment()
+                // Counts only when the (still-manual) receipt is finalized — see [finalizeUpload].
+                scanPendingCount = true
             } catch (e: Exception) {
                 Log.w("BudgettyScan", "Receipt attach-scan failed", e)
                 // Keep the manual data the user already had; just surface the error.
@@ -599,6 +615,12 @@ class UploadViewModel(
                     extraCharges = _uiState.value.extraCharges,
                 ),
             )
+            // Count the scan now that a real receipt was saved — only successful, finalized scans
+            // count against the free quota. Consume the flag so re-saving an edit can't double-count.
+            if (scanPendingCount) {
+                scanQuota.increment()
+                scanPendingCount = false
+            }
             editingReceiptId = null
             _uiState.update { it.copy(stage = UploadStage.DONE) }
             onDone()

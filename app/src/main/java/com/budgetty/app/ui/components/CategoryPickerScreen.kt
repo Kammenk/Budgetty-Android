@@ -112,9 +112,8 @@ private sealed interface PickerMode {
  * grids. Picking a card or header calls [onSelect] and closes the screen. The Create tile (or a
  * custom tile's edit badge) swaps the screen in place to a create/edit form; the app bar's back
  * arrow returns to the grid, and a second back closes the screen. Free users may create
- * [Categories.FREE_CUSTOM_LIMIT] custom categories, Premium up to [Categories.MAX_CUSTOM_LIMIT]; at
- * the free cap the Create tile becomes a paywall prompt. On tablets the content is width-capped and
- * centered.
+ * [Categories.FREE_CUSTOM_LIMIT] custom categories, Premium unlimited; at the free cap the Create
+ * tile becomes a paywall prompt. On tablets the content is width-capped and centered.
  */
 @Composable
 fun CategoryPickerScreen(
@@ -267,7 +266,7 @@ private fun ColumnScope.PickContent(
         if (q.isBlank()) {
             // "Your categories": Create tile + the user's custom categories.
             item(key = "your_header", span = { GridItemSpan(maxLineSpan) }) {
-                YourCategoriesHeader(used = customCats.size, cap = cap)
+                YourCategoriesHeader(used = customCats.size, cap = cap, unlimited = custom.isPremium)
             }
             item(key = "create_tile") {
                 CreateTile(
@@ -343,7 +342,7 @@ private fun ColumnScope.PickContent(
  * trailing on the right.
  */
 @Composable
-private fun YourCategoriesHeader(used: Int, cap: Int) {
+private fun YourCategoriesHeader(used: Int, cap: Int, unlimited: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -372,7 +371,8 @@ private fun YourCategoriesHeader(used: Int, cap: Int) {
                 .align(Alignment.Bottom),
         )
         Text(
-            text = stringResource(R.string.custom_count, used, cap),
+            // Premium is unlimited, so just show the count (a huge "of N" cap would be meaningless).
+            text = if (unlimited) used.toString() else stringResource(R.string.custom_count, used, cap),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -821,6 +821,9 @@ private fun NameField(value: String, onValueChange: (String) -> Unit, isError: B
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,
+                // Clearly-muted placeholder so the name hint reads as a hint, not as filled-in text.
+                focusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
             ),
             modifier = Modifier.fillMaxWidth(),
         )

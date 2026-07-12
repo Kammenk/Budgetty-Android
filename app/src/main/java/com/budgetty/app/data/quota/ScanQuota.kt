@@ -25,7 +25,7 @@ class ScanQuota(context: Context) {
     }
 
     companion object {
-        const val FREE_LIMIT = 5
+        const val FREE_LIMIT = 10
         private const val KEY_USED = "used"
     }
 }

@@ -1008,9 +1008,13 @@ private fun AddReceiptSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     AdaptiveSheet(onDismiss = onDismiss, sheetState = sheetState) {
+        // Scrolls so all three options (and the premium button) stay reachable on short screens, e.g.
+        // in landscape; weight(fill = false) keeps the sheet compact at its natural height otherwise.
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .weight(1f, fill = false)
+                .verticalScroll(rememberScrollState())
                 .padding(start = MaterialTheme.dimens.xl, end = MaterialTheme.dimens.xl, bottom = 28.dp),
         ) {
             Text(
