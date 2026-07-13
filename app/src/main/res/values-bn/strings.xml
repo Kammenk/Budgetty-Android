@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">গত সময়ের তুলনায়</string>
     <string name="home_see_all">সব দেখুন</string>
     <string name="home_view_insights">বিশ্লেষণ দেখুন</string>
+    <string name="home_legend_spent">খরচ</string>
+    <string name="home_legend_bills">বিল · পরিকল্পিত</string>
+    <string name="home_with_bills">বিল সহ</string>
     <string name="account_widgets">উইজেট</string>
     <string name="widgets_soon_title">শীঘ্রই আসছে</string>
     <string name="widgets_soon_message">হোম স্ক্রিন উইজেট ভবিষ্যতের আপডেটে আসছে।</string>

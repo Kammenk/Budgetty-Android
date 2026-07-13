@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">к прошл. периоду</string>
     <string name="home_see_all">Показать все</string>
     <string name="home_view_insights">Открыть аналитику</string>
+    <string name="home_legend_spent">Потрачено</string>
+    <string name="home_legend_bills">Счета · плановые</string>
+    <string name="home_with_bills">Со счетами</string>
     <string name="account_widgets">Виджеты</string>
     <string name="widgets_soon_title">Скоро</string>
     <string name="widgets_soon_message">Виджеты для главного экрана появятся в будущем обновлении.</string>

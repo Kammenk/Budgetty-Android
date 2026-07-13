@@ -250,6 +250,9 @@
     <string name="home_vs_last_period">지난 기간 대비</string>
     <string name="home_see_all">모두 보기</string>
     <string name="home_view_insights">인사이트 보기</string>
+    <string name="home_legend_spent">지출</string>
+    <string name="home_legend_bills">청구 · 예정</string>
+    <string name="home_with_bills">청구 포함</string>
     <string name="account_widgets">위젯</string>
     <string name="widgets_soon_title">곧 출시</string>
     <string name="widgets_soon_message">홈 화면 위젯은 향후 업데이트에서 제공될 예정입니다.</string>

@@ -250,6 +250,9 @@
     <string name="home_vs_last_period">较上期</string>
     <string name="home_see_all">查看全部</string>
     <string name="home_view_insights">查看分析</string>
+    <string name="home_legend_spent">已花费</string>
+    <string name="home_legend_bills">账单 · 计划</string>
+    <string name="home_with_bills">含账单</string>
     <string name="account_widgets">小部件</string>
     <string name="widgets_soon_title">即将推出</string>
     <string name="widgets_soon_message">主屏幕小部件将在未来更新中推出。</string>

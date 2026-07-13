@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">مقارنة بالفترة الماضية</string>
     <string name="home_see_all">عرض الكل</string>
     <string name="home_view_insights">عرض التحليلات</string>
+    <string name="home_legend_spent">المنفَق</string>
+    <string name="home_legend_bills">الفواتير · مخطط لها</string>
+    <string name="home_with_bills">مع الفواتير</string>
     <string name="account_widgets">الأدوات</string>
     <string name="widgets_soon_title">قريبًا</string>
     <string name="widgets_soon_message">أدوات الشاشة الرئيسية قادمة في تحديث مستقبلي.</string>

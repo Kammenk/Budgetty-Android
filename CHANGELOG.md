@@ -15,6 +15,15 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.4.0 (versionCode 1040) — 2026-07-14
+
+A feature (MINOR) release: the Home total now reflects your recurring bills, not just receipts.
+
+### Added
+- **Recurring bills on the Home summary** — the "Total spent" card now pairs your receipt-backed spending with your planned recurring bills: a slim spent-vs-planned strip, a "Spent" and a "Bills · planned" line, and a combined "With bills" total. The headline no longer looks low by leaving out rent, subscriptions, and other fixed costs. Bills are clearly marked as planned (not yet spent) and shown for the current month only; the card collapses to the plain total when you have no recurring bills. Large amounts scroll instead of being cut off.
+
+> The new strings ship translated in every supported language.
+
 ## 10.3.0 (versionCode 1030) — 2026-07-11
 
 A feature (MINOR) release: much more accurate receipt scanning, plus a safety-net check before saving.

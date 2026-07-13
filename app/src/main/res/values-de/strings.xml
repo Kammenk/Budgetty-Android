@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">vs. Vorperiode</string>
     <string name="home_see_all">Alle ansehen</string>
     <string name="home_view_insights">Einblicke ansehen</string>
+    <string name="home_legend_spent">Ausgegeben</string>
+    <string name="home_legend_bills">Rechnungen · geplant</string>
+    <string name="home_with_bills">Mit Rechnungen</string>
     <string name="account_widgets">Widgets</string>
     <string name="widgets_soon_title">Demnächst</string>
     <string name="widgets_soon_message">Startbildschirm-Widgets kommen in einem zukünftigen Update.</string>

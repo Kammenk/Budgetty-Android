@@ -2,7 +2,10 @@ package com.budgetty.app.ui.home
 
 import com.budgetty.app.ui.theme.dimens
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -22,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -77,6 +79,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -742,55 +745,92 @@ private fun ReceiptsColumn(
     }
 }
 
-/** Tablet "Total spent" header: the period total with a receipt count plus comparison / daily-average pills. */
+/**
+ * Tablet "Total spent" header: the period total (with the combined "with bills" total top-right and a
+ * spent-vs-planned strip when recurring bills exist), the receipt count, and comparison / daily-average
+ * pills. Mirrors the phone summary card so both surfaces treat bills the same way.
+ */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TabletSummaryCard(state: HomeUiState, modifier: Modifier = Modifier) {
+    val showBills = state.showsBills()
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(MaterialTheme.dimens.radiusXl),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(MaterialTheme.dimens.xl),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
-            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(
-                        R.string.home_total_spent,
-                        monthOrFilterLabel(state.filter),
-                    ),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+            Text(
+                text = stringResource(R.string.home_total_spent, monthOrFilterLabel(state.filter)),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
+                verticalAlignment = Alignment.Bottom,
+            ) {
                 if (state.isLoaded) {
                     Text(
                         text = state.total.formatMoney(),
                         style = MaterialTheme.typography.displaySmall,
                         fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.weight(1f).basicMarquee(),
                     )
                 } else {
-                    SkeletonBar(width = 150.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
-                }
-                if (state.receipts.isNotEmpty()) {
-                    Text(
-                        text = pluralStringResource(
-                            R.plurals.home_across_receipts,
-                            state.receipts.size,
-                            state.receipts.size,
-                        ),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    SkeletonBar(
+                        width = 150.dp,
+                        height = 40.dp,
+                        modifier = Modifier.weight(1f).padding(vertical = 2.dp),
                     )
                 }
+                if (showBills) {
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = stringResource(R.string.home_with_bills),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = (state.total + state.monthlyBills).formatMoney(),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            softWrap = false,
+                            overflow = TextOverflow.Clip,
+                            modifier = Modifier.widthIn(max = 220.dp).basicMarquee(),
+                        )
+                    }
+                }
             }
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
-            ) {
+            if (state.receipts.isNotEmpty()) {
+                Text(
+                    text = pluralStringResource(
+                        R.plurals.home_across_receipts,
+                        state.receipts.size,
+                        state.receipts.size,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (showBills) {
+                BillsBreakdown(
+                    spent = state.total,
+                    bills = state.monthlyBills,
+                    showWithBillsRow = false,
+                    modifier = Modifier.padding(top = MaterialTheme.dimens.md),
+                )
+            }
+            Spacer(Modifier.height(MaterialTheme.dimens.lg))
+            Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm)) {
                 state.previousPeriodSpent?.let { prev ->
                     ComparisonPill(current = state.total, previous = prev, filter = state.filter)
                 }
@@ -1125,46 +1165,234 @@ private fun monthOrFilterLabel(filter: DateRangeFilter): String {
     else stringResource(filter.labelRes).lowercase(Locale.getDefault())
 }
 
-/** Top section: total spent for the selected period, the period filter, and a quick summary. */
+/**
+ * The summary card shows the spent-vs-planned breakdown only for the current month and only once at
+ * least one recurring bill exists; otherwise it collapses to the plain period total. Bills are a
+ * current-month plan, so we don't project them onto "last 3 months" and similar windows.
+ */
+private fun HomeUiState.showsBills(): Boolean =
+    filter == DateRangeFilter.CURRENT_MONTH && monthlyBills.signum() > 0
+
+/** Top section: total spent for the selected period, with recurring bills shown as planned when set. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SummaryCard(
     state: HomeUiState,
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier.wrapContentWidth(),
+        modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(MaterialTheme.dimens.radiusXl),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
     ) {
         Column(modifier = Modifier.padding(MaterialTheme.dimens.xl)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top,
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(
-                            R.string.home_total_spent,
-                            monthOrFilterLabel(state.filter),
-                        ),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    if (state.isLoaded) {
-                        Text(
-                            text = state.total.formatMoney(),
-                            style = MaterialTheme.typography.displaySmall,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    } else {
-                        SkeletonBar(width = 150.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
-                    }
-                }
+            Text(
+                text = stringResource(R.string.home_total_spent, monthOrFilterLabel(state.filter)),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            if (state.isLoaded) {
+                Text(
+                    text = state.total.formatMoney(),
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Clip,
+                    modifier = Modifier.fillMaxWidth().basicMarquee(),
+                )
+            } else {
+                SkeletonBar(width = 150.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
+            }
+            if (state.receipts.isNotEmpty()) {
+                Text(
+                    text = pluralStringResource(
+                        R.plurals.home_across_receipts,
+                        state.receipts.size,
+                        state.receipts.size,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            if (state.showsBills()) {
+                BillsBreakdown(
+                    spent = state.total,
+                    bills = state.monthlyBills,
+                    modifier = Modifier.padding(top = MaterialTheme.dimens.md),
+                )
             }
         }
+    }
+}
+
+/**
+ * The spent-vs-planned strip: a slim bar, then "Spent" and "Bills" each on their own full-width row
+ * (so long amounts aren't truncated — and scroll via marquee if they still overflow), then the
+ * combined "With bills" total. [showWithBillsRow] is false on tablet, where that total sits top-right.
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun BillsBreakdown(
+    spent: BigDecimal,
+    bills: BigDecimal,
+    modifier: Modifier = Modifier,
+    showWithBillsRow: Boolean = true,
+) {
+    val combined = spent + bills
+    val spentFraction = if (combined.signum() > 0) {
+        (spent.toDouble() / combined.toDouble()).toFloat().coerceIn(0f, 1f)
+    } else {
+        0f
+    }
+    Column(modifier = modifier.fillMaxWidth()) {
+        SpentPlannedBar(
+            spentFraction = spentFraction,
+            modifier = Modifier.fillMaxWidth().padding(bottom = MaterialTheme.dimens.sm),
+        )
+        LegendMoneyRow(
+            hatched = false,
+            label = stringResource(R.string.home_legend_spent),
+            amount = spent,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.xs))
+        LegendMoneyRow(
+            hatched = true,
+            label = stringResource(R.string.home_legend_bills),
+            amount = bills,
+        )
+        if (showWithBillsRow) {
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.home_with_bills),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = combined.formatMoney(),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.End,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Clip,
+                    modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.md).basicMarquee(),
+                )
+            }
+        }
+    }
+}
+
+/** One legend row: a spent/planned key swatch, its label, and the amount (right-aligned, marquee). */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun LegendMoneyRow(
+    hatched: Boolean,
+    label: String,
+    amount: BigDecimal,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        PlannedSwatch(hatched = hatched)
+        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
+            text = amount.formatMoney(),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.End,
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Clip,
+            modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.sm).basicMarquee(),
+        )
+    }
+}
+
+/** A 10dp legend key: a solid accent square for real spend, or a hatched square for planned bills. */
+@Composable
+private fun PlannedSwatch(hatched: Boolean, modifier: Modifier = Modifier) {
+    val primary = MaterialTheme.colorScheme.primary
+    val outline = MaterialTheme.colorScheme.outlineVariant
+    val shape = RoundedCornerShape(3.dp)
+    if (hatched) {
+        Box(
+            modifier
+                .size(10.dp)
+                .clip(shape)
+                .drawBehind { drawHatch(outline, spacing = 3.dp, stroke = 1.dp) }
+                .border(1.dp, outline, shape),
+        )
+    } else {
+        Box(
+            modifier
+                .size(10.dp)
+                .clip(shape)
+                .background(primary),
+        )
+    }
+}
+
+/** A slim 6dp bar: solid accent for the receipt-backed share, hatched for the planned-bills remainder. */
+@Composable
+private fun SpentPlannedBar(
+    spentFraction: Float,
+    modifier: Modifier = Modifier,
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    val outline = MaterialTheme.colorScheme.outlineVariant
+    val shape = RoundedCornerShape(3.dp)
+    Box(
+        modifier
+            .height(6.dp)
+            .clip(shape)
+            .drawBehind {
+                val radius = CornerRadius(size.height / 2f)
+                // The whole track carries the planned hatch, framed so the planned part reads as a
+                // container even when spend is tiny.
+                drawHatch(outline, spacing = 5.dp, stroke = 1.2.dp)
+                drawRoundRect(color = outline, cornerRadius = radius, style = Stroke(width = 1.dp.toPx()))
+                // Solid accent covers the receipt-backed share on the left.
+                val solidWidth = size.width * spentFraction
+                if (solidWidth > 0f) {
+                    drawRoundRect(
+                        color = primary,
+                        size = Size(solidWidth.coerceAtLeast(size.height), size.height),
+                        cornerRadius = radius,
+                    )
+                }
+            },
+    )
+}
+
+/** Fills the current draw bounds with thin diagonal stripes — the "planned, not yet real" texture. */
+private fun DrawScope.drawHatch(color: Color, spacing: Dp, stroke: Dp) {
+    val step = spacing.toPx()
+    val strokePx = stroke.toPx()
+    val h = size.height
+    var x = -h
+    while (x < size.width) {
+        drawLine(
+            color = color,
+            start = Offset(x, h),
+            end = Offset(x + h, 0f),
+            strokeWidth = strokePx,
+        )
+        x += step
     }
 }
 
@@ -1552,6 +1780,7 @@ private fun previewHomeState(): HomeUiState = HomeUiState(
         PieSlice("Transport", BigDecimal("90"), Color(0xFFB79552)),
     ),
     monthlySpent = BigDecimal("712.40"),
+    monthlyBills = BigDecimal("485.00"),
     monthlyBudget = BigDecimal("1200"),
     weeklySpent = BigDecimal("132"),
     weeklyBudget = BigDecimal("300"),
@@ -1580,6 +1809,23 @@ private fun previewReceipt(id: Long, store: String, price: String, items: Int, d
         price = BigDecimal(price),
         discount = BigDecimal(discount),
     )
+
+@Preview(name = "Summary – spent + planned bills", showBackground = true, widthDp = 380)
+@Composable
+private fun SummaryCardBillsPreview() {
+    BudgettyTheme {
+        Box(Modifier.padding(MaterialTheme.dimens.lg)) {
+            SummaryCard(
+                state = HomeUiState(
+                    isLoaded = true,
+                    total = BigDecimal("340.20"),
+                    monthlyBills = BigDecimal("1250.00"),
+                    receipts = previewReceipts,
+                ),
+            )
+        }
+    }
+}
 
 @Preview(showBackground = true, heightDp = 900)
 @Composable

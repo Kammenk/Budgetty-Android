@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">पिछली अवधि से</string>
     <string name="home_see_all">सभी देखें</string>
     <string name="home_view_insights">इनसाइट्स देखें</string>
+    <string name="home_legend_spent">खर्च</string>
+    <string name="home_legend_bills">बिल · नियोजित</string>
+    <string name="home_with_bills">बिल सहित</string>
     <string name="account_widgets">विजेट</string>
     <string name="widgets_soon_title">जल्द आ रहा है</string>
     <string name="widgets_soon_message">होम स्क्रीन विजेट किसी भविष्य के अपडेट में आएंगे।</string>

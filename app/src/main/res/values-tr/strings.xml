@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">geçen döneme göre</string>
     <string name="home_see_all">Tümünü gör</string>
     <string name="home_view_insights">İçgörüleri gör</string>
+    <string name="home_legend_spent">Harcanan</string>
+    <string name="home_legend_bills">Faturalar · planlanan</string>
+    <string name="home_with_bills">Faturalar dahil</string>
     <string name="account_widgets">Widget\'lar</string>
     <string name="widgets_soon_title">Yakında</string>
     <string name="widgets_soon_message">Ana ekran widget\'ları gelecek bir güncellemede gelecek.</string>

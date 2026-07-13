@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">до мин. періоду</string>
     <string name="home_see_all">Показати всі</string>
     <string name="home_view_insights">Відкрити аналітику</string>
+    <string name="home_legend_spent">Витрачено</string>
+    <string name="home_legend_bills">Рахунки · заплановані</string>
+    <string name="home_with_bills">З рахунками</string>
     <string name="account_widgets">Віджети</string>
     <string name="widgets_soon_title">Незабаром</string>
     <string name="widgets_soon_message">Віджети для головного екрана з\'являться в майбутньому оновленні.</string>
