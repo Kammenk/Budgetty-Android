@@ -250,6 +250,9 @@
     <string name="home_vs_last_period">前期間比</string>
     <string name="home_see_all">すべて表示</string>
     <string name="home_view_insights">インサイトを見る</string>
+    <string name="home_legend_spent">支出</string>
+    <string name="home_legend_bills">請求 · 予定</string>
+    <string name="home_with_bills">請求込み</string>
     <string name="account_widgets">ウィジェット</string>
     <string name="widgets_soon_title">近日公開</string>
     <string name="widgets_soon_message">ホーム画面ウィジェットは今後のアップデートで提供予定です。</string>

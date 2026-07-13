@@ -138,7 +138,7 @@ val appModule = module {
     // ViewModels
     viewModel { AuthViewModel(get()) }
     viewModel { AccountViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get()) }

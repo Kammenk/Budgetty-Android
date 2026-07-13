@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">پچھلی مدت کے مقابلے</string>
     <string name="home_see_all">سب دیکھیں</string>
     <string name="home_view_insights">بصیرت دیکھیں</string>
+    <string name="home_legend_spent">خرچ</string>
+    <string name="home_legend_bills">بل · منصوبہ بند</string>
+    <string name="home_with_bills">بلوں سمیت</string>
     <string name="account_widgets">ویجٹس</string>
     <string name="widgets_soon_title">جلد آ رہا ہے</string>
     <string name="widgets_soon_message">ہوم اسکرین ویجٹس مستقبل کی اپڈیٹ میں آئیں گے۔</string>

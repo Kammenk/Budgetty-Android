@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">t.o.v. vorige periode</string>
     <string name="home_see_all">Alles bekijken</string>
     <string name="home_view_insights">Inzichten bekijken</string>
+    <string name="home_legend_spent">Uitgegeven</string>
+    <string name="home_legend_bills">Rekeningen · gepland</string>
+    <string name="home_with_bills">Met rekeningen</string>
     <string name="account_widgets">Widgets</string>
     <string name="widgets_soon_title">Binnenkort</string>
     <string name="widgets_soon_message">Widgets voor het startscherm komen in een toekomstige update.</string>

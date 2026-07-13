@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">so với kỳ trước</string>
     <string name="home_see_all">Xem tất cả</string>
     <string name="home_view_insights">Xem thống kê</string>
+    <string name="home_legend_spent">Đã chi</string>
+    <string name="home_legend_bills">Hóa đơn · dự kiến</string>
+    <string name="home_with_bills">Gồm hóa đơn</string>
     <string name="account_widgets">Tiện ích</string>
     <string name="widgets_soon_title">Sắp ra mắt</string>
     <string name="widgets_soon_message">Tiện ích màn hình chính sẽ có trong bản cập nhật sắp tới.</string>

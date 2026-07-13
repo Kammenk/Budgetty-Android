@@ -12,17 +12,21 @@ import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
+import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
+import com.budgetty.app.ui.util.monthlyAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -44,6 +48,9 @@ data class HomeUiState(
     val slices: List<PieSlice> = emptyList(),
     val total: BigDecimal = BigDecimal.ZERO,
     val monthlySpent: BigDecimal = BigDecimal.ZERO,
+    // Recurring bills (isIncome=false) summed to their current-month equivalent. Planning-only: the
+    // summary card shows these alongside the receipt-backed spend as "planned", never merged into it.
+    val monthlyBills: BigDecimal = BigDecimal.ZERO,
     val monthlyBudget: BigDecimal? = null,
     val weeklySpent: BigDecimal = BigDecimal.ZERO,
     val weeklyBudget: BigDecimal? = null,
@@ -66,6 +73,7 @@ class HomeViewModel(
     private val receiptRepository: ReceiptRepository,
     private val scanQuota: ScanQuota,
     private val billingManager: BillingManager,
+    recurringRepository: RecurringRepository,
 ) : ViewModel() {
 
     private val selectedFilter = MutableStateFlow(DateRangeFilter.CURRENT_MONTH)
@@ -86,6 +94,13 @@ class HomeViewModel(
     private val monthRange = DateRangeFilter.CURRENT_MONTH.toRange()
     private val monthlyTransactions = repository.getBetween(monthRange.first, monthRange.second)
 
+    // Recurring bills expressed as a current-month total (weekly ×52/12, yearly ÷12, one-time only in
+    // its own month). Income rows are excluded — only bills count toward the "with bills" figure.
+    private val monthlyBills: Flow<BigDecimal> = recurringRepository.items.map { items ->
+        items.filterNot { it.isIncome }
+            .fold(BigDecimal.ZERO) { acc, r -> acc + r.monthlyAmount(monthRange.first, monthRange.second) }
+    }
+
     // Current calendar week's spend (Mon–Sun), independent of the filter (for the weekly box).
     private val weekRange = currentWeekRange()
     private val weeklyTransactions = repository.getBetween(weekRange.first, weekRange.second)
@@ -99,7 +114,7 @@ class HomeViewModel(
             selectedFilter,
             transactions,
             categoryRepository.categories,
-            monthlyTransactions,
+            combine(monthlyTransactions, monthlyBills) { t, b -> MonthlyData(t, b) },
             combine(
                 budgetRepository.budgets,
                 receiptRepository.getAll(),
@@ -107,18 +122,18 @@ class HomeViewModel(
                 lastWeeklyTransactions,
                 previousTransactions,
             ) { b, r, w, lw, pt -> BudgetsReceiptsWeeks(b, r, w, lw, pt) },
-        ) { filter, txns, categories, monthlyTxns, brw ->
+        ) { filter, txns, categories, monthlyData, brw ->
             val receiptsById = brw.receipts.associateBy { it.timestamp }
             // Adjust each period's summed line prices to what was actually paid: add on-top tax
             // (tax-exclusive receipts) and extra charges, and subtract order discounts — so the spend
             // figures match the receipt totals. Per-category slices below stay on the net line prices.
             val total = txns.spend() + paidAdjustmentOf(txns, receiptsById)
-            val monthlySpent = monthlyTxns.spend() + paidAdjustmentOf(monthlyTxns, receiptsById)
+            val monthlySpent = monthlyData.txns.spend() + paidAdjustmentOf(monthlyData.txns, receiptsById)
             val weeklySpent = brw.weekly.spend() + paidAdjustmentOf(brw.weekly, receiptsById)
             val lastWeekSpent = brw.lastWeekly.spend() + paidAdjustmentOf(brw.lastWeekly, receiptsById)
             val previousSpent = brw.previous.spend() + paidAdjustmentOf(brw.previous, receiptsById)
             val colorByCategory = categories.associate { it.name to it.colorArgb }
-            val topByCategory = monthlyTxns.groupBy { it.category }
+            val topByCategory = monthlyData.txns.groupBy { it.category }
                 .mapValues { (_, list) -> list.spend() }
                 .maxByOrNull { it.value }
             HomeUiState(
@@ -129,6 +144,7 @@ class HomeViewModel(
                 slices = txns.toSlices(colorByCategory),
                 total = total,
                 monthlySpent = monthlySpent,
+                monthlyBills = monthlyData.bills,
                 monthlyBudget = brw.budgets[BudgetRepository.MONTHLY],
                 weeklySpent = weeklySpent,
                 weeklyBudget = brw.budgets[BudgetRepository.WEEKLY],
@@ -217,6 +233,13 @@ class HomeViewModel(
     /** Summed price × quantity across the transactions. */
     private fun List<TransactionEntity>.spend(): BigDecimal =
         fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
+
+    /** Pairs the current-month transactions with the recurring-bills total so the outer combine keeps
+     *  one slot for both current-month sources. */
+    private data class MonthlyData(
+        val txns: List<TransactionEntity>,
+        val bills: BigDecimal,
+    )
 
     /** Bundles the nested-combine sources so the outer combine stays within arity limits. */
     private data class BudgetsReceiptsWeeks(

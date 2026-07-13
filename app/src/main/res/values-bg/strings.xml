@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">спрямо мин. период</string>
     <string name="home_see_all">Виж всички</string>
     <string name="home_view_insights">Виж анализа</string>
+    <string name="home_legend_spent">Похарчено</string>
+    <string name="home_legend_bills">Сметки · планирани</string>
+    <string name="home_with_bills">Със сметките</string>
     <string name="account_widgets">Джаджи</string>
     <string name="widgets_soon_title">Очаквайте скоро</string>
     <string name="widgets_soon_message">Джаджите за началния екран предстоят в бъдеща актуализация.</string>

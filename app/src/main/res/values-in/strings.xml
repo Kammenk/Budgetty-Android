@@ -251,6 +251,9 @@
     <string name="home_vs_last_period">vs periode lalu</string>
     <string name="home_see_all">Lihat semua</string>
     <string name="home_view_insights">Lihat wawasan</string>
+    <string name="home_legend_spent">Terpakai</string>
+    <string name="home_legend_bills">Tagihan · direncanakan</string>
+    <string name="home_with_bills">Dengan tagihan</string>
     <string name="account_widgets">Widget</string>
     <string name="widgets_soon_title">Segera hadir</string>
     <string name="widgets_soon_message">Widget layar utama akan hadir di pembaruan mendatang.</string>

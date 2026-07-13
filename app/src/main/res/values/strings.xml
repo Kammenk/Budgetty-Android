@@ -169,6 +169,10 @@
     <string name="home_vs_last_period">vs last period</string>
     <string name="home_see_all">See all</string>
     <string name="home_view_insights">View Insights</string>
+    <!-- Summary card: receipt-backed spend vs planning-only recurring bills -->
+    <string name="home_legend_spent">Spent</string>
+    <string name="home_legend_bills">Bills · planned</string>
+    <string name="home_with_bills">With bills</string>
     <string name="snackbar_receipt_deleted">Receipt deleted</string>
     <string name="snackbar_item_deleted">Item deleted</string>
 
