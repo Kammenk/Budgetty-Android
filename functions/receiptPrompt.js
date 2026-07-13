@@ -28,6 +28,10 @@ const CATEGORIES = [
 ];
 
 const MODEL = "claude-sonnet-5"; // Claude Sonnet 5 — high-resolution vision (2576px) for small Cyrillic receipt text
+// Cheap first-pass model for the Haiku-first tier (extract.js). Same prompt + tool; ~3x cheaper than
+// Sonnet on both input and output. Not a high-res vision model, so the API downscales the image for it
+// (~1568px) — a read Haiku can't nail (guards trip) escalates to Sonnet, which sees the full-res image.
+const HAIKU_MODEL = "claude-haiku-4-5";
 
 const RECORD_RECEIPT_TOOL = {
   name: "record_receipt",
@@ -193,4 +197,4 @@ const PROMPT =
   "These are self-assessments for quality monitoring and must NOT change what you extract. " +
   "Call the record_receipt tool with the result.";
 
-module.exports = { CATEGORIES, MODEL, RECORD_RECEIPT_TOOL, PROMPT };
+module.exports = { CATEGORIES, MODEL, HAIKU_MODEL, RECORD_RECEIPT_TOOL, PROMPT };

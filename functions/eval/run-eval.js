@@ -6,12 +6,14 @@
  * and reports per-receipt + aggregate pass/fail. Purpose: a regression gate to run BEFORE and AFTER
  * any prompt/schema change, so a tweak aimed at one receipt format can't silently break others.
  *
- * It calls the Anthropic API directly (same model/params/tool as the deployed function) so you
+ * It calls the Anthropic API directly (same model/params/tool/tiering as the deployed function) so you
  * can test a prompt edit WITHOUT deploying. Uses only Node built-ins — no extra dependencies.
  *
  * Usage:
- *   ANTHROPIC_API_KEY=sk-ant-... node eval/run-eval.js          # run the whole corpus
+ *   ANTHROPIC_API_KEY=sk-ant-... node eval/run-eval.js          # whole corpus, Sonnet-only (baseline)
+ *   ANTHROPIC_API_KEY=sk-ant-... node eval/run-eval.js --tiered # Haiku-first (escalate to Sonnet on a guard trip)
  *   ANTHROPIC_API_KEY=sk-ant-... node eval/run-eval.js bg-stasi-produce   # one case
+ * Each run prints its API cost; run once each way and compare pass rate + cost for the tiering decision.
  *
  * Each corpus case is a folder under eval/corpus/<id>/ containing:
  *   - the receipt image/PDF (jpg/jpeg/png/pdf) — your real receipt, gitignored, never committed
@@ -19,7 +21,7 @@
  */
 const fs = require("fs");
 const path = require("path");
-const { MODEL, RECORD_RECEIPT_TOOL, PROMPT } = require("../receiptPrompt");
+const { extractTiered } = require("../extract");
 
 const CORPUS_DIR = path.join(__dirname, "corpus");
 const MONEY_TOL = 0.02; // currency tolerance per line and on totals — absorbs cent rounding, not a misread.
@@ -60,34 +62,13 @@ function findImage(caseDir) {
     .find((f) => MIME[path.extname(f).toLowerCase()]);
 }
 
-/** Calls the model exactly as the Cloud Function does and returns the tool input (the structured receipt). */
-async function extract(imagePath, apiKey) {
+/** Builds the Anthropic image/document source block for a corpus file (base64-encoded). */
+function sourceBlockFor(imagePath) {
   const mimeType = MIME[path.extname(imagePath).toLowerCase()];
   const data = fs.readFileSync(imagePath).toString("base64");
-  const sourceBlock =
-    mimeType === "application/pdf"
-      ? { type: "document", source: { type: "base64", media_type: "application/pdf", data } }
-      : { type: "image", source: { type: "base64", media_type: mimeType, data } };
-
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "content-type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01" },
-    body: JSON.stringify({
-      model: MODEL,
-      max_tokens: 8192, // match index.js
-      // Sonnet 5 rejects a non-default temperature (400); determinism now comes from disabled thinking
-      // + the forced tool_choice + tool schema. Keep this request in sync with index.js.
-      thinking: { type: "disabled" },
-      tools: [RECORD_RECEIPT_TOOL],
-      tool_choice: { type: "tool", name: "record_receipt" },
-      messages: [{ role: "user", content: [sourceBlock, { type: "text", text: PROMPT }] }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Anthropic ${res.status}: ${await res.text()}`);
-  const json = await res.json();
-  const toolUse = (json.content || []).find((b) => b.type === "tool_use");
-  if (!toolUse) throw new Error("No tool_use block returned");
-  return toolUse.input;
+  return mimeType === "application/pdf"
+    ? { type: "document", source: { type: "base64", media_type: "application/pdf", data } }
+    : { type: "image", source: { type: "base64", media_type: mimeType, data } };
 }
 
 /**
@@ -212,6 +193,7 @@ async function main() {
   const args = process.argv.slice(2);
   const wantCoverage = args.includes("--coverage") || args.includes("-c");
   const wantJson = args.includes("--json"); // dump the raw model output per case (debugging a case)
+  const wantTiered = args.includes("--tiered"); // Haiku-first (escalate to Sonnet on a guard trip) vs Sonnet-only
   const only = args.find((a) => !a.startsWith("-"));
 
   const cases = fs.existsSync(CORPUS_DIR)
@@ -244,6 +226,9 @@ async function main() {
   let pass = 0;
   let fail = 0;
   let skip = 0;
+  let reads = 0; // cases that actually hit the model (for the escalation rate + cost)
+  let escalations = 0; // tiered reads that fell through to Sonnet
+  let runCost = 0; // summed API cost of this run, at extract.js PRICING rates
   for (const id of selected) {
     const dir = path.join(CORPUS_DIR, id);
     if (!fs.existsSync(path.join(dir, "expected.json"))) {
@@ -264,14 +249,20 @@ async function main() {
       continue;
     }
     try {
-      const actual = await extract(image, apiKey);
+      const r = await extractTiered({ sourceBlock: sourceBlockFor(image), apiKey, haikuFirst: wantTiered });
+      const actual = r.input;
+      reads++;
+      runCost += r.cost;
+      if (r.escalated) escalations++;
+      // In tiered mode, show which model served: [haiku] accepted, or [haiku→sonnet] on a guard trip.
+      const tag = wantTiered ? (r.escalated ? "  [haiku→sonnet]" : "  [haiku]") : "";
       if (wantJson) console.log(`      ${JSON.stringify(actual)}`);
       const fails = check(expected, actual);
       if (fails.length === 0) {
-        console.log(`PASS  ${id}`);
+        console.log(`PASS  ${id}${tag}`);
         pass++;
       } else {
-        console.log(`FAIL  ${id}`);
+        console.log(`FAIL  ${id}${tag}`);
         fails.forEach((f) => console.log(`        - ${f}`));
         fail++;
       }
@@ -281,6 +272,14 @@ async function main() {
     }
   }
   console.log(`\n${pass} passed, ${fail} failed, ${skip} skipped (of ${selected.length}).`);
+  if (reads > 0) {
+    const rate = Math.round((escalations / reads) * 100);
+    const mode = wantTiered
+      ? `Haiku-first — escalated to Sonnet on ${escalations}/${reads} reads (${rate}%)`
+      : "Sonnet-only (baseline)";
+    console.log(`Mode: ${mode}.`);
+    console.log(`Est. API cost this run: $${runCost.toFixed(4)}  (list rates: Sonnet $3/$15, Haiku $1/$5 per 1M tok).`);
+  }
   if (!only) coverageReport(cases);
   process.exit(fail > 0 ? 1 : 0);
 }
