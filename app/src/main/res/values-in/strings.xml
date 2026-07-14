@@ -89,6 +89,8 @@
     <string name="upload_price">Harga</string>
     <string name="upload_qty">Jml</string>
     <string name="upload_discount">Diskon</string>
+    <string name="upload_charge_delivery">Pengiriman dan biaya</string>
+    <string name="upload_charge_tip">Tip</string>
     <string name="upload_finalize">Selesaikan</string>
     <string name="upload_error_title">Tidak dapat membaca struk itu</string>
     <string name="upload_go_back">Kembali</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Restoran dan hiburan</string>
     <string name="cat_restaurant_dining">Restoran</string>
     <string name="cat_entertainment">Hiburan</string>
+    <string name="cat_video_games">Video game</string>
+    <string name="cat_tips">Tip</string>
     <string name="cat_shopping_lifestyle">Belanja dan gaya hidup</string>
     <string name="cat_clothing_accessories">Pakaian dan aksesori</string>
     <string name="cat_electronics">Elektronik</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Perawatan mobil</string>
     <string name="cat_services_subscriptions">Layanan dan langganan</string>
     <string name="cat_subscriptions_services">Langganan dan layanan</string>
+    <string name="cat_investments">Investasi</string>
     <string name="cat_education">Pendidikan</string>
     <string name="cat_travel_accommodation">Perjalanan dan akomodasi</string>
     <string name="cat_insurance_utilities">Asuransi dan utilitas</string>
     <string name="cat_rent">Sewa</string>
     <string name="cat_office_work_supplies">Perlengkapan kantor</string>
     <string name="cat_gifts_donations">Hadiah dan donasi</string>
+    <string name="cat_delivery">Pengiriman</string>
     <string name="cat_other">Lainnya</string>
     <string name="home_daily_avg">Rata-rata harian</string>
     <string name="home_vs_last_month">vs bulan lalu</string>

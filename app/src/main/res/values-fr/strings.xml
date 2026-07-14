@@ -89,6 +89,8 @@
     <string name="upload_price">Prix</string>
     <string name="upload_qty">Qté</string>
     <string name="upload_discount">Remise</string>
+    <string name="upload_charge_delivery">Livraison et frais</string>
+    <string name="upload_charge_tip">Pourboire</string>
     <string name="upload_finalize">Finaliser</string>
     <string name="upload_error_title">Impossible de lire ce reçu</string>
     <string name="upload_go_back">Retour</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Restaurants et loisirs</string>
     <string name="cat_restaurant_dining">Restaurants</string>
     <string name="cat_entertainment">Loisirs</string>
+    <string name="cat_video_games">Jeux vidéo</string>
+    <string name="cat_tips">Pourboires</string>
     <string name="cat_shopping_lifestyle">Achats et style de vie</string>
     <string name="cat_clothing_accessories">Vêtements et accessoires</string>
     <string name="cat_electronics">Électronique</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Entretien automobile</string>
     <string name="cat_services_subscriptions">Services et abonnements</string>
     <string name="cat_subscriptions_services">Abonnements et services</string>
+    <string name="cat_investments">Investissements</string>
     <string name="cat_education">Éducation</string>
     <string name="cat_travel_accommodation">Voyage et hébergement</string>
     <string name="cat_insurance_utilities">Assurance et services publics</string>
     <string name="cat_rent">Loyer</string>
     <string name="cat_office_work_supplies">Fournitures de bureau</string>
     <string name="cat_gifts_donations">Cadeaux et dons</string>
+    <string name="cat_delivery">Livraison</string>
     <string name="cat_other">Autre</string>
     <string name="home_daily_avg">Moy. par jour</string>
     <string name="home_vs_last_month">vs mois dernier</string>

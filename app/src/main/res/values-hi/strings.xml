@@ -89,6 +89,8 @@
     <string name="upload_price">कीमत</string>
     <string name="upload_qty">मात्रा</string>
     <string name="upload_discount">छूट</string>
+    <string name="upload_charge_delivery">डिलीवरी और शुल्क</string>
+    <string name="upload_charge_tip">टिप</string>
     <string name="upload_finalize">पूरा करें</string>
     <string name="upload_error_title">वह रसीद पढ़ी नहीं जा सकी</string>
     <string name="upload_go_back">वापस जाएं</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">भोजन और मनोरंजन</string>
     <string name="cat_restaurant_dining">रेस्तरां</string>
     <string name="cat_entertainment">मनोरंजन</string>
+    <string name="cat_video_games">वीडियो गेम्स</string>
+    <string name="cat_tips">टिप्स</string>
     <string name="cat_shopping_lifestyle">खरीदारी और जीवनशैली</string>
     <string name="cat_clothing_accessories">कपड़े और सहायक उपकरण</string>
     <string name="cat_electronics">इलेक्ट्रॉनिक्स</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">कार रखरखाव</string>
     <string name="cat_services_subscriptions">सेवाएं और सदस्यताएं</string>
     <string name="cat_subscriptions_services">सदस्यताएं और सेवाएं</string>
+    <string name="cat_investments">निवेश</string>
     <string name="cat_education">शिक्षा</string>
     <string name="cat_travel_accommodation">यात्रा और आवास</string>
     <string name="cat_insurance_utilities">बीमा और उपयोगिताएं</string>
     <string name="cat_rent">किराया</string>
     <string name="cat_office_work_supplies">कार्यालय सामान</string>
     <string name="cat_gifts_donations">उपहार और दान</string>
+    <string name="cat_delivery">डिलीवरी</string>
     <string name="cat_other">अन्य</string>
     <string name="home_daily_avg">दैनिक औसत</string>
     <string name="home_vs_last_month">पिछले महीने से</string>

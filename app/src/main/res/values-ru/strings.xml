@@ -89,6 +89,8 @@
     <string name="upload_price">Цена</string>
     <string name="upload_qty">Кол-во</string>
     <string name="upload_discount">Скидка</string>
+    <string name="upload_charge_delivery">Доставка и сборы</string>
+    <string name="upload_charge_tip">Чаевые</string>
     <string name="upload_finalize">Завершить</string>
     <string name="upload_error_title">Не удалось прочитать чек</string>
     <string name="upload_go_back">Назад</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Рестораны и развлечения</string>
     <string name="cat_restaurant_dining">Рестораны</string>
     <string name="cat_entertainment">Развлечения</string>
+    <string name="cat_video_games">Видеоигры</string>
+    <string name="cat_tips">Чаевые</string>
     <string name="cat_shopping_lifestyle">Покупки и образ жизни</string>
     <string name="cat_clothing_accessories">Одежда и аксессуары</string>
     <string name="cat_electronics">Электроника</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Обслуживание авто</string>
     <string name="cat_services_subscriptions">Услуги и подписки</string>
     <string name="cat_subscriptions_services">Подписки и услуги</string>
+    <string name="cat_investments">Инвестиции</string>
     <string name="cat_education">Образование</string>
     <string name="cat_travel_accommodation">Путешествия и проживание</string>
     <string name="cat_insurance_utilities">Страхование и ЖКХ</string>
     <string name="cat_rent">Аренда</string>
     <string name="cat_office_work_supplies">Офисные принадлежности</string>
     <string name="cat_gifts_donations">Подарки и пожертвования</string>
+    <string name="cat_delivery">Доставка</string>
     <string name="cat_other">Другое</string>
     <string name="home_daily_avg">Сред. в день</string>
     <string name="home_vs_last_month">к прошл. месяцу</string>

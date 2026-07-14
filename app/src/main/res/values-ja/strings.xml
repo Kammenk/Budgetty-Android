@@ -89,6 +89,8 @@
     <string name="upload_price">価格</string>
     <string name="upload_qty">数量</string>
     <string name="upload_discount">割引</string>
+    <string name="upload_charge_delivery">配達・手数料</string>
+    <string name="upload_charge_tip">チップ</string>
     <string name="upload_finalize">確定</string>
     <string name="upload_error_title">レシートを読み取れませんでした</string>
     <string name="upload_go_back">戻る</string>
@@ -227,6 +229,8 @@
     <string name="cat_dining_entertainment">外食・娯楽</string>
     <string name="cat_restaurant_dining">レストラン</string>
     <string name="cat_entertainment">娯楽</string>
+    <string name="cat_video_games">ビデオゲーム</string>
+    <string name="cat_tips">チップ</string>
     <string name="cat_shopping_lifestyle">買い物・ライフスタイル</string>
     <string name="cat_clothing_accessories">衣類・アクセサリー</string>
     <string name="cat_electronics">電化製品</string>
@@ -238,12 +242,14 @@
     <string name="cat_car_maintenance">車のメンテナンス</string>
     <string name="cat_services_subscriptions">サービス・サブスク</string>
     <string name="cat_subscriptions_services">サブスク・サービス</string>
+    <string name="cat_investments">投資</string>
     <string name="cat_education">教育</string>
     <string name="cat_travel_accommodation">旅行・宿泊</string>
     <string name="cat_insurance_utilities">保険・光熱費</string>
     <string name="cat_rent">家賃</string>
     <string name="cat_office_work_supplies">オフィス・事務用品</string>
     <string name="cat_gifts_donations">ギフト・寄付</string>
+    <string name="cat_delivery">配達</string>
     <string name="cat_other">その他</string>
     <string name="home_daily_avg">1日平均</string>
     <string name="home_vs_last_month">先月比</string>

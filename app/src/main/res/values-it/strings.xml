@@ -89,6 +89,8 @@
     <string name="upload_price">Prezzo</string>
     <string name="upload_qty">Qtà</string>
     <string name="upload_discount">Sconto</string>
+    <string name="upload_charge_delivery">Consegna e commissioni</string>
+    <string name="upload_charge_tip">Mancia</string>
     <string name="upload_finalize">Finalizza</string>
     <string name="upload_error_title">Impossibile leggere lo scontrino</string>
     <string name="upload_go_back">Indietro</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Ristoranti e svago</string>
     <string name="cat_restaurant_dining">Ristoranti</string>
     <string name="cat_entertainment">Intrattenimento</string>
+    <string name="cat_video_games">Videogiochi</string>
+    <string name="cat_tips">Mance</string>
     <string name="cat_shopping_lifestyle">Shopping e lifestyle</string>
     <string name="cat_clothing_accessories">Abbigliamento e accessori</string>
     <string name="cat_electronics">Elettronica</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Manutenzione auto</string>
     <string name="cat_services_subscriptions">Servizi e abbonamenti</string>
     <string name="cat_subscriptions_services">Abbonamenti e servizi</string>
+    <string name="cat_investments">Investimenti</string>
     <string name="cat_education">Istruzione</string>
     <string name="cat_travel_accommodation">Viaggi e alloggio</string>
     <string name="cat_insurance_utilities">Assicurazioni e utenze</string>
     <string name="cat_rent">Affitto</string>
     <string name="cat_office_work_supplies">Forniture per ufficio</string>
     <string name="cat_gifts_donations">Regali e donazioni</string>
+    <string name="cat_delivery">Consegna</string>
     <string name="cat_other">Altro</string>
     <string name="home_daily_avg">Media giorn.</string>
     <string name="home_vs_last_month">vs mese scorso</string>

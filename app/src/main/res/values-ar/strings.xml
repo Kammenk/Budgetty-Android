@@ -89,6 +89,8 @@
     <string name="upload_price">السعر</string>
     <string name="upload_qty">الكمية</string>
     <string name="upload_discount">الخصم</string>
+    <string name="upload_charge_delivery">التوصيل والرسوم</string>
+    <string name="upload_charge_tip">إكرامية</string>
     <string name="upload_finalize">إنهاء</string>
     <string name="upload_error_title">تعذّرت قراءة هذا الإيصال</string>
     <string name="upload_go_back">رجوع</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">المطاعم والترفيه</string>
     <string name="cat_restaurant_dining">المطاعم</string>
     <string name="cat_entertainment">الترفيه</string>
+    <string name="cat_video_games">ألعاب الفيديو</string>
+    <string name="cat_tips">الإكراميات</string>
     <string name="cat_shopping_lifestyle">التسوق ونمط الحياة</string>
     <string name="cat_clothing_accessories">الملابس والإكسسوارات</string>
     <string name="cat_electronics">الإلكترونيات</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">صيانة السيارة</string>
     <string name="cat_services_subscriptions">الخدمات والاشتراكات</string>
     <string name="cat_subscriptions_services">الاشتراكات والخدمات</string>
+    <string name="cat_investments">الاستثمارات</string>
     <string name="cat_education">التعليم</string>
     <string name="cat_travel_accommodation">السفر والإقامة</string>
     <string name="cat_insurance_utilities">التأمين والمرافق</string>
     <string name="cat_rent">الإيجار</string>
     <string name="cat_office_work_supplies">مستلزمات المكتب</string>
     <string name="cat_gifts_donations">الهدايا والتبرعات</string>
+    <string name="cat_delivery">التوصيل</string>
     <string name="cat_other">أخرى</string>
     <string name="home_daily_avg">المتوسط اليومي</string>
     <string name="home_vs_last_month">مقارنة بالشهر الماضي</string>

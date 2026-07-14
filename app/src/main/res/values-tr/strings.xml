@@ -89,6 +89,8 @@
     <string name="upload_price">Fiyat</string>
     <string name="upload_qty">Adet</string>
     <string name="upload_discount">İndirim</string>
+    <string name="upload_charge_delivery">Teslimat ve ücretler</string>
+    <string name="upload_charge_tip">Bahşiş</string>
     <string name="upload_finalize">Tamamla</string>
     <string name="upload_error_title">Bu fiş okunamadı</string>
     <string name="upload_go_back">Geri dön</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Restoran ve eğlence</string>
     <string name="cat_restaurant_dining">Restoranlar</string>
     <string name="cat_entertainment">Eğlence</string>
+    <string name="cat_video_games">Video oyunları</string>
+    <string name="cat_tips">Bahşiş</string>
     <string name="cat_shopping_lifestyle">Alışveriş ve yaşam tarzı</string>
     <string name="cat_clothing_accessories">Giyim ve aksesuar</string>
     <string name="cat_electronics">Elektronik</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Araç bakımı</string>
     <string name="cat_services_subscriptions">Hizmetler ve abonelikler</string>
     <string name="cat_subscriptions_services">Abonelikler ve hizmetler</string>
+    <string name="cat_investments">Yatırımlar</string>
     <string name="cat_education">Eğitim</string>
     <string name="cat_travel_accommodation">Seyahat ve konaklama</string>
     <string name="cat_insurance_utilities">Sigorta ve faturalar</string>
     <string name="cat_rent">Kira</string>
     <string name="cat_office_work_supplies">Ofis malzemeleri</string>
     <string name="cat_gifts_donations">Hediyeler ve bağışlar</string>
+    <string name="cat_delivery">Teslimat</string>
     <string name="cat_other">Diğer</string>
     <string name="home_daily_avg">Günlük ort.</string>
     <string name="home_vs_last_month">geçen aya göre</string>

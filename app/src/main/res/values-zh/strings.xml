@@ -89,6 +89,8 @@
     <string name="upload_price">价格</string>
     <string name="upload_qty">数量</string>
     <string name="upload_discount">折扣</string>
+    <string name="upload_charge_delivery">配送与费用</string>
+    <string name="upload_charge_tip">小费</string>
     <string name="upload_finalize">完成</string>
     <string name="upload_error_title">无法读取该收据</string>
     <string name="upload_go_back">返回</string>
@@ -227,6 +229,8 @@
     <string name="cat_dining_entertainment">餐饮与娱乐</string>
     <string name="cat_restaurant_dining">餐厅</string>
     <string name="cat_entertainment">娱乐</string>
+    <string name="cat_video_games">电子游戏</string>
+    <string name="cat_tips">小费</string>
     <string name="cat_shopping_lifestyle">购物与生活</string>
     <string name="cat_clothing_accessories">服装与配饰</string>
     <string name="cat_electronics">电子产品</string>
@@ -238,12 +242,14 @@
     <string name="cat_car_maintenance">汽车保养</string>
     <string name="cat_services_subscriptions">服务与订阅</string>
     <string name="cat_subscriptions_services">订阅与服务</string>
+    <string name="cat_investments">投资</string>
     <string name="cat_education">教育</string>
     <string name="cat_travel_accommodation">旅行与住宿</string>
     <string name="cat_insurance_utilities">保险与公用事业</string>
     <string name="cat_rent">房租</string>
     <string name="cat_office_work_supplies">办公用品</string>
     <string name="cat_gifts_donations">礼品与捐赠</string>
+    <string name="cat_delivery">配送</string>
     <string name="cat_other">其他</string>
     <string name="home_daily_avg">日均</string>
     <string name="home_vs_last_month">较上月</string>

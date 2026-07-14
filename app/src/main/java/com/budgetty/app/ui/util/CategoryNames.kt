@@ -39,6 +39,8 @@ private val categoryNameRes: Map<String, Int> = mapOf(
     "Dining & Entertainment" to R.string.cat_dining_entertainment,
     "Restaurant & Dining" to R.string.cat_restaurant_dining,
     "Entertainment" to R.string.cat_entertainment,
+    "Video Games" to R.string.cat_video_games,
+    "Tips" to R.string.cat_tips,
     "Shopping & Lifestyle" to R.string.cat_shopping_lifestyle,
     "Clothing & Accessories" to R.string.cat_clothing_accessories,
     "Electronics" to R.string.cat_electronics,
@@ -50,12 +52,14 @@ private val categoryNameRes: Map<String, Int> = mapOf(
     "Car Maintenance" to R.string.cat_car_maintenance,
     "Services & Subscriptions" to R.string.cat_services_subscriptions,
     "Subscriptions & Services" to R.string.cat_subscriptions_services,
+    "Investments" to R.string.cat_investments,
     "Education" to R.string.cat_education,
     "Travel & Accommodation" to R.string.cat_travel_accommodation,
     "Insurance & Utilities" to R.string.cat_insurance_utilities,
     "Rent" to R.string.cat_rent,
     "Office & Work Supplies" to R.string.cat_office_work_supplies,
     "Gifts & Charitable Donations" to R.string.cat_gifts_donations,
+    "Delivery" to R.string.cat_delivery,
     "Other" to R.string.cat_other,
 )
 

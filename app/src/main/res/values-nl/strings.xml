@@ -89,6 +89,8 @@
     <string name="upload_price">Prijs</string>
     <string name="upload_qty">Aantal</string>
     <string name="upload_discount">Korting</string>
+    <string name="upload_charge_delivery">Bezorging en kosten</string>
+    <string name="upload_charge_tip">Fooi</string>
     <string name="upload_finalize">Voltooien</string>
     <string name="upload_error_title">Kan die bon niet lezen</string>
     <string name="upload_go_back">Terug</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Uit eten en entertainment</string>
     <string name="cat_restaurant_dining">Restaurants</string>
     <string name="cat_entertainment">Entertainment</string>
+    <string name="cat_video_games">Videogames</string>
+    <string name="cat_tips">Fooien</string>
     <string name="cat_shopping_lifestyle">Winkelen en lifestyle</string>
     <string name="cat_clothing_accessories">Kleding en accessoires</string>
     <string name="cat_electronics">Elektronica</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Auto-onderhoud</string>
     <string name="cat_services_subscriptions">Diensten en abonnementen</string>
     <string name="cat_subscriptions_services">Abonnementen en diensten</string>
+    <string name="cat_investments">Beleggingen</string>
     <string name="cat_education">Onderwijs</string>
     <string name="cat_travel_accommodation">Reizen en accommodatie</string>
     <string name="cat_insurance_utilities">Verzekering en nutsvoorzieningen</string>
     <string name="cat_rent">Huur</string>
     <string name="cat_office_work_supplies">Kantoorbenodigdheden</string>
     <string name="cat_gifts_donations">Cadeaus en donaties</string>
+    <string name="cat_delivery">Bezorging</string>
     <string name="cat_other">Overig</string>
     <string name="home_daily_avg">Gem. per dag</string>
     <string name="home_vs_last_month">t.o.v. vorige maand</string>

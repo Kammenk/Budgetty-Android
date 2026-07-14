@@ -89,6 +89,8 @@
     <string name="upload_price">가격</string>
     <string name="upload_qty">수량</string>
     <string name="upload_discount">할인</string>
+    <string name="upload_charge_delivery">배달 및 수수료</string>
+    <string name="upload_charge_tip">팁</string>
     <string name="upload_finalize">완료</string>
     <string name="upload_error_title">영수증을 읽을 수 없습니다</string>
     <string name="upload_go_back">돌아가기</string>
@@ -227,6 +229,8 @@
     <string name="cat_dining_entertainment">외식 및 엔터테인먼트</string>
     <string name="cat_restaurant_dining">레스토랑</string>
     <string name="cat_entertainment">엔터테인먼트</string>
+    <string name="cat_video_games">비디오 게임</string>
+    <string name="cat_tips">팁</string>
     <string name="cat_shopping_lifestyle">쇼핑 및 라이프스타일</string>
     <string name="cat_clothing_accessories">의류 및 액세서리</string>
     <string name="cat_electronics">전자제품</string>
@@ -238,12 +242,14 @@
     <string name="cat_car_maintenance">자동차 정비</string>
     <string name="cat_services_subscriptions">서비스 및 구독</string>
     <string name="cat_subscriptions_services">구독 및 서비스</string>
+    <string name="cat_investments">투자</string>
     <string name="cat_education">교육</string>
     <string name="cat_travel_accommodation">여행 및 숙박</string>
     <string name="cat_insurance_utilities">보험 및 공과금</string>
     <string name="cat_rent">임대료</string>
     <string name="cat_office_work_supplies">사무용품</string>
     <string name="cat_gifts_donations">선물 및 기부</string>
+    <string name="cat_delivery">배달</string>
     <string name="cat_other">기타</string>
     <string name="home_daily_avg">일 평균</string>
     <string name="home_vs_last_month">지난달 대비</string>
