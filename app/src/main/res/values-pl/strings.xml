@@ -89,6 +89,8 @@
     <string name="upload_price">Cena</string>
     <string name="upload_qty">Ilość</string>
     <string name="upload_discount">Rabat</string>
+    <string name="upload_charge_delivery">Dostawa i opłaty</string>
+    <string name="upload_charge_tip">Napiwek</string>
     <string name="upload_finalize">Zakończ</string>
     <string name="upload_error_title">Nie można odczytać tego paragonu</string>
     <string name="upload_go_back">Wróć</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Restauracje i rozrywka</string>
     <string name="cat_restaurant_dining">Restauracje</string>
     <string name="cat_entertainment">Rozrywka</string>
+    <string name="cat_video_games">Gry wideo</string>
+    <string name="cat_tips">Napiwki</string>
     <string name="cat_shopping_lifestyle">Zakupy i styl życia</string>
     <string name="cat_clothing_accessories">Odzież i akcesoria</string>
     <string name="cat_electronics">Elektronika</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Serwis samochodu</string>
     <string name="cat_services_subscriptions">Usługi i subskrypcje</string>
     <string name="cat_subscriptions_services">Subskrypcje i usługi</string>
+    <string name="cat_investments">Inwestycje</string>
     <string name="cat_education">Edukacja</string>
     <string name="cat_travel_accommodation">Podróże i nocleg</string>
     <string name="cat_insurance_utilities">Ubezpieczenia i media</string>
     <string name="cat_rent">Czynsz</string>
     <string name="cat_office_work_supplies">Artykuły biurowe</string>
     <string name="cat_gifts_donations">Prezenty i darowizny</string>
+    <string name="cat_delivery">Dostawa</string>
     <string name="cat_other">Inne</string>
     <string name="home_daily_avg">Śr. dziennie</string>
     <string name="home_vs_last_month">vs poprz. miesiąc</string>

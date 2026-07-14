@@ -89,6 +89,8 @@
     <string name="upload_price">Precio</string>
     <string name="upload_qty">Cant.</string>
     <string name="upload_discount">Descuento</string>
+    <string name="upload_charge_delivery">Envío y cargos</string>
+    <string name="upload_charge_tip">Propina</string>
     <string name="upload_finalize">Finalizar</string>
     <string name="upload_error_title">No se pudo leer ese recibo</string>
     <string name="upload_go_back">Volver</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Restaurantes y ocio</string>
     <string name="cat_restaurant_dining">Restaurantes</string>
     <string name="cat_entertainment">Ocio</string>
+    <string name="cat_video_games">Videojuegos</string>
+    <string name="cat_tips">Propinas</string>
     <string name="cat_shopping_lifestyle">Compras y estilo de vida</string>
     <string name="cat_clothing_accessories">Ropa y accesorios</string>
     <string name="cat_electronics">Electrónica</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Mantenimiento del coche</string>
     <string name="cat_services_subscriptions">Servicios y suscripciones</string>
     <string name="cat_subscriptions_services">Suscripciones y servicios</string>
+    <string name="cat_investments">Inversiones</string>
     <string name="cat_education">Educación</string>
     <string name="cat_travel_accommodation">Viajes y alojamiento</string>
     <string name="cat_insurance_utilities">Seguros y suministros</string>
     <string name="cat_rent">Alquiler</string>
     <string name="cat_office_work_supplies">Material de oficina</string>
     <string name="cat_gifts_donations">Regalos y donaciones</string>
+    <string name="cat_delivery">Envío</string>
     <string name="cat_other">Otros</string>
     <string name="home_daily_avg">Media diaria</string>
     <string name="home_vs_last_month">vs mes pasado</string>

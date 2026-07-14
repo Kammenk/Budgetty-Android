@@ -89,6 +89,8 @@
     <string name="upload_price">দাম</string>
     <string name="upload_qty">পরিমাণ</string>
     <string name="upload_discount">ছাড়</string>
+    <string name="upload_charge_delivery">ডেলিভারি ও ফি</string>
+    <string name="upload_charge_tip">বকশিশ</string>
     <string name="upload_finalize">সম্পন্ন করুন</string>
     <string name="upload_error_title">সেই রসিদ পড়া যায়নি</string>
     <string name="upload_go_back">ফিরে যান</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">খাবার ও বিনোদন</string>
     <string name="cat_restaurant_dining">রেস্তোরাঁ</string>
     <string name="cat_entertainment">বিনোদন</string>
+    <string name="cat_video_games">ভিডিও গেমস</string>
+    <string name="cat_tips">বকশিশ</string>
     <string name="cat_shopping_lifestyle">কেনাকাটা ও জীবনধারা</string>
     <string name="cat_clothing_accessories">পোশাক ও আনুষঙ্গিক</string>
     <string name="cat_electronics">ইলেকট্রনিক্স</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">গাড়ি রক্ষণাবেক্ষণ</string>
     <string name="cat_services_subscriptions">পরিষেবা ও সাবস্ক্রিপশন</string>
     <string name="cat_subscriptions_services">সাবস্ক্রিপশন ও পরিষেবা</string>
+    <string name="cat_investments">বিনিয়োগ</string>
     <string name="cat_education">শিক্ষা</string>
     <string name="cat_travel_accommodation">ভ্রমণ ও আবাসন</string>
     <string name="cat_insurance_utilities">বিমা ও ইউটিলিটি</string>
     <string name="cat_rent">ভাড়া</string>
     <string name="cat_office_work_supplies">অফিস সামগ্রী</string>
     <string name="cat_gifts_donations">উপহার ও অনুদান</string>
+    <string name="cat_delivery">ডেলিভারি</string>
     <string name="cat_other">অন্যান্য</string>
     <string name="home_daily_avg">দৈনিক গড়</string>
     <string name="home_vs_last_month">গত মাসের তুলনায়</string>

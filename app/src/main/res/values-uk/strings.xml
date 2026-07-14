@@ -89,6 +89,8 @@
     <string name="upload_price">Ціна</string>
     <string name="upload_qty">К-сть</string>
     <string name="upload_discount">Знижка</string>
+    <string name="upload_charge_delivery">Доставка та збори</string>
+    <string name="upload_charge_tip">Чайові</string>
     <string name="upload_finalize">Завершити</string>
     <string name="upload_error_title">Не вдалося прочитати цей чек</string>
     <string name="upload_go_back">Назад</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Ресторани та розваги</string>
     <string name="cat_restaurant_dining">Ресторани</string>
     <string name="cat_entertainment">Розваги</string>
+    <string name="cat_video_games">Відеоігри</string>
+    <string name="cat_tips">Чайові</string>
     <string name="cat_shopping_lifestyle">Покупки та спосіб життя</string>
     <string name="cat_clothing_accessories">Одяг та аксесуари</string>
     <string name="cat_electronics">Електроніка</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Обслуговування авто</string>
     <string name="cat_services_subscriptions">Послуги та підписки</string>
     <string name="cat_subscriptions_services">Підписки та послуги</string>
+    <string name="cat_investments">Інвестиції</string>
     <string name="cat_education">Освіта</string>
     <string name="cat_travel_accommodation">Подорожі та проживання</string>
     <string name="cat_insurance_utilities">Страхування та комуналка</string>
     <string name="cat_rent">Оренда</string>
     <string name="cat_office_work_supplies">Офісне приладдя</string>
     <string name="cat_gifts_donations">Подарунки та пожертви</string>
+    <string name="cat_delivery">Доставка</string>
     <string name="cat_other">Інше</string>
     <string name="home_daily_avg">Сер. за день</string>
     <string name="home_vs_last_month">до мин. місяця</string>

@@ -89,6 +89,8 @@
     <string name="upload_price">Giá</string>
     <string name="upload_qty">SL</string>
     <string name="upload_discount">Giảm giá</string>
+    <string name="upload_charge_delivery">Giao hàng và phí</string>
+    <string name="upload_charge_tip">Tiền tip</string>
     <string name="upload_finalize">Hoàn tất</string>
     <string name="upload_error_title">Không thể đọc hóa đơn đó</string>
     <string name="upload_go_back">Quay lại</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Ăn uống và giải trí</string>
     <string name="cat_restaurant_dining">Nhà hàng</string>
     <string name="cat_entertainment">Giải trí</string>
+    <string name="cat_video_games">Trò chơi điện tử</string>
+    <string name="cat_tips">Tiền tip</string>
     <string name="cat_shopping_lifestyle">Mua sắm và lối sống</string>
     <string name="cat_clothing_accessories">Quần áo và phụ kiện</string>
     <string name="cat_electronics">Điện tử</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Bảo dưỡng xe</string>
     <string name="cat_services_subscriptions">Dịch vụ và đăng ký</string>
     <string name="cat_subscriptions_services">Đăng ký và dịch vụ</string>
+    <string name="cat_investments">Đầu tư</string>
     <string name="cat_education">Giáo dục</string>
     <string name="cat_travel_accommodation">Du lịch và lưu trú</string>
     <string name="cat_insurance_utilities">Bảo hiểm và tiện ích</string>
     <string name="cat_rent">Tiền thuê</string>
     <string name="cat_office_work_supplies">Đồ dùng văn phòng</string>
     <string name="cat_gifts_donations">Quà tặng và quyên góp</string>
+    <string name="cat_delivery">Giao hàng</string>
     <string name="cat_other">Khác</string>
     <string name="home_daily_avg">TB mỗi ngày</string>
     <string name="home_vs_last_month">so với tháng trước</string>

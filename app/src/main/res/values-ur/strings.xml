@@ -89,6 +89,8 @@
     <string name="upload_price">قیمت</string>
     <string name="upload_qty">تعداد</string>
     <string name="upload_discount">رعایت</string>
+    <string name="upload_charge_delivery">ڈیلیوری اور فیس</string>
+    <string name="upload_charge_tip">ٹپ</string>
     <string name="upload_finalize">مکمل کریں</string>
     <string name="upload_error_title">یہ رسید پڑھی نہیں جا سکی</string>
     <string name="upload_go_back">واپس جائیں</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">کھانا اور تفریح</string>
     <string name="cat_restaurant_dining">ریستوران</string>
     <string name="cat_entertainment">تفریح</string>
+    <string name="cat_video_games">ویڈیو گیمز</string>
+    <string name="cat_tips">ٹپس</string>
     <string name="cat_shopping_lifestyle">خریداری اور طرز زندگی</string>
     <string name="cat_clothing_accessories">کپڑے اور لوازمات</string>
     <string name="cat_electronics">الیکٹرانکس</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">گاڑی کی دیکھ بھال</string>
     <string name="cat_services_subscriptions">خدمات اور سبسکرپشنز</string>
     <string name="cat_subscriptions_services">سبسکرپشنز اور خدمات</string>
+    <string name="cat_investments">سرمایہ کاری</string>
     <string name="cat_education">تعلیم</string>
     <string name="cat_travel_accommodation">سفر اور رہائش</string>
     <string name="cat_insurance_utilities">انشورنس اور یوٹیلیٹیز</string>
     <string name="cat_rent">کرایہ</string>
     <string name="cat_office_work_supplies">دفتری سامان</string>
     <string name="cat_gifts_donations">تحائف اور عطیات</string>
+    <string name="cat_delivery">ڈیلیوری</string>
     <string name="cat_other">دیگر</string>
     <string name="home_daily_avg">یومیہ اوسط</string>
     <string name="home_vs_last_month">پچھلے مہینے کے مقابلے</string>

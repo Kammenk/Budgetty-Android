@@ -89,6 +89,8 @@
     <string name="upload_price">Preis</string>
     <string name="upload_qty">Anz.</string>
     <string name="upload_discount">Rabatt</string>
+    <string name="upload_charge_delivery">Lieferung und Gebühren</string>
+    <string name="upload_charge_tip">Trinkgeld</string>
     <string name="upload_finalize">Abschließen</string>
     <string name="upload_error_title">Beleg konnte nicht gelesen werden</string>
     <string name="upload_go_back">Zurück</string>
@@ -228,6 +230,8 @@
     <string name="cat_dining_entertainment">Essen und Unterhaltung</string>
     <string name="cat_restaurant_dining">Restaurant und Essen</string>
     <string name="cat_entertainment">Unterhaltung</string>
+    <string name="cat_video_games">Videospiele</string>
+    <string name="cat_tips">Trinkgeld</string>
     <string name="cat_shopping_lifestyle">Shopping und Lifestyle</string>
     <string name="cat_clothing_accessories">Kleidung und Accessoires</string>
     <string name="cat_electronics">Elektronik</string>
@@ -239,12 +243,14 @@
     <string name="cat_car_maintenance">Autowartung</string>
     <string name="cat_services_subscriptions">Dienste und Abos</string>
     <string name="cat_subscriptions_services">Abos und Dienste</string>
+    <string name="cat_investments">Investitionen</string>
     <string name="cat_education">Bildung</string>
     <string name="cat_travel_accommodation">Reise und Unterkunft</string>
     <string name="cat_insurance_utilities">Versicherung und Nebenkosten</string>
     <string name="cat_rent">Miete</string>
     <string name="cat_office_work_supplies">Büro und Arbeitsbedarf</string>
     <string name="cat_gifts_donations">Geschenke und Spenden</string>
+    <string name="cat_delivery">Lieferung</string>
     <string name="cat_other">Sonstiges</string>
     <string name="home_daily_avg">Ø pro Tag</string>
     <string name="home_vs_last_month">vs. Vormonat</string>
