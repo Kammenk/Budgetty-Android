@@ -17,12 +17,22 @@ since the previous entry. The Play Console release-notes field wants the text wr
 
 ## 10.4.0 (versionCode 1040) — 2026-07-14
 
-A feature (MINOR) release: the Home total now reflects your recurring bills, not just receipts.
+A feature (MINOR) release: the Home total now reflects your recurring bills, scanned delivery fees and tips become visible line items, and the free plan gets twice the scans.
 
 ### Added
 - **Recurring bills on the Home summary** — the "Total spent" card now pairs your receipt-backed spending with your planned recurring bills: a slim spent-vs-planned strip, a "Spent" and a "Bills · planned" line, and a combined "With bills" total. The headline no longer looks low by leaving out rent, subscriptions, and other fixed costs. Bills are clearly marked as planned (not yet spent) and shown for the current month only; the card collapses to the plain total when you have no recurring bills. Large amounts scroll instead of being cut off.
+- **Delivery, fees and tips as line items** — when a scanned receipt includes delivery/service/bag fees or a tip, they now appear as their own line items — a combined "Delivery & fees" item and a separate "Tip" item, filed under the new Delivery and Tips categories — instead of silently disappearing into the gap between your items and the printed total. They come from amounts the extractor reads explicitly, so they hold up even when the printed grand total is misread; the behind-the-scenes extra-charges adjustment now carries only the leftover, so nothing is counted twice
 
-> The new strings ship translated in every supported language.
+### Changed
+- **10 free scans, only counted when saved** — the free plan's scan allowance is raised from 5 to 10, and a scan is now consumed only when you save the finished receipt: failed reads and abandoned reviews no longer use one up
+- **Unlimited custom categories for Premium** — Premium no longer caps custom categories at ten; create as many as you like (the free plan keeps three)
+
+### Fixed
+- Review-screen prices keep their trailing zeros (3.20, no longer shown as 3.2)
+- Sheets that can outgrow the screen (Customize sections, add income or recurring bill, add receipt, price range, custom date range) now scroll instead of clipping
+- Text-field placeholders are muted so empty inputs no longer look already filled
+
+> The recurring-bills strings ship translated in every supported language; the two new line-item labels ("Delivery & fees", "Tip") are English-only in this build — translations to follow.
 
 ## 10.3.0 (versionCode 1030) — 2026-07-11
 
