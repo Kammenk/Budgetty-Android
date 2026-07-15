@@ -309,5 +309,9 @@ class HomeViewModel(
                     tax = meta?.tax ?: BigDecimal.ZERO,
                 )
             }
-            .sortedByDescending { it.timestamp }
+            // Newest first by the receipt's printed date. That date is day-granular (local midnight),
+            // so receipts from the same day tie; break the tie by id — the upload timestamp minted at
+            // save — so the most recently added receipt of a day sorts to the top instead of landing in
+            // an arbitrary database order.
+            .sortedWith(compareByDescending<Receipt> { it.timestamp }.thenByDescending { it.id })
 }
