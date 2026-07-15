@@ -25,6 +25,7 @@ class SettingsStore(context: Context) {
         biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
         analyticsEnabled = prefs.getBoolean(KEY_ANALYTICS, true),
         onboardingSeen = prefs.getBoolean(KEY_ONBOARDING_SEEN, false),
+        insightsQuizPending = prefs.getBoolean(KEY_QUIZ_PENDING, false),
         displayName = prefs.getString(KEY_DISPLAY_NAME, "").orEmpty(),
         hiddenHomeSections = prefs.getStringSet(KEY_HIDDEN_HOME, emptySet()).orEmpty().toSet(),
         hiddenInsightsSections = prefs.getStringSet(KEY_HIDDEN_INSIGHTS, emptySet()).orEmpty().toSet(),
@@ -55,6 +56,35 @@ class SettingsStore(context: Context) {
 
     fun setDisplayName(value: String) =
         saveString(KEY_DISPLAY_NAME, value) { it.copy(displayName = value) }
+
+    /** Arms (or disarms) the one-time post-signup Insights setup quiz gate. */
+    fun setInsightsQuizPending(value: Boolean) =
+        save(KEY_QUIZ_PENDING, value) { it.copy(insightsQuizPending = value) }
+
+    /**
+     * Applies a finished setup quiz in one shot: the derived hidden sections and section order (the
+     * same settings the Customize-sections menu edits, so everything stays reversible there), the
+     * raw encoded answers (kept only for future re-tuning; nothing reads them back yet), and the
+     * cleared pending flag that lets the app leave the quiz gate.
+     */
+    fun applyInsightsQuizResult(hidden: Set<String>, order: List<String>, encodedAnswers: String) {
+        val editor = prefs.edit()
+            .putStringSet(KEY_HIDDEN_INSIGHTS, hidden)
+            .putString(KEY_QUIZ_ANSWERS, encodedAnswers)
+            .putBoolean(KEY_QUIZ_PENDING, false)
+        // An empty order means "default": clear the key so the customize sheet's reset row behaves
+        // as if the user never reordered.
+        if (order.isEmpty()) editor.remove(KEY_ORDER_INSIGHTS)
+        else editor.putString(KEY_ORDER_INSIGHTS, order.joinToString(","))
+        editor.apply()
+        _settings.update {
+            it.copy(
+                hiddenInsightsSections = hidden,
+                insightsSectionOrder = order,
+                insightsQuizPending = false,
+            )
+        }
+    }
 
     /** Hides ([hidden] = true) or shows a Home section, persisted by its stable section key. */
     fun setHomeSectionHidden(sectionKey: String, hidden: Boolean) {
@@ -187,6 +217,8 @@ class SettingsStore(context: Context) {
         const val KEY_BIOMETRIC = "biometric_enabled"
         const val KEY_ANALYTICS = "analytics_enabled"
         const val KEY_ONBOARDING_SEEN = "onboarding_seen"
+        const val KEY_QUIZ_PENDING = "insights_quiz_pending"
+        const val KEY_QUIZ_ANSWERS = "insights_quiz_answers"
         const val KEY_DISPLAY_NAME = "display_name"
         const val KEY_HIDDEN_HOME = "hidden_home_sections"
         const val KEY_HIDDEN_INSIGHTS = "hidden_insights_sections"

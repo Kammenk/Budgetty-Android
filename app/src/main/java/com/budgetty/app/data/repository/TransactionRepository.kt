@@ -1,20 +1,22 @@
 package com.budgetty.app.data.repository
 
-import com.budgetty.app.data.local.TransactionDao
 import com.budgetty.app.data.local.TransactionEntity
+import com.budgetty.app.data.local.UserDatabaseManager
 import kotlinx.coroutines.flow.Flow
 
 /** Single point of access to transaction data for the ViewModels. */
 class TransactionRepository(
-    private val dao: TransactionDao,
+    private val db: UserDatabaseManager,
 ) {
-    fun getAll(): Flow<List<TransactionEntity>> = dao.getAll()
+    private val dao get() = db.database.transactionDao()
+
+    fun getAll(): Flow<List<TransactionEntity>> = db.flow { it.transactionDao().getAll() }
 
     fun getBetween(start: Long, end: Long): Flow<List<TransactionEntity>> =
-        dao.getBetween(start, end)
+        db.flow { it.transactionDao().getBetween(start, end) }
 
     /** Earliest recorded transaction timestamp, or null when there are none. */
-    fun earliestTimestamp(): Flow<Long?> = dao.earliestTimestamp()
+    fun earliestTimestamp(): Flow<Long?> = db.flow { it.transactionDao().earliestTimestamp() }
 
     suspend fun getByReceiptId(receiptId: Long): List<TransactionEntity> =
         dao.getByReceiptId(receiptId)

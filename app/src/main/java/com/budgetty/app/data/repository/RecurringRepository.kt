@@ -1,13 +1,15 @@
 package com.budgetty.app.data.repository
 
-import com.budgetty.app.data.local.RecurringDao
 import com.budgetty.app.data.local.RecurringEntity
+import com.budgetty.app.data.local.UserDatabaseManager
 import kotlinx.coroutines.flow.Flow
 
 /** Reads/writes recurring money entries — income sources and recurring payments (bills). */
-class RecurringRepository(private val dao: RecurringDao) {
+class RecurringRepository(private val db: UserDatabaseManager) {
 
-    val items: Flow<List<RecurringEntity>> = dao.getAll()
+    private val dao get() = db.database.recurringDao()
+
+    val items: Flow<List<RecurringEntity>> = db.flow { it.recurringDao().getAll() }
 
     suspend fun upsert(item: RecurringEntity) = dao.upsert(item)
 

@@ -1,24 +1,21 @@
 package com.budgetty.app.data.backup
 
-import com.budgetty.app.data.local.BudgetDao
-import com.budgetty.app.data.local.CategoryDao
-import com.budgetty.app.data.local.CategoryRuleDao
-import com.budgetty.app.data.local.ReceiptDao
-import com.budgetty.app.data.local.RecurringDao
-import com.budgetty.app.data.local.TransactionDao
+import com.budgetty.app.data.local.UserDatabaseManager
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 import java.math.BigDecimal
 
-/** Exports all local data to a JSON backup and restores it (merge or full replace). */
+/** Exports the active account's local data to a JSON backup and restores it (merge or full replace). */
 class BackupManager(
-    private val transactionDao: TransactionDao,
-    private val categoryDao: CategoryDao,
-    private val budgetDao: BudgetDao,
-    private val receiptDao: ReceiptDao,
-    private val categoryRuleDao: CategoryRuleDao,
-    private val recurringDao: RecurringDao,
+    private val db: UserDatabaseManager,
 ) {
+    private val transactionDao get() = db.database.transactionDao()
+    private val categoryDao get() = db.database.categoryDao()
+    private val budgetDao get() = db.database.budgetDao()
+    private val receiptDao get() = db.database.receiptDao()
+    private val categoryRuleDao get() = db.database.categoryRuleDao()
+    private val recurringDao get() = db.database.recurringDao()
+
     private val gson = Gson()
 
     /** Serializes the entire local dataset to a JSON string. */
@@ -64,19 +61,6 @@ class BackupManager(
         categoryRuleDao.insertOrIgnore(data.rules)
         // New ids so a merge never collides; .orEmpty() tolerates pre-v14 backups without this field.
         recurringDao.insertAll(data.recurring.orEmpty().map { it.copy(id = 0) })
-    }
-
-    /**
-     * Erases the user's local financial data — used by account deletion. Categories are kept on
-     * purpose: they are the app's classification taxonomy (seeded once at DB creation), not personal
-     * records, and clearing them would leave the app with no categories to assign.
-     */
-    suspend fun wipeUserData() {
-        transactionDao.clearAll()
-        receiptDao.clearAll()
-        budgetDao.clearAll()
-        categoryRuleDao.clearAll()
-        recurringDao.clearAll()
     }
 }
 

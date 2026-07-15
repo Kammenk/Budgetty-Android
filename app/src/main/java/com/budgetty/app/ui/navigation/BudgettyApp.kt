@@ -54,6 +54,7 @@ import com.budgetty.app.ui.home.HomeScreen
 import com.budgetty.app.ui.insights.InsightsScreen
 import com.budgetty.app.ui.onboarding.OnboardingScreen
 import com.budgetty.app.ui.paywall.PaywallScreen
+import com.budgetty.app.ui.quiz.InsightsQuizScreen
 import com.budgetty.app.ui.rules.CategoryRulesScreen
 import com.budgetty.app.ui.upload.UploadScreen
 import com.budgetty.app.ui.widgets.WidgetsScreen
@@ -86,10 +87,16 @@ fun BudgettyApp(
         }
         // No guest mode: unauthenticated users only ever see the login screen.
         AuthState.SignedOut -> LoginScreen()
-        is AuthState.SignedIn -> MainScaffold(
-            startRoute = startRoute,
-            onStartRouteHandled = onStartRouteHandled,
-        )
+        // A fresh sign-up arms the one-time Insights setup quiz; it gates the main app until
+        // finished or skipped (both clear the pending flag, which recomposes us into the scaffold).
+        is AuthState.SignedIn -> if (settings.insightsQuizPending) {
+            InsightsQuizScreen()
+        } else {
+            MainScaffold(
+                startRoute = startRoute,
+                onStartRouteHandled = onStartRouteHandled,
+            )
+        }
     }
 }
 

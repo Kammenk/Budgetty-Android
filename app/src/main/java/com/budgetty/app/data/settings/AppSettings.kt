@@ -86,11 +86,16 @@ data class AppSettings(
     val analyticsEnabled: Boolean = true,
     /** True once the user has finished (or skipped) the first-launch onboarding carousel. */
     val onboardingSeen: Boolean = false,
+    /**
+     * True from a successful sign-up until the one-time Insights setup quiz is finished or skipped;
+     * keeps the quiz gate up between login and the main app (surviving process death mid-quiz).
+     */
+    val insightsQuizPending: Boolean = false,
     /** User-set display name; blank falls back to a name derived from the email. */
     val displayName: String = "",
     /** Stable keys of Home sections the user has hidden via the Home customization menu (phone). */
     val hiddenHomeSections: Set<String> = emptySet(),
-    /** Stable keys of Insights sections the user has hidden via the Insights customization menu (phone). */
+    /** Stable keys of Insights sections hidden via the customization menu (phone + tablet) or the setup quiz. */
     val hiddenInsightsSections: Set<String> = emptySet(),
     /** User-chosen display order of Home section keys; empty falls back to the default enum order. */
     val homeSectionOrder: List<String> = emptyList(),

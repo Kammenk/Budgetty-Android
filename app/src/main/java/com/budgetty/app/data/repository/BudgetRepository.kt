@@ -1,17 +1,19 @@
 package com.budgetty.app.data.repository
 
-import com.budgetty.app.data.local.BudgetDao
 import com.budgetty.app.data.local.BudgetEntity
+import com.budgetty.app.data.local.UserDatabaseManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 
 /** Reads/writes budget limits. Keys: [MONTHLY], [WEEKLY], or [categoryKey] for a category. */
-class BudgetRepository(private val dao: BudgetDao) {
+class BudgetRepository(private val db: UserDatabaseManager) {
+
+    private val dao get() = db.database.budgetDao()
 
     /** All budgets as key -> amount. */
     val budgets: Flow<Map<String, BigDecimal>> =
-        dao.getAll().map { rows -> rows.associate { it.budgetKey to it.amount } }
+        db.flow { d -> d.budgetDao().getAll().map { rows -> rows.associate { it.budgetKey to it.amount } } }
 
     /** Sets (or, for null / non-positive amounts, clears) the budget for [key]. */
     suspend fun setBudget(key: String, amount: BigDecimal?) {

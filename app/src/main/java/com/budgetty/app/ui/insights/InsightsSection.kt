@@ -4,10 +4,13 @@ import androidx.annotation.StringRes
 import com.budgetty.app.R
 
 /**
- * The toggleable content sections of the phone Insights screen, listed in the header's customization
- * menu. A section is shown unless its [key] is in the user's hidden-sections setting. [key] is
- * persisted, so existing values must stay stable. (Some sections also only appear when there's data
- * to fill them — the toggle gates a section on top of that, it doesn't force it visible.)
+ * The toggleable content sections of the Insights screen, listed in the header's customization
+ * menu on both phone and tablet. A section is shown unless its [key] is in the user's
+ * hidden-sections setting — pre-fillable by the post-signup setup quiz, editable in the menu.
+ * [key] is persisted, so existing values must stay stable. (Some sections also only appear when
+ * there's data to fill them — the toggle gates a section on top of that, it doesn't force it
+ * visible. The tablet body renders its own subset/arrangement, so hiding a section it doesn't
+ * show changes nothing there.)
  */
 enum class InsightsSection(val key: String, @param:StringRes val labelRes: Int) {
     BREAKDOWN("breakdown", R.string.insights_breakdown),

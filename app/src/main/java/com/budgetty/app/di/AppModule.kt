@@ -1,29 +1,11 @@
 package com.budgetty.app.di
 
-import androidx.room.Room
 import com.budgetty.app.data.backup.BackupManager
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.data.ingest.HaikuReceiptExtractor
 import com.budgetty.app.data.ingest.ReceiptIngestManager
-import com.budgetty.app.data.local.BudgettyDatabase
-import com.budgetty.app.data.local.MIGRATION_1_2
-import com.budgetty.app.data.local.MIGRATION_2_3
-import com.budgetty.app.data.local.MIGRATION_3_4
-import com.budgetty.app.data.local.MIGRATION_4_5
-import com.budgetty.app.data.local.MIGRATION_5_6
-import com.budgetty.app.data.local.MIGRATION_6_7
-import com.budgetty.app.data.local.MIGRATION_7_8
-import com.budgetty.app.data.local.MIGRATION_8_9
-import com.budgetty.app.data.local.MIGRATION_9_10
-import com.budgetty.app.data.local.MIGRATION_10_11
-import com.budgetty.app.data.local.MIGRATION_11_12
-import com.budgetty.app.data.local.MIGRATION_12_13
-import com.budgetty.app.data.local.MIGRATION_13_14
-import com.budgetty.app.data.local.MIGRATION_14_15
-import com.budgetty.app.data.local.MIGRATION_15_16
-import com.budgetty.app.data.local.MIGRATION_16_17
-import com.budgetty.app.data.local.categorySeedCallback
+import com.budgetty.app.data.local.UserDatabaseManager
 import com.budgetty.app.data.remote.RECEIPT_API_BASE_URL
 import com.budgetty.app.data.remote.ReceiptApi
 import com.budgetty.app.data.repository.AuthRepository
@@ -43,6 +25,7 @@ import com.budgetty.app.ui.history.HistoryViewModel
 import com.budgetty.app.ui.home.HomeViewModel
 import com.budgetty.app.ui.insights.InsightsViewModel
 import com.budgetty.app.ui.paywall.PaywallViewModel
+import com.budgetty.app.ui.quiz.InsightsQuizViewModel
 import com.budgetty.app.ui.rules.CategoryRulesViewModel
 import com.budgetty.app.ui.upload.UploadViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -59,27 +42,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 val appModule = module {
-    // Database
-    single {
-        Room.databaseBuilder(
-            androidContext(),
-            BudgettyDatabase::class.java,
-            "budgetty.db",
-        ).addMigrations(
-            MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5,
-            MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
-            MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
-            MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17,
-        )
-            .addCallback(categorySeedCallback)
-            .build()
-    }
-    single { get<BudgettyDatabase>().transactionDao() }
-    single { get<BudgettyDatabase>().categoryDao() }
-    single { get<BudgettyDatabase>().budgetDao() }
-    single { get<BudgettyDatabase>().receiptDao() }
-    single { get<BudgettyDatabase>().categoryRuleDao() }
-    single { get<BudgettyDatabase>().recurringDao() }
+    // Database: one file per signed-in account, so accounts never see each other's data.
+    // Repositories resolve their DAOs through the manager on every use (no DAO singletons).
+    single { UserDatabaseManager(androidContext(), get()) }
 
     // Repository
     single { TransactionRepository(get()) }
@@ -90,7 +55,7 @@ val appModule = module {
     single { RecurringRepository(get()) }
 
     // Backup / restore (import-export)
-    single { BackupManager(get(), get(), get(), get(), get(), get()) }
+    single { BackupManager(get()) }
 
     // Free-tier scan quota
     single { ScanQuota(androidContext()) }
@@ -136,8 +101,8 @@ val appModule = module {
     single { HaikuReceiptExtractor(androidContext(), get(), get()) }
 
     // ViewModels
-    viewModel { AuthViewModel(get()) }
-    viewModel { AccountViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { AuthViewModel(get(), get()) }
+    viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
@@ -145,4 +110,5 @@ val appModule = module {
     viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }
+    viewModel { InsightsQuizViewModel(get(), get(), get()) }
 }

@@ -3,6 +3,7 @@ package com.budgetty.app.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.data.repository.AuthRepository
+import com.budgetty.app.data.settings.SettingsStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,10 @@ sealed interface AuthState {
     data class SignedIn(val email: String?) : AuthState
 }
 
-class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
+class AuthViewModel(
+    private val repository: AuthRepository,
+    private val settingsStore: SettingsStore,
+) : ViewModel() {
 
     val authState: StateFlow<AuthState> = repository.currentUser
         .map { user -> if (user == null) AuthState.SignedOut else AuthState.SignedIn(user.email) }
@@ -34,7 +38,18 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
         launchAuth("Sign-in failed") { repository.signInEmail(email.trim(), password) }
 
     fun signUp(email: String, password: String) =
-        launchAuth("Sign-up failed") { repository.signUpEmail(email.trim(), password) }
+        launchAuth("Sign-up failed") {
+            // Arm the one-time Insights setup quiz before the auth state flips to SignedIn, so the
+            // quiz gate is already pending when the main gate recomposes (no Home flash). A failed
+            // sign-up disarms it again.
+            settingsStore.setInsightsQuizPending(true)
+            try {
+                repository.signUpEmail(email.trim(), password)
+            } catch (e: Exception) {
+                settingsStore.setInsightsQuizPending(false)
+                throw e
+            }
+        }
 
     fun signInWithGoogle(idToken: String) =
         launchAuth("Google sign-in failed") { repository.signInWithGoogle(idToken) }
