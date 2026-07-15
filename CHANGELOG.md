@@ -22,8 +22,13 @@ A feature (MINOR) release: a quick guided setup after sign-up tailors the app to
 ### Added
 - **Guided setup after you create an account** — new accounts get a short, skippable questionnaire that shapes the app around how you'll use it. It asks about your main goal, whether you track income, recurring bills, and a spending budget, and how much detail you like — then tailors your Insights screen to match (promoting the sections you care about, tucking away the ones you don't). Along the way you pick your **currency**, and can optionally set a starting **monthly income** and **spending budget** right in the flow, which pre-fill your Budget tab. Everything it sets is reversible afterwards — from Insights → ⋮ → Customize sections, the Budget tab, and Account.
 
+### Changed
+- **The Budget screen now opens on your spending budget** — the budget (period toggle and amount) leads the screen, with income, recurring bills and the income-vs-bills breakdown below it, so the figure you came to set is right there without scrolling
+- **Your date format now applies to short dates too** — History day headers, the Insights trend labels, and the add-receipt and recurring-bill rows now follow the date format you chose in Settings, instead of a fixed "Wed, 25 Jun" style
+
 ### Fixed
 - **Each account's data stays its own** — every signed-in account now keeps its receipts, budgets and history in a separate store on the device. Previously, signing into a second account on the same device could surface the first account's data; now you only ever see your own.
+- **Same-day receipts on Home list newest first** — when several receipts share the same date, the most recently added one now sorts to the top of Recent receipts instead of an arbitrary order
 
 > The setup-quiz text ships fully translated in every supported language. This release also localizes the "Delivery & fees" and "Tip" line-item labels and the newest category names (Video Games, Investments, Tips, Delivery), which were English-only in 10.4.0.
 
