@@ -1,7 +1,7 @@
 package com.budgetty.app.data.repository
 
-import com.budgetty.app.data.local.CategoryRuleDao
 import com.budgetty.app.data.local.CategoryRuleEntity
+import com.budgetty.app.data.local.UserDatabaseManager
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.Flow
  * the same match key.
  */
 class CategoryRuleRepository(
-    private val dao: CategoryRuleDao,
+    private val db: UserDatabaseManager,
 ) {
+    private val dao get() = db.database.categoryRuleDao()
+
     /** Every saved rule, live — backs the "Category rules" management screen. */
-    val rules: Flow<List<CategoryRuleEntity>> = dao.getAll()
+    val rules: Flow<List<CategoryRuleEntity>> = db.flow { it.categoryRuleDao().getAll() }
 
     /** Snapshot of every rule as a normalized-name → category map, for applying to a new scan. */
     suspend fun rulesByName(): Map<String, String> =

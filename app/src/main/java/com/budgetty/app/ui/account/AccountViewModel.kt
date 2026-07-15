@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.data.backup.BackupManager
 import com.budgetty.app.data.billing.BillingManager
+import com.budgetty.app.data.local.UserDatabaseManager
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.data.repository.AuthRepository
 import com.budgetty.app.data.settings.AccentTheme
@@ -30,6 +31,7 @@ class AccountViewModel(
     private val scanQuota: ScanQuota,
     private val appScope: CoroutineScope,
     private val billingManager: BillingManager,
+    private val databaseManager: UserDatabaseManager,
 ) : ViewModel() {
 
     val settings: StateFlow<AppSettings> = settingsStore.settings
@@ -65,17 +67,20 @@ class AccountViewModel(
     }
 
     /**
-     * Deletes the Firebase account, then erases all local data. Runs on [appScope] (not
-     * [viewModelScope]) so the local wipe still completes after deletion flips the auth state and
-     * navigates away from this screen, clearing this ViewModel. [onResult] is delivered on the main
-     * thread. The Firebase user is deleted first, so a [FirebaseAuthRecentLoginRequiredException]
-     * leaves local data untouched.
+     * Deletes the Firebase account, then erases that account's local database file. Runs on
+     * [appScope] (not [viewModelScope]) so the local wipe still completes after deletion flips the
+     * auth state and navigates away from this screen, clearing this ViewModel. [onResult] is
+     * delivered on the main thread. The Firebase user is deleted first, so a
+     * [FirebaseAuthRecentLoginRequiredException] leaves local data untouched.
      */
     fun deleteAccount(onResult: (DeleteAccountResult) -> Unit) {
         appScope.launch {
             val result = try {
+                // Capture the uid up front: successful deletion signs the user out, after which the
+                // active database is no longer theirs — the wipe must target the captured account.
+                val uid = databaseManager.activeUid.value
                 authRepository.deleteAccount()
-                backupManager.wipeUserData()
+                uid?.let { databaseManager.deleteDataFor(it) }
                 scanQuota.reset()
                 DeleteAccountResult.SUCCESS
             } catch (e: FirebaseAuthRecentLoginRequiredException) {

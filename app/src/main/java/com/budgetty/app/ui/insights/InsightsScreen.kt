@@ -188,6 +188,11 @@ private fun InsightsScreenContent(
                 isWide = isWide,
                 periodLabel = periodLabel,
                 stepper = stepper,
+                hiddenSections = hiddenSections,
+                sectionOrder = sectionOrder,
+                onToggleSection = onToggleSection,
+                onReorderSections = onReorderSections,
+                onRevertSections = onRevertSections,
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
             )
@@ -855,6 +860,10 @@ private fun InsightsPhoneBody(
  * Tablet Insights: a single centred column on portrait (capped at [SinglePaneMaxWidth]); a two-pane
  * layout on landscape — charts (donut, stat tiles, trend) on the left, the numeric breakdown
  * (categories, stores, budget, deltas) on the right.
+ *
+ * Section visibility follows the same customize setting as the phone (menu in the header). The
+ * saved custom *order* is persisted but not applied here: the two-pane split is positional, so
+ * cards keep their pane slots.
  */
 @Composable
 private fun InsightsTabletBody(
@@ -862,14 +871,20 @@ private fun InsightsTabletBody(
     isWide: Boolean,
     periodLabel: String,
     stepper: @Composable (Modifier, Boolean) -> Unit,
+    hiddenSections: Set<String>,
+    sectionOrder: List<String>,
+    onToggleSection: (InsightsSection, Boolean) -> Unit,
+    onReorderSections: (List<String>) -> Unit,
+    onRevertSections: () -> Unit,
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
 ) {
+    fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
 
     // Card builders shared by the portrait single column and the landscape two panes.
     val donutCard: @Composable (Modifier) -> Unit = { mod ->
-        BreakdownCard(
+        if (shows(InsightsSection.BREAKDOWN)) BreakdownCard(
             slices = state.slices,
             total = state.total,
             periodLabel = periodLabel,
@@ -878,20 +893,20 @@ private fun InsightsTabletBody(
         )
     }
     val trendCard: @Composable (Modifier) -> Unit = { mod ->
-        InsightCard(modifier = mod) {
+        if (shows(InsightsSection.TREND)) InsightCard(modifier = mod) {
             TrendCardContent(state.trend, state.projectedTotal)
         }
     }
     // Period-over-period comparison as its own card below the trend (mirrors the phone layout);
     // renders nothing when there's no previous period to compare against.
     val periodComparisonCard: @Composable (Modifier) -> Unit = { mod ->
-        state.periodComparison?.let { comparison ->
+        if (shows(InsightsSection.PERIOD_COMPARISON)) state.periodComparison?.let { comparison ->
             InsightCard(modifier = mod) { PeriodComparisonContent(comparison, state.period) }
         }
     }
     // Total / Receipts / Avg / Saved as a compact 2×2 tile grid (fits both the pane and the column).
     val statTiles: @Composable () -> Unit = {
-        Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md)) {
+        if (shows(InsightsSection.SUMMARY)) Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
@@ -925,18 +940,32 @@ private fun InsightsTabletBody(
                 modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.xs),
             )
             stepper(Modifier, false)
+            SectionsMenu(
+                sections = InsightsSection.entries,
+                order = sectionOrder,
+                hiddenSections = hiddenSections,
+                sectionKey = { it.key },
+                labelRes = { it.labelRes },
+                onToggle = onToggleSection,
+                onReorder = onReorderSections,
+                onRevertToDefault = onRevertSections,
+            )
         }
     }
     // The numeric breakdown — the right pane in landscape, stacked below the charts in portrait.
     val breakdownCards: @Composable () -> Unit = {
-        InsightCard { TopCategoriesContent(state.slices, state.total, onSliceClick) }
-        if (state.topStores.isNotEmpty()) {
+        if (shows(InsightsSection.TOP_CATEGORIES)) {
+            InsightCard { TopCategoriesContent(state.slices, state.total, onSliceClick) }
+        }
+        if (shows(InsightsSection.TOP_STORES) && state.topStores.isNotEmpty()) {
             InsightCard { TopStoresContent(state.topStores, onStoreClick) }
         }
-        if (state.biggestPurchases.isNotEmpty()) {
+        if (shows(InsightsSection.BIGGEST_PURCHASES) && state.biggestPurchases.isNotEmpty()) {
             InsightCard { BiggestPurchasesContent(state.biggestPurchases, state.storeByReceiptId) }
         }
-        BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+        if (shows(InsightsSection.BUDGET)) {
+            BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+        }
         if (state.categoryDeltas.isNotEmpty()) {
             InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
         }
@@ -961,8 +990,12 @@ private fun InsightsTabletBody(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
                     ) {
-                        InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
-                        BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+                        if (shows(InsightsSection.BREAKDOWN)) {
+                            InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
+                        }
+                        if (shows(InsightsSection.BUDGET)) {
+                            BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+                        }
                     }
                 }
             } else {
@@ -1015,8 +1048,12 @@ private fun InsightsTabletBody(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
                     ) {
-                        InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
-                        BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+                        if (shows(InsightsSection.BREAKDOWN)) {
+                            InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
+                        }
+                        if (shows(InsightsSection.BUDGET)) {
+                            BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+                        }
                     }
                 }
             } else {

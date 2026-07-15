@@ -1,14 +1,16 @@
 package com.budgetty.app.data.repository
 
-import com.budgetty.app.data.local.CategoryDao
 import com.budgetty.app.data.local.CategoryEntity
+import com.budgetty.app.data.local.UserDatabaseManager
 import kotlinx.coroutines.flow.Flow
 
 /** Single point of access to the saved categories (name → color) for the ViewModels. */
 class CategoryRepository(
-    private val dao: CategoryDao,
+    private val db: UserDatabaseManager,
 ) {
-    val categories: Flow<List<CategoryEntity>> = dao.getAll()
+    private val dao get() = db.database.categoryDao()
+
+    val categories: Flow<List<CategoryEntity>> = db.flow { it.categoryDao().getAll() }
 
     suspend fun upsertAll(categories: List<CategoryEntity>) = dao.upsertAll(categories)
 
