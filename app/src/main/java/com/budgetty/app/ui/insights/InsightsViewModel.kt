@@ -15,6 +15,7 @@ import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
+import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.monthlyAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -126,7 +127,10 @@ data class TrendData(
     val hasData: Boolean get() = buckets.any { it.total.signum() > 0 }
 }
 
-private val DAY_FULL_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMM")
+// The trend's day labels follow the user's date-format preference (day/month order); rebuilt per
+// use since the preference can change at runtime.
+private val DAY_FULL_FORMAT: DateTimeFormatter
+    get() = DateTimeFormatter.ofPattern(AppFormats.dayMonthPattern)
 private val MONTH_AXIS_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM")
 private val MONTH_FULL_FORMAT: DateTimeFormatter = DateTimeFormatter.ofPattern("MMMM")
 

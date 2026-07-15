@@ -255,14 +255,52 @@ private fun BudgetScreenContent(
                 .map { ActiveSub(group, it) }
         }
 
-        // ── The money summary: income, recurring payments, breakdown, and the spending budget.
-        // This is the whole screen's left half in landscape and the top of the single column
-        // otherwise. ──
+        // ── The money summary: the spending budget first, then income, recurring payments, and the
+        // income-vs-bills breakdown. This is the whole screen's left half in landscape and the top of
+        // the single column otherwise. ──
         val moneyPane: @Composable () -> Unit = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.cardSpacing),
             ) {
+                // The spending budget leads: it's what the screen is for, so it sits above the
+                // income/bills context rather than below it.
+                SpendingBudgetHeader()
+                BudgetPeriodToggle(isMonthly = isMonthly, onSelect = { selectPeriod(it) })
+                BudgetAmountCard(
+                    label = activeLabel,
+                    value = amountText,
+                    emphasized = true,
+                    spent = activeSpent,
+                    budget = activeBudget,
+                    onChange = { amountText = it },
+                )
+                // Live "≈ X / other-period" equivalent, so the single amount reads at both cadences.
+                amountText.toBudgetAmount()?.let { amt ->
+                    val equivalent = if (isMonthly) monthlyToWeekly(amt) else weeklyToMonthly(amt)
+                    val res = if (isMonthly) R.string.budget_approx_weekly else R.string.budget_approx_monthly
+                    Text(
+                        text = stringResource(res, equivalent.formatMoney()),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xs),
+                    )
+                }
+                // Save appears only while the budget has unsaved changes.
+                if (budgetDirty) {
+                    Button(
+                        onClick = { saveBudget() },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(MaterialTheme.dimens.buttonHeight),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.action_save),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                }
                 if (!hasIncome && !hasBills) {
                     Text(
                         text = stringResource(R.string.recurring_money_empty_hint),
@@ -306,43 +344,6 @@ private fun BudgetScreenContent(
                         monthlyBills = recurring.monthlyBills,
                         spent = monthlySpent,
                     )
-                }
-                // Header that names the existing spending budget, so it reads apart from income/bills.
-                SpendingBudgetHeader()
-                BudgetPeriodToggle(isMonthly = isMonthly, onSelect = { selectPeriod(it) })
-                BudgetAmountCard(
-                    label = activeLabel,
-                    value = amountText,
-                    emphasized = true,
-                    spent = activeSpent,
-                    budget = activeBudget,
-                    onChange = { amountText = it },
-                )
-                // Live "≈ X / other-period" equivalent, so the single amount reads at both cadences.
-                amountText.toBudgetAmount()?.let { amt ->
-                    val equivalent = if (isMonthly) monthlyToWeekly(amt) else weeklyToMonthly(amt)
-                    val res = if (isMonthly) R.string.budget_approx_weekly else R.string.budget_approx_monthly
-                    Text(
-                        text = stringResource(res, equivalent.formatMoney()),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xs),
-                    )
-                }
-                // Save appears only while the budget has unsaved changes.
-                if (budgetDirty) {
-                    Button(
-                        onClick = { saveBudget() },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(MaterialTheme.dimens.buttonHeight),
-                    ) {
-                        Text(
-                            text = stringResource(R.string.action_save),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    }
                 }
             }
         }

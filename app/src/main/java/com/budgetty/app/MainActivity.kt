@@ -62,6 +62,7 @@ class MainActivity : ComponentActivity() {
             // Refresh the formatting globals (read by formatMoney / formatDate) on each change.
             AppFormats.currencySymbol = settings.currency.symbol
             AppFormats.datePattern = settings.dateFormat.pattern
+            AppFormats.dayMonthPattern = settings.dateFormat.dayMonthPattern
 
             // Re-create the activity when the language changes so attachBaseContext re-applies the
             // new locale and every string/resource re-resolves. The captured initial value resets

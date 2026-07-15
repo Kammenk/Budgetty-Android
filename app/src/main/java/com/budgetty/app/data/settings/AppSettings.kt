@@ -37,11 +37,20 @@ enum class Currency(val code: String, val symbol: String) {
     TRY("TRY", "₺"),
 }
 
-enum class DateFormatOption(val sample: String, val pattern: String) {
-    DAY_MONTH_YEAR("5 Jun 2026", "d MMM yyyy"),
-    DMY_SLASH("05/06/2026", "dd/MM/yyyy"),
-    MDY_SLASH("06/05/2026", "MM/dd/yyyy"),
-    ISO("2026-06-05", "yyyy-MM-dd"),
+/**
+ * User-selectable date format. [pattern] is the full date (with year) used wherever a date shows
+ * standalone; [dayMonthPattern] is the year-less short form for dense contexts (History day
+ * headers, upload/recurring rows) so the day/month ORDER still follows the user's choice.
+ */
+enum class DateFormatOption(
+    val sample: String,
+    val pattern: String,
+    val dayMonthPattern: String,
+) {
+    DAY_MONTH_YEAR("5 Jun 2026", "d MMM yyyy", "d MMM"),
+    DMY_SLASH("05/06/2026", "dd/MM/yyyy", "dd/MM"),
+    MDY_SLASH("06/05/2026", "MM/dd/yyyy", "MM/dd"),
+    ISO("2026-06-05", "yyyy-MM-dd", "MM-dd"),
 }
 
 /**
