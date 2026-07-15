@@ -19,6 +19,8 @@ private val moneyFormat: NumberFormat = NumberFormat.getNumberInstance(Locale.US
 object AppFormats {
     var currencySymbol: String = "лв"
     var datePattern: String = "d MMM yyyy"
+    /** Year-less short form (day/month order follows the same preference as [datePattern]). */
+    var dayMonthPattern: String = "d MMM"
 }
 
 /** Formats a monetary amount as e.g. "12.50 лв" (currency symbol from settings). */
@@ -33,18 +35,17 @@ fun Long.formatDate(): String =
     DateTimeFormatter.ofPattern(AppFormats.datePattern, Locale.getDefault())
         .format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
 
-private val dayMonthFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
-
-/** Formats an epoch-millis timestamp as day + short month, e.g. "24 Jun" (no year). */
+/** Formats an epoch-millis timestamp as day + month with no year, e.g. "24 Jun" — order follows
+ *  the user's date-format preference ([AppFormats.dayMonthPattern]). */
 fun Long.formatDayMonth(): String =
-    dayMonthFormatter.format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
+    DateTimeFormatter.ofPattern(AppFormats.dayMonthPattern, Locale.getDefault())
+        .format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
 
 /** Formats a [YearMonth] as e.g. "June 2026". */
 fun YearMonth.formatMonth(): String = monthFormatter.format(this)
 
-private val dayHeaderFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("EEE, d MMM", Locale.getDefault())
-
-/** Formats a [LocalDate] as abbreviated weekday + day + month, e.g. "Wed, 25 Jun" (no year). */
-fun LocalDate.formatDayHeader(): String = dayHeaderFormatter.format(this)
+/** Formats a [LocalDate] as abbreviated weekday + the preferred day/month short form, e.g.
+ *  "Wed, 25 Jun" — the day/month part follows the user's date-format preference. */
+fun LocalDate.formatDayHeader(): String =
+    DateTimeFormatter.ofPattern("EEE, ${AppFormats.dayMonthPattern}", Locale.getDefault())
+        .format(this)
