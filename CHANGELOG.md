@@ -15,6 +15,18 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.5.0 (versionCode 1050) — 2026-07-15
+
+A feature (MINOR) release: a quick guided setup after sign-up tailors the app to you, and each account now keeps its data to itself.
+
+### Added
+- **Guided setup after you create an account** — new accounts get a short, skippable questionnaire that shapes the app around how you'll use it. It asks about your main goal, whether you track income, recurring bills, and a spending budget, and how much detail you like — then tailors your Insights screen to match (promoting the sections you care about, tucking away the ones you don't). Along the way you pick your **currency**, and can optionally set a starting **monthly income** and **spending budget** right in the flow, which pre-fill your Budget tab. Everything it sets is reversible afterwards — from Insights → ⋮ → Customize sections, the Budget tab, and Account.
+
+### Fixed
+- **Each account's data stays its own** — every signed-in account now keeps its receipts, budgets and history in a separate store on the device. Previously, signing into a second account on the same device could surface the first account's data; now you only ever see your own.
+
+> The setup-quiz text ships fully translated in every supported language. This release also localizes the "Delivery & fees" and "Tip" line-item labels and the newest category names (Video Games, Investments, Tips, Delivery), which were English-only in 10.4.0.
+
 ## 10.4.0 (versionCode 1040) — 2026-07-14
 
 A feature (MINOR) release: the Home total now reflects your recurring bills, scanned delivery fees and tips become visible line items, and the free plan gets twice the scans.
