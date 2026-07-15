@@ -14,27 +14,22 @@ enum class AccentTheme(val label: String) {
     PLUM("Plum"),
 }
 
-/** Top global currencies. [symbol] is appended after the amount. */
+/**
+ * Currencies for the Europe-only release. [symbol] is appended after the amount. Trimmed from a
+ * global set on 2026-07-16: kept EUR/GBP/CHF/SEK/NOK and added the home currencies of the other
+ * supported markets (DKK/PLN/CZK/RON) so every kept [Language]'s country can pick its own. Bulgaria
+ * uses EUR (eurozone since 2026). A removed currency saved by an existing user falls back to EUR.
+ */
 enum class Currency(val code: String, val symbol: String) {
     EUR("EUR", "€"),
-    USD("USD", "$"),
     GBP("GBP", "£"),
-    JPY("JPY", "¥"),
-    CNY("CNY", "¥"),
-    AUD("AUD", "A$"),
-    CAD("CAD", "C$"),
     CHF("CHF", "CHF"),
-    HKD("HKD", "HK$"),
-    SGD("SGD", "S$"),
-    INR("INR", "₹"),
-    KRW("KRW", "₩"),
     SEK("SEK", "kr"),
     NOK("NOK", "kr"),
-    NZD("NZD", "NZ$"),
-    MXN("MXN", "MX$"),
-    BRL("BRL", "R$"),
-    ZAR("ZAR", "R"),
-    TRY("TRY", "₺"),
+    DKK("DKK", "kr"),
+    PLN("PLN", "zł"),
+    CZK("CZK", "Kč"),
+    RON("RON", "lei"),
 }
 
 /**
@@ -54,34 +49,30 @@ enum class DateFormatOption(
 }
 
 /**
- * Top 20 world languages plus a "System default" option. [label] is the language's own name
- * (autonym) so users can find theirs regardless of the current UI language. [tag] is the locale
- * applied app-wide when selected (null = follow the system locale). Folder names in `res/` use the
- * Android resource qualifier, which is "in" for Indonesian (legacy code).
+ * The 16 languages offered in the Europe-only release, plus a "System default" option. [label] is
+ * the language's own name (autonym) so users can find theirs regardless of the current UI language.
+ * [tag] is the locale applied app-wide when selected (null = follow the system locale); it matches
+ * the `res/values-<tag>/` qualifier (Norwegian Bokmål = "nb"). Languages dropped for the Europe
+ * release keep their translations under `archived-locales/` at the repo root for future re-add.
  */
 enum class Language(val label: String, val tag: String?) {
     SYSTEM("System default", null),
     ENGLISH("English", "en"),
-    CHINESE("中文", "zh"),
-    HINDI("हिन्दी", "hi"),
     SPANISH("Español", "es"),
     FRENCH("Français", "fr"),
-    ARABIC("العربية", "ar"),
-    BENGALI("বাংলা", "bn"),
+    GERMAN("Deutsch", "de"),
+    ITALIAN("Italiano", "it"),
     PORTUGUESE("Português", "pt"),
     RUSSIAN("Русский", "ru"),
-    URDU("اردو", "ur"),
-    INDONESIAN("Indonesia", "id"),
-    GERMAN("Deutsch", "de"),
-    JAPANESE("日本語", "ja"),
-    TURKISH("Türkçe", "tr"),
-    KOREAN("한국어", "ko"),
-    ITALIAN("Italiano", "it"),
-    VIETNAMESE("Tiếng Việt", "vi"),
-    POLISH("Polski", "pl"),
-    UKRAINIAN("Українська", "uk"),
+    SWEDISH("Svenska", "sv"),
     DUTCH("Nederlands", "nl"),
+    NORWEGIAN("Norsk", "nb"),
+    DANISH("Dansk", "da"),
+    FINNISH("Suomi", "fi"),
+    POLISH("Polski", "pl"),
+    CZECH("Čeština", "cs"),
     BULGARIAN("Български", "bg"),
+    ROMANIAN("Română", "ro"),
 }
 
 data class AppSettings(
