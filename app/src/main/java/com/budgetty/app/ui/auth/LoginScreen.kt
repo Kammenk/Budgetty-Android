@@ -73,6 +73,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
+import com.budgetty.app.ui.util.isCompactHeight
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -187,7 +188,12 @@ private fun TabletLogin(
         modifier = modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .padding(MaterialTheme.dimens.xl),
+            // A short landscape window can't spare the full inset margin: it comes straight off the
+            // form pane's usable height, where it would push "Sign in" below the fold.
+            .padding(
+                horizontal = MaterialTheme.dimens.xl,
+                vertical = if (isCompactHeight()) MaterialTheme.dimens.sm else MaterialTheme.dimens.xl,
+            ),
     ) {
         Row(
             modifier = Modifier
@@ -344,6 +350,13 @@ private fun LoginForm(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    // On a short window (landscape phone/tablet) the form is taller than the pane, so it scrolls and
+    // the full-height rhythm below would leave "Sign in" off-screen on arrival. Economise: drop the
+    // decorative header (the brand panel already names the app on tablets) and tighten every gap, so
+    // email + password + "Sign in" all land above the fold. See isCompactHeight.
+    val compactHeight = isCompactHeight()
+    val blockGap = if (compactHeight) MaterialTheme.dimens.sm else MaterialTheme.dimens.xl
+    val fieldGap = if (compactHeight) MaterialTheme.dimens.sm else MaterialTheme.dimens.lg
     val context = LocalContext.current
     // Resolved here (not inside callbacks/coroutines) because stringResource is @Composable-only.
     val resetSentMsg = stringResource(R.string.login_reset_sent)
@@ -354,7 +367,10 @@ private fun LoginForm(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = MaterialTheme.dimens.xxl, vertical = MaterialTheme.dimens.xxxl),
+            .padding(
+                horizontal = MaterialTheme.dimens.xxl,
+                vertical = if (compactHeight) MaterialTheme.dimens.sm else MaterialTheme.dimens.xxxl,
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -364,8 +380,10 @@ private fun LoginForm(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (tablet) TabletFormHeader(isSignUp) else PhoneHeader(isSignUp)
-            Spacer(Modifier.height(MaterialTheme.dimens.xxxl))
+            if (!compactHeight) {
+                if (tablet) TabletFormHeader(isSignUp) else PhoneHeader(isSignUp)
+                Spacer(Modifier.height(MaterialTheme.dimens.xxxl))
+            }
 
             // Email
             FieldLabel(stringResource(R.string.login_email))
@@ -378,7 +396,7 @@ private fun LoginForm(
                 colors = loginFieldColors(),
                 modifier = Modifier.fillMaxWidth().testTag(LoginTagEmail),
             )
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
+            Spacer(Modifier.height(fieldGap))
 
             // Password
             FieldLabel(stringResource(R.string.login_password))
@@ -434,7 +452,7 @@ private fun LoginForm(
                 )
             }
 
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
             Button(
                 onClick = {
                     when {
@@ -466,7 +484,7 @@ private fun LoginForm(
                 }
             }
 
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -486,7 +504,7 @@ private fun LoginForm(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
                 )
             }
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
 
             OutlinedButton(
                 onClick = onGoogleSignIn,
@@ -505,7 +523,7 @@ private fun LoginForm(
                 Text(stringResource(R.string.login_google), style = MaterialTheme.typography.titleMedium)
             }
 
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -711,6 +729,26 @@ private fun LoginScreenPreview() {
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
 private fun LoginScreenTabletPreview() {
+    BudgettyTheme {
+        LoginScreenContent(
+            loading = false,
+            error = null,
+            onSignIn = { _, _ -> },
+            onSignUp = { _, _ -> },
+            onResetPassword = { _, _ -> },
+            onSetError = {},
+            onGoogleSignIn = {},
+        )
+    }
+}
+
+/**
+ * Short landscape window (a phone/small tablet on its side): wide enough for the split layout but
+ * only ~411dp tall. "Sign in" must still be visible without scrolling — see [isCompactHeight].
+ */
+@Preview(name = "Landscape (short window)", showBackground = true, widthDp = 914, heightDp = 411)
+@Composable
+private fun LoginScreenShortLandscapePreview() {
     BudgettyTheme {
         LoginScreenContent(
             loading = false,
