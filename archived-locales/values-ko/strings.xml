@@ -15,7 +15,6 @@
     <string name="tier_free">무료</string>
     <string name="tier_premium">프리미엄</string>
     <string name="account_budget">예산</string>
-    <string name="account_notifications">푸시 알림</string>
     <string name="account_currency">통화</string>
     <string name="account_export">데이터 내보내기</string>
     <string name="account_import">데이터 가져오기</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">강조 색상</string>
     <string name="account_date_format">날짜 형식</string>
     <string name="account_language">언어</string>
-    <string name="section_privacy">개인정보 및 보안</string>
-    <string name="account_biometric">생체 인증</string>
-    <string name="account_analytics">분석</string>
     <string name="section_support">지원 및 정보</string>
     <string name="account_help">도움말 및 FAQ</string>
     <string name="account_contact">고객 지원 문의</string>

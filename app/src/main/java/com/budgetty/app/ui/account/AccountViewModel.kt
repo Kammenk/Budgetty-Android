@@ -45,9 +45,6 @@ class AccountViewModel(
     fun setCurrency(value: Currency) = settingsStore.setCurrency(value)
     fun setDateFormat(value: DateFormatOption) = settingsStore.setDateFormat(value)
     fun setLanguage(value: Language) = settingsStore.setLanguage(value)
-    fun setNotificationsEnabled(value: Boolean) = settingsStore.setNotificationsEnabled(value)
-    fun setBiometricEnabled(value: Boolean) = settingsStore.setBiometricEnabled(value)
-    fun setAnalyticsEnabled(value: Boolean) = settingsStore.setAnalyticsEnabled(value)
     fun setDisplayName(value: String) = settingsStore.setDisplayName(value.trim())
 
     /** Builds the JSON backup of all local data. */

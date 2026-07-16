@@ -15,7 +15,6 @@
     <string name="tier_free">मुफ़्त</string>
     <string name="tier_premium">प्रीमियम</string>
     <string name="account_budget">बजट</string>
-    <string name="account_notifications">पुश सूचनाएं</string>
     <string name="account_currency">मुद्रा</string>
     <string name="account_export">डेटा निर्यात करें</string>
     <string name="account_import">डेटा आयात करें</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">एक्सेंट रंग</string>
     <string name="account_date_format">तारीख प्रारूप</string>
     <string name="account_language">भाषा</string>
-    <string name="section_privacy">गोपनीयता और सुरक्षा</string>
-    <string name="account_biometric">बायोमेट्रिक प्रमाणीकरण</string>
-    <string name="account_analytics">विश्लेषण</string>
     <string name="section_support">सहायता और परिचय</string>
     <string name="account_help">सहायता और सामान्य प्रश्न</string>
     <string name="account_contact">सहायता से संपर्क करें</string>

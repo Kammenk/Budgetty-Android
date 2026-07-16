@@ -17,7 +17,6 @@
     <string name="tier_free">Zdarma</string>
     <string name="tier_premium">Premium</string>
     <string name="account_budget">Rozpočet</string>
-    <string name="account_notifications">Push oznámení</string>
     <string name="account_currency">Měna</string>
     <string name="account_export">Exportovat data</string>
     <string name="account_import">Importovat data</string>
@@ -76,12 +75,10 @@
     <string name="account_accent">Barva zvýraznění</string>
     <string name="account_date_format">Formát data</string>
     <string name="account_language">Jazyk</string>
-    <string name="section_privacy">Soukromí &amp; zabezpečení</string>
-    <string name="account_biometric">Biometrické ověření</string>
-    <string name="account_analytics">Analytika</string>
     <string name="section_support">Podpora &amp; o aplikaci</string>
     <string name="account_help">Nápověda &amp; časté dotazy</string>
-    <string name="account_contact">Kontaktovat podporu</string>
+    <string name="account_contact">Kontaktujte nás</string>
+    <string name="account_contact_subtitle">Nahlaste problém, navrhněte funkci nebo jen pozdravte</string>
     <string name="account_rate">Ohodnotit Budgetty</string>
     <string name="account_privacy_policy">Zásady ochrany soukromí</string>
     <string name="account_sign_out">Odhlásit se</string>
@@ -417,8 +414,15 @@
     <string name="paywall_hero_title">Získejte z Budgetty více</string>
     <string name="paywall_hero_subtitle">Bez zkušební verze zdarma · zrušte kdykoli</string>
     <string name="paywall_benefit_scans">Neomezené skenování účtenek</string>
-    <string name="paywall_benefit_themes">Motivy barev zvýraznění</string>
+    <string name="paywall_benefit_scans_detail">Bezplatný plán končí na %1$d</string>
+    <string name="paywall_benefit_categories">Neomezené vlastní kategorie</string>
+    <string name="paywall_benefit_categories_detail">Bezplatný plán zahrnuje %1$d</string>
+    <string name="paywall_benefit_recurring">Neomezené pravidelné účty</string>
+    <string name="paywall_benefit_recurring_detail">Bezplatný plán zahrnuje %1$d</string>
+    <string name="paywall_benefit_themes">Všechny motivy zvýraznění</string>
+    <string name="paywall_benefit_themes_detail">Sage, Ocean a Plum</string>
     <string name="paywall_benefit_cloud">Cloudová záloha &amp; synchronizace</string>
+    <string name="paywall_benefit_soon">Již brzy</string>
     <string name="paywall_premium_title">Máte Premium</string>
     <string name="paywall_premium_subtitle">Děkujeme za podporu!</string>
     <string name="paywall_unavailable_title">Zatím nedostupné</string>
@@ -452,9 +456,10 @@
     <string name="login_subtitle_signin">Přihlaste se ke svému účtu</string>
     <string name="login_subtitle_signup">Začněte během několika sekund</string>
     <string name="login_tagline">Osobní rozpočtování založené na účtenkách</string>
-    <string name="login_feature_1">Vyfoťte účtenku — AI ji přečte</string>
-    <string name="login_feature_2">Automaticky roztříděné položky</string>
-    <string name="login_feature_3">Sledování rozpočtu &amp; upozornění</string>
+    <string name="login_feature_1">Naskenujte účtenku, získáte každou položku</string>
+    <string name="login_feature_2">Automatické řazení do kategorií</string>
+    <string name="login_feature_3">Rozpočty, účty a přehledy výdajů</string>
+    <string name="login_premium_note">Premium odemyká neomezené skeny, kategorie a účty</string>
 
     <string name="onb1_title">Vyfoťte jakoukoli účtenku</string>
     <string name="onb1_body">Vyfoťte papírovou účtenku nebo nahrajte PDF. Zaznamenat nákup je vždy na jedno klepnutí.</string>

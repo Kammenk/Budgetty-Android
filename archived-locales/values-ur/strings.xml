@@ -15,7 +15,6 @@
     <string name="tier_free">مفت</string>
     <string name="tier_premium">پریمیم</string>
     <string name="account_budget">بجٹ</string>
-    <string name="account_notifications">پش نوٹیفیکیشنز</string>
     <string name="account_currency">کرنسی</string>
     <string name="account_export">ڈیٹا ایکسپورٹ کریں</string>
     <string name="account_import">ڈیٹا امپورٹ کریں</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">ایکسنٹ رنگ</string>
     <string name="account_date_format">تاریخ کا فارمیٹ</string>
     <string name="account_language">زبان</string>
-    <string name="section_privacy">رازداری اور سیکیورٹی</string>
-    <string name="account_biometric">بایومیٹرک تصدیق</string>
-    <string name="account_analytics">تجزیات</string>
     <string name="section_support">سپورٹ اور بارے میں</string>
     <string name="account_help">مدد اور عمومی سوالات</string>
     <string name="account_contact">سپورٹ سے رابطہ کریں</string>

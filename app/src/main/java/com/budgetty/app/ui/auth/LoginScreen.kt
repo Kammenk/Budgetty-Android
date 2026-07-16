@@ -224,11 +224,17 @@ private fun TabletLogin(
 }
 
 /**
- * The purple brand panel shown on the left of the tablet layout: app mark, name, tagline and the
- * three selling points, over a brand-purple gradient with a few soft, clipped highlight circles.
+ * The purple brand panel shown on the left of the tablet layout: app mark, name, tagline, the three
+ * selling points and a closing note on what Premium adds, over a brand-purple gradient with a few
+ * soft, clipped highlight circles. Pre-auth, so it sells the app rather than the subscription —
+ * there's no account to buy against yet, and the paywall does the actual pitch.
  */
 @Composable
 private fun BrandingPanel(modifier: Modifier = Modifier) {
+    // The panel is vertically centred and cannot scroll, so on a short landscape window every gap
+    // has to give: at full rhythm the premium note falls off the bottom. See isCompactHeight.
+    val compactHeight = isCompactHeight()
+    val featureGap = if (compactHeight) MaterialTheme.dimens.md else MaterialTheme.dimens.xl
     Box(
         modifier = modifier
             .clipToBounds()
@@ -261,27 +267,35 @@ private fun BrandingPanel(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 40.dp, vertical = 48.dp),
+                .padding(horizontal = 40.dp, vertical = if (compactHeight) MaterialTheme.dimens.xl else 48.dp),
             verticalArrangement = Arrangement.Center,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(Color.White.copy(alpha = 0.16f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    Icons.Filled.Receipt,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(MaterialTheme.dimens.xxxl),
-                )
+            // The app mark and name are decorative here — the form pane beside them already says
+            // where you are, so a short window spends its height on the selling points instead.
+            if (!compactHeight) {
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color.White.copy(alpha = 0.16f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.Filled.Receipt,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(MaterialTheme.dimens.xxxl),
+                    )
+                }
+                Spacer(Modifier.height(MaterialTheme.dimens.xxl))
             }
-            Spacer(Modifier.height(MaterialTheme.dimens.xxl))
             Text(
                 text = "Budgetty",
-                style = MaterialTheme.typography.displaySmall,
+                style = if (compactHeight) {
+                    MaterialTheme.typography.headlineMedium
+                } else {
+                    MaterialTheme.typography.displaySmall
+                },
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
             )
@@ -291,12 +305,20 @@ private fun BrandingPanel(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White.copy(alpha = 0.85f),
             )
-            Spacer(Modifier.height(40.dp))
+            Spacer(Modifier.height(if (compactHeight) MaterialTheme.dimens.xl else 40.dp))
             FeatureRow(stringResource(R.string.login_feature_1))
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(featureGap))
             FeatureRow(stringResource(R.string.login_feature_2))
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(featureGap))
             FeatureRow(stringResource(R.string.login_feature_3))
+            Spacer(Modifier.height(if (compactHeight) MaterialTheme.dimens.lg else MaterialTheme.dimens.xxl))
+            HorizontalDivider(color = Color.White.copy(alpha = 0.22f))
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            Text(
+                text = stringResource(R.string.login_premium_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White.copy(alpha = 0.75f),
+            )
         }
     }
 }

@@ -15,7 +15,6 @@
     <string name="tier_free">無料</string>
     <string name="tier_premium">プレミアム</string>
     <string name="account_budget">予算</string>
-    <string name="account_notifications">プッシュ通知</string>
     <string name="account_currency">通貨</string>
     <string name="account_export">データをエクスポート</string>
     <string name="account_import">データをインポート</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">アクセントカラー</string>
     <string name="account_date_format">日付形式</string>
     <string name="account_language">言語</string>
-    <string name="section_privacy">プライバシーとセキュリティ</string>
-    <string name="account_biometric">生体認証</string>
-    <string name="account_analytics">分析</string>
     <string name="section_support">サポートと情報</string>
     <string name="account_help">ヘルプとFAQ</string>
     <string name="account_contact">サポートに問い合わせ</string>

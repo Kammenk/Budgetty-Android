@@ -17,7 +17,6 @@
     <string name="tier_free">Gratis</string>
     <string name="tier_premium">Premium</string>
     <string name="account_budget">Budget</string>
-    <string name="account_notifications">Push-notifikationer</string>
     <string name="account_currency">Valuta</string>
     <string name="account_export">Eksportér data</string>
     <string name="account_import">Importér data</string>
@@ -76,12 +75,10 @@
     <string name="account_accent">Accentfarve</string>
     <string name="account_date_format">Datoformat</string>
     <string name="account_language">Sprog</string>
-    <string name="section_privacy">Privatliv &amp; sikkerhed</string>
-    <string name="account_biometric">Biometrisk godkendelse</string>
-    <string name="account_analytics">Analyse</string>
     <string name="section_support">Support &amp; om</string>
     <string name="account_help">Hjælp &amp; ofte stillede spørgsmål</string>
-    <string name="account_contact">Kontakt support</string>
+    <string name="account_contact">Kontakt os</string>
+    <string name="account_contact_subtitle">Rapportér et problem, foreslå en funktion, eller sig bare hej</string>
     <string name="account_rate">Bedøm Budgetty</string>
     <string name="account_privacy_policy">Privatlivspolitik</string>
     <string name="account_sign_out">Log ud</string>
@@ -417,8 +414,15 @@
     <string name="paywall_hero_title">Få mere ud af Budgetty</string>
     <string name="paywall_hero_subtitle">Ingen gratis prøveperiode · opsig når som helst</string>
     <string name="paywall_benefit_scans">Ubegrænsede kvitteringsscanninger</string>
-    <string name="paywall_benefit_themes">Accentfarvetemaer</string>
+    <string name="paywall_benefit_scans_detail">Gratisplanen stopper ved %1$d</string>
+    <string name="paywall_benefit_categories">Ubegrænsede egne kategorier</string>
+    <string name="paywall_benefit_categories_detail">Gratisplanen indeholder %1$d</string>
+    <string name="paywall_benefit_recurring">Ubegrænsede faste regninger</string>
+    <string name="paywall_benefit_recurring_detail">Gratisplanen indeholder %1$d</string>
+    <string name="paywall_benefit_themes">Alle accentfarvetemaer</string>
+    <string name="paywall_benefit_themes_detail">Sage, Ocean og Plum</string>
     <string name="paywall_benefit_cloud">Cloud-sikkerhedskopi &amp; synk.</string>
+    <string name="paywall_benefit_soon">Kommer snart</string>
     <string name="paywall_premium_title">Du er Premium</string>
     <string name="paywall_premium_subtitle">Tak for støtten!</string>
     <string name="paywall_unavailable_title">Ikke tilgængelig endnu</string>
@@ -452,9 +456,10 @@
     <string name="login_subtitle_signin">Log ind på din konto</string>
     <string name="login_subtitle_signup">Kom i gang på sekunder</string>
     <string name="login_tagline">Kvitteringsdrevet personlig budgettering</string>
-    <string name="login_feature_1">Tag en kvittering — AI læser den</string>
-    <string name="login_feature_2">Automatisk kategoriserede poster</string>
-    <string name="login_feature_3">Budgetsporing &amp; advarsler</string>
+    <string name="login_feature_1">Scan en kvittering, få hver varelinje</string>
+    <string name="login_feature_2">Automatisk kategorisortering</string>
+    <string name="login_feature_3">Budgetter, regninger og forbrugsindsigt</string>
+    <string name="login_premium_note">Premium låser op for ubegrænsede scanninger, kategorier og regninger</string>
 
     <string name="onb1_title">Tag et billede af enhver kvittering</string>
     <string name="onb1_body">Fotografér en papirkvittering eller upload en PDF. At registrere et køb er altid ét tryk væk.</string>
