@@ -464,7 +464,7 @@
     <string name="onb1_title">Tag et billede af enhver kvittering</string>
     <string name="onb1_body">Fotografér en papirkvittering eller upload en PDF. At registrere et køb er altid ét tryk væk.</string>
     <string name="onb2_title">Vi læser &amp; kategoriserer den</string>
-    <string name="onb2_body">Budgettys AI trækker butik, dato, rabat og hver enkelt post ud — hver sorteret i en kategori. Du gennemgår bare og gemmer.</string>
+    <string name="onb2_body">Budgetty trækker butik, dato, rabat og hver enkelt post ud — hver sorteret i en kategori. Du gennemgår bare og gemmer.</string>
     <string name="onb3_title">Se, hvor dine penge går hen</string>
     <string name="onb3_body">Tydelige diagrammer opdeler dit forbrug efter kategori, butik og tid, så det fulde billede altid er ét blik væk.</string>
     <string name="onb4_title">Sæt budgetter, der holder dig på sporet</string>

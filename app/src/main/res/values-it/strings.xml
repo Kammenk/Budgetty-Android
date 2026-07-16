@@ -163,7 +163,7 @@
     <string name="onb1_title">Scansiona qualsiasi scontrino</string>
     <string name="onb1_body">Fotografa uno scontrino cartaceo o carica un PDF. Registrare un acquisto è sempre a portata di tocco.</string>
     <string name="onb2_title">Lo leggiamo e lo categorizziamo</string>
-    <string name="onb2_body">L\'IA di Budgetty estrae negozio, data, sconto e ogni articolo, tutti ordinati per categoria. Tu devi solo controllare e salvare.</string>
+    <string name="onb2_body">Budgetty estrae negozio, data, sconto e ogni articolo, tutti ordinati per categoria. Tu devi solo controllare e salvare.</string>
     <string name="onb3_title">Scopri dove vanno i tuoi soldi</string>
     <string name="onb3_body">Grafici chiari suddividono le tue spese per categoria, negozio e periodo, così hai sempre il quadro completo a colpo d\'occhio.</string>
     <string name="onb4_title">Imposta budget che ti tengono in carreggiata</string>

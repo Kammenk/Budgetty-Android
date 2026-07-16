@@ -163,7 +163,7 @@
     <string name="onb1_title">Escaneie qualquer recibo</string>
     <string name="onb1_body">Fotografe um recibo de papel ou envie um PDF. Registrar uma compra está sempre a um toque.</string>
     <string name="onb2_title">Nós lemos e categorizamos</string>
-    <string name="onb2_body">A IA do Budgetty extrai a loja, a data, o desconto e cada item, todos organizados por categoria. Você só revisa e salva.</string>
+    <string name="onb2_body">O Budgetty extrai a loja, a data, o desconto e cada item, todos organizados por categoria. Você só revisa e salva.</string>
     <string name="onb3_title">Veja para onde vai seu dinheiro</string>
     <string name="onb3_body">Gráficos claros dividem seus gastos por categoria, loja e período, para você ter sempre o panorama completo num relance.</string>
     <string name="onb4_title">Defina orçamentos que mantêm você no caminho</string>

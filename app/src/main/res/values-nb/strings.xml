@@ -464,7 +464,7 @@
     <string name="onb1_title">Fang hvilken som helst kvittering</string>
     <string name="onb1_body">Ta bilde av en papirkvittering eller last opp en PDF. Å fange et kjøp er alltid ett trykk unna.</string>
     <string name="onb2_title">Vi leser &amp; kategoriserer den</string>
-    <string name="onb2_body">Budgettys AI henter ut butikk, dato, rabatt og hver oppføring — hver sortert i en kategori. Du bare ser gjennom og lagrer.</string>
+    <string name="onb2_body">Budgetty henter ut butikk, dato, rabatt og hver oppføring — hver sortert i en kategori. Du bare ser gjennom og lagrer.</string>
     <string name="onb3_title">Se hvor pengene dine går</string>
     <string name="onb3_body">Tydelige diagrammer bryter ned forbruket ditt etter kategori, butikk og tid, så helheten alltid er ett blikk unna.</string>
     <string name="onb4_title">Sett budsjetter som holder deg på sporet</string>

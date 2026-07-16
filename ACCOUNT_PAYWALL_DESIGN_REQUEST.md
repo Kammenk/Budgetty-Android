@@ -1,21 +1,28 @@
-# Claude Design request — Account trim + Paywall benefit list + login panel copy
+# Claude Design request — Account trim, Paywall benefits, and the AI wording
 
 > Paste everything below the line into the **Claude Design** chat for the
 > "Budgetty app design brief" project. It will update the existing `*.dc.html`
 > mockups in that project; once they're there, Claude Code can read them back
 > via DesignSync and confirm the app matches.
 >
-> Implemented in the app on branch `account-paywall-cleanup` (commit
-> `6547e73`). The **code has already shipped these changes** — this request
-> exists so the mockups catch up, not the other way round.
+> Implemented in the app on branch `account-paywall-cleanup` (commits
+> `6547e73` + the onboarding follow-up). The **code has already shipped these
+> changes** — this request exists so the mockups catch up, not the other way
+> round.
 
 ---
 
-Hi! We just trimmed the **Account** screen and rebuilt the **Paywall** benefit
-list in the Android app, and the mockups are now behind in a few places. Please
-bring them back in line. Everything below is already live in code, so treat it as
-a spec to match rather than a proposal to explore — except the two spots marked
-**your call**, where I'd like your judgement.
+Hi! We just trimmed the **Account** screen, rebuilt the **Paywall** benefit list,
+and took the **AI wording out of the product** in the Android app. The mockups are
+now behind in a few places — and while checking, I found some drift that predates
+all of this. Please bring them back in line. Everything below is already live in
+code, so treat it as a spec to match rather than a proposal to explore — except
+the three spots marked **your call**, where I'd like your judgement.
+
+**One thing to be careful about:** "no AI wording" applies to **product copy
+only**. The privacy policy's AI limited-use disclosure names Anthropic
+deliberately and is a **required Play disclosure** — it must not be touched, in
+the app or anywhere in this project.
 
 ## Why these changes happened
 
@@ -196,7 +203,63 @@ mark entirely**, drops "Budgetty" from 36px to ~28px, and tightens the gaps
 (feature gap 20px → 12px). Worth showing as a variant if that's cheap — this is
 the screen the below-the-fold bug hit last time.
 
-## 5. Three mockups are now orphaned — please retire or park them
+## 5. Onboarding — the AI line goes here too, and the copy has drifted badly
+
+Applies to `OnboardingScreen.dc.html`, `OnboardingScreenTabletTwoPane.dc.html`,
+`OnboardingScreenTabletPortrait.dc.html` and `TabletOnboardingScreen.dc.html`.
+
+**Every one of the four names AI on the categorize slide, and every one says it
+differently:**
+
+| File | Current slide-2 body |
+|---|---|
+| `OnboardingScreen.dc.html` | "**AI** pulls every line item and sorts it into a category — you just check it." |
+| `OnboardingScreenTabletTwoPane.dc.html` | "**AI** pulls every line item and sorts it into a category automatically. You just review and confirm." |
+| `TabletOnboardingScreen.dc.html` | "Snap any receipt — **AI** pulls every line item and sorts it into a category. You just check it." |
+| `OnboardingScreenTabletPortrait.dc.html` | "**AI** sorts each item into a category automatically. You just review and confirm in seconds." |
+
+In the app this slide has already been reworded — Budgetty itself is now the
+subject of the sentence, which also reads better than crediting the tech:
+
+> **We read & categorize it**
+> Budgetty pulls out the store, date, discount and every line item — each sorted
+> into a category. You just review and save.
+
+### While you're in there: two more things
+
+- **`OnboardingScreenTabletPortrait.dc.html` titles slide 2 "We categorize it"**
+  where the other three say "We read & categorize it". The app says "We read &
+  categorize it".
+- **Slide 4 promises alerts** — "Get alerts before you overspend, not after"
+  (both deck files). This is the **same phantom feature** as the notifications
+  toggle in §1 and the "alerts" line in §4: nothing sends any alert, and nothing
+  will. The app's slide 4 makes no such promise. Please drop it.
+
+### Please resync all four slides to the app's actual copy
+
+The mockups have drifted well beyond the AI line — slide titles and bodies differ
+from the app *and* from each other. The app is the source of truth here:
+
+| # | Title | Body |
+|---|---|---|
+| 1 | Snap any receipt | Photograph a paper receipt or upload a PDF. Capturing a purchase is always one tap away. |
+| 2 | We read & categorize it | Budgetty pulls out the store, date, discount and every line item — each sorted into a category. You just review and save. |
+| 3 | See where your money goes | Clear charts break your spending down by category, store and time, so the full picture is always a glance away. |
+| 4 | Set budgets that keep you on track | Monthly, weekly and per-category budgets with friendly green-amber-red progress keep your goals in sight. |
+
+(For reference, the mockups currently title slides 3 and 4 "See where it goes"
+and "Set budgets that work", and slide 1's body is about pointing the camera
+rather than the photo-or-PDF choice the app actually offers.)
+
+> **Your call (c):** `OnboardingScreen.dc.html` and `TabletOnboardingScreen.dc.html`
+> aren't decks at all — they're prop-driven single-slide components whose
+> *default props* happen to contain slide 2's text, which is why the AI line is
+> baked into them. If the canonical phone deck lives in a caller
+> (`Phone.dc.html` / `Shots Phone.dc.html`?), the fix probably belongs there and
+> these two just need their defaults cleaned. Your call which — I only need the
+> AI wording gone from wherever it renders.
+
+## 6. Three mockups are now orphaned — please retire or park them
 
 These depict features that this change **deleted rather than deferred**. Nothing
 in the app navigates to any of them, and nothing will:
@@ -240,6 +303,11 @@ login_feature_1               Scan a receipt, get every line item
 login_feature_2               Automatic category sorting
 login_feature_3               Budgets, bills & spending insights
 login_premium_note            Premium unlocks unlimited scans, categories & bills
+
+onb2_title                    We read & categorize it          (unchanged)
+onb2_body                     Budgetty pulls out the store, date, discount and
+                              every line item — each sorted into a category.
+                              You just review and save.
 ```
 
 Removed entirely: `account_notifications`, `section_privacy`, `account_biometric`,

@@ -504,7 +504,7 @@
     <string name="onb1_title">Snap any receipt</string>
     <string name="onb1_body">Photograph a paper receipt or upload a PDF. Capturing a purchase is always one tap away.</string>
     <string name="onb2_title">We read &amp; categorize it</string>
-    <string name="onb2_body">Budgetty\'s AI pulls out the store, date, discount and every line item — each sorted into a category. You just review and save.</string>
+    <string name="onb2_body">Budgetty pulls out the store, date, discount and every line item — each sorted into a category. You just review and save.</string>
     <string name="onb3_title">See where your money goes</string>
     <string name="onb3_body">Clear charts break your spending down by category, store and time, so the full picture is always a glance away.</string>
     <string name="onb4_title">Set budgets that keep you on track</string>

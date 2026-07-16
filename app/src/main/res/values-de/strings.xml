@@ -163,7 +163,7 @@
     <string name="onb1_title">Scanne jeden Beleg</string>
     <string name="onb1_body">Fotografiere einen Papierbeleg oder lade ein PDF hoch. Einen Einkauf zu erfassen ist immer nur einen Tipp entfernt.</string>
     <string name="onb2_title">Wir lesen und kategorisieren ihn</string>
-    <string name="onb2_body">Budgettys KI erkennt Geschäft, Datum, Rabatt und jeden Posten — alle nach Kategorie sortiert. Du musst nur prüfen und speichern.</string>
+    <string name="onb2_body">Budgetty erkennt Geschäft, Datum, Rabatt und jeden Posten — alle nach Kategorie sortiert. Du musst nur prüfen und speichern.</string>
     <string name="onb3_title">Sieh, wohin dein Geld fließt</string>
     <string name="onb3_body">Übersichtliche Diagramme schlüsseln deine Ausgaben nach Kategorie, Geschäft und Zeit auf, sodass du das Gesamtbild immer auf einen Blick hast.</string>
     <string name="onb4_title">Setze Budgets, die dich auf Kurs halten</string>

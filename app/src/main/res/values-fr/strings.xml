@@ -163,7 +163,7 @@
     <string name="onb1_title">Scannez n\'importe quel reçu</string>
     <string name="onb1_body">Photographiez un reçu papier ou importez un PDF. Enregistrer un achat est toujours à portée de doigt.</string>
     <string name="onb2_title">Nous le lisons et le classons</string>
-    <string name="onb2_body">L\'IA de Budgetty extrait le magasin, la date, la remise et chaque article, classés par catégorie. Vous n\'avez qu\'à vérifier et enregistrer.</string>
+    <string name="onb2_body">Budgetty extrait le magasin, la date, la remise et chaque article, classés par catégorie. Vous n\'avez qu\'à vérifier et enregistrer.</string>
     <string name="onb3_title">Voyez où va votre argent</string>
     <string name="onb3_body">Des graphiques clairs répartissent vos dépenses par catégorie, magasin et période, pour avoir toujours une vue d\'ensemble en un coup d\'œil.</string>
     <string name="onb4_title">Fixez des budgets qui vous gardent sur la bonne voie</string>

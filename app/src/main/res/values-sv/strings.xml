@@ -464,7 +464,7 @@
     <string name="onb1_title">Fånga vilket kvitto som helst</string>
     <string name="onb1_body">Fotografera ett papperskvitto eller ladda upp en PDF. Att fånga ett köp är alltid ett tryck bort.</string>
     <string name="onb2_title">Vi läser &amp; kategoriserar det</string>
-    <string name="onb2_body">Budgettys AI plockar ut butik, datum, rabatt och varje post — var och en sorterad i en kategori. Du granskar bara och sparar.</string>
+    <string name="onb2_body">Budgetty plockar ut butik, datum, rabatt och varje post — var och en sorterad i en kategori. Du granskar bara och sparar.</string>
     <string name="onb3_title">Se vart dina pengar går</string>
     <string name="onb3_body">Tydliga diagram bryter ner dina utgifter efter kategori, butik och tid, så att helheten alltid är en blick bort.</string>
     <string name="onb4_title">Sätt budgetar som håller dig på rätt spår</string>

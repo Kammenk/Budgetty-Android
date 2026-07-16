@@ -464,7 +464,7 @@
     <string name="onb1_title">Ota mikä tahansa kuitti talteen</string>
     <string name="onb1_body">Valokuvaa paperikuitti tai lataa PDF. Oston tallentaminen on aina yhden napautuksen päässä.</string>
     <string name="onb2_title">Luemme &amp; luokittelemme sen</string>
-    <string name="onb2_body">Budgettyn tekoäly poimii kaupan, päivämäärän, alennuksen ja jokaisen rivin — kukin lajiteltuna kategoriaan. Sinä vain tarkistat ja tallennat.</string>
+    <string name="onb2_body">Budgetty poimii kaupan, päivämäärän, alennuksen ja jokaisen rivin — kukin lajiteltuna kategoriaan. Sinä vain tarkistat ja tallennat.</string>
     <string name="onb3_title">Näe, mihin rahasi menevät</string>
     <string name="onb3_body">Selkeät kaaviot erittelevät kulutuksesi kategorian, kaupan ja ajan mukaan, joten kokonaiskuva on aina yhden silmäyksen päässä.</string>
     <string name="onb4_title">Aseta budjetteja, jotka pitävät sinut aikataulussa</string>

@@ -163,7 +163,7 @@
     <string name="onb1_title">Scan elke bon</string>
     <string name="onb1_body">Fotografeer een papieren bon of upload een PDF. Een aankoop vastleggen is altijd één tik weg.</string>
     <string name="onb2_title">Wij lezen en categoriseren hem</string>
-    <string name="onb2_body">De AI van Budgetty haalt de winkel, datum, korting en elk artikel eruit, allemaal ingedeeld per categorie. Jij hoeft alleen te controleren en op te slaan.</string>
+    <string name="onb2_body">Budgetty haalt de winkel, datum, korting en elk artikel eruit, allemaal ingedeeld per categorie. Jij hoeft alleen te controleren en op te slaan.</string>
     <string name="onb3_title">Zie waar je geld heen gaat</string>
     <string name="onb3_body">Duidelijke grafieken splitsen je uitgaven uit per categorie, winkel en tijd, zodat je altijd het volledige beeld in één oogopslag hebt.</string>
     <string name="onb4_title">Stel budgetten in die je op koers houden</string>
