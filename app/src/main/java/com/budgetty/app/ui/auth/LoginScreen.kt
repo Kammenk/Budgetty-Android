@@ -58,6 +58,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -95,6 +96,16 @@ private val CardShape = RoundedCornerShape(28.dp)
  */
 private val BrandGradientTop = Color(0xFF6E55B0)
 private val BrandGradientBottom = Color(0xFF534195)
+
+/**
+ * Stable test tags on the three login controls. The root `testTagsAsResourceId` (see MainActivity)
+ * exposes these to UI-automation tools as view resource-ids, so Firebase Test Lab's Robo login
+ * directives can target them by name (kept in sync with scripts/testlab-robo.sh) to sign in during
+ * an automated crawl. Invisible at runtime.
+ */
+const val LoginTagEmail = "login_email"
+const val LoginTagPassword = "login_password"
+const val LoginTagSignIn = "login_sign_in"
 
 @Composable
 fun LoginScreen(
@@ -365,7 +376,7 @@ private fun LoginForm(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 shape = FieldShape,
                 colors = loginFieldColors(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(LoginTagEmail),
             )
             Spacer(Modifier.height(MaterialTheme.dimens.lg))
 
@@ -391,7 +402,7 @@ private fun LoginForm(
                 },
                 shape = FieldShape,
                 colors = loginFieldColors(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(LoginTagPassword),
             )
 
             // Only surface the requirements checklist while signing up *and* the typed password is
@@ -438,7 +449,8 @@ private fun LoginForm(
                 enabled = !loading,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(MaterialTheme.dimens.buttonHeight),
+                    .height(MaterialTheme.dimens.buttonHeight)
+                    .testTag(LoginTagSignIn),
             ) {
                 if (loading) {
                     CircularProgressIndicator(
