@@ -66,6 +66,7 @@ import com.budgetty.app.category.Categories
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.ui.theme.BudgettyTheme
+import com.budgetty.app.ui.util.isCompactHeight
 import com.budgetty.app.ui.util.isWideWidth
 import org.koin.androidx.compose.koinViewModel
 
@@ -81,6 +82,7 @@ fun PaywallScreen(
         products = products,
         isPremium = isPremium,
         isWide = isWideWidth(),
+        isCompactHeight = isCompactHeight(),
         onNavigateBack = onNavigateBack,
         onPurchase = { activity, productId -> viewModel.purchase(activity, productId) },
         onRestore = { viewModel.restore() },
@@ -131,6 +133,7 @@ private fun PaywallScreenContent(
     products: List<ProductDetails>,
     isPremium: Boolean,
     isWide: Boolean,
+    isCompactHeight: Boolean,
     onNavigateBack: () -> Unit,
     onPurchase: (Activity, String) -> Unit,
     onRestore: () -> Unit,
@@ -220,20 +223,31 @@ private fun PaywallScreenContent(
                         .weight(1f)
                         .verticalScroll(rememberScrollState()),
                 ) {
-                    Spacer(Modifier.height(MaterialTheme.dimens.xxl))
-                    Box(
-                        modifier = Modifier
-                            .size(64.dp)
-                            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusXl))
-                            .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f)),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CrownIcon(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(36.dp))
+                    // The benefits are the reason this panel exists, so on a short window the
+                    // decoration yields to them: without this the crown and hero eat the viewport
+                    // and only one of the five is visible before scrolling.
+                    if (isCompactHeight) {
+                        Spacer(Modifier.height(MaterialTheme.dimens.md))
+                    } else {
+                        Spacer(Modifier.height(MaterialTheme.dimens.xxl))
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(RoundedCornerShape(MaterialTheme.dimens.radiusXl))
+                                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CrownIcon(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(36.dp))
+                        }
+                        Spacer(Modifier.height(MaterialTheme.dimens.lg))
                     }
-                    Spacer(Modifier.height(MaterialTheme.dimens.lg))
                     Text(
                         text = stringResource(R.string.paywall_hero_title),
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = if (isCompactHeight) {
+                            MaterialTheme.typography.titleLarge
+                        } else {
+                            MaterialTheme.typography.headlineSmall
+                        },
                         fontWeight = FontWeight.ExtraBold,
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
@@ -243,7 +257,7 @@ private fun PaywallScreenContent(
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
                     )
-                    Spacer(Modifier.height(22.dp))
+                    Spacer(Modifier.height(if (isCompactHeight) MaterialTheme.dimens.md else 22.dp))
                     benefits.forEach { WhiteBenefit(it) }
                     Spacer(Modifier.height(MaterialTheme.dimens.lg))
                 }
@@ -589,6 +603,7 @@ private fun PaywallScreenPreview() {
             products = emptyList(),
             isPremium = false,
             isWide = false,
+            isCompactHeight = false,
             onNavigateBack = {},
             onPurchase = { _, _ -> },
             onRestore = {},
@@ -604,6 +619,7 @@ private fun PaywallScreenLandscapePreview() {
             products = emptyList(),
             isPremium = false,
             isWide = true,
+            isCompactHeight = false,
             onNavigateBack = {},
             onPurchase = { _, _ -> },
             onRestore = {},
