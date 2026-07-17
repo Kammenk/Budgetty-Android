@@ -1,0 +1,15 @@
+{
+  "_description": "Hesburger (fast food, Bulgaria), 17-07-2026. Dual EUR/BGN receipt with NO labelled SUBTOTAL line — only grand totals: 'ОБЩА СУМА ЕВРО' 12.93 (euro) and 'ОБЩА СУМА ЛЕВА' 25.29 (leva @ 1.95583). The FIRST grand total printed is '#ОБЩА СУМА В ЛЕВ(А) 25.29' (leva), so the model previously wrote 25.29 into `total` while the line items are in EUR (11.04 + 1.89 = 12.93) — nearly DOUBLING the recorded spend. The client couldn't catch it: items-sum < total is the benign deposit/fee direction (soft over-read notice and the validateExtraction overshoot guard only fire the other way), there is no printed SUBTOTAL to anchor the blocking shortfall dialog, and <3 items disables the article-count guard — so the 12.36 gap was silently absorbed as extraCharges. Correct behaviour: `total` = the EURO grand total 12.93; the BGN 25.29 must be ignored.",
+  "_image": "Drop the receipt photo here as receipt.jpg (gitignored — it's personal data).",
+  "_crux": "total must be 12.93 (EUR), never 25.29 (BGN). This case fails without the dual-currency clause in receiptPrompt.js.",
+  "_taxNote": "VAT-inclusive: the 'Б' after each price is the fiscal VAT group, not a tax-on-top charge, so tax = 0.",
+  "tags": ["region:bg", "lang:bg", "type:restaurant", "tax:inclusive", "feature:dualCurrency"],
+  "readable": true,
+  "printedItemCount": 2,
+  "itemCount": 2,
+  "total": 12.93,
+  "discount": 0,
+  "tax": 0,
+  "lineTotals": [11.04, 1.89],
+  "expectedNames": ["Барбекю", "картофи"]
+}

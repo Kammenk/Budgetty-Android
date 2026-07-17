@@ -168,7 +168,9 @@ const PROMPT =
   "product — sum it into the discount instead. " +
   "ALWAYS read the receipt's printed GRAND TOTAL — the final amount due / actually paid (e.g. TOTAL, " +
   "ОБЩА СУМА, ZU ZAHLEN, SUMME, MONTANT, סה\"כ) — into the `total` field whenever any grand total is " +
-  "printed. Put it in `total`, never only in `subtotal`, and never leave `total` 0 when a grand total is " +
+  "printed. On a Bulgarian euro receipt that prints the total in BOTH euros and leva, the grand total to use " +
+  "is the EURO one, not the leva line (see DUAL-CURRENCY EURO RECEIPTS below). " +
+  "Put it in `total`, never only in `subtotal`, and never leave `total` 0 when a grand total is " +
   "shown. A line labelled 'Product', 'Items', 'Subtotal' or the plain sum of the products is NOT the grand " +
   "total when a larger final total (adding delivery, fees or a tip) is printed below it — the grand total is " +
   "that final amount paid. Deposits (Pfand), bag and service fees and tips are part of what was paid, so they " +
@@ -179,6 +181,19 @@ const PROMPT =
   "fee and any surcharge; `tip` is the gratuity. Report only amounts actually printed (0 when absent). They stay " +
   "included in `total`, and you must NOT create product line items for these fees or the tip. " +
   "The total must be in the same currency as the line items (0 only if genuinely not printed). " +
+  "DUAL-CURRENCY EURO RECEIPTS (IMPORTANT — Bulgaria and other euro-changeover countries): such a receipt " +
+  "prints every total TWICE — once in euros and once in the old national currency (Bulgarian leva / BGN) — at " +
+  "a fixed rate (1 EUR = 1.95583 BGN). You will see paired total lines, e.g. 'ОБЩА СУМА ЕВРО' (euro) next to " +
+  "'ОБЩА СУМА ЛЕВА' or 'ОБЩА СУМА В ЛЕВ(А)' (leva), and usually a rate line 'обменен курс 1 ЕВРО = 1.95583 ЛЕВА'. " +
+  "On any such receipt report the EURO amounts ONLY: put the ЕВРО total in `total` (and the euro subtotal in " +
+  "`subtotal` if you fill it), and take the line-item prices as the euro prices. NEVER put a ЛЕВА / В ЛЕВ(А) " +
+  "amount into `total` or `subtotal`, even when that leva line is printed FIRST, is marked with fiscal '#' " +
+  "symbols, is labelled 'ОБЩА СУМА', or is the LARGER number — it is the old-currency duplicate, not the amount " +
+  "to record. Three signals all point to the euro total, so use them to pick it: it carries the ЕВРО / EUR / € " +
+  "label; because one euro is worth about two leva it is the SMALLER of the two paired totals; and it is the " +
+  "figure the euro line items add up to. Example: a receipt showing 'ОБЩА СУМА ЕВРО 8.00' beside 'ОБЩА СУМА " +
+  "ЛЕВА 15.65' has total 8.00, never 15.65. Do not convert an amount between currencies yourself, and never mix " +
+  "currencies (euro line items with a leva total). " +
   "Also capture the items subtotal — the receipt's printed sum of all line items " +
   "before tax and fees (commonly labelled SUBTOTAL); when item prices already include tax so nothing is added on " +
   "top, this equals the total; use 0 if the receipt prints no such line. And capture the tax added on top of the " +
