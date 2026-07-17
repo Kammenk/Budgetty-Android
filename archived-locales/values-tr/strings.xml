@@ -15,7 +15,6 @@
     <string name="tier_free">Ücretsiz</string>
     <string name="tier_premium">Premium</string>
     <string name="account_budget">Bütçe</string>
-    <string name="account_notifications">Anlık bildirimler</string>
     <string name="account_currency">Para birimi</string>
     <string name="account_export">Verileri dışa aktar</string>
     <string name="account_import">Verileri içe aktar</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">Vurgu rengi</string>
     <string name="account_date_format">Tarih biçimi</string>
     <string name="account_language">Dil</string>
-    <string name="section_privacy">Gizlilik ve güvenlik</string>
-    <string name="account_biometric">Biyometrik kimlik doğrulama</string>
-    <string name="account_analytics">Analitik</string>
     <string name="section_support">Destek ve hakkında</string>
     <string name="account_help">Yardım ve SSS</string>
     <string name="account_contact">Desteğe başvur</string>

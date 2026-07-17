@@ -15,7 +15,6 @@
     <string name="tier_free">مجاني</string>
     <string name="tier_premium">مميز</string>
     <string name="account_budget">الميزانية</string>
-    <string name="account_notifications">الإشعارات الفورية</string>
     <string name="account_currency">العملة</string>
     <string name="account_export">تصدير البيانات</string>
     <string name="account_import">استيراد البيانات</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">لون التمييز</string>
     <string name="account_date_format">تنسيق التاريخ</string>
     <string name="account_language">اللغة</string>
-    <string name="section_privacy">الخصوصية والأمان</string>
-    <string name="account_biometric">المصادقة البيومترية</string>
-    <string name="account_analytics">التحليلات</string>
     <string name="section_support">الدعم وحول التطبيق</string>
     <string name="account_help">المساعدة والأسئلة الشائعة</string>
     <string name="account_contact">الاتصال بالدعم</string>

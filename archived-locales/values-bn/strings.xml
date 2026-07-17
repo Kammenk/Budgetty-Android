@@ -15,7 +15,6 @@
     <string name="tier_free">ফ্রি</string>
     <string name="tier_premium">প্রিমিয়াম</string>
     <string name="account_budget">বাজেট</string>
-    <string name="account_notifications">পুশ বিজ্ঞপ্তি</string>
     <string name="account_currency">মুদ্রা</string>
     <string name="account_export">ডেটা এক্সপোর্ট</string>
     <string name="account_import">ডেটা ইম্পোর্ট</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">অ্যাকসেন্ট রঙ</string>
     <string name="account_date_format">তারিখ বিন্যাস</string>
     <string name="account_language">ভাষা</string>
-    <string name="section_privacy">গোপনীয়তা ও নিরাপত্তা</string>
-    <string name="account_biometric">বায়োমেট্রিক প্রমাণীকরণ</string>
-    <string name="account_analytics">অ্যানালিটিক্স</string>
     <string name="section_support">সহায়তা ও সম্পর্কে</string>
     <string name="account_help">সাহায্য ও সাধারণ প্রশ্ন</string>
     <string name="account_contact">সহায়তায় যোগাযোগ</string>

@@ -15,7 +15,6 @@
     <string name="tier_free">Безкоштовно</string>
     <string name="tier_premium">Преміум</string>
     <string name="account_budget">Бюджет</string>
-    <string name="account_notifications">Push-сповіщення</string>
     <string name="account_currency">Валюта</string>
     <string name="account_export">Експорт даних</string>
     <string name="account_import">Імпорт даних</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">Акцентний колір</string>
     <string name="account_date_format">Формат дати</string>
     <string name="account_language">Мова</string>
-    <string name="section_privacy">Конфіденційність і безпека</string>
-    <string name="account_biometric">Біометрична автентифікація</string>
-    <string name="account_analytics">Аналітика</string>
     <string name="section_support">Підтримка та про застосунок</string>
     <string name="account_help">Довідка та FAQ</string>
     <string name="account_contact">Звʼязатися з підтримкою</string>

@@ -21,9 +21,6 @@ class SettingsStore(context: Context) {
         currency = readCurrency(),
         dateFormat = read(KEY_DATE, DateFormatOption.DAY_MONTH_YEAR),
         language = read(KEY_LANGUAGE, Language.SYSTEM),
-        notificationsEnabled = prefs.getBoolean(KEY_NOTIFICATIONS, true),
-        biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
-        analyticsEnabled = prefs.getBoolean(KEY_ANALYTICS, true),
         onboardingSeen = prefs.getBoolean(KEY_ONBOARDING_SEEN, false),
         insightsQuizPending = prefs.getBoolean(KEY_QUIZ_PENDING, false),
         displayName = prefs.getString(KEY_DISPLAY_NAME, "").orEmpty(),
@@ -41,15 +38,6 @@ class SettingsStore(context: Context) {
     fun setCurrency(value: Currency) = save(KEY_CURRENCY, value) { it.copy(currency = value) }
     fun setDateFormat(value: DateFormatOption) = save(KEY_DATE, value) { it.copy(dateFormat = value) }
     fun setLanguage(value: Language) = save(KEY_LANGUAGE, value) { it.copy(language = value) }
-
-    fun setNotificationsEnabled(value: Boolean) =
-        save(KEY_NOTIFICATIONS, value) { it.copy(notificationsEnabled = value) }
-
-    fun setBiometricEnabled(value: Boolean) =
-        save(KEY_BIOMETRIC, value) { it.copy(biometricEnabled = value) }
-
-    fun setAnalyticsEnabled(value: Boolean) =
-        save(KEY_ANALYTICS, value) { it.copy(analyticsEnabled = value) }
 
     fun setOnboardingSeen(value: Boolean = true) =
         save(KEY_ONBOARDING_SEEN, value) { it.copy(onboardingSeen = value) }
@@ -213,9 +201,6 @@ class SettingsStore(context: Context) {
         const val KEY_CURRENCY = "currency"
         const val KEY_DATE = "date_format"
         const val KEY_LANGUAGE = "language"
-        const val KEY_NOTIFICATIONS = "notifications_enabled"
-        const val KEY_BIOMETRIC = "biometric_enabled"
-        const val KEY_ANALYTICS = "analytics_enabled"
         const val KEY_ONBOARDING_SEEN = "onboarding_seen"
         const val KEY_QUIZ_PENDING = "insights_quiz_pending"
         const val KEY_QUIZ_ANSWERS = "insights_quiz_answers"

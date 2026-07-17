@@ -81,9 +81,6 @@ data class AppSettings(
     val currency: Currency = Currency.EUR,
     val dateFormat: DateFormatOption = DateFormatOption.DAY_MONTH_YEAR,
     val language: Language = Language.SYSTEM,
-    val notificationsEnabled: Boolean = true,
-    val biometricEnabled: Boolean = false,
-    val analyticsEnabled: Boolean = true,
     /** True once the user has finished (or skipped) the first-launch onboarding carousel. */
     val onboardingSeen: Boolean = false,
     /**

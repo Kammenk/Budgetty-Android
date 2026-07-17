@@ -38,3 +38,6 @@ firebase-debug.log
 
 # Firebase config — not committed on a public repo; each dev provides their own
 google-services.json
+
+# Test Lab credentials — real test-account password lives here (never commit)
+scripts/testlab.env

@@ -20,8 +20,6 @@
     <string name="tier_free">Free</string>
     <string name="tier_premium">Premium</string>
     <string name="account_budget">Budget</string>
-    <string name="account_notifications">Push notifications</string>
-    <string name="account_currency">Currency</string>
     <string name="account_export">Export data</string>
     <string name="account_import">Import data</string>
     <string name="account_widgets">Widgets</string>
@@ -80,14 +78,13 @@
     <string name="section_preferences">Preferences</string>
     <string name="account_theme">Theme</string>
     <string name="account_accent">Accent color</string>
+    <string name="account_currency">Currency</string>
     <string name="account_date_format">Date format</string>
     <string name="account_language">Language</string>
-    <string name="section_privacy">Privacy &amp; Security</string>
-    <string name="account_biometric">Biometric authentication</string>
-    <string name="account_analytics">Analytics</string>
     <string name="section_support">Support &amp; About</string>
     <string name="account_help">Help &amp; FAQ</string>
-    <string name="account_contact">Contact support</string>
+    <string name="account_contact">Contact us</string>
+    <string name="account_contact_subtitle">Report an issue, suggest a feature, or just say hello</string>
     <string name="account_rate">Rate Budgetty</string>
     <string name="account_privacy_policy">Privacy Policy</string>
     <string name="account_sign_out">Sign out</string>
@@ -454,8 +451,15 @@
     <string name="paywall_hero_title">Get more from Budgetty</string>
     <string name="paywall_hero_subtitle">No free trial · cancel anytime</string>
     <string name="paywall_benefit_scans">Unlimited receipt scans</string>
-    <string name="paywall_benefit_themes">Accent color themes</string>
+    <string name="paywall_benefit_scans_detail">Free plan stops at %1$d</string>
+    <string name="paywall_benefit_categories">Unlimited custom categories</string>
+    <string name="paywall_benefit_categories_detail">Free plan includes %1$d</string>
+    <string name="paywall_benefit_recurring">Unlimited recurring bills</string>
+    <string name="paywall_benefit_recurring_detail">Free plan includes %1$d</string>
+    <string name="paywall_benefit_themes">Every accent theme</string>
+    <string name="paywall_benefit_themes_detail">Sage, Ocean and Plum</string>
     <string name="paywall_benefit_cloud">Cloud backup &amp; sync</string>
+    <string name="paywall_benefit_soon">Coming soon</string>
     <string name="paywall_premium_title">You\'re Premium</string>
     <string name="paywall_premium_subtitle">Thanks for the support!</string>
     <string name="paywall_unavailable_title">Not available yet</string>
@@ -491,15 +495,16 @@
     <string name="login_subtitle_signin">Sign in to your account</string>
     <string name="login_subtitle_signup">Get started in seconds</string>
     <string name="login_tagline">Receipt-driven personal budgeting</string>
-    <string name="login_feature_1">Snap a receipt — AI reads it</string>
-    <string name="login_feature_2">Auto-categorized line items</string>
-    <string name="login_feature_3">Budget tracking &amp; alerts</string>
+    <string name="login_feature_1">Scan a receipt, get every line item</string>
+    <string name="login_feature_2">Automatic category sorting</string>
+    <string name="login_feature_3">Budgets, bills &amp; spending insights</string>
+    <string name="login_premium_note">Premium unlocks unlimited scans, categories &amp; bills</string>
 
     <!-- Onboarding -->
     <string name="onb1_title">Snap any receipt</string>
     <string name="onb1_body">Photograph a paper receipt or upload a PDF. Capturing a purchase is always one tap away.</string>
     <string name="onb2_title">We read &amp; categorize it</string>
-    <string name="onb2_body">Budgetty\'s AI pulls out the store, date, discount and every line item — each sorted into a category. You just review and save.</string>
+    <string name="onb2_body">Budgetty pulls out the store, date, discount and every line item — each sorted into a category. You just review and save.</string>
     <string name="onb3_title">See where your money goes</string>
     <string name="onb3_body">Clear charts break your spending down by category, store and time, so the full picture is always a glance away.</string>
     <string name="onb4_title">Set budgets that keep you on track</string>

@@ -21,8 +21,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.data.settings.LocaleHelper
 import com.budgetty.app.data.settings.SettingsStore
@@ -49,6 +52,8 @@ class MainActivity : ComponentActivity() {
         super.attachBaseContext(LocaleHelper.applyOverride(newBase))
     }
 
+    // testTagsAsResourceId (used on the root Surface below) is still an experimental Compose API.
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Construct + register before the activity reaches STARTED (Activity Result API requirement),
@@ -81,7 +86,12 @@ class MainActivity : ComponentActivity() {
                 // that don't draw their own background (e.g. LoginScreen, the auth-loading spinner)
                 // follow the theme instead of falling through to the XML window background.
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    // Expose Compose testTags as view resource-ids so tools that match on resource
+                    // ids — Firebase Test Lab's Robo login directives, UI Automator — can find tagged
+                    // elements (e.g. the login fields). Invisible at runtime; no UX impact.
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .semantics { testTagsAsResourceId = true },
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     // Once a FLEXIBLE update finishes downloading, prompt the user to restart to install.

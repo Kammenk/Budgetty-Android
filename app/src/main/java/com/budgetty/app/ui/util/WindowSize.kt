@@ -24,6 +24,15 @@ const val EXPANDED_WIDTH_DP = 600
 const val WIDE_WIDTH_DP = 840
 
 /**
+ * The height (in dp) below which the window is too short to lay a screen out with its full vertical
+ * rhythm — a header plus generous spacing would push the primary action below the fold. 480dp is the
+ * Material breakpoint between "compact" and "medium" heights, so phones and small tablets in
+ * landscape (~410–430dp) count as compact, while portrait phones (~800dp+) and landscape tablets
+ * (~800dp) do not.
+ */
+const val COMPACT_HEIGHT_DP = 480
+
+/**
  * Upper bound on the content column width in the expanded layouts. Past this the centred content
  * stops stretching, so cards stay a comfortable reading width on large landscape tablets while
  * still filling a portrait tablet (~720dp of content).
@@ -55,3 +64,14 @@ fun isExpandedWidth(): Boolean =
 @ReadOnlyComposable
 fun isWideWidth(): Boolean =
     LocalConfiguration.current.screenWidthDp >= WIDE_WIDTH_DP
+
+/**
+ * True when the window is short enough that content must economise on vertical space — typically a
+ * phone or small tablet in landscape. Screens use this to drop decorative headers and tighten
+ * spacing so their primary action stays above the fold. Tracks the live [LocalConfiguration] so it
+ * follows rotation and split-screen.
+ */
+@Composable
+@ReadOnlyComposable
+fun isCompactHeight(): Boolean =
+    LocalConfiguration.current.screenHeightDp < COMPACT_HEIGHT_DP

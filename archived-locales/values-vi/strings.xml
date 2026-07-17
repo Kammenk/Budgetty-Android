@@ -15,7 +15,6 @@
     <string name="tier_free">Miễn phí</string>
     <string name="tier_premium">Premium</string>
     <string name="account_budget">Ngân sách</string>
-    <string name="account_notifications">Thông báo đẩy</string>
     <string name="account_currency">Tiền tệ</string>
     <string name="account_export">Xuất dữ liệu</string>
     <string name="account_import">Nhập dữ liệu</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">Màu nhấn</string>
     <string name="account_date_format">Định dạng ngày</string>
     <string name="account_language">Ngôn ngữ</string>
-    <string name="section_privacy">Quyền riêng tư &amp; Bảo mật</string>
-    <string name="account_biometric">Xác thực sinh trắc học</string>
-    <string name="account_analytics">Phân tích</string>
     <string name="section_support">Hỗ trợ &amp; Giới thiệu</string>
     <string name="account_help">Trợ giúp &amp; FAQ</string>
     <string name="account_contact">Liên hệ hỗ trợ</string>

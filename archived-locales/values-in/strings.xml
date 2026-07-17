@@ -15,7 +15,6 @@
     <string name="tier_free">Gratis</string>
     <string name="tier_premium">Premium</string>
     <string name="account_budget">Anggaran</string>
-    <string name="account_notifications">Notifikasi push</string>
     <string name="account_currency">Mata uang</string>
     <string name="account_export">Ekspor data</string>
     <string name="account_import">Impor data</string>
@@ -24,9 +23,6 @@
     <string name="account_accent">Warna aksen</string>
     <string name="account_date_format">Format tanggal</string>
     <string name="account_language">Bahasa</string>
-    <string name="section_privacy">Privasi &amp; Keamanan</string>
-    <string name="account_biometric">Autentikasi biometrik</string>
-    <string name="account_analytics">Analitik</string>
     <string name="section_support">Dukungan &amp; Tentang</string>
     <string name="account_help">Bantuan &amp; FAQ</string>
     <string name="account_contact">Hubungi dukungan</string>

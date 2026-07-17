@@ -31,17 +31,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountBalanceWallet
-import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.MailOutline
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Star
@@ -56,7 +53,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -139,9 +135,6 @@ fun AccountScreen(
         onSetCurrency = { accountViewModel.setCurrency(it) },
         onSetDateFormat = { accountViewModel.setDateFormat(it) },
         onSetLanguage = { accountViewModel.setLanguage(it) },
-        onSetNotificationsEnabled = { accountViewModel.setNotificationsEnabled(it) },
-        onSetBiometricEnabled = { accountViewModel.setBiometricEnabled(it) },
-        onSetAnalyticsEnabled = { accountViewModel.setAnalyticsEnabled(it) },
         onBuildBackupJson = { accountViewModel.buildBackupJson() },
         onImportBackup = { json, replace, onResult -> accountViewModel.importBackup(json, replace, onResult) },
         onDeleteAccount = { onResult -> accountViewModel.deleteAccount(onResult) },
@@ -168,9 +161,6 @@ private fun AccountScreenContent(
     onSetCurrency: (Currency) -> Unit,
     onSetDateFormat: (DateFormatOption) -> Unit,
     onSetLanguage: (Language) -> Unit,
-    onSetNotificationsEnabled: (Boolean) -> Unit,
-    onSetBiometricEnabled: (Boolean) -> Unit,
-    onSetAnalyticsEnabled: (Boolean) -> Unit,
     onBuildBackupJson: suspend () -> String,
     onImportBackup: (String, Boolean, (Boolean) -> Unit) -> Unit,
     onDeleteAccount: ((DeleteAccountResult) -> Unit) -> Unit,
@@ -238,12 +228,8 @@ private fun AccountScreenContent(
         AccountCard {
             AccountSectionRows(
                 isPremium = isPremium,
-                notificationsEnabled = settings.notificationsEnabled,
-                currencyLabel = "${settings.currency.code} (${settings.currency.symbol})",
                 onOpenPaywall = onOpenPaywall,
                 onOpenBudget = onOpenBudget,
-                onSetNotificationsEnabled = onSetNotificationsEnabled,
-                onOpenCurrency = { openPicker = Picker.CURRENCY },
                 onExport = { exportLauncher.launch("budgetty-backup.json") },
                 onImport = {
                     importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
@@ -263,22 +249,13 @@ private fun AccountScreenContent(
             )
         }
     }
-    val privacySection: @Composable () -> Unit = {
-        AccountCard {
-            PrivacySectionRows(
-                settings = settings,
-                onSetBiometricEnabled = onSetBiometricEnabled,
-                onSetAnalyticsEnabled = onSetAnalyticsEnabled,
-            )
-        }
-    }
     val supportSection: @Composable () -> Unit = {
         AccountCard {
             SupportSectionRows(context = context)
         }
     }
-    // Sign out + delete + version, grouped so the three-column landscape can tuck them under the
-    // Privacy column instead of spanning the full width.
+    // Sign out + delete + version, grouped so the landscape layout can tuck them under the left-hand
+    // nav column instead of spanning the full width.
     val footerSection: @Composable () -> Unit = {
         SignOutCard { onSignOut() }
         Spacer(Modifier.height(MaterialTheme.dimens.sm))
@@ -381,7 +358,6 @@ private fun AccountScreenContent(
                         when (selectedSection) {
                             AccountSection.ACCOUNT -> accountSection()
                             AccountSection.PREFERENCES -> preferencesSection()
-                            AccountSection.PRIVACY -> privacySection()
                             AccountSection.SUPPORT -> supportSection()
                         }
                     }
@@ -403,9 +379,6 @@ private fun AccountScreenContent(
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_preferences))
                 preferencesSection()
-                Spacer(Modifier.height(MaterialTheme.dimens.xxl))
-                SectionHeader(stringResource(R.string.section_privacy))
-                privacySection()
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_support))
                 supportSection()
@@ -545,12 +518,8 @@ private enum class Picker { THEME, ACCENT, CURRENCY, DATE, LANGUAGE }
 @Composable
 private fun AccountSectionRows(
     isPremium: Boolean,
-    notificationsEnabled: Boolean,
-    currencyLabel: String,
     onOpenPaywall: () -> Unit,
     onOpenBudget: () -> Unit,
-    onSetNotificationsEnabled: (Boolean) -> Unit,
-    onOpenCurrency: () -> Unit,
     onExport: () -> Unit,
     onImport: () -> Unit,
     onOpenWidgets: () -> Unit,
@@ -566,19 +535,6 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.account_budget)) { onOpenBudget() }
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
-    RowDivider()
-    SwitchRow(
-        icon = Icons.Filled.Notifications,
-        title = stringResource(R.string.account_notifications),
-        checked = notificationsEnabled,
-        onCheckedChange = onSetNotificationsEnabled,
-    )
-    RowDivider()
-    SettingRow(
-        icon = Icons.Filled.AttachMoney,
-        title = stringResource(R.string.account_currency),
-        value = currencyLabel,
-    ) { onOpenCurrency() }
     RowDivider()
     SettingRow(Icons.Filled.Upload, stringResource(R.string.account_export)) { onExport() }
     RowDivider()
@@ -607,6 +563,14 @@ private fun PreferencesSectionRows(
         if (isPremium) onOpenPicker(Picker.ACCENT) else onOpenPaywall()
     }
     RowDivider()
+    SettingRow(
+        icon = Icons.Filled.AttachMoney,
+        title = stringResource(R.string.account_currency),
+        value = "${settings.currency.code} (${settings.currency.symbol})",
+    ) {
+        onOpenPicker(Picker.CURRENCY)
+    }
+    RowDivider()
     SettingRow(Icons.Filled.CalendarMonth, stringResource(R.string.account_date_format), value = settings.dateFormat.sample) {
         onOpenPicker(Picker.DATE)
     }
@@ -616,34 +580,16 @@ private fun PreferencesSectionRows(
     }
 }
 
-/** Rows of the "Privacy & security" settings group. */
-@Composable
-private fun PrivacySectionRows(
-    settings: AppSettings,
-    onSetBiometricEnabled: (Boolean) -> Unit,
-    onSetAnalyticsEnabled: (Boolean) -> Unit,
-) {
-    SwitchRow(
-        icon = Icons.Filled.Fingerprint,
-        title = stringResource(R.string.account_biometric),
-        checked = settings.biometricEnabled,
-        onCheckedChange = onSetBiometricEnabled,
-    )
-    RowDivider()
-    SwitchRow(
-        icon = Icons.Filled.Analytics,
-        title = stringResource(R.string.account_analytics),
-        checked = settings.analyticsEnabled,
-        onCheckedChange = onSetAnalyticsEnabled,
-    )
-}
-
 /** Rows of the "Support" settings group. */
 @Composable
 private fun SupportSectionRows(context: Context) {
     SettingRow(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.account_help)) { openUrl(context, URL_HELP) }
     RowDivider()
-    SettingRow(Icons.Filled.MailOutline, stringResource(R.string.account_contact)) { sendSupportEmail(context) }
+    SettingRow(
+        icon = Icons.Filled.MailOutline,
+        title = stringResource(R.string.account_contact),
+        subtitle = stringResource(R.string.account_contact_subtitle),
+    ) { sendSupportEmail(context) }
     RowDivider()
     SettingRow(Icons.Filled.StarRate, stringResource(R.string.account_rate)) { openPlayStore(context, context.packageName) }
     RowDivider()
@@ -778,7 +724,6 @@ private fun RowDivider() {
 private enum class AccountSection(val titleRes: Int, val icon: ImageVector) {
     ACCOUNT(R.string.nav_account, Icons.Filled.AccountBalanceWallet),
     PREFERENCES(R.string.section_preferences, Icons.Filled.Palette),
-    PRIVACY(R.string.section_privacy, Icons.Filled.Fingerprint),
     SUPPORT(R.string.section_support, Icons.AutoMirrored.Filled.HelpOutline),
 }
 
@@ -848,11 +793,17 @@ private fun StatusBadge(text: String) {
     }
 }
 
+/**
+ * One tappable settings row. [value] shows the current setting on the right; [subtitle] instead
+ * explains the row on a second line beneath the title, for rows whose purpose isn't obvious from a
+ * two-word label (e.g. Contact us).
+ */
 @Composable
 private fun SettingRow(
     icon: ImageVector,
     title: String,
     value: String? = null,
+    subtitle: String? = null,
     trailing: (@Composable () -> Unit)? = null,
     onClick: () -> Unit,
 ) {
@@ -865,13 +816,22 @@ private fun SettingRow(
     ) {
         Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
         Spacer(Modifier.width(MaterialTheme.dimens.lg))
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f),
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
+        }
         when {
             trailing != null -> {
                 trailing()
@@ -891,34 +851,6 @@ private fun SettingRow(
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
         )
-    }
-}
-
-/** Row with a trailing [Switch] for boolean settings; tapping anywhere toggles it. */
-@Composable
-private fun SwitchRow(
-    icon: ImageVector,
-    title: String,
-    checked: Boolean,
-    onCheckedChange: (Boolean) -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onCheckedChange(!checked) }
-            .padding(horizontal = MaterialTheme.dimens.xl, vertical = MaterialTheme.dimens.lg),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-        Spacer(Modifier.width(MaterialTheme.dimens.lg))
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f),
-        )
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
     }
 }
 
@@ -980,9 +912,13 @@ private fun openUrl(context: Context, url: String) {
     }
 }
 
+/**
+ * Opens the user's mail app to [SUPPORT_EMAIL]. The row covers problems, feature ideas and general
+ * feedback alike, so the subject stays neutral rather than framing every mail as a support ticket.
+ */
 private fun sendSupportEmail(context: Context) {
     val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$SUPPORT_EMAIL")).apply {
-        putExtra(Intent.EXTRA_SUBJECT, "Budgetty support")
+        putExtra(Intent.EXTRA_SUBJECT, "Budgetty feedback")
     }
     try {
         context.startActivity(intent)
@@ -1069,9 +1005,6 @@ private fun AccountScreenPreview() {
             onSetCurrency = {},
             onSetDateFormat = {},
             onSetLanguage = {},
-            onSetNotificationsEnabled = {},
-            onSetBiometricEnabled = {},
-            onSetAnalyticsEnabled = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},
@@ -1101,9 +1034,6 @@ private fun AccountScreenTabletPreview() {
             onSetCurrency = {},
             onSetDateFormat = {},
             onSetLanguage = {},
-            onSetNotificationsEnabled = {},
-            onSetBiometricEnabled = {},
-            onSetAnalyticsEnabled = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},

@@ -27,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -61,7 +62,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.tooling.preview.Preview
 import com.android.billingclient.api.ProductDetails
 import com.budgetty.app.R
+import com.budgetty.app.category.Categories
+import com.budgetty.app.data.quota.ScanQuota
+import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.ui.theme.BudgettyTheme
+import com.budgetty.app.ui.util.isCompactHeight
 import com.budgetty.app.ui.util.isWideWidth
 import org.koin.androidx.compose.koinViewModel
 
@@ -77,6 +82,7 @@ fun PaywallScreen(
         products = products,
         isPremium = isPremium,
         isWide = isWideWidth(),
+        isCompactHeight = isCompactHeight(),
         onNavigateBack = onNavigateBack,
         onPurchase = { activity, productId -> viewModel.purchase(activity, productId) },
         onRestore = { viewModel.restore() },
@@ -84,17 +90,57 @@ fun PaywallScreen(
     )
 }
 
+/** One line of the Premium feature list: what you get, and what the free plan gives instead. */
+private data class PremiumBenefit(
+    val title: String,
+    val detail: String,
+    /** True for a benefit that hasn't shipped yet: shown muted, with a clock instead of a check. */
+    val soon: Boolean = false,
+)
+
+/**
+ * Everything the subscription unlocks, listed once so the portrait and landscape layouts can't drift
+ * apart. Each free-plan detail interpolates the constant that actually enforces the cap, so retuning
+ * a limit can never leave the paywall quoting a stale number.
+ */
+@Composable
+private fun premiumBenefits(): List<PremiumBenefit> = listOf(
+    PremiumBenefit(
+        title = stringResource(R.string.paywall_benefit_scans),
+        detail = stringResource(R.string.paywall_benefit_scans_detail, ScanQuota.FREE_LIMIT),
+    ),
+    PremiumBenefit(
+        title = stringResource(R.string.paywall_benefit_categories),
+        detail = stringResource(R.string.paywall_benefit_categories_detail, Categories.FREE_CUSTOM_LIMIT),
+    ),
+    PremiumBenefit(
+        title = stringResource(R.string.paywall_benefit_recurring),
+        detail = stringResource(R.string.paywall_benefit_recurring_detail, RecurringRepository.FREE_RECURRING_LIMIT),
+    ),
+    PremiumBenefit(
+        title = stringResource(R.string.paywall_benefit_themes),
+        detail = stringResource(R.string.paywall_benefit_themes_detail),
+    ),
+    PremiumBenefit(
+        title = stringResource(R.string.paywall_benefit_cloud),
+        detail = stringResource(R.string.paywall_benefit_soon),
+        soon = true,
+    ),
+)
+
 @Composable
 private fun PaywallScreenContent(
     products: List<ProductDetails>,
     isPremium: Boolean,
     isWide: Boolean,
+    isCompactHeight: Boolean,
     onNavigateBack: () -> Unit,
     onPurchase: (Activity, String) -> Unit,
     onRestore: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val activity = LocalContext.current.findActivity()
+    val benefits = premiumBenefits()
 
     // The hero spans behind the status bar; keep its icons readable over the gradient while shown,
     // then restore the app's normal status-bar appearance on exit.
@@ -170,34 +216,51 @@ private fun PaywallScreenContent(
                         color = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
-                Spacer(Modifier.height(MaterialTheme.dimens.xxl))
-                Box(
+                // The full benefit list is taller than a short landscape window (~410dp), so it
+                // scrolls between the fixed header and Restore rather than squeezing them off-panel.
+                Column(
                     modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(MaterialTheme.dimens.radiusXl))
-                        .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f)),
-                    contentAlignment = Alignment.Center,
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
                 ) {
-                    CrownIcon(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(36.dp))
+                    // The benefits are the reason this panel exists, so on a short window the
+                    // decoration yields to them: without this the crown and hero eat the viewport
+                    // and only one of the five is visible before scrolling.
+                    if (isCompactHeight) {
+                        Spacer(Modifier.height(MaterialTheme.dimens.md))
+                    } else {
+                        Spacer(Modifier.height(MaterialTheme.dimens.xxl))
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(RoundedCornerShape(MaterialTheme.dimens.radiusXl))
+                                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.18f)),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CrownIcon(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(36.dp))
+                        }
+                        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                    }
+                    Text(
+                        text = stringResource(R.string.paywall_hero_title),
+                        style = if (isCompactHeight) {
+                            MaterialTheme.typography.titleLarge
+                        } else {
+                            MaterialTheme.typography.headlineSmall
+                        },
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        text = stringResource(R.string.paywall_hero_subtitle),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
+                    )
+                    Spacer(Modifier.height(if (isCompactHeight) MaterialTheme.dimens.md else 22.dp))
+                    benefits.forEach { WhiteBenefit(it) }
+                    Spacer(Modifier.height(MaterialTheme.dimens.lg))
                 }
-                Spacer(Modifier.height(MaterialTheme.dimens.lg))
-                Text(
-                    text = stringResource(R.string.paywall_hero_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    text = stringResource(R.string.paywall_hero_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
-                )
-                Spacer(Modifier.height(22.dp))
-                WhiteBenefit(stringResource(R.string.paywall_benefit_scans))
-                WhiteBenefit(stringResource(R.string.paywall_benefit_themes))
-                WhiteBenefit(stringResource(R.string.paywall_benefit_cloud))
-                Spacer(Modifier.weight(1f))
                 TextButton(
                     onClick = onRestore,
                     modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -229,9 +292,7 @@ private fun PaywallScreenContent(
                 PaywallHero()
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 Column(modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xxl)) {
-                    Benefit(stringResource(R.string.paywall_benefit_scans))
-                    Benefit(stringResource(R.string.paywall_benefit_themes))
-                    Benefit(stringResource(R.string.paywall_benefit_cloud))
+                    benefits.forEach { Benefit(it) }
 
                     Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                     planCards()
@@ -277,7 +338,7 @@ private fun PaywallScreenContent(
 
 /** White-on-gradient feature row for the landscape Paywall brand panel. */
 @Composable
-private fun WhiteBenefit(text: String) {
+private fun WhiteBenefit(benefit: PremiumBenefit) {
     Row(
         modifier = Modifier.padding(vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -286,22 +347,30 @@ private fun WhiteBenefit(text: String) {
             modifier = Modifier
                 .size(22.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f)),
+                .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = if (benefit.soon) 0.12f else 0.2f)),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                Icons.Filled.Check,
+                imageVector = if (benefit.soon) Icons.Filled.Schedule else Icons.Filled.Check,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary.copy(alpha = if (benefit.soon) 0.7f else 1f),
                 modifier = Modifier.size(14.dp),
             )
         }
         Spacer(Modifier.width(10.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.92f),
-        )
+        Column {
+            Text(
+                text = benefit.title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = if (benefit.soon) 0.62f else 0.92f),
+            )
+            Text(
+                text = benefit.detail,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.62f),
+            )
+        }
     }
 }
 
@@ -377,8 +446,9 @@ private fun CrownIcon(color: Color, modifier: Modifier = Modifier) {
     }
 }
 
+/** Feature row for the portrait Paywall, on the plain surface below the hero. */
 @Composable
-private fun Benefit(text: String) {
+private fun Benefit(benefit: PremiumBenefit) {
     Row(
         modifier = Modifier.padding(vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -391,14 +461,34 @@ private fun Benefit(text: String) {
             contentAlignment = Alignment.Center,
         ) {
             Icon(
-                Icons.Filled.Check,
+                imageVector = if (benefit.soon) Icons.Filled.Schedule else Icons.Filled.Check,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = if (benefit.soon) {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                } else {
+                    MaterialTheme.colorScheme.primary
+                },
                 modifier = Modifier.size(MaterialTheme.dimens.iconSmall),
             )
         }
         Spacer(Modifier.width(MaterialTheme.dimens.md))
-        Text(text, style = MaterialTheme.typography.bodyLarge)
+        Column {
+            Text(
+                text = benefit.title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = if (benefit.soon) {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+            )
+            Text(
+                text = benefit.detail,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
@@ -513,6 +603,7 @@ private fun PaywallScreenPreview() {
             products = emptyList(),
             isPremium = false,
             isWide = false,
+            isCompactHeight = false,
             onNavigateBack = {},
             onPurchase = { _, _ -> },
             onRestore = {},
@@ -528,6 +619,7 @@ private fun PaywallScreenLandscapePreview() {
             products = emptyList(),
             isPremium = false,
             isWide = true,
+            isCompactHeight = false,
             onNavigateBack = {},
             onPurchase = { _, _ -> },
             onRestore = {},

@@ -58,6 +58,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,6 +73,7 @@ import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
+import com.budgetty.app.ui.util.isCompactHeight
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -95,6 +97,16 @@ private val CardShape = RoundedCornerShape(28.dp)
  */
 private val BrandGradientTop = Color(0xFF6E55B0)
 private val BrandGradientBottom = Color(0xFF534195)
+
+/**
+ * Stable test tags on the three login controls. The root `testTagsAsResourceId` (see MainActivity)
+ * exposes these to UI-automation tools as view resource-ids, so Firebase Test Lab's Robo login
+ * directives can target them by name (kept in sync with scripts/testlab-robo.sh) to sign in during
+ * an automated crawl. Invisible at runtime.
+ */
+const val LoginTagEmail = "login_email"
+const val LoginTagPassword = "login_password"
+const val LoginTagSignIn = "login_sign_in"
 
 @Composable
 fun LoginScreen(
@@ -176,7 +188,12 @@ private fun TabletLogin(
         modifier = modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .padding(MaterialTheme.dimens.xl),
+            // A short landscape window can't spare the full inset margin: it comes straight off the
+            // form pane's usable height, where it would push "Sign in" below the fold.
+            .padding(
+                horizontal = MaterialTheme.dimens.xl,
+                vertical = if (isCompactHeight()) MaterialTheme.dimens.sm else MaterialTheme.dimens.xl,
+            ),
     ) {
         Row(
             modifier = Modifier
@@ -207,11 +224,17 @@ private fun TabletLogin(
 }
 
 /**
- * The purple brand panel shown on the left of the tablet layout: app mark, name, tagline and the
- * three selling points, over a brand-purple gradient with a few soft, clipped highlight circles.
+ * The purple brand panel shown on the left of the tablet layout: app mark, name, tagline, the three
+ * selling points and a closing note on what Premium adds, over a brand-purple gradient with a few
+ * soft, clipped highlight circles. Pre-auth, so it sells the app rather than the subscription —
+ * there's no account to buy against yet, and the paywall does the actual pitch.
  */
 @Composable
 private fun BrandingPanel(modifier: Modifier = Modifier) {
+    // The panel is vertically centred and cannot scroll, so on a short landscape window every gap
+    // has to give: at full rhythm the premium note falls off the bottom. See isCompactHeight.
+    val compactHeight = isCompactHeight()
+    val featureGap = if (compactHeight) MaterialTheme.dimens.md else MaterialTheme.dimens.xl
     Box(
         modifier = modifier
             .clipToBounds()
@@ -244,27 +267,35 @@ private fun BrandingPanel(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 40.dp, vertical = 48.dp),
+                .padding(horizontal = 40.dp, vertical = if (compactHeight) MaterialTheme.dimens.xl else 48.dp),
             verticalArrangement = Arrangement.Center,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(Color.White.copy(alpha = 0.16f)),
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    Icons.Filled.Receipt,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(MaterialTheme.dimens.xxxl),
-                )
+            // The app mark and name are decorative here — the form pane beside them already says
+            // where you are, so a short window spends its height on the selling points instead.
+            if (!compactHeight) {
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color.White.copy(alpha = 0.16f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.Filled.Receipt,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(MaterialTheme.dimens.xxxl),
+                    )
+                }
+                Spacer(Modifier.height(MaterialTheme.dimens.xxl))
             }
-            Spacer(Modifier.height(MaterialTheme.dimens.xxl))
             Text(
                 text = "Budgetty",
-                style = MaterialTheme.typography.displaySmall,
+                style = if (compactHeight) {
+                    MaterialTheme.typography.headlineMedium
+                } else {
+                    MaterialTheme.typography.displaySmall
+                },
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
             )
@@ -274,12 +305,20 @@ private fun BrandingPanel(modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodyLarge,
                 color = Color.White.copy(alpha = 0.85f),
             )
-            Spacer(Modifier.height(40.dp))
+            Spacer(Modifier.height(if (compactHeight) MaterialTheme.dimens.xl else 40.dp))
             FeatureRow(stringResource(R.string.login_feature_1))
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(featureGap))
             FeatureRow(stringResource(R.string.login_feature_2))
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(featureGap))
             FeatureRow(stringResource(R.string.login_feature_3))
+            Spacer(Modifier.height(if (compactHeight) MaterialTheme.dimens.lg else MaterialTheme.dimens.xxl))
+            HorizontalDivider(color = Color.White.copy(alpha = 0.22f))
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            Text(
+                text = stringResource(R.string.login_premium_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.White.copy(alpha = 0.75f),
+            )
         }
     }
 }
@@ -333,6 +372,13 @@ private fun LoginForm(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    // On a short window (landscape phone/tablet) the form is taller than the pane, so it scrolls and
+    // the full-height rhythm below would leave "Sign in" off-screen on arrival. Economise: drop the
+    // decorative header (the brand panel already names the app on tablets) and tighten every gap, so
+    // email + password + "Sign in" all land above the fold. See isCompactHeight.
+    val compactHeight = isCompactHeight()
+    val blockGap = if (compactHeight) MaterialTheme.dimens.sm else MaterialTheme.dimens.xl
+    val fieldGap = if (compactHeight) MaterialTheme.dimens.sm else MaterialTheme.dimens.lg
     val context = LocalContext.current
     // Resolved here (not inside callbacks/coroutines) because stringResource is @Composable-only.
     val resetSentMsg = stringResource(R.string.login_reset_sent)
@@ -343,7 +389,10 @@ private fun LoginForm(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = MaterialTheme.dimens.xxl, vertical = MaterialTheme.dimens.xxxl),
+            .padding(
+                horizontal = MaterialTheme.dimens.xxl,
+                vertical = if (compactHeight) MaterialTheme.dimens.sm else MaterialTheme.dimens.xxxl,
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -353,8 +402,10 @@ private fun LoginForm(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (tablet) TabletFormHeader(isSignUp) else PhoneHeader(isSignUp)
-            Spacer(Modifier.height(MaterialTheme.dimens.xxxl))
+            if (!compactHeight) {
+                if (tablet) TabletFormHeader(isSignUp) else PhoneHeader(isSignUp)
+                Spacer(Modifier.height(MaterialTheme.dimens.xxxl))
+            }
 
             // Email
             FieldLabel(stringResource(R.string.login_email))
@@ -365,9 +416,9 @@ private fun LoginForm(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 shape = FieldShape,
                 colors = loginFieldColors(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(LoginTagEmail),
             )
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
+            Spacer(Modifier.height(fieldGap))
 
             // Password
             FieldLabel(stringResource(R.string.login_password))
@@ -391,7 +442,7 @@ private fun LoginForm(
                 },
                 shape = FieldShape,
                 colors = loginFieldColors(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().testTag(LoginTagPassword),
             )
 
             // Only surface the requirements checklist while signing up *and* the typed password is
@@ -423,7 +474,7 @@ private fun LoginForm(
                 )
             }
 
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
             Button(
                 onClick = {
                     when {
@@ -438,7 +489,8 @@ private fun LoginForm(
                 enabled = !loading,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(MaterialTheme.dimens.buttonHeight),
+                    .height(MaterialTheme.dimens.buttonHeight)
+                    .testTag(LoginTagSignIn),
             ) {
                 if (loading) {
                     CircularProgressIndicator(
@@ -454,7 +506,7 @@ private fun LoginForm(
                 }
             }
 
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -474,7 +526,7 @@ private fun LoginForm(
                     color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
                 )
             }
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
 
             OutlinedButton(
                 onClick = onGoogleSignIn,
@@ -493,7 +545,7 @@ private fun LoginForm(
                 Text(stringResource(R.string.login_google), style = MaterialTheme.typography.titleMedium)
             }
 
-            Spacer(Modifier.height(MaterialTheme.dimens.xl))
+            Spacer(Modifier.height(blockGap))
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -699,6 +751,26 @@ private fun LoginScreenPreview() {
 @Preview(showBackground = true, widthDp = 1280, heightDp = 800)
 @Composable
 private fun LoginScreenTabletPreview() {
+    BudgettyTheme {
+        LoginScreenContent(
+            loading = false,
+            error = null,
+            onSignIn = { _, _ -> },
+            onSignUp = { _, _ -> },
+            onResetPassword = { _, _ -> },
+            onSetError = {},
+            onGoogleSignIn = {},
+        )
+    }
+}
+
+/**
+ * Short landscape window (a phone/small tablet on its side): wide enough for the split layout but
+ * only ~411dp tall. "Sign in" must still be visible without scrolling — see [isCompactHeight].
+ */
+@Preview(name = "Landscape (short window)", showBackground = true, widthDp = 914, heightDp = 411)
+@Composable
+private fun LoginScreenShortLandscapePreview() {
     BudgettyTheme {
         LoginScreenContent(
             loading = false,
