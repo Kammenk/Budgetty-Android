@@ -6,7 +6,16 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     alias(libs.plugins.google.services)
+}
+
+// Room writes the schema of every DB version here. The JSONs are committed: they are what lets a
+// migration test build a database at an older version, and Room diff them to verify a migration
+// produces exactly the schema the entities declare. Bump the version without updating these and the
+// build fails — which is the point.
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 val keystorePropertiesFile = rootProject.file("keystore.properties")
