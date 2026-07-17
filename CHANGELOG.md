@@ -15,6 +15,25 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.6.0 (versionCode 1060) — 2026-07-17
+
+A feature (MINOR) release: six new languages, a Europe-focused currency list, and an Account screen and paywall that now tell you the truth about what you get.
+
+### Added
+- **Six more languages** — Swedish, Norwegian, Danish, Finnish, Czech and Romanian, each fully translated, bringing Budgetty to 16 languages.
+
+### Changed
+- **A Europe-focused language and currency list** — the pickers now match the markets Budgetty is released in: nine currencies (EUR, GBP, CHF, SEK, NOK, DKK, PLN, CZK, RON) in place of the previous global set, and eleven languages outside those markets are no longer offered. If you had one of the removed options selected, the app falls back to your system language and EUR — your receipts, budgets and history are untouched.
+- **The paywall now lists everything Premium unlocks** — all five, each with the free-tier limit spelled out underneath. Two real unlocks, unlimited custom categories and unlimited recurring bills, weren't mentioned at all before. Cloud backup & sync is now marked **Coming soon** instead of being listed as though it ships today, because it doesn't — exporting and importing your data is local, and it's free.
+- **A shorter Account screen** — Push notifications, Biometric authentication and Analytics are gone. None of them did anything: the switches wrote a setting nothing read. That empties Privacy & Security, so the section goes with them. **Currency** moves to Preferences, beside the other format and locale choices. **Contact support** becomes **Contact us**, and now says outright that problems, feature ideas and plain feedback are all welcome.
+- **Clearer onboarding copy** — the setup screens describe what Budgetty does for you rather than the technology behind it.
+
+### Fixed
+- **The sign-in button stays on screen on short landscape windows** — on a phone held sideways, the sign-in form ran past the bottom of the pane and left the button roughly 60dp below the fold.
+- **Paywall benefits are visible on arrival in landscape** — a phone on its side showed only one of the five before you scrolled.
+
+> The six new locales ship fully translated (all 562 strings + 7 plurals each), but the translations are machine-generated and have **not had a native review** — worth a pass before a wide release. Under the hood this release also adds Firebase Test Lab Robo coverage across a device matrix (`scripts/TESTLAB.md`) and turns on Room schema export with an instrumented migration suite, so a bad database migration now fails a test instead of a user's phone.
+
 ## 10.5.0 (versionCode 1050) — 2026-07-15
 
 A feature (MINOR) release: a quick guided setup after sign-up tailors the app to you, and each account now keeps its data to itself.
