@@ -29,9 +29,18 @@ class AuthRepository(private val auth: FirebaseAuth) {
         auth.signInWithEmailAndPassword(email, password).await()
     }
 
-    suspend fun signInWithGoogle(idToken: String) {
+    /**
+     * Signs in with a Google credential, creating the account when this Google user is new to the
+     * project — [FirebaseAuth.signInWithCredential] does both, so unlike the email pair there is no
+     * separate sign-up call to hang first-run behaviour off.
+     *
+     * @return true when this call created the account, from Firebase's own `isNewUser`. Callers that
+     *   need to tell a Google sign-up from a Google sign-in have nothing else to go on.
+     */
+    suspend fun signInWithGoogle(idToken: String): Boolean {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential).await()
+        val result = auth.signInWithCredential(credential).await()
+        return result.additionalUserInfo?.isNewUser == true
     }
 
     /** Sends a password-reset email to [email]. */

@@ -78,25 +78,38 @@ fun BudgettyApp(
 
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
 
+    // Only meaningful once signed in (see below); while signed out the login screen shows its own
+    // progress, and a reset-password send would otherwise replace it mid-dialog.
+    val authInProgress by authViewModel.loading.collectAsStateWithLifecycle()
+
     when (authState) {
-        AuthState.Loading -> Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        AuthState.Loading -> AuthProgress()
         // No guest mode: unauthenticated users only ever see the login screen.
         AuthState.SignedOut -> LoginScreen()
         // A fresh sign-up arms the one-time Insights setup quiz; it gates the main app until
         // finished or skipped (both clear the pending flag, which recomposes us into the scaffold).
-        is AuthState.SignedIn -> if (settings.insightsQuizPending) {
-            InsightsQuizScreen()
-        } else {
-            MainScaffold(
+        is AuthState.SignedIn -> when {
+            // A Google sign-up only learns it created the account after the credential exchange, by
+            // which point Firebase has already flipped us to SignedIn. Waiting for the in-flight
+            // call to finish is what keeps Home from showing for a frame before the quiz — an email
+            // sign-up dodges this by arming the flag before it calls Firebase at all.
+            authInProgress -> AuthProgress()
+            settings.insightsQuizPending -> InsightsQuizScreen()
+            else -> MainScaffold(
                 startRoute = startRoute,
                 onStartRouteHandled = onStartRouteHandled,
             )
         }
+    }
+}
+
+@Composable
+private fun AuthProgress() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator()
     }
 }
 
