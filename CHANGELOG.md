@@ -15,6 +15,15 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.6.1 (versionCode 1061) — 2026-07-17
+
+A fix (PATCH) release: the guided setup now runs for everyone who creates an account, not only those who typed an email and password.
+
+### Fixed
+- **The guided setup after sign-up now runs for Google accounts too** — creating your account with "Continue with Google" skipped the setup questionnaire entirely and dropped you straight on Home. That meant never being asked for your **currency** (so you were left on EUR), never setting a starting income or spending budget, and getting the default Insights layout instead of one shaped around you. Signing up with Google now runs the same setup as signing up with an email; signing *in* to an existing Google account is unaffected.
+
+> 10.6.0 (vc1060) was built but never uploaded to Play, so for anyone installing from the store this release also carries everything listed under 10.6.0 below. The store release notes should cover both.
+
 ## 10.6.0 (versionCode 1060) — 2026-07-17
 
 A feature (MINOR) release: six new languages, a Europe-focused currency list, and an Account screen and paywall that now tell you the truth about what you get.
