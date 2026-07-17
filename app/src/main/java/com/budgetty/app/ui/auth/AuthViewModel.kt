@@ -51,8 +51,18 @@ class AuthViewModel(
             }
         }
 
+    /**
+     * Google has a single call for both sign-up and sign-in, so unlike [signUp] the quiz can only be
+     * armed *after* the credential exchange reports the account is new. [authState] has already
+     * flipped to [AuthState.SignedIn] by then, so the main gate holds on [loading] until this
+     * returns — otherwise Home would show for a frame before the quiz replaced it.
+     */
     fun signInWithGoogle(idToken: String) =
-        launchAuth("Google sign-in failed") { repository.signInWithGoogle(idToken) }
+        launchAuth("Google sign-in failed") {
+            if (repository.signInWithGoogle(idToken)) {
+                settingsStore.setInsightsQuizPending(true)
+            }
+        }
 
     fun signOut() = repository.signOut()
 
