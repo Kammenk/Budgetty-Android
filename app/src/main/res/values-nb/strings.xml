@@ -178,6 +178,7 @@
     <string name="receipt_vat_included">Inkl. mva %1$s</string>
     <string name="upload_finalize">Fullfør</string>
     <string name="upload_total_mismatch">Disse oppføringene summeres til %1$s, men kvitteringen viser %2$s. Dobbeltsjekk prisene før du lagrer.</string>
+    <string name="upload_total_currency_notice">Disse oppføringene summeres til %1$s, men totalen ble %2$s. Hvis kvitteringen viser både euro og leva, dobbeltsjekk at du lagrer euro-beløpet.</string>
     <string name="upload_items_missing_title">Dobbeltsjekk oppføringene dine</string>
     <string name="upload_save_anyway">Lagre likevel</string>
     <string name="upload_error_title">Kunne ikke lese kvitteringen</string>

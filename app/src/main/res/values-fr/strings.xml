@@ -437,6 +437,7 @@
     <string name="home_view_all_budgets">Voir tous les budgets</string>
     <string name="receipt_vat_included">TVA incl. %1$s</string>
     <string name="upload_total_mismatch">Ces articles totalisent %1$s, mais le reçu indique %2$s. Vérifiez les prix des articles avant d\'enregistrer.</string>
+    <string name="upload_total_currency_notice">Ces articles totalisent %1$s, mais le total s\'élève à %2$s. Si le reçu affiche à la fois des euros et des levas, vérifiez que vous enregistrez le montant en euros.</string>
     <string name="upload_items_missing_title">Vérifiez vos articles</string>
     <string name="upload_save_anyway">Enregistrer quand même</string>
     <string name="upload_error_body">La photo est peut-être trop floue, sombre ou coupée pour être lue. Reprenez-la avec un bon éclairage, le reçu à plat et entièrement dans le cadre.</string>

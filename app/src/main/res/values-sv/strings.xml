@@ -178,6 +178,7 @@
     <string name="receipt_vat_included">Inkl. moms %1$s</string>
     <string name="upload_finalize">Slutför</string>
     <string name="upload_total_mismatch">De här posterna summeras till %1$s, men kvittot visar %2$s. Dubbelkolla priserna innan du sparar.</string>
+    <string name="upload_total_currency_notice">De här posterna summeras till %1$s, men totalen blev %2$s. Om kvittot visar både euro och leva, dubbelkolla att du sparar eurobeloppet.</string>
     <string name="upload_items_missing_title">Dubbelkolla dina poster</string>
     <string name="upload_save_anyway">Spara ändå</string>
     <string name="upload_error_title">Kunde inte läsa kvittot</string>

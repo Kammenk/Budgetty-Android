@@ -437,6 +437,7 @@
     <string name="home_view_all_budgets">Виж всички бюджети</string>
     <string name="receipt_vat_included">Вкл. ДДС %1$s</string>
     <string name="upload_total_mismatch">Тези артикули дават общо %1$s, но бележката показва %2$s. Провери цените на артикулите преди да запазиш.</string>
+    <string name="upload_total_currency_notice">Тези артикули дават общо %1$s, но общата сума е %2$s. Ако бележката е и в евро, и в лева, провери дали запазваш сумата в евро.</string>
     <string name="upload_items_missing_title">Провери артикулите</string>
     <string name="upload_save_anyway">Запази въпреки това</string>
     <string name="upload_error_body">Снимката може да е твърде размазана, тъмна или отрязана за разчитане. Направи я отново при добра светлина, с бележката равна и изцяло в кадър.</string>

@@ -437,6 +437,7 @@
     <string name="home_view_all_budgets">Vedi tutti i budget</string>
     <string name="receipt_vat_included">IVA incl. %1$s</string>
     <string name="upload_total_mismatch">Questi articoli ammontano a %1$s, ma lo scontrino indica %2$s. Ricontrolla i prezzi degli articoli prima di salvare.</string>
+    <string name="upload_total_currency_notice">Questi articoli ammontano a %1$s, ma il totale è %2$s. Se lo scontrino riporta sia euro sia lev, controlla di salvare l\'importo in euro.</string>
     <string name="upload_items_missing_title">Ricontrolla i tuoi articoli</string>
     <string name="upload_save_anyway">Salva comunque</string>
     <string name="upload_error_body">La foto potrebbe essere troppo sfocata, scura o tagliata per essere letta. Riscattala con una buona luce, con lo scontrino piatto e interamente nell\'inquadratura.</string>

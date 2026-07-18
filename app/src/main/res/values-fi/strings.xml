@@ -178,6 +178,7 @@
     <string name="receipt_vat_included">Sis. ALV %1$s</string>
     <string name="upload_finalize">Viimeistele</string>
     <string name="upload_total_mismatch">Nämä rivit ovat yhteensä %1$s, mutta kuitti näyttää %2$s. Tarkista rivien hinnat ennen tallentamista.</string>
+    <string name="upload_total_currency_notice">Nämä rivit ovat yhteensä %1$s, mutta loppusumma on %2$s. Jos kuitissa on sekä euroja että levejä, tarkista, että tallennat summan euroina.</string>
     <string name="upload_items_missing_title">Tarkista rivisi</string>
     <string name="upload_save_anyway">Tallenna silti</string>
     <string name="upload_error_title">Kuittia ei voitu lukea</string>

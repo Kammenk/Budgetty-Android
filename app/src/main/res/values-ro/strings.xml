@@ -178,6 +178,7 @@
     <string name="receipt_vat_included">Incl. TVA %1$s</string>
     <string name="upload_finalize">Finalizează</string>
     <string name="upload_total_mismatch">Aceste elemente însumează %1$s, dar bonul arată %2$s. Verifică prețurile elementelor înainte de a salva.</string>
+    <string name="upload_total_currency_notice">Aceste elemente însumează %1$s, dar totalul este %2$s. Dacă bonul afișează atât euro, cât și leva, verifică să salvezi suma în euro.</string>
     <string name="upload_items_missing_title">Verifică elementele</string>
     <string name="upload_save_anyway">Salvează oricum</string>
     <string name="upload_error_title">Bonul nu a putut fi citit</string>

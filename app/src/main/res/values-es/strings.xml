@@ -437,6 +437,7 @@
     <string name="home_view_all_budgets">Ver todos los presupuestos</string>
     <string name="receipt_vat_included">IVA incl. %1$s</string>
     <string name="upload_total_mismatch">Estos artículos suman %1$s, pero el recibo muestra %2$s. Comprueba los precios antes de guardar.</string>
+    <string name="upload_total_currency_notice">Estos artículos suman %1$s, pero el total es %2$s. Si el recibo muestra euros y levas, comprueba que guardas el importe en euros.</string>
     <string name="upload_items_missing_title">Revisa tus artículos</string>
     <string name="upload_save_anyway">Guardar de todos modos</string>
     <string name="upload_error_body">La foto puede estar demasiado borrosa, oscura o recortada para leerla. Vuelve a hacerla con buena luz, con el recibo plano y completo en el encuadre.</string>

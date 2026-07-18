@@ -437,6 +437,7 @@
     <string name="home_view_all_budgets">Zobacz wszystkie budżety</string>
     <string name="receipt_vat_included">Zawiera VAT %1$s</string>
     <string name="upload_total_mismatch">Te pozycje sumują się do %1$s, ale paragon pokazuje %2$s. Sprawdź ceny pozycji przed zapisaniem.</string>
+    <string name="upload_total_currency_notice">Te pozycje sumują się do %1$s, ale łączna kwota to %2$s. Jeśli paragon podaje kwotę w euro i w lewach, sprawdź, czy zapisujesz kwotę w euro.</string>
     <string name="upload_items_missing_title">Sprawdź pozycje</string>
     <string name="upload_save_anyway">Zapisz mimo to</string>
     <string name="upload_error_body">Zdjęcie może być zbyt rozmyte, ciemne lub przycięte, by je odczytać. Zrób je ponownie w dobrym świetle, z paragonem płasko i w całości w kadrze.</string>

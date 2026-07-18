@@ -600,12 +600,35 @@ private val MISMATCH_TOLERANCE_RATIO = BigDecimal("0.01")
 private val MISMATCH_TOLERANCE_ABS = BigDecimal("0.15")
 
 /**
- * Soft, dismissible-by-ignoring notice shown on review when the line items don't add up to the
- * receipt's own total/subtotal — the signature of a misread price. It only informs; the user stays
- * in control of the numbers (it never overrides the saved total). Styled as a caution, not an error.
+ * A saved total inflated far beyond the item sum by an unexplained residual — money not itemized as
+ * fees/tip/tax — when the receipt prints NO subtotal to anchor the [itemsShortfall] check. That's the
+ * signature of line items read in the wrong currency (Bulgaria's euro/leva changeover: a leva grand
+ * total on euro prices ≈ doubles the total) or a dropped line whose gap gets buried in extra charges.
+ * Flagged once that residual exceeds BOTH this fraction of the item sum and [UNEXPLAINED_TOTAL_ABS], so
+ * a genuine small deposit/fee (a low fraction of the bill) doesn't trip it.
+ */
+private val UNEXPLAINED_TOTAL_RATIO = BigDecimal("0.5")
+private val UNEXPLAINED_TOTAL_ABS = BigDecimal("1.50")
+
+/**
+ * Soft, dismissible-by-ignoring notice shown on review when the line items sum to MORE than the
+ * receipt's own total/subtotal — the signature of a misread (over-read) price. It only informs; the
+ * user stays in control of the numbers (it never overrides the saved total). Styled as a caution.
  */
 @Composable
 private fun PriceMismatchNotice(itemsTotal: BigDecimal, receiptTotal: BigDecimal) {
+    CautionNotice(
+        stringResource(R.string.upload_total_mismatch, itemsTotal.formatMoney(), receiptTotal.formatMoney()),
+    )
+}
+
+/**
+ * Shared caution-styled inline notice (secondary container, warning icon) used on the review screen.
+ * Non-blocking: it informs and the user stays in control — it never changes the saved total or gates
+ * Finalize. Styled as a caution, deliberately not the red error color.
+ */
+@Composable
+private fun CautionNotice(text: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -623,11 +646,7 @@ private fun PriceMismatchNotice(itemsTotal: BigDecimal, receiptTotal: BigDecimal
             modifier = Modifier.size(MaterialTheme.dimens.xl),
         )
         Text(
-            text = stringResource(
-                R.string.upload_total_mismatch,
-                itemsTotal.formatMoney(),
-                receiptTotal.formatMoney(),
-            ),
+            text = text,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSecondaryContainer,
         )
@@ -694,8 +713,22 @@ private fun ReviewList(
         sub.signum() > 0 &&
             (sub - gross) > maxOf(sub.multiply(MISMATCH_TOLERANCE_RATIO), MISMATCH_TOLERANCE_ABS)
     }
+
+    // Same data-losing direction, for receipts that print NO subtotal to anchor the check above — the
+    // exact hole that let a dual-currency receipt through: the saved total is inflated far past the
+    // items by an unexplained residual (money not itemized as fees/tip/tax and buried in [extraCharges]).
+    // Bulgaria's euro changeover is the canonical case — a leva grand total on euro line items nearly
+    // doubles the total. Surfaced as a SOFT, non-blocking notice below (see [CautionNotice]), NOT the
+    // confirm dialog: the items themselves are usually read correctly and the user reviews them before
+    // finalizing, so a hard stop they can't easily resolve would overdo it. Holds the inflated total.
+    val inflatedTotal = total.takeIf {
+        receiptSubtotal == null &&
+            extraCharges > maxOf(gross.multiply(UNEXPLAINED_TOTAL_RATIO), UNEXPLAINED_TOTAL_ABS)
+    }
+
     var showMismatchDialog by remember { mutableStateOf(false) }
-    // Route Finalize through the dropped-line check: confirm on a shortfall, else save straight away.
+    // Route Finalize through the dropped-line check: confirm on a subtotal shortfall, else save straight
+    // away. (The [inflatedTotal] case warns softly inline instead, so it never blocks here.)
     val attemptFinalize: () -> Unit = {
         if (itemsShortfall != null) showMismatchDialog = true else onFinalize()
     }
@@ -788,6 +821,11 @@ private fun ReviewList(
             }
             if (priceMismatch != null) {
                 PriceMismatchNotice(itemsTotal = gross, receiptTotal = priceMismatch)
+            }
+            if (inflatedTotal != null) {
+                CautionNotice(
+                    stringResource(R.string.upload_total_currency_notice, gross.formatMoney(), inflatedTotal.formatMoney()),
+                )
             }
             if (error != null) {
                 Text(

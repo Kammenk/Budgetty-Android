@@ -438,6 +438,7 @@
     <string name="home_view_all_budgets">Alle Budgets ansehen</string>
     <string name="receipt_vat_included">inkl. MwSt. %1$s</string>
     <string name="upload_total_mismatch">Diese Artikel ergeben %1$s, aber der Beleg zeigt %2$s. Überprüfe die Artikelpreise, bevor du speicherst.</string>
+    <string name="upload_total_currency_notice">Diese Artikel ergeben %1$s, aber die Gesamtsumme beträgt %2$s. Wenn der Beleg sowohl Euro als auch Leva anzeigt, prüfe, dass du den Euro-Betrag speicherst.</string>
     <string name="upload_items_missing_title">Überprüfe deine Artikel</string>
     <string name="upload_save_anyway">Trotzdem speichern</string>
     <string name="upload_error_body">Das Foto ist vielleicht zu unscharf, dunkel oder abgeschnitten. Mach es bei gutem Licht neu, mit dem Beleg flach und vollständig im Bild.</string>

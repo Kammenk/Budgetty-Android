@@ -178,6 +178,7 @@
     <string name="receipt_vat_included">Inkl. moms %1$s</string>
     <string name="upload_finalize">Færdiggør</string>
     <string name="upload_total_mismatch">Disse poster giver i alt %1$s, men kvitteringen viser %2$s. Dobbelttjek priserne, før du gemmer.</string>
+    <string name="upload_total_currency_notice">Disse poster giver i alt %1$s, men totalen blev %2$s. Hvis kvitteringen viser både euro og leva, så tjek, at du gemmer euro-beløbet.</string>
     <string name="upload_items_missing_title">Dobbelttjek dine poster</string>
     <string name="upload_save_anyway">Gem alligevel</string>
     <string name="upload_error_title">Kunne ikke læse kvitteringen</string>

@@ -178,6 +178,7 @@
     <string name="receipt_vat_included">Vč. DPH %1$s</string>
     <string name="upload_finalize">Dokončit</string>
     <string name="upload_total_mismatch">Součet těchto položek je %1$s, ale účtenka uvádí %2$s. Před uložením zkontrolujte ceny položek.</string>
+    <string name="upload_total_currency_notice">Součet těchto položek je %1$s, ale celková částka je %2$s. Pokud účtenka uvádí částku v eurech i v levech, zkontrolujte, že ukládáte částku v eurech.</string>
     <string name="upload_items_missing_title">Zkontrolujte své položky</string>
     <string name="upload_save_anyway">Přesto uložit</string>
     <string name="upload_error_title">Účtenku se nepodařilo přečíst</string>

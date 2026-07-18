@@ -437,6 +437,7 @@
     <string name="home_view_all_budgets">Показать все бюджеты</string>
     <string name="receipt_vat_included">Вкл. НДС %1$s</string>
     <string name="upload_total_mismatch">Эти позиции в сумме дают %1$s, но в чеке указано %2$s. Проверьте цены позиций перед сохранением.</string>
+    <string name="upload_total_currency_notice">Эти позиции в сумме дают %1$s, но итоговая сумма — %2$s. Если в чеке указаны и евро, и левы, проверьте, что сохраняете сумму в евро.</string>
     <string name="upload_items_missing_title">Проверьте позиции</string>
     <string name="upload_save_anyway">Всё равно сохранить</string>
     <string name="upload_error_body">Фото может быть слишком размытым, тёмным или обрезанным для распознавания. Переснимите при хорошем освещении, расположив чек ровно и полностью в кадре.</string>

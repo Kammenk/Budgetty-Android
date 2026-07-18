@@ -194,6 +194,7 @@
     <string name="receipt_vat_included">Incl. VAT %1$s</string>
     <string name="upload_finalize">Finalize</string>
     <string name="upload_total_mismatch">These items add up to %1$s, but the receipt shows %2$s. Double-check the item prices before saving.</string>
+    <string name="upload_total_currency_notice">These items add up to %1$s, but the total came to %2$s. If the receipt lists both euros and leva, double-check you\'re saving the euro amount.</string>
     <string name="upload_items_missing_title">Double-check your items</string>
     <string name="upload_save_anyway">Save anyway</string>
     <string name="upload_error_title">Couldn\'t read that receipt</string>

@@ -437,6 +437,7 @@
     <string name="home_view_all_budgets">Ver todos os orçamentos</string>
     <string name="receipt_vat_included">Impostos incl. %1$s</string>
     <string name="upload_total_mismatch">Estes itens somam %1$s, mas o recibo mostra %2$s. Confira os preços dos itens antes de salvar.</string>
+    <string name="upload_total_currency_notice">Estes itens somam %1$s, mas o total ficou em %2$s. Se o recibo mostra euros e levs, confira se o valor a salvar está em euros.</string>
     <string name="upload_items_missing_title">Confira seus itens</string>
     <string name="upload_save_anyway">Salvar mesmo assim</string>
     <string name="upload_error_body">A foto pode estar borrada, escura ou cortada demais para ler. Tire outra com boa luz, com o recibo plano e totalmente no enquadramento.</string>
