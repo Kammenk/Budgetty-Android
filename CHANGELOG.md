@@ -15,6 +15,17 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.6.2 (versionCode 1062) — 2026-07-20
+
+A fix (PATCH) release: receipts bought in multiples are no longer rejected as unreadable.
+
+### Fixed
+- **Receipts with multi-buy lines now scan** — a receipt that prints its item count as a number of *units* rather than lines (common across Greece and much of the EU) was rejected with "Couldn't read that receipt", however clear the photo. A shop with three multi-buy lines — "4 × 0,34" water, "6 × 1,42" cream, "2 × 0,11" bags — prints 18 items across 9 lines, and the check that guards against misreading a receipt counted those 9 against the printed 18 and refused the scan. Retaking the photo never helped, because the photo was never the problem: the receipt had been read correctly, down to the cent, before being discarded. The check now recognises both ways a receipt counts itself.
+
+> Under the hood, the extraction eval gained the ability to assert the *verdict* of a scan and not merely its numbers — this bug read every value correctly and was invisible to the old checks — plus a set of offline tests for those guards that need no receipt, and a corpus case for the receipt that surfaced it.
+
+> 10.6.0 (vc1060) and 10.6.1 (vc1061) were built but never uploaded to Play, so for anyone installing from the store this release also carries everything listed under both below. The store release notes should cover all three.
+
 ## 10.6.1 (versionCode 1061) — 2026-07-17
 
 A fix (PATCH) release: the guided setup now runs for everyone who creates an account, not only those who typed an email and password.
