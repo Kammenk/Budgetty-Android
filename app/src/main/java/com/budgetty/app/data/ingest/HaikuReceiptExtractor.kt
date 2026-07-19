@@ -166,11 +166,19 @@ class HaikuReceiptExtractor(
         // 1) The model told us it couldn't read the lines (and so returned none rather than guesses).
         if (response.readable == false) throw ReceiptUnreadableException(UNREADABLE_MESSAGE)
 
-        // 2) Article-count cross-check: capturing far fewer/more lines than the receipt itself prints
+        // 2) Article-count cross-check: capturing far fewer/more items than the receipt itself prints
         // ("N АРТИКУЛА") means we misread it. Only checked when a count is actually printed.
+        //
+        // That printed count is EITHER the number of product lines or the number of units, depending on
+        // the receipt format — Greek "ΣΥΝΟΛΟ ΕΙΔΩΝ" counts units, so a basket with multi-buy lines
+        // ("6 X 1,42") prints many more articles than it has lines. Accept whichever reading lands in
+        // band; only a count matching NEITHER means we genuinely misread the receipt.
         val printedCount = response.printedItemCount ?: 0
+        val inCountBand = { n: Int ->
+            n >= printedCount * MIN_COUNT_RATIO && n <= printedCount * MAX_COUNT_RATIO
+        }
         if (printedCount >= MIN_PRINTED_COUNT_TO_CHECK &&
-            (items.size < printedCount * MIN_COUNT_RATIO || items.size > printedCount * MAX_COUNT_RATIO)
+            !inCountBand(items.size) && !inCountBand(countUnits(items))
         ) {
             throw ReceiptUnreadableException(UNREADABLE_MESSAGE)
         }
@@ -190,6 +198,14 @@ class HaikuReceiptExtractor(
     /** Sum of line totals (`price × quantity`), exactly as the review screen and discount math do it. */
     private fun grossOf(items: List<ParsedTransaction>): BigDecimal =
         items.fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
+
+    /**
+     * Number of ARTICLES the basket represents, as a receipt's own "N items" line counts them.
+     * [ParsedTransaction.quantity] is already the per-line article count — [toParsedTransaction] sets it
+     * to N only for a whole "N x price" multiplier and to 1 for a single or weighed/fractional line — so
+     * summing it needs no further normalization. Mirrored server-side by extract.js `countUnits`.
+     */
+    private fun countUnits(items: List<ParsedTransaction>): Int = items.sumOf { it.quantity }
 
     /**
      * Resolves the order-level discount that the review total subtracts (`gross − discount`).

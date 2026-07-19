@@ -26,6 +26,18 @@ const MAX_OVERSHOOT_RATIO = 0.35;
 const MAX_OVERSHOOT_ABS = 1.5;
 
 /**
+ * Number of ARTICLES the basket represents, as a receipt's own "N items" line counts them: a whole
+ * multiplier ('4 X 0,34') contributes its N, while a weighed line ('0.775 kg') and any missing or
+ * fractional quantity count as the single article they are. KEEP IN SYNC with the client's countUnits.
+ */
+function countUnits(items) {
+  return items.reduce((sum, it) => {
+    const qty = Math.round(Number(it.quantity) || 0);
+    return sum + (qty >= 2 ? qty : 1);
+  }, 0);
+}
+
+/**
  * Distills a scan into a compact, queryable diagnostic. `outcome` names the single on-device gate the
  * app would reject on (in the client's check order) or "ok" when it passes — so the logs classify
  * failures exactly as the user experiences them, and the tier escalates exactly when the app would balk.
@@ -35,6 +47,7 @@ const MAX_OVERSHOOT_ABS = 1.5;
 function scanDiagnostics(input) {
   const items = Array.isArray(input.items) ? input.items : [];
   const itemCount = items.length;
+  const unitCount = countUnits(items);
   const printedItemCount = Math.round(Number(input.printedItemCount) || 0);
   // Sum of the printed line totals, exactly as the app sums them (price = the extended line total),
   // so this `grossItems` and the overshoot below match what the client computes to the cent.
@@ -42,10 +55,14 @@ function scanDiagnostics(input) {
   const total = Number(input.total) || 0;
   const discount = Number(input.discount) || 0;
 
+  // A receipt's printed count is EITHER its number of product lines or its number of units — Greek
+  // 'ΣΥΝΟΛΟ ΕΙΔΩΝ' and many EU formats count units, so a basket with '6 X 1,42' multi-buy lines prints
+  // far more than it has lines. Accept whichever reading lands in band; only a count that matches
+  // NEITHER means we actually misread the receipt.
   const countChecked = printedItemCount >= MIN_PRINTED_COUNT_TO_CHECK;
-  const countMismatch =
-    countChecked &&
-    (itemCount < printedItemCount * MIN_COUNT_RATIO || itemCount > printedItemCount * MAX_COUNT_RATIO);
+  const inCountBand = (n) =>
+    n >= printedItemCount * MIN_COUNT_RATIO && n <= printedItemCount * MAX_COUNT_RATIO;
+  const countMismatch = countChecked && !inCountBand(itemCount) && !inCountBand(unitCount);
 
   const overshoot = total > 0 ? grossItems - discount - total : 0;
   const overshootTrips =
@@ -65,6 +82,7 @@ function scanDiagnostics(input) {
     lowConfidenceFields: Array.isArray(input.lowConfidenceFields) ? input.lowConfidenceFields : [],
     storeName: input.storeName || "",
     itemCount,
+    unitCount,
     printedItemCount,
     countMismatch,
     total,

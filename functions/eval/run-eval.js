@@ -30,7 +30,7 @@ const MIME = { ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png",
 // Fields in expected.json the harness can actually assert on. A case that specifies none of these
 // (only tags/notes) is treated as an unfilled stub, not a vacuous pass. Keys starting with "_" and
 // "tags" are metadata, never assertions.
-const ASSERT_KEYS = ["readable", "printedItemCount", "itemCount", "total", "discount", "tax", "lineTotals", "expectedNames"];
+const ASSERT_KEYS = ["readable", "printedItemCount", "itemCount", "outcome", "total", "discount", "tax", "lineTotals", "expectedNames"];
 
 // Launch coverage plan: the receipt FORMATS we must parse, each a predicate over an expected.json's
 // `tags` (`has` = all present, `not` = none present). A family is COVERED once a matching case has a
@@ -48,6 +48,7 @@ const FAMILIES = [
   { phase: 1, label: "Coupon / loyalty deduction",                        has: ["feature:coupon"] },
   { phase: 1, label: "Delivery-app order summary (fees/tip)",             has: ["type:delivery"], not: ["region:na"] },
   { phase: 1, label: "Weighted produce (price/kg)",                       has: ["feature:weighted"] },
+  { phase: 1, label: "Multi-buy lines + printed UNIT count ('4 X 0,34')", has: ["feature:multiBuy"] },
   { phase: 1, label: "Long 40+ item supermarket haul",                    has: ["feature:longHaul"] },
   { phase: 1, label: "Unreadable photo -> readable:false",                has: ["feature:unreadable"] },
   { phase: 2, label: "US/CA supermarket, tax-on-top ($)",                 has: ["region:na", "type:supermarket", "tax:onTop"] },
@@ -93,9 +94,19 @@ function lineTotals(items) {
 }
 
 /** Returns a list of failure strings (empty = pass). Only checks fields the expected.json specifies. */
-function check(expected, actual) {
+function check(expected, actual, diagnostics) {
   const fails = [];
   const approx = (a, b) => Math.abs((Number(a) || 0) - (Number(b) || 0)) <= MONEY_TOL;
+
+  // The VERDICT, not just the values: a receipt can be extracted perfectly and still be thrown away by
+  // a reconciliation guard (the app shows "Couldn't read that receipt"). Asserting only the numbers
+  // misses that entirely — a Greek multi-buy receipt whose printed 'ΣΥΝΟΛΟ ΕΙΔΩΝ' counts UNITS once
+  // read correctly in every field while `count_mismatch` rejected it on device. Assert `outcome: "ok"`
+  // on any case that must actually reach the user.
+  if (expected.outcome != null && diagnostics && diagnostics.outcome !== expected.outcome) {
+    fails.push(`outcome: expected ${expected.outcome}, got ${diagnostics.outcome}` +
+      ` (lines ${diagnostics.itemCount}, units ${diagnostics.unitCount}, printed ${diagnostics.printedItemCount})`);
+  }
 
   if (typeof expected.readable === "boolean" && actual.readable !== expected.readable) {
     fails.push(`readable: expected ${expected.readable}, got ${actual.readable}`);
@@ -257,7 +268,7 @@ async function main() {
       // In tiered mode, show which model served: [haiku] accepted, or [haiku→sonnet] on a guard trip.
       const tag = wantTiered ? (r.escalated ? "  [haiku→sonnet]" : "  [haiku]") : "";
       if (wantJson) console.log(`      ${JSON.stringify(actual)}`);
-      const fails = check(expected, actual);
+      const fails = check(expected, actual, r.diagnostics);
       if (fails.length === 0) {
         console.log(`PASS  ${id}${tag}`);
         pass++;
