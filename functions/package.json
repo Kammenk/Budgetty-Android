@@ -2,6 +2,10 @@
   "name": "functions",
   "description": "Budgetty Cloud Functions (receipt extraction proxy)",
   "main": "index.js",
+  "scripts": {
+    "test:guards": "node eval/guard-tests.js",
+    "eval": "node eval/run-eval.js"
+  },
   "engines": {
     "node": "22"
   },

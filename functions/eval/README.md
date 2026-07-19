@@ -26,6 +26,23 @@ node eval/run-eval.js --coverage                                    # format-gap
 Use the same Anthropic key the Cloud Function uses. The key is read from the environment and never
 written anywhere. Each run costs a few API tokens per receipt; `temperature: 0` keeps it ~repeatable.
 
+## Guard tests — the other half
+
+```bash
+node eval/guard-tests.js     # no API key, no network, no images
+```
+
+The corpus eval above tests the **model**: did it read the receipt right? `guard-tests.js` tests the
+**guards** in `extract.js`: given a correct read, do we actually serve it? Those fail independently —
+a receipt can be extracted perfectly to the cent and still be thrown away with "Couldn't read that
+receipt".
+
+That is not hypothetical. A Greek receipt printing `ΣΥΝΟΛΟ ΕΙΔΩΝ *18*` (eighteen **units** across nine
+lines) was read flawlessly and rejected five times by the article-count guard, which compared lines
+against units. Every value-level assertion would have passed. So when a corpus case must actually reach
+the user, **assert `outcome: "ok"`** — it's the only field that checks the verdict rather than the
+numbers. Guard logic is pure, so these run instantly and belong in the same pre-change/post-change diff.
+
 ## Coverage — what "launch-ready" means here
 
 The parser is **store-agnostic**: it's one Claude prompt, so it has no per-merchant logic. What breaks
@@ -43,7 +60,7 @@ Each case carries a `tags` array; `run-eval.js --coverage` maps those tags onto 
 The launch bar (Bulgaria + EU first; North America is phase 2) is: **every phase-1 family COVERED and
 a green run.** Tags use namespaced values — `region:bg|eu|na`, `lang:bg|de|fr|…`,
 `type:supermarket|discounter|service|pharmacy|fuel|restaurant|delivery|bigbox`,
-`tax:inclusive|onTop`, `feature:weighted|coupon|deposit|voided|multiVat|dualCurrency|longHaul|unreadable`.
+`tax:inclusive|onTop`, `feature:weighted|coupon|deposit|voided|multiVat|dualCurrency|multiBuy|longHaul|unreadable`.
 One receipt can (and should) satisfy several families — a long Lidl haul with a Lidl Plus coupon covers
 supermarket + longHaul + coupon at once.
 
@@ -81,6 +98,7 @@ To add a case:
    | `readable` | expected readable flag (`false` for an intentionally unreadable photo) |
    | `printedItemCount` | the "N items / N АРТИКУЛА" count printed on the receipt |
    | `itemCount` | how many line items extraction should return |
+   | `outcome` | the guard **verdict** the app would reach: `ok`, `not_readable`, `count_mismatch`, `overshoot` |
    | `total` | printed grand total (± 0.02) |
    | `discount` | expected discount (± 0.02) |
    | `tax` | expected tax added on top (± 0.02; `0` for VAT-inclusive) |
