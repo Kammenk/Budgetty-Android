@@ -84,6 +84,16 @@ android {
         compose = true
         buildConfig = true
     }
+    lint {
+        // Records the pre-existing findings (the codebase had never been gated on Lint) so the CI
+        // lintDebug task passes today and only NEW issues fail. Regenerate deliberately by deleting
+        // the file and re-running lint. Most current errors are RestrictedApi false positives from
+        // calling Glance's own ColorProvider API.
+        baseline = file("lint-baseline.xml")
+        warningsAsErrors = false
+        // Lint runs as its own CI step (lintDebug); don't also run it inside every release assemble.
+        checkReleaseBuilds = false
+    }
     testOptions {
         unitTests {
             // Robolectric needs merged Android resources on the unit-test classpath (and Room's
