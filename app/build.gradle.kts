@@ -1,3 +1,4 @@
+import io.gitlab.arturbosch.detekt.Detekt
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -9,6 +10,7 @@ plugins {
     alias(libs.plugins.room)
     alias(libs.plugins.google.services)
     alias(libs.plugins.androidx.baselineprofile)
+    alias(libs.plugins.detekt)
 }
 
 // Room writes the schema of every DB version here. The JSONs are committed: they are what lets a
@@ -104,7 +106,31 @@ composeCompiler {
     }
 }
 
+// Static analysis. `./gradlew :app:detekt` checks Kotlin for smells, complexity, and (via the
+// formatting rules) style. buildUponDefaultConfig means config/detekt/detekt.yml only holds overrides
+// on top of detekt's defaults. baseline.xml records every pre-existing finding on this 113-file
+// codebase so the task passes today and only NEW code is gated — regenerate it deliberately with
+// `./gradlew :app:detektBaseline`, never as a way to silence a fresh finding.
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom("$rootDir/config/detekt/detekt.yml")
+    baseline = file("$rootDir/config/detekt/baseline.xml")
+    parallel = true
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = "11"
+    reports {
+        html.required.set(true)
+        sarif.required.set(true) // consumed by the GitHub code-scanning upload in CI
+        md.required.set(false)
+        txt.required.set(false)
+    }
+}
+
 dependencies {
+    detektPlugins(libs.detekt.formatting)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
