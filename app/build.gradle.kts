@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.androidx.baselineprofile)
 }
 
 // Room writes the schema of every DB version here. The JSONs are committed: they are what lets a
@@ -158,6 +159,11 @@ dependencies {
 
     // Google Play In-App Review — the native rating card, asked after a successful scan
     implementation(libs.app.review.ktx)
+
+    // Applies the generated Baseline Profile (baselineprofile/) on-device at install for AOT
+    // compilation of the startup path. The :baselineprofile module records it; this consumes it.
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":baselineprofile"))
 
     // ML Kit Document Scanner — high-quality receipt capture (auto edge-detect, deskew, glare
     // handling + review/retake) in place of the raw camera intent, which produced marginal images.
