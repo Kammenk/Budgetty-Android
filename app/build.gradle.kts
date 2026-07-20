@@ -1,3 +1,4 @@
+import com.android.build.api.variant.BuildConfigField
 import io.gitlab.arturbosch.detekt.Detekt
 import java.io.FileInputStream
 import java.util.Properties
@@ -91,6 +92,22 @@ android {
             // Robolectric ships, so tests run against SDK 34.
             isIncludeAndroidResources = true
         }
+    }
+}
+
+// BuildConfig.TEST_HOOKS_ENABLED gates debug/profiling-only hooks (the SKIP_AUTH auth bypass). True
+// for `debug` and for the plugin-created profiling variants `nonMinifiedRelease` / `benchmarkRelease`
+// — the Baseline Profile is generated against nonMinifiedRelease, a RELEASE-typed build where
+// BuildConfig.DEBUG is false, so DEBUG alone wouldn't let the generator reach past login. False for
+// the shipped `release`, so the hook is inert in production. Set via the variant API (single source
+// of truth; every variant gets the field, so BuildConfig.TEST_HOOKS_ENABLED resolves everywhere).
+androidComponents {
+    onVariants { variant ->
+        val enabled = variant.name in setOf("debug", "nonMinifiedRelease", "benchmarkRelease")
+        variant.buildConfigFields?.put(
+            "TEST_HOOKS_ENABLED",
+            BuildConfigField("boolean", enabled.toString(), "debug/profiling-only test hooks"),
+        )
     }
 }
 

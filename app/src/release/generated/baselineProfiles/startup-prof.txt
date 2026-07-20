@@ -308,6 +308,7 @@ Landroidx/collection/MutableIntObjectMap;
 SPLandroidx/collection/MutableIntObjectMap;-><init>(I)V
 SPLandroidx/collection/MutableIntObjectMap;-><init>(IILkotlin/jvm/internal/DefaultConstructorMarker;)V
 SPLandroidx/collection/MutableIntObjectMap;->adjustStorage$collection()V
+SPLandroidx/collection/MutableIntObjectMap;->dropDeletes$collection()V
 SPLandroidx/collection/MutableIntObjectMap;->findAbsoluteInsertIndex(I)I
 SPLandroidx/collection/MutableIntObjectMap;->findFirstAvailableSlot(I)I
 SPLandroidx/collection/MutableIntObjectMap;->initializeGrowth()V
@@ -12381,6 +12382,10 @@ Lcom/budgetty/app/data/settings/ThemeMode;
 SPLcom/budgetty/app/data/settings/ThemeMode;->$values()[Lcom/budgetty/app/data/settings/ThemeMode;
 SPLcom/budgetty/app/data/settings/ThemeMode;-><clinit>()V
 SPLcom/budgetty/app/data/settings/ThemeMode;-><init>(Ljava/lang/String;ILjava/lang/String;)V
+Lcom/budgetty/app/debug/DebugAuth;
+SPLcom/budgetty/app/debug/DebugAuth;-><clinit>()V
+SPLcom/budgetty/app/debug/DebugAuth;-><init>()V
+SPLcom/budgetty/app/debug/DebugAuth;->getSkipAuth()Z
 Lcom/budgetty/app/di/AppModuleKt;
 SPLcom/budgetty/app/di/AppModuleKt;->$r8$lambda$0lx1Qe6z0Tz-0yBoeABvDYuOPL4(Lorg/koin/core/scope/Scope;Lorg/koin/core/parameter/ParametersHolder;)Lcom/budgetty/app/data/repository/CategoryRepository;
 SPLcom/budgetty/app/di/AppModuleKt;->$r8$lambda$6eIi1ow7tYLRBraYPUbCB2ENjjg(Lorg/koin/core/scope/Scope;Lorg/koin/core/parameter/ParametersHolder;)Lcom/budgetty/app/data/repository/TransactionRepository;
@@ -12509,12 +12514,12 @@ Lcom/budgetty/app/ui/history/HistoryViewModel;
 Lcom/budgetty/app/ui/home/HomeViewModel;
 Lcom/budgetty/app/ui/insights/InsightsViewModel;
 Lcom/budgetty/app/ui/navigation/BudgettyAppKt;
-SPLcom/budgetty/app/ui/navigation/BudgettyAppKt;->BudgettyApp$lambda$2(Landroidx/compose/runtime/State;)Lcom/budgetty/app/data/settings/AppSettings;
+SPLcom/budgetty/app/ui/navigation/BudgettyAppKt;->BudgettyApp$lambda$3(Landroidx/compose/runtime/State;)Lcom/budgetty/app/data/settings/AppSettings;
 SPLcom/budgetty/app/ui/navigation/BudgettyAppKt;->BudgettyApp(Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lcom/budgetty/app/ui/auth/AuthViewModel;Lcom/budgetty/app/data/settings/SettingsStore;Landroidx/compose/runtime/Composer;II)V
-Lcom/budgetty/app/ui/navigation/BudgettyAppKt$$ExternalSyntheticLambda1;
-SPLcom/budgetty/app/ui/navigation/BudgettyAppKt$$ExternalSyntheticLambda1;-><init>(Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lcom/budgetty/app/ui/auth/AuthViewModel;Lcom/budgetty/app/data/settings/SettingsStore;II)V
 Lcom/budgetty/app/ui/navigation/BudgettyAppKt$$ExternalSyntheticLambda13;
 SPLcom/budgetty/app/ui/navigation/BudgettyAppKt$$ExternalSyntheticLambda13;-><init>(Lcom/budgetty/app/data/settings/SettingsStore;)V
+Lcom/budgetty/app/ui/navigation/BudgettyAppKt$$ExternalSyntheticLambda14;
+SPLcom/budgetty/app/ui/navigation/BudgettyAppKt$$ExternalSyntheticLambda14;-><init>(Ljava/lang/String;Lkotlin/jvm/functions/Function0;Lcom/budgetty/app/ui/auth/AuthViewModel;Lcom/budgetty/app/data/settings/SettingsStore;II)V
 Lcom/budgetty/app/ui/onboarding/ComposableSingletons$OnboardingScreenKt;
 SPLcom/budgetty/app/ui/onboarding/ComposableSingletons$OnboardingScreenKt;-><clinit>()V
 SPLcom/budgetty/app/ui/onboarding/ComposableSingletons$OnboardingScreenKt;-><init>()V
@@ -13792,6 +13797,7 @@ SPLkotlin/collections/ArraysKt___ArraysJvmKt;->sortWith([Ljava/lang/Object;Ljava
 Lkotlin/collections/ArraysKt___ArraysKt;
 SPLkotlin/collections/ArraysKt___ArraysKt;->contains([Ljava/lang/Object;Ljava/lang/Object;)Z
 SPLkotlin/collections/ArraysKt___ArraysKt;->firstOrNull([Ljava/lang/Object;)Ljava/lang/Object;
+SPLkotlin/collections/ArraysKt___ArraysKt;->getLastIndex([J)I
 SPLkotlin/collections/ArraysKt___ArraysKt;->getLastIndex([Ljava/lang/Object;)I
 SPLkotlin/collections/ArraysKt___ArraysKt;->indexOf([Ljava/lang/Object;Ljava/lang/Object;)I
 SPLkotlin/collections/ArraysKt___ArraysKt;->toList([Ljava/lang/Object;)Ljava/util/List;

@@ -68,9 +68,10 @@ class MainActivity : ComponentActivity() {
         inAppUpdateManager = InAppUpdateManager(this)
         inAppUpdateManager.checkForUpdate()
         reviewPrompter = ReviewPrompter(this)
-        // Debug-only: a test harness can pass SKIP_AUTH to land directly on the main app. Gated on
-        // BuildConfig.DEBUG so a crafted intent can never bypass login on a release build.
-        if (BuildConfig.DEBUG && intent.getBooleanExtra(EXTRA_SKIP_AUTH, false)) {
+        // Debug/profiling-only: a test harness can pass SKIP_AUTH to land directly on the main app.
+        // TEST_HOOKS_ENABLED is true for debug + the Baseline-Profile variants but false for the
+        // shipped release, so a crafted intent can never bypass login in production.
+        if (BuildConfig.TEST_HOOKS_ENABLED && intent.getBooleanExtra(EXTRA_SKIP_AUTH, false)) {
             DebugAuth.skipAuth = true
         }
         startRoute.value = startRouteFor(intent)

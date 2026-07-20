@@ -9,9 +9,9 @@ package com.budgetty.app.debug
  * Maestro E2E, and screenshot tests.
  *
  * Release-safe by construction: the only writer is [com.budgetty.app.MainActivity], and it writes
- * only when `BuildConfig.DEBUG` is true and the SKIP_AUTH launch extra is present. In a release build
- * nothing sets it, so [skipAuth] stays false and the real Firebase gate is the only way in — there is
- * no code path that turns this on for a shipped app.
+ * only when `BuildConfig.TEST_HOOKS_ENABLED` is true and the SKIP_AUTH launch extra is present. That
+ * flag is true for debug and the Baseline-Profile variants but false for the shipped `release`, so
+ * nothing sets [skipAuth] in production — the real Firebase gate is the only way in.
  *
  * Signed-out access already falls back to an empty scratch database (see
  * [com.budgetty.app.data.local.UserDatabaseManager]), so the bypassed app renders a real, empty Home
