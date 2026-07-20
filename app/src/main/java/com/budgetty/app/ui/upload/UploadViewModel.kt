@@ -14,6 +14,7 @@ import com.budgetty.app.data.local.CategoryRuleEntity
 import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.quota.ScanQuota
+import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
@@ -95,6 +96,7 @@ class UploadViewModel(
     private val categoryRuleRepository: CategoryRuleRepository,
     private val billingManager: BillingManager,
     private val budgetRepository: BudgetRepository,
+    private val reviewTracker: ReviewTracker,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UploadUiState())
@@ -619,6 +621,9 @@ class UploadViewModel(
             // count against the free quota. Consume the flag so re-saving an edit can't double-count.
             if (scanPendingCount) {
                 scanQuota.increment()
+                // Same guard, same reason: a finalized scan is both what burns a free scan and what
+                // earns a rating prompt. Editing an existing receipt is neither.
+                reviewTracker.recordSuccessfulScan()
                 scanPendingCount = false
             }
             editingReceiptId = null

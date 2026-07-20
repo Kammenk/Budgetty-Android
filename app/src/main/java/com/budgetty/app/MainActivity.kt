@@ -30,6 +30,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.data.settings.LocaleHelper
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.data.settings.ThemeMode
+import com.budgetty.app.review.ReviewPrompter
+import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.ui.navigation.BudgettyApp
 import com.budgetty.app.ui.navigation.Routes
 import com.budgetty.app.ui.theme.BudgettyTheme
@@ -43,6 +45,10 @@ class MainActivity : ComponentActivity() {
 
     // Google Play In-App Updates — actively prompts eligible users to move to the latest build.
     private lateinit var inAppUpdateManager: InAppUpdateManager
+
+    // Google Play In-App Review — the rating card, asked after enough successful scans.
+    private val reviewTracker: ReviewTracker by inject()
+    private lateinit var reviewPrompter: ReviewPrompter
 
     // The nav route a home-screen-widget tap asked us to open (null = normal launch).
     private val startRoute = mutableStateOf<String?>(null)
@@ -60,6 +66,7 @@ class MainActivity : ComponentActivity() {
         // then ask Play whether a newer build is available for this user.
         inAppUpdateManager = InAppUpdateManager(this)
         inAppUpdateManager.checkForUpdate()
+        reviewPrompter = ReviewPrompter(this)
         startRoute.value = startRouteFor(intent)
         enableEdgeToEdge()
         setContent {
@@ -110,6 +117,18 @@ class MainActivity : ComponentActivity() {
                             if (result == SnackbarResult.ActionPerformed) {
                                 inAppUpdateManager.completeUpdate()
                             }
+                        }
+                    }
+                    // Ask for a Play rating once a scan has earned one. Driven from here rather than
+                    // from the upload screen on purpose: by the time this fires the upload flow has
+                    // already navigated away, so the card lands on a settled screen instead of
+                    // fighting a transition.
+                    val promptForReview by reviewTracker.pendingPrompt
+                        .collectAsStateWithLifecycle()
+                    LaunchedEffect(promptForReview) {
+                        if (promptForReview) {
+                            reviewTracker.onPromptRequested()
+                            reviewPrompter.request()
                         }
                     }
                     Box(modifier = Modifier.fillMaxSize()) {

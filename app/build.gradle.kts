@@ -82,6 +82,22 @@ android {
     }
 }
 
+// Compose compiler stability reports. Off by default (they slow the build and write to disk); opt in
+// with `-PcomposeMetrics` on any assemble task, e.g.
+//
+//     ./gradlew assembleRelease -PcomposeMetrics
+//
+// Then read app/build/compose-reports/app_release-composables.txt: a composable listed as
+// `restartable skippable` is fine, `restartable` alone means it recomposes even when its arguments
+// haven't changed. app_release-classes.txt names the unstable types responsible. Diagnostic only —
+// this changes no shipped code.
+composeCompiler {
+    if (project.hasProperty("composeMetrics")) {
+        metricsDestination = layout.buildDirectory.dir("compose-metrics")
+        reportsDestination = layout.buildDirectory.dir("compose-reports")
+    }
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -134,6 +150,9 @@ dependencies {
 
     // Google Play In-App Updates — prompt eligible users to move to the latest build
     implementation(libs.app.update.ktx)
+
+    // Google Play In-App Review — the native rating card, asked after a successful scan
+    implementation(libs.app.review.ktx)
 
     // ML Kit Document Scanner — high-quality receipt capture (auto edge-detect, deskew, glare
     // handling + review/retake) in place of the raw camera intent, which produced marginal images.
