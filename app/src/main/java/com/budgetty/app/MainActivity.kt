@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.data.settings.LocaleHelper
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.data.settings.ThemeMode
+import com.budgetty.app.debug.DebugAuth
 import com.budgetty.app.review.ReviewPrompter
 import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.ui.navigation.BudgettyApp
@@ -67,6 +68,11 @@ class MainActivity : ComponentActivity() {
         inAppUpdateManager = InAppUpdateManager(this)
         inAppUpdateManager.checkForUpdate()
         reviewPrompter = ReviewPrompter(this)
+        // Debug-only: a test harness can pass SKIP_AUTH to land directly on the main app. Gated on
+        // BuildConfig.DEBUG so a crafted intent can never bypass login on a release build.
+        if (BuildConfig.DEBUG && intent.getBooleanExtra(EXTRA_SKIP_AUTH, false)) {
+            DebugAuth.skipAuth = true
+        }
         startRoute.value = startRouteFor(intent)
         enableEdgeToEdge()
         setContent {
@@ -183,5 +189,8 @@ class MainActivity : ComponentActivity() {
         /** App-launcher shortcut actions, mapped to nav routes in [startRouteFor]. */
         const val ACTION_SCAN_RECEIPT = "com.budgetty.app.action.SCAN_RECEIPT"
         const val ACTION_ADD_MANUAL = "com.budgetty.app.action.ADD_MANUAL"
+
+        /** Debug-only launch extra (boolean): skip onboarding/login/quiz to the main app. See [DebugAuth]. */
+        const val EXTRA_SKIP_AUTH = "com.budgetty.app.SKIP_AUTH"
     }
 }

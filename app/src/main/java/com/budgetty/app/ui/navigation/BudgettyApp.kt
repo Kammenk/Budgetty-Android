@@ -43,6 +43,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.budgetty.app.data.settings.SettingsStore
+import com.budgetty.app.debug.DebugAuth
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.account.AccountScreen
 import com.budgetty.app.ui.auth.AuthState
@@ -68,6 +69,14 @@ fun BudgettyApp(
     authViewModel: AuthViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
+    // Debug-only test bypass: skip onboarding + login + quiz straight to the app. Compile-time false
+    // in release (see DebugAuth), and set once in MainActivity.onCreate before this composes, so no
+    // Compose state is needed to observe it.
+    if (DebugAuth.skipAuth) {
+        MainScaffold(startRoute = startRoute, onStartRouteHandled = onStartRouteHandled)
+        return
+    }
+
     val settings by settingsStore.settings.collectAsStateWithLifecycle()
 
     // First launch: show the onboarding carousel before anything else (login included).
