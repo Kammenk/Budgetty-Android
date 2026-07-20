@@ -92,6 +92,11 @@ android {
 // haven't changed. app_release-classes.txt names the unstable types responsible. Diagnostic only —
 // this changes no shipped code.
 composeCompiler {
+    // Types the compiler can't prove stable but which are stable here — see the file for the
+    // reasoning behind each entry, and for the rule that keeps the collection entries honest.
+    // Unlike the metrics above, this one DOES affect shipped code: it changes skipping behaviour.
+    stabilityConfigurationFile = layout.projectDirectory.file("compose-stability.conf")
+
     if (project.hasProperty("composeMetrics")) {
         metricsDestination = layout.buildDirectory.dir("compose-metrics")
         reportsDestination = layout.buildDirectory.dir("compose-reports")
