@@ -83,6 +83,15 @@ android {
         compose = true
         buildConfig = true
     }
+    testOptions {
+        unitTests {
+            // Robolectric needs merged Android resources on the unit-test classpath (and Room's
+            // in-memory builder touches them). The Robolectric SDK itself is pinned in
+            // src/test/resources/robolectric.properties — compileSdk 36 is newer than any image
+            // Robolectric ships, so tests run against SDK 34.
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 // Compose compiler stability reports. Off by default (they slow the build and write to disk); opt in
@@ -196,6 +205,13 @@ dependencies {
     implementation(libs.mlkit.document.scanner)
 
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)              // run Android/Room code on the JVM, no emulator
+    testImplementation(libs.turbine)                  // assert on Flow emissions
+    testImplementation(libs.kotlinx.coroutines.test)  // runTest + virtual-time dispatcher
+    testImplementation(libs.androidx.room.testing)     // in-memory Room database for DAO tests
+    testImplementation(libs.androidx.test.core)        // ApplicationProvider for Robolectric
+    testImplementation(libs.androidx.core.testing)     // InstantTaskExecutorRule for arch components
+    testImplementation(libs.truth)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
