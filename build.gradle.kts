@@ -11,4 +11,5 @@ plugins {
     // otherwise fails with "already on the classpath with an unknown version".
     alias(libs.plugins.android.test) apply false
     alias(libs.plugins.androidx.baselineprofile) apply false
+    alias(libs.plugins.roborazzi) apply false
 }

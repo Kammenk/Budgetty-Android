@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.roborazzi)
 }
 
 // Room writes the schema of every DB version here. The JSONs are committed: they are what lets a
@@ -154,6 +155,23 @@ detekt {
     parallel = true
 }
 
+// Roborazzi golden images live in a committed directory (not build/) so they act as the reviewed
+// reference. `./gradlew :app:recordRoborazziDebug` writes them; `verifyRoborazziDebug` (run in the
+// normal test task) fails on a pixel diff.
+roborazzi {
+    outputDir.set(layout.projectDirectory.dir("src/test/screenshots"))
+}
+
+// Roborazzi is published compiled with a newer Kotlin (2.3 metadata) than the project's compiler
+// (2.0.21), though it targets the 2.0.21 stdlib — so its runtime API is compatible and only the
+// metadata version check trips. Relax that check for TEST compilation only; main/release compilation
+// stays strict, and nothing in main depends on Roborazzi.
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>()
+    .matching { it.name.contains("Test", ignoreCase = true) }
+    .configureEach {
+        compilerOptions.freeCompilerArgs.add("-Xskip-metadata-version-check")
+    }
+
 tasks.withType<Detekt>().configureEach {
     jvmTarget = "11"
     reports {
@@ -239,6 +257,11 @@ dependencies {
     testImplementation(libs.androidx.test.core)        // ApplicationProvider for Robolectric
     testImplementation(libs.androidx.core.testing)     // InstantTaskExecutorRule for arch components
     testImplementation(libs.truth)
+    testImplementation(libs.roborazzi)                // JVM screenshot capture + compare
+    testImplementation(libs.roborazzi.compose)         // captureRoboImage for Compose
+    testImplementation(libs.roborazzi.junit.rule)
+    testImplementation(libs.androidx.ui.test.junit4)   // createComposeRule under Robolectric
+    testImplementation(libs.androidx.ui.test.manifest) // ComponentActivity host for the compose rule
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

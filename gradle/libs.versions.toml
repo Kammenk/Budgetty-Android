@@ -31,6 +31,9 @@ detekt = "1.23.8"
 turbine = "1.2.1"
 robolectric = "4.16.1"
 truth = "1.4.5"
+# 1.69.0 is the newest Roborazzi built against Kotlin 2.0.21 (matches the project). 1.70.0 jumped to
+# Kotlin 2.3 metadata, which this compiler can't read — do not bump without bumping project Kotlin.
+roborazzi = "1.69.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -91,11 +94,18 @@ androidx-room-testing = { group = "androidx.room", name = "room-testing", versio
 androidx-core-testing = { group = "androidx.arch.core", name = "core-testing", version = "2.2.0" }
 androidx-test-core = { group = "androidx.test", name = "core-ktx", version = "1.6.1" }
 
+# Roborazzi — JVM screenshot testing of composables (on Robolectric), goldens committed under
+# app/src/test/screenshots. Compares pixels, so it catches visual regressions unit tests can't.
+roborazzi = { group = "io.github.takahirom.roborazzi", name = "roborazzi", version.ref = "roborazzi" }
+roborazzi-compose = { group = "io.github.takahirom.roborazzi", name = "roborazzi-compose", version.ref = "roborazzi" }
+roborazzi-junit-rule = { group = "io.github.takahirom.roborazzi", name = "roborazzi-junit-rule", version.ref = "roborazzi" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
 androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "benchmark" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
