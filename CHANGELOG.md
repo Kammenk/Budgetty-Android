@@ -24,7 +24,7 @@ A fix (PATCH) release: receipts bought in multiples are no longer rejected as un
 
 > Under the hood, the extraction eval gained the ability to assert the *verdict* of a scan and not merely its numbers — this bug read every value correctly and was invisible to the old checks — plus a set of offline tests for those guards that need no receipt, and a corpus case for the receipt that surfaced it.
 
-> 10.6.0 (vc1060) and 10.6.1 (vc1061) were built but never uploaded to Play, so for anyone installing from the store this release also carries everything listed under both below. The store release notes should cover all three.
+> **Play status — uploaded 2026-07-20.** This supersedes 10.6.1 (vc1061), which went to Play on 2026-07-17 and is what testers were running until now. 10.6.0 (vc1060) was built but never uploaded, so its changes reached testers *inside* 1061 rather than under their own version number. Because 1061 is cumulative, the only thing new here for anyone already on it is the multi-buy fix — the store notes for this release need cover nothing else.
 
 ## 10.6.1 (versionCode 1061) — 2026-07-17
 
@@ -33,7 +33,7 @@ A fix (PATCH) release: the guided setup now runs for everyone who creates an acc
 ### Fixed
 - **The guided setup after sign-up now runs for Google accounts too** — creating your account with "Continue with Google" skipped the setup questionnaire entirely and dropped you straight on Home. That meant never being asked for your **currency** (so you were left on EUR), never setting a starting income or spending budget, and getting the default Insights layout instead of one shaped around you. Signing up with Google now runs the same setup as signing up with an email; signing *in* to an existing Google account is unaffected.
 
-> 10.6.0 (vc1060) was built but never uploaded to Play, so for anyone installing from the store this release also carries everything listed under 10.6.0 below. The store release notes should cover both.
+> **Play status — uploaded 2026-07-17** to both the Internal testing and Closed testing ("Alpha") tracks; it was the first build of the 10.6.x line to reach Play. 10.6.0 (vc1060) was built but never uploaded, so this is the build that actually delivered 10.6.0's changes to testers — anyone installing 1061 gets everything listed under 10.6.0 below as well.
 
 ## 10.6.0 (versionCode 1060) — 2026-07-17
 
