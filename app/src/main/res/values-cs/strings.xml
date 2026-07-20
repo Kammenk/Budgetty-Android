@@ -81,6 +81,8 @@
     <string name="account_contact_subtitle">Nahlaste problém, navrhněte funkci nebo jen pozdravte</string>
     <string name="account_rate">Ohodnotit Budgetty</string>
     <string name="account_privacy_policy">Zásady ochrany soukromí</string>
+    <string name="account_crash_reporting">Hlášení pádů</string>
+    <string name="account_crash_reporting_subtitle">Odesílat anonymní hlášení o pádech a pomáhat opravovat chyby</string>
     <string name="account_sign_out">Odhlásit se</string>
     <string name="account_delete">Smazat účet</string>
     <string name="account_edit_name">Upravit jméno</string>

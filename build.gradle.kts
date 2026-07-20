@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.room) apply false
     alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
     // Declared here so :app and :baselineprofile can pin the same AGP/plugin version on the shared
     // classpath — a submodule requesting `com.android.test version x` while AGP is already loaded
     // otherwise fails with "already on the classpath with an unknown version".

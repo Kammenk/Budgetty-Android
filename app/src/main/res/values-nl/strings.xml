@@ -29,6 +29,8 @@
     <string name="account_contact_subtitle">Meld een probleem, stel een functie voor of zeg gewoon hallo</string>
     <string name="account_rate">Budgetty beoordelen</string>
     <string name="account_privacy_policy">Privacybeleid</string>
+    <string name="account_crash_reporting">Crashrapportage</string>
+    <string name="account_crash_reporting_subtitle">Anonieme crashrapporten verzenden om bugs op te lossen</string>
     <string name="account_sign_out">Afmelden</string>
     <string name="account_delete">Account verwijderen</string>
     <string name="account_edit_name">Naam bewerken</string>

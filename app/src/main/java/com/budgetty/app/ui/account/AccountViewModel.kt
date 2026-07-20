@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.budgetty.app.data.backup.BackupManager
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.local.UserDatabaseManager
+import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.data.repository.AuthRepository
@@ -34,6 +35,7 @@ class AccountViewModel(
     private val billingManager: BillingManager,
     private val databaseManager: UserDatabaseManager,
     private val reviewTracker: ReviewTracker,
+    private val crashReporting: CrashReporting,
 ) : ViewModel() {
 
     val settings: StateFlow<AppSettings> = settingsStore.settings
@@ -48,6 +50,12 @@ class AccountViewModel(
     fun setDateFormat(value: DateFormatOption) = settingsStore.setDateFormat(value)
     fun setLanguage(value: Language) = settingsStore.setLanguage(value)
     fun setDisplayName(value: String) = settingsStore.setDisplayName(value.trim())
+
+    /** Persist the crash-reporting choice and apply it to the Crashlytics SDK immediately. */
+    fun setCrashReporting(enabled: Boolean) {
+        settingsStore.setCrashReportingEnabled(enabled)
+        crashReporting.setEnabled(enabled)
+    }
 
     /** Builds the JSON backup of all local data. */
     suspend fun buildBackupJson(): String = backupManager.exportJson()

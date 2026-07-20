@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.androidx.baselineprofile)
     alias(libs.plugins.detekt)
     alias(libs.plugins.roborazzi)
@@ -219,6 +220,8 @@ dependencies {
     // Firebase Auth + Credential Manager (Google Sign-In)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+    // Crash reporting. Collection is default-on with an opt-out toggle in Account (CrashReporting).
+    implementation(libs.firebase.crashlytics)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)

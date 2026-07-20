@@ -81,6 +81,8 @@
     <string name="account_contact_subtitle">Raportează o problemă, propune o funcție sau spune-ne salut</string>
     <string name="account_rate">Evaluează Budgetty</string>
     <string name="account_privacy_policy">Politica de confidențialitate</string>
+    <string name="account_crash_reporting">Raportarea blocărilor</string>
+    <string name="account_crash_reporting_subtitle">Trimite rapoarte anonime despre blocări pentru a ajuta la remedierea erorilor</string>
     <string name="account_sign_out">Deconectează-te</string>
     <string name="account_delete">Șterge contul</string>
     <string name="account_edit_name">Editează numele</string>

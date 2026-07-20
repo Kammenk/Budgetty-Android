@@ -31,6 +31,7 @@ class SettingsStore(context: Context) {
         insightsPeriodUnit = prefs.getString(KEY_PERIOD_UNIT_INSIGHTS, "MONTH") ?: "MONTH",
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
         recentSearches = prefs.getString(KEY_RECENT_SEARCHES, null).toLines(),
+        crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, true),
     )
 
     fun setThemeMode(value: ThemeMode) = save(KEY_THEME, value) { it.copy(themeMode = value) }
@@ -119,6 +120,10 @@ class SettingsStore(context: Context) {
     /** Remembers the History sort order (a SortOrder name) for the next launch. */
     fun setHistorySort(name: String) =
         saveString(KEY_HISTORY_SORT, name) { it.copy(historySort = name) }
+
+    /** Persists the crash-reporting opt-out. Applying it to the Crashlytics SDK is the caller's job. */
+    fun setCrashReportingEnabled(value: Boolean) =
+        save(KEY_CRASH_REPORTING, value) { it.copy(crashReportingEnabled = value) }
 
     /** Records [query] as the most-recent History search, de-duplicated and capped. */
     fun addRecentSearch(query: String) {
@@ -212,6 +217,7 @@ class SettingsStore(context: Context) {
         const val KEY_PERIOD_UNIT_INSIGHTS = "insights_period_unit"
         const val KEY_HISTORY_SORT = "history_sort"
         const val KEY_RECENT_SEARCHES = "recent_searches"
+        const val KEY_CRASH_REPORTING = "crash_reporting_enabled"
         const val MAX_RECENT_SEARCHES = 6
     }
 }

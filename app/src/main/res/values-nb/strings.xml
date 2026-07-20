@@ -81,6 +81,8 @@
     <string name="account_contact_subtitle">Meld en feil, foreslå en funksjon, eller bare si hei</string>
     <string name="account_rate">Vurder Budgetty</string>
     <string name="account_privacy_policy">Personvernerklæring</string>
+    <string name="account_crash_reporting">Krasjrapportering</string>
+    <string name="account_crash_reporting_subtitle">Send anonyme krasjrapporter for å bidra til å rette feil</string>
     <string name="account_sign_out">Logg ut</string>
     <string name="account_delete">Slett konto</string>
     <string name="account_edit_name">Rediger navn</string>

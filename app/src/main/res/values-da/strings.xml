@@ -81,6 +81,8 @@
     <string name="account_contact_subtitle">Rapportér et problem, foreslå en funktion, eller sig bare hej</string>
     <string name="account_rate">Bedøm Budgetty</string>
     <string name="account_privacy_policy">Privatlivspolitik</string>
+    <string name="account_crash_reporting">Nedbrudsrapportering</string>
+    <string name="account_crash_reporting_subtitle">Send anonyme nedbrudsrapporter for at hjælpe med at rette fejl</string>
     <string name="account_sign_out">Log ud</string>
     <string name="account_delete">Slet konto</string>
     <string name="account_edit_name">Rediger navn</string>

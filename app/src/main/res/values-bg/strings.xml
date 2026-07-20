@@ -29,6 +29,8 @@
     <string name="account_contact_subtitle">Съобщи за проблем, предложи функция или просто кажи здравей</string>
     <string name="account_rate">Оцени Budgetty</string>
     <string name="account_privacy_policy">Политика за поверителност</string>
+    <string name="account_crash_reporting">Докладване за сривове</string>
+    <string name="account_crash_reporting_subtitle">Изпращане на анонимни отчети за сривове за отстраняване на грешки</string>
     <string name="account_sign_out">Изход</string>
     <string name="account_delete">Изтрий профила</string>
     <string name="account_edit_name">Редактирай името</string>
