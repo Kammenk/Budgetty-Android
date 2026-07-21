@@ -2,7 +2,9 @@ package com.budgetty.app
 
 import android.app.Application
 import com.budgetty.app.category.Categories
+import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.repository.CategoryRepository
+import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.di.appModule
 import com.budgetty.app.widget.WidgetUpdater
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +20,10 @@ class BudgettyApplication : Application() {
             androidContext(this@BudgettyApplication)
             modules(appModule)
         }.koin
+        // Apply the persisted crash-reporting choice to Crashlytics before anything can crash. The
+        // preference (default-on, opt-out in Account) is the source of truth; SettingsStore loads it
+        // synchronously from SharedPreferences, so it's ready immediately after Koin starts.
+        koin.get<CrashReporting>().setEnabled(koin.get<SettingsStore>().settings.value.crashReportingEnabled)
         // Keep the home-screen widgets in sync while the process is alive.
         koin.get<WidgetUpdater>().start()
         // Mirror user-created categories into the Categories cache so their emoji + color resolve

@@ -1,0 +1,90 @@
+# detekt overrides for Budgetty. buildUponDefaultConfig = true in app/build.gradle.kts, so this file
+# only holds deltas from detekt's shipped defaults — anything not mentioned keeps its default.
+#
+# Philosophy: this codebase already exists and passes review. detekt is here to catch NEW problems,
+# not to relitigate settled style. So the noisy, subjective rules are relaxed and the substantive
+# ones (bugs, coroutine misuse, resource leaks) are kept. A baseline.xml suppresses today's findings;
+# these overrides stop the SAME classes of finding from being false-positive noise on future code.
+
+complexity:
+  LongMethod:
+    # Compose screen bodies and ViewModel reducers legitimately run long. Default 60 is too tight for
+    # declarative UI; gate real monsters instead.
+    threshold: 120
+  LongParameterList:
+    # @Composable functions take many small parameters by design (state + callbacks hoisted up).
+    functionThreshold: 12
+    constructorThreshold: 12
+    ignoreDefaultParameters: true
+  TooManyFunctions:
+    # A screen file groups its section composables together; that is idiomatic, not a smell.
+    thresholdInFiles: 30
+    thresholdInClasses: 30
+    thresholdInObjects: 30
+    ignorePrivate: true
+  CyclomaticComplexMethod:
+    threshold: 20
+  NestedBlockDepth:
+    threshold: 6
+
+style:
+  MagicNumber:
+    # Compose is full of literal dp/sp/alpha/weight values; flagging them all is pure noise, and the
+    # Dimens token system already governs the ones that matter.
+    active: false
+  ReturnCount:
+    # Guard-clause style (early returns) is used throughout and is more readable than the alternative.
+    max: 6
+  UnusedPrivateMember:
+    # @Preview composables and preview-only helpers read as unused to static analysis.
+    active: true
+    ignoreAnnotated: ['Preview', 'Composable']
+  ForbiddenComment:
+    # TODO/FIXME are tracked in the backlog, not the build. Don't fail on them.
+    active: false
+  MaxLineLength:
+    maxLineLength: 120
+
+naming:
+  FunctionNaming:
+    # @Composable functions are PascalCase by convention — exempt them from camelCase enforcement.
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    active: true
+
+# The formatting ruleset (ktlint-backed, from detekt-formatting). The codebase predates ktlint, so
+# the purely-cosmetic wrapping/ordering rules would bury the signal — 90% of the first baseline was
+# ArgumentListWrapping / line-length / if-brace churn. Those are disabled; what stays is the subset
+# that flags actual defects (dead imports, wildcard imports, stray whitespace).
+formatting:
+  active: true
+  autoCorrect: true
+  # --- disabled: cosmetic, would gate new code on wrapping the project never adopted ---
+  ArgumentListWrapping:
+    active: false
+  ParameterListWrapping:
+    active: false
+  Wrapping:
+    active: false
+  MultiLineIfElse:
+    active: false
+  ImportOrdering:
+    active: false
+  MaximumLineLength:
+    active: false # governed by style>MaxLineLength above; avoid double-reporting
+  SpacingBetweenDeclarationsWithComments:
+    active: false
+  # --- kept: these catch real problems ---
+  NoUnusedImports:
+    active: true
+  NoWildcardImports:
+    active: true
+  FunctionName:
+    ignoreAnnotated: ['Composable']
+
+comments:
+  active: true
+  CommentOverPrivateFunction:
+    active: false
+  CommentOverPrivateProperty:
+    active: false

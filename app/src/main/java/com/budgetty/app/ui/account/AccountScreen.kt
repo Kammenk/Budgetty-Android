@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PrivacyTip
@@ -53,6 +54,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -135,6 +137,7 @@ fun AccountScreen(
         onSetCurrency = { accountViewModel.setCurrency(it) },
         onSetDateFormat = { accountViewModel.setDateFormat(it) },
         onSetLanguage = { accountViewModel.setLanguage(it) },
+        onSetCrashReporting = accountViewModel::setCrashReporting,
         onBuildBackupJson = { accountViewModel.buildBackupJson() },
         onImportBackup = { json, replace, onResult -> accountViewModel.importBackup(json, replace, onResult) },
         onDeleteAccount = { onResult -> accountViewModel.deleteAccount(onResult) },
@@ -161,6 +164,7 @@ private fun AccountScreenContent(
     onSetCurrency: (Currency) -> Unit,
     onSetDateFormat: (DateFormatOption) -> Unit,
     onSetLanguage: (Language) -> Unit,
+    onSetCrashReporting: (Boolean) -> Unit,
     onBuildBackupJson: suspend () -> String,
     onImportBackup: (String, Boolean, (Boolean) -> Unit) -> Unit,
     onDeleteAccount: ((DeleteAccountResult) -> Unit) -> Unit,
@@ -251,7 +255,11 @@ private fun AccountScreenContent(
     }
     val supportSection: @Composable () -> Unit = {
         AccountCard {
-            SupportSectionRows(context = context)
+            SupportSectionRows(
+                context = context,
+                crashReportingEnabled = settings.crashReportingEnabled,
+                onSetCrashReporting = onSetCrashReporting,
+            )
         }
     }
     // Sign out + delete + version, grouped so the landscape layout can tuck them under the left-hand
@@ -582,7 +590,11 @@ private fun PreferencesSectionRows(
 
 /** Rows of the "Support" settings group. */
 @Composable
-private fun SupportSectionRows(context: Context) {
+private fun SupportSectionRows(
+    context: Context,
+    crashReportingEnabled: Boolean,
+    onSetCrashReporting: (Boolean) -> Unit,
+) {
     SettingRow(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.account_help)) { openUrl(context, URL_HELP) }
     RowDivider()
     SettingRow(
@@ -594,6 +606,21 @@ private fun SupportSectionRows(context: Context) {
     SettingRow(Icons.Filled.StarRate, stringResource(R.string.account_rate)) { openPlayStore(context, context.packageName) }
     RowDivider()
     SettingRow(Icons.Filled.PrivacyTip, stringResource(R.string.account_privacy_policy)) { openUrl(context, URL_PRIVACY) }
+    RowDivider()
+    // Crash reporting opt-out. Tapping the row or the switch both flip it; the whole row is the
+    // control, so the trailing Switch is not independently clickable (onClick handles the toggle).
+    SettingRow(
+        icon = Icons.Filled.BugReport,
+        title = stringResource(R.string.account_crash_reporting),
+        subtitle = stringResource(R.string.account_crash_reporting_subtitle),
+        trailing = {
+            Switch(
+                checked = crashReportingEnabled,
+                onCheckedChange = null,
+            )
+        },
+        onClick = { onSetCrashReporting(!crashReportingEnabled) },
+    )
 }
 
 /**
@@ -1005,6 +1032,7 @@ private fun AccountScreenPreview() {
             onSetCurrency = {},
             onSetDateFormat = {},
             onSetLanguage = {},
+            onSetCrashReporting = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},
@@ -1034,6 +1062,7 @@ private fun AccountScreenTabletPreview() {
             onSetCurrency = {},
             onSetDateFormat = {},
             onSetLanguage = {},
+            onSetCrashReporting = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},

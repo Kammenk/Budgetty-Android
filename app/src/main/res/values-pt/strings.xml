@@ -29,6 +29,8 @@
     <string name="account_contact_subtitle">Relate um problema, sugira um recurso ou apenas diga oi</string>
     <string name="account_rate">Avaliar o Budgetty</string>
     <string name="account_privacy_policy">Política de Privacidade</string>
+    <string name="account_crash_reporting">Relatórios de falhas</string>
+    <string name="account_crash_reporting_subtitle">Enviar relatórios de falhas anónimos para ajudar a corrigir erros</string>
     <string name="account_sign_out">Sair</string>
     <string name="account_delete">Excluir conta</string>
     <string name="account_edit_name">Editar nome</string>

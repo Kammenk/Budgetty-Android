@@ -1,0 +1,221 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:AccountScreen.kt$@Composable private fun AccountScreenContent( email: String?, settings: AppSettings, isPremium: Boolean, isExpanded: Boolean, isWide: Boolean, onOpenPaywall: () -&gt; Unit, onOpenBudget: () -&gt; Unit, onOpenWidgets: () -&gt; Unit, onOpenCategoryRules: () -&gt; Unit, onSetDisplayName: (String) -&gt; Unit, onSetThemeMode: (ThemeMode) -&gt; Unit, onSetAccent: (AccentTheme) -&gt; Unit, onSetCurrency: (Currency) -&gt; Unit, onSetDateFormat: (DateFormatOption) -&gt; Unit, onSetLanguage: (Language) -&gt; Unit, onSetCrashReporting: (Boolean) -&gt; Unit, onBuildBackupJson: suspend () -&gt; String, onImportBackup: (String, Boolean, (Boolean) -&gt; Unit) -&gt; Unit, onDeleteAccount: ((DeleteAccountResult) -&gt; Unit) -&gt; Unit, onSignOut: () -&gt; Unit, onUnlockTesterPremium: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>CyclomaticComplexMethod:BudgetScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun BudgetScreenContent( budgets: Map&lt;String, BigDecimal&gt;, spending: Map&lt;String, BigDecimal&gt;, monthlySpent: BigDecimal, weeklySpent: BigDecimal, isExpanded: Boolean, isWide: Boolean, onNavigateBack: () -&gt; Unit, onSetBudget: (String, String) -&gt; Unit, onSaveSingleBudget: (Boolean, String) -&gt; Unit, recurring: RecurringUi = RecurringUi(), categories: List&lt;CategoryEntity&gt; = emptyList(), isPremium: Boolean = false, customActions: CustomCategoryActions = CustomCategoryActions(), onSaveRecurring: (RecurringEntity?, String, String, Boolean, String, String, Int) -&gt; Unit = { _, _, _, _, _, _, _ -&gt; }, onDeleteRecurring: (Long) -&gt; Unit = {}, onOpenPaywall: () -&gt; Unit = {}, modifier: Modifier = Modifier, )</ID>
+    <ID>CyclomaticComplexMethod:BudgetScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun RecurringEntrySheet( draft: RecurringDraft, customActions: CustomCategoryActions, onSave: (label: String, amount: String, category: String, cadence: String, dueDay: Int) -&gt; Unit, onDelete: () -&gt; Unit, onDismiss: () -&gt; Unit, )</ID>
+    <ID>CyclomaticComplexMethod:CustomDateRangeSheet.kt$@Composable private fun RowScope.DayCell( date: LocalDate, inMonth: Boolean, start: LocalDate?, end: LocalDate?, onClick: (LocalDate) -&gt; Unit, )</ID>
+    <ID>CyclomaticComplexMethod:HistoryScreen.kt$@Composable private fun HistoryScreenContent( state: HistoryUiState, isExpanded: Boolean, isWide: Boolean, onNavigateToReceipt: (Long) -&gt; Unit, onNavigateToBudget: () -&gt; Unit = {}, onQueryChange: (String) -&gt; Unit, onClearFilters: () -&gt; Unit, onCategorySelected: (String?) -&gt; Unit, onStoreSelected: (String?) -&gt; Unit, onDateSelected: (DateRangeFilter?) -&gt; Unit, onBudgetPeriodSelected: (DateRangeFilter) -&gt; Unit, onSortSelected: (SortOrder) -&gt; Unit, onPriceRangeSelected: (BigDecimal?, BigDecimal?) -&gt; Unit, onCommitSearch: (String) -&gt; Unit, onRemoveRecent: (String) -&gt; Unit, onClearRecent: () -&gt; Unit, onDeleteReceipt: (Receipt) -&gt; Unit = {}, onDeleteTransaction: (TransactionEntity) -&gt; Unit = {}, onUndoLastDelete: () -&gt; Unit = {}, modifier: Modifier = Modifier, )</ID>
+    <ID>CyclomaticComplexMethod:InsightsScreen.kt$@Composable private fun InsightsPhoneBody( state: InsightsUiState, periodLabel: String, stepper: @Composable (Modifier, Boolean) -&gt; Unit, hiddenSections: Set&lt;String&gt;, sectionOrder: List&lt;String&gt;, onToggleSection: (InsightsSection, Boolean) -&gt; Unit, onReorderSections: (List&lt;String&gt;) -&gt; Unit, onRevertSections: () -&gt; Unit, onSliceClick: (PieSlice) -&gt; Unit, onStoreClick: (String) -&gt; Unit, onNavigateToBudget: () -&gt; Unit = {}, )</ID>
+    <ID>CyclomaticComplexMethod:InsightsScreen.kt$@Composable private fun InsightsTabletBody( state: InsightsUiState, isWide: Boolean, periodLabel: String, stepper: @Composable (Modifier, Boolean) -&gt; Unit, hiddenSections: Set&lt;String&gt;, sectionOrder: List&lt;String&gt;, onToggleSection: (InsightsSection, Boolean) -&gt; Unit, onReorderSections: (List&lt;String&gt;) -&gt; Unit, onRevertSections: () -&gt; Unit, onSliceClick: (PieSlice) -&gt; Unit, onStoreClick: (String) -&gt; Unit, )</ID>
+    <ID>CyclomaticComplexMethod:InsightsViewModel.kt$InsightsViewModel$private fun computeHighlights( currentTxns: List&lt;TransactionEntity&gt;, previousTxns: List&lt;TransactionEntity&gt;, colorByCategory: Map&lt;String, Int&gt;, ): List&lt;Highlight&gt;</ID>
+    <ID>CyclomaticComplexMethod:LoginScreen.kt$@Composable private fun LoginForm( loading: Boolean, error: String?, onSignIn: (String, String) -&gt; Unit, onSignUp: (String, String) -&gt; Unit, onResetPassword: (String, () -&gt; Unit) -&gt; Unit, onSetError: (String?) -&gt; Unit, onGoogleSignIn: () -&gt; Unit, tablet: Boolean, modifier: Modifier = Modifier, )</ID>
+    <ID>CyclomaticComplexMethod:PeriodStepper.kt$@Composable fun periodFriendlyLabel(period: InsightsPeriod, today: LocalDate = LocalDate.now()): String</ID>
+    <ID>CyclomaticComplexMethod:PieChart.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun PieChart( slices: List&lt;PieSlice&gt;, total: BigDecimal, modifier: Modifier = Modifier, chartSize: Dp = 200.dp, periodLabel: String? = null, onCategoryClick: (PieSlice) -&gt; Unit = {}, )</ID>
+    <ID>CyclomaticComplexMethod:UploadScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun UploadScreen( source: String, onNavigateBack: () -&gt; Unit, onNavigateToPaywall: () -&gt; Unit, modifier: Modifier = Modifier, receiptId: Long = -1L, viewModel: UploadViewModel = koinViewModel(), )</ID>
+    <ID>EmptyFunctionBlock:BillingManager.kt$BillingManager.&lt;no name provided&gt;${}</ID>
+    <ID>FinalNewline:ExampleUnitTest.kt$com.budgetty.app.ExampleUnitTest.kt</ID>
+    <ID>Indentation:HomeScreen.kt$ </ID>
+    <ID>InstanceOfCheckForException:UploadViewModel.kt$UploadViewModel$e is ReceiptUnreadableException</ID>
+    <ID>LongMethod:AccountScreen.kt$@Composable private fun AccountScreenContent( email: String?, settings: AppSettings, isPremium: Boolean, isExpanded: Boolean, isWide: Boolean, onOpenPaywall: () -&gt; Unit, onOpenBudget: () -&gt; Unit, onOpenWidgets: () -&gt; Unit, onOpenCategoryRules: () -&gt; Unit, onSetDisplayName: (String) -&gt; Unit, onSetThemeMode: (ThemeMode) -&gt; Unit, onSetAccent: (AccentTheme) -&gt; Unit, onSetCurrency: (Currency) -&gt; Unit, onSetDateFormat: (DateFormatOption) -&gt; Unit, onSetLanguage: (Language) -&gt; Unit, onSetCrashReporting: (Boolean) -&gt; Unit, onBuildBackupJson: suspend () -&gt; String, onImportBackup: (String, Boolean, (Boolean) -&gt; Unit) -&gt; Unit, onDeleteAccount: ((DeleteAccountResult) -&gt; Unit) -&gt; Unit, onSignOut: () -&gt; Unit, onUnlockTesterPremium: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:BudgetScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun BudgetScreenContent( budgets: Map&lt;String, BigDecimal&gt;, spending: Map&lt;String, BigDecimal&gt;, monthlySpent: BigDecimal, weeklySpent: BigDecimal, isExpanded: Boolean, isWide: Boolean, onNavigateBack: () -&gt; Unit, onSetBudget: (String, String) -&gt; Unit, onSaveSingleBudget: (Boolean, String) -&gt; Unit, recurring: RecurringUi = RecurringUi(), categories: List&lt;CategoryEntity&gt; = emptyList(), isPremium: Boolean = false, customActions: CustomCategoryActions = CustomCategoryActions(), onSaveRecurring: (RecurringEntity?, String, String, Boolean, String, String, Int) -&gt; Unit = { _, _, _, _, _, _, _ -&gt; }, onDeleteRecurring: (Long) -&gt; Unit = {}, onOpenPaywall: () -&gt; Unit = {}, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:BudgetScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun RecurringEntrySheet( draft: RecurringDraft, customActions: CustomCategoryActions, onSave: (label: String, amount: String, category: String, cadence: String, dueDay: Int) -&gt; Unit, onDelete: () -&gt; Unit, onDismiss: () -&gt; Unit, )</ID>
+    <ID>LongMethod:CustomDateRangeSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun CustomDateRangeSheet( initialStart: LocalDate?, initialEnd: LocalDate?, onConfirm: (start: LocalDate, end: LocalDate) -&gt; Unit, onDismiss: () -&gt; Unit, )</ID>
+    <ID>LongMethod:HistoryScreen.kt$@Composable private fun HistoryScreenContent( state: HistoryUiState, isExpanded: Boolean, isWide: Boolean, onNavigateToReceipt: (Long) -&gt; Unit, onNavigateToBudget: () -&gt; Unit = {}, onQueryChange: (String) -&gt; Unit, onClearFilters: () -&gt; Unit, onCategorySelected: (String?) -&gt; Unit, onStoreSelected: (String?) -&gt; Unit, onDateSelected: (DateRangeFilter?) -&gt; Unit, onBudgetPeriodSelected: (DateRangeFilter) -&gt; Unit, onSortSelected: (SortOrder) -&gt; Unit, onPriceRangeSelected: (BigDecimal?, BigDecimal?) -&gt; Unit, onCommitSearch: (String) -&gt; Unit, onRemoveRecent: (String) -&gt; Unit, onClearRecent: () -&gt; Unit, onDeleteReceipt: (Receipt) -&gt; Unit = {}, onDeleteTransaction: (TransactionEntity) -&gt; Unit = {}, onUndoLastDelete: () -&gt; Unit = {}, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:InsightsQuizScreen.kt$@Composable private fun InsightsQuizContent( isExpanded: Boolean, currency: Currency, onCurrencySelected: (Currency) -&gt; Unit, onFinish: (answers: Map&lt;String, String&gt;, amountTexts: Map&lt;String, String&gt;) -&gt; Unit, onSkip: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:InsightsScreen.kt$@Composable private fun InsightsPhoneBody( state: InsightsUiState, periodLabel: String, stepper: @Composable (Modifier, Boolean) -&gt; Unit, hiddenSections: Set&lt;String&gt;, sectionOrder: List&lt;String&gt;, onToggleSection: (InsightsSection, Boolean) -&gt; Unit, onReorderSections: (List&lt;String&gt;) -&gt; Unit, onRevertSections: () -&gt; Unit, onSliceClick: (PieSlice) -&gt; Unit, onStoreClick: (String) -&gt; Unit, onNavigateToBudget: () -&gt; Unit = {}, )</ID>
+    <ID>LongMethod:InsightsScreen.kt$@Composable private fun InsightsTabletBody( state: InsightsUiState, isWide: Boolean, periodLabel: String, stepper: @Composable (Modifier, Boolean) -&gt; Unit, hiddenSections: Set&lt;String&gt;, sectionOrder: List&lt;String&gt;, onToggleSection: (InsightsSection, Boolean) -&gt; Unit, onReorderSections: (List&lt;String&gt;) -&gt; Unit, onRevertSections: () -&gt; Unit, onSliceClick: (PieSlice) -&gt; Unit, onStoreClick: (String) -&gt; Unit, )</ID>
+    <ID>LongMethod:LoginScreen.kt$@Composable private fun LoginForm( loading: Boolean, error: String?, onSignIn: (String, String) -&gt; Unit, onSignUp: (String, String) -&gt; Unit, onResetPassword: (String, () -&gt; Unit) -&gt; Unit, onSetError: (String?) -&gt; Unit, onGoogleSignIn: () -&gt; Unit, tablet: Boolean, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:PaywallScreen.kt$@Composable private fun PaywallScreenContent( products: List&lt;ProductDetails&gt;, isPremium: Boolean, isWide: Boolean, isCompactHeight: Boolean, onNavigateBack: () -&gt; Unit, onPurchase: (Activity, String) -&gt; Unit, onRestore: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:PeriodStepper.kt$@Composable fun PeriodStepper( label: String, steppable: Boolean, canStepForward: Boolean, canStepBackward: Boolean, selectedUnit: PeriodUnit?, customSelected: Boolean, onStepBackward: () -&gt; Unit, onStepForward: () -&gt; Unit, onUnitSelected: (PeriodUnit) -&gt; Unit, onCustomClick: () -&gt; Unit, fillWidth: Boolean = false, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:PieChart.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun PieChart( slices: List&lt;PieSlice&gt;, total: BigDecimal, modifier: Modifier = Modifier, chartSize: Dp = 200.dp, periodLabel: String? = null, onCategoryClick: (PieSlice) -&gt; Unit = {}, )</ID>
+    <ID>LongMethod:ReceiptDetailSheet.kt$@Composable fun ReceiptDetailContent( receipt: Receipt, onEditReceipt: () -&gt; Unit, onDeleteItem: (TransactionEntity) -&gt; Unit, onUndo: () -&gt; Unit, onDeleteReceipt: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongMethod:UploadScreen.kt$@Composable private fun ReviewList( isWide: Boolean, transactions: List&lt;ParsedTransaction&gt;, categories: List&lt;CategoryEntity&gt;, customActions: CustomCategoryActions, storeName: String, receiptDate: Long, discount: BigDecimal, tax: BigDecimal, taxOnTop: Boolean, extraCharges: BigDecimal, expectedItemsTotal: BigDecimal?, receiptSubtotal: BigDecimal?, isEdit: Boolean, isManual: Boolean, error: String?, onStoreChange: (String) -&gt; Unit, onDateChange: (Long) -&gt; Unit, onNameChange: (String, String) -&gt; Unit, onCategoryChange: (String, String) -&gt; Unit, onPriceChange: (String, String) -&gt; Unit, onQuantityChange: (String, Int) -&gt; Unit, onDiscountChange: (String) -&gt; Unit, onRemove: (String) -&gt; Unit, onAddRow: () -&gt; Unit, onFinalize: () -&gt; Unit, onAddReceipt: () -&gt; Unit, )</ID>
+    <ID>LongMethod:UploadScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun UploadScreen( source: String, onNavigateBack: () -&gt; Unit, onNavigateToPaywall: () -&gt; Unit, modifier: Modifier = Modifier, receiptId: Long = -1L, viewModel: UploadViewModel = koinViewModel(), )</ID>
+    <ID>LongMethod:UploadScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun CategoryPropagationSheet( prompt: PropagationPrompt, onConfirm: (applyToAll: Boolean, remember: Boolean) -&gt; Unit, onDismiss: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:AccountScreen.kt$( email: String?, settings: AppSettings, isPremium: Boolean, isExpanded: Boolean, isWide: Boolean, onOpenPaywall: () -&gt; Unit, onOpenBudget: () -&gt; Unit, onOpenWidgets: () -&gt; Unit, onOpenCategoryRules: () -&gt; Unit, onSetDisplayName: (String) -&gt; Unit, onSetThemeMode: (ThemeMode) -&gt; Unit, onSetAccent: (AccentTheme) -&gt; Unit, onSetCurrency: (Currency) -&gt; Unit, onSetDateFormat: (DateFormatOption) -&gt; Unit, onSetLanguage: (Language) -&gt; Unit, onSetCrashReporting: (Boolean) -&gt; Unit, onBuildBackupJson: suspend () -&gt; String, onImportBackup: (String, Boolean, (Boolean) -&gt; Unit) -&gt; Unit, onDeleteAccount: ((DeleteAccountResult) -&gt; Unit) -&gt; Unit, onSignOut: () -&gt; Unit, onUnlockTesterPremium: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongParameterList:HistoryScreen.kt$( state: HistoryUiState, isExpanded: Boolean, isWide: Boolean, onNavigateToReceipt: (Long) -&gt; Unit, onNavigateToBudget: () -&gt; Unit = {}, onQueryChange: (String) -&gt; Unit, onClearFilters: () -&gt; Unit, onCategorySelected: (String?) -&gt; Unit, onStoreSelected: (String?) -&gt; Unit, onDateSelected: (DateRangeFilter?) -&gt; Unit, onBudgetPeriodSelected: (DateRangeFilter) -&gt; Unit, onSortSelected: (SortOrder) -&gt; Unit, onPriceRangeSelected: (BigDecimal?, BigDecimal?) -&gt; Unit, onCommitSearch: (String) -&gt; Unit, onRemoveRecent: (String) -&gt; Unit, onClearRecent: () -&gt; Unit, onDeleteReceipt: (Receipt) -&gt; Unit = {}, onDeleteTransaction: (TransactionEntity) -&gt; Unit = {}, onUndoLastDelete: () -&gt; Unit = {}, modifier: Modifier = Modifier, )</ID>
+    <ID>LongParameterList:HomeScreen.kt$( state: HomeUiState, recentReceipts: List&lt;Receipt&gt;, canScan: Boolean, scanRemaining: Int, isPremium: Boolean, isExpanded: Boolean, isWide: Boolean, initials: String, hiddenSections: Set&lt;String&gt;, sectionOrder: List&lt;String&gt;, onToggleSection: (HomeSection, Boolean) -&gt; Unit, onReorderSections: (List&lt;String&gt;) -&gt; Unit, onRevertSections: () -&gt; Unit, onFilterSelected: (DateRangeFilter) -&gt; Unit, onDeleteReceipt: (Receipt) -&gt; Unit, onDeleteTransaction: (TransactionEntity) -&gt; Unit, onUndoLastDelete: () -&gt; Unit, onNavigateToUpload: (String) -&gt; Unit, onNavigateToEdit: (Long) -&gt; Unit, onNavigateToBudget: () -&gt; Unit, onNavigateToPaywall: () -&gt; Unit, onNavigateToHistory: () -&gt; Unit, onNavigateToInsights: () -&gt; Unit, onNavigateToAccount: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongParameterList:InsightsScreen.kt$( state: InsightsUiState, isExpanded: Boolean, isWide: Boolean, onNavigateToBudget: () -&gt; Unit = {}, hiddenSections: Set&lt;String&gt;, sectionOrder: List&lt;String&gt;, onToggleSection: (InsightsSection, Boolean) -&gt; Unit, onReorderSections: (List&lt;String&gt;) -&gt; Unit, onRevertSections: () -&gt; Unit, onUnitSelected: (PeriodUnit) -&gt; Unit, onStepBackward: () -&gt; Unit, onStepForward: () -&gt; Unit, onCustomRangeSelected: (LocalDate, LocalDate) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>LongParameterList:UploadScreen.kt$( isWide: Boolean, transactions: List&lt;ParsedTransaction&gt;, categories: List&lt;CategoryEntity&gt;, customActions: CustomCategoryActions, storeName: String, receiptDate: Long, discount: BigDecimal, tax: BigDecimal, taxOnTop: Boolean, extraCharges: BigDecimal, expectedItemsTotal: BigDecimal?, receiptSubtotal: BigDecimal?, isEdit: Boolean, isManual: Boolean, error: String?, onStoreChange: (String) -&gt; Unit, onDateChange: (Long) -&gt; Unit, onNameChange: (String, String) -&gt; Unit, onCategoryChange: (String, String) -&gt; Unit, onPriceChange: (String, String) -&gt; Unit, onQuantityChange: (String, Int) -&gt; Unit, onDiscountChange: (String) -&gt; Unit, onRemove: (String) -&gt; Unit, onAddRow: () -&gt; Unit, onFinalize: () -&gt; Unit, onAddReceipt: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:UploadScreen.kt$( state: UploadUiState, isEdit: Boolean, isWide: Boolean, customActions: CustomCategoryActions = CustomCategoryActions(), onStoreChange: (String) -&gt; Unit, onDateChange: (Long) -&gt; Unit, onNameChange: (String, String) -&gt; Unit, onCategoryChange: (String, String) -&gt; Unit, onPriceChange: (String, String) -&gt; Unit, onQuantityChange: (String, Int) -&gt; Unit, onDiscountChange: (String) -&gt; Unit, onRemove: (String) -&gt; Unit, onAddRow: () -&gt; Unit, onFinalize: () -&gt; Unit, onAddReceipt: () -&gt; Unit, onRetry: () -&gt; Unit, onNavigateBack: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>MatchingDeclarationName:CategoryPickerScreen.kt$CustomCategoryActions</ID>
+    <ID>MatchingDeclarationName:PieChart.kt$PieSlice</ID>
+    <ID>MatchingDeclarationName:WidgetTheme.kt$WidgetColors</ID>
+    <ID>MaxLineLength:AccountScreen.kt$SettingRow</ID>
+    <ID>MaxLineLength:AccountScreen.kt$SettingRow(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.account_help)) { openUrl(context, URL_HELP) }</ID>
+    <ID>MaxLineLength:AccountScreen.kt$SettingRow(Icons.Filled.PrivacyTip, stringResource(R.string.account_privacy_policy)) { openUrl(context, URL_PRIVACY) }</ID>
+    <ID>MaxLineLength:AccountScreen.kt$SettingRow(Icons.Filled.StarRate, stringResource(R.string.account_rate)) { openPlayStore(context, context.packageName) }</ID>
+    <ID>MaxLineLength:AccountScreen.kt$Toast.makeText(context, context.getString(R.string.toast_account_deleted), Toast.LENGTH_SHORT).show()</ID>
+    <ID>MaxLineLength:AccountScreen.kt$Toast.makeText(context, context.getString(R.string.toast_read_file_failed), Toast.LENGTH_SHORT).show()</ID>
+    <ID>MaxLineLength:AccountScreen.kt$color = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurface</ID>
+    <ID>MaxLineLength:AccountScreen.kt$confirmButton = { TextButton(onClick = { deleteNotice = null }) { Text(stringResource(R.string.action_ok)) } }</ID>
+    <ID>MaxLineLength:AccountScreen.kt$context.getString(if (ok) R.string.toast_data_replaced else R.string.toast_import_failed)</ID>
+    <ID>MaxLineLength:AccountScreen.kt$modifier = Modifier.padding(start = MaterialTheme.dimens.sm, top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.sm)</ID>
+    <ID>MaxLineLength:AccountScreen.kt$modifier = Modifier.padding(start = MaterialTheme.dimens.xs, top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg)</ID>
+    <ID>MaxLineLength:AccountScreen.kt$tint = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:BackupManager.kt$BackupManager$receiptDao.insertAll(data.receipts.map { it.copy(tax = it.tax.orZero(), extraCharges = it.extraCharges.orZero()) })</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$.</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$Row</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$Text(text = amount, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, color = amountColor)</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xs, vertical = MaterialTheme.dimens.xs)</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$modifier = Modifier.padding(start = MaterialTheme.dimens.lg, end = MaterialTheme.dimens.lg, top = 14.dp, bottom = MaterialTheme.dimens.xs)</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$text</ID>
+    <ID>MaxLineLength:BudgetScreen.kt$text = stringResource(R.string.budget_spent_pct, spent.formatMoney(), usedPercent(spent, budget))</ID>
+    <ID>MaxLineLength:CategoryPickerScreen.kt$Icon(Icons.Filled.Add, null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(19.dp))</ID>
+    <ID>MaxLineLength:CategoryPickerScreen.kt$Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(MaterialTheme.dimens.radiusMd))</ID>
+    <ID>MaxLineLength:CategoryPickerScreen.kt$Modifier.border(2.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.45f), RoundedCornerShape(14.dp))</ID>
+    <ID>MaxLineLength:CategoryPickerScreen.kt$color = if (name.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface</ID>
+    <ID>MaxLineLength:CategoryPickerScreen.kt$title = { Text(stringResource(R.string.custom_delete_confirm_title, categoryName), fontWeight = FontWeight.Bold) }</ID>
+    <ID>MaxLineLength:CategoryRulesScreen.kt$.</ID>
+    <ID>MaxLineLength:CategoryRulesScreen.kt$contentPadding = PaddingValues(start = MaterialTheme.dimens.lg, end = MaterialTheme.dimens.lg, bottom = MaterialTheme.dimens.xxl)</ID>
+    <ID>MaxLineLength:CategoryRulesScreen.kt$modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xl).padding(top = MaterialTheme.dimens.xs, bottom = MaterialTheme.dimens.md)</ID>
+    <ID>MaxLineLength:HaikuReceiptExtractor.kt$HaikuReceiptExtractor.Companion$"Couldn't read this receipt clearly. Retake the photo in good light with the receipt flat and the text in focus."</ID>
+    <ID>MaxLineLength:HistoryScreen.kt$.</ID>
+    <ID>MaxLineLength:HistoryScreen.kt$modifier = Modifier.padding(start = MaterialTheme.dimens.lg, end = MaterialTheme.dimens.lg, top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.xs)</ID>
+    <ID>MaxLineLength:HistoryScreen.kt$modifier = Modifier.padding(start = MaterialTheme.dimens.xl, end = MaterialTheme.dimens.xl, top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg)</ID>
+    <ID>MaxLineLength:HistoryScreen.kt$text = " · ${pluralStringResource(R.plurals.item_count, receipt.transactions.size, receipt.transactions.size)}"</ID>
+    <ID>MaxLineLength:HistoryScreen.kt$val activeEmpty = if (mode == HistoryMode.RECEIPTS) state.receiptGroups.isEmpty() else state.groups.isEmpty()</ID>
+    <ID>MaxLineLength:HistoryViewModel.kt$HistoryViewModel$periodIncome = income.fold(BigDecimal.ZERO) { a, r -&gt; a + r.periodAmount(windowStart, windowEnd, span) }</ID>
+    <ID>MaxLineLength:HistoryViewModel.kt$HistoryViewModel$receiptGroups = items.buildReceipts(receipts).applyReceiptFilters(activeFilters).groupReceiptsIntoMonths(sort)</ID>
+    <ID>MaxLineLength:HomeScreen.kt$.</ID>
+    <ID>MaxLineLength:HomeScreen.kt$Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)</ID>
+    <ID>MaxLineLength:HomeScreen.kt$contentPadding = PaddingValues(start = MaterialTheme.dimens.screenPadding, end = MaterialTheme.dimens.screenPadding, bottom = 110.dp)</ID>
+    <ID>MaxLineLength:HomeScreen.kt$contentPadding = PaddingValues(start = MaterialTheme.dimens.screenPadding, end = MaterialTheme.dimens.screenPadding, bottom = 96.dp)</ID>
+    <ID>MaxLineLength:HomeScreen.kt$modifier = Modifier.padding(start = MaterialTheme.dimens.xs, top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg)</ID>
+    <ID>MaxLineLength:HomeScreen.kt$text = "${receipt.timestamp.formatDate()} · ${pluralStringResource(R.plurals.item_count, receipt.transactions.size, receipt.transactions.size)}"</ID>
+    <ID>MaxLineLength:InsightsQuiz.kt$InsightsQuiz$/** Index of the currency step. It sits right after the goal question, before the income step, so the amount fields can show the chosen symbol. */</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$LegendRow(FixedBillsColor, stringResource(R.string.insights_fixed_bills), fixed.formatMoney(), pct(fixed), MaterialTheme.colorScheme.onSurface)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$LegendRow(MaterialTheme.colorScheme.primary, stringResource(R.string.insights_flexible_spending), flexible.formatMoney(), pct(flexible), MaterialTheme.colorScheme.onSurface)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Row</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$StatTile(stringResource(R.string.home_receipts), state.receiptCount.toString(), Modifier.weight(1f))</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$StatTile(stringResource(R.string.insights_stat_avg_day), state.avgPerDay.formatMoney(), Modifier.weight(1f))</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$StatTile(stringResource(R.string.insights_stat_avg_receipt), state.avgPerReceipt.formatMoney(), Modifier.weight(1f))</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text("${source.percent}%", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text("+${source.amount.formatMoney()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = amountColor)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text("+${state.periodIncome.formatMoney()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = green)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(amount, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = amountColor)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(entity.amount.formatMoney(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, maxLines = 1)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(entity.label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(recurringSubtitle(source.entity, includeCategory = false), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(source.entity.label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_biggest_purchases), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_breakdown), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_budget), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_highlights), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_income_net), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_income_total), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_summary), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_top_categories), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_top_stores), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(stringResource(R.string.insights_trend), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(text, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold, textAlign = TextAlign.Center)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$Text(whenLabel, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$if</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$if (flexFrac &gt; 0.001f) Box(Modifier.fillMaxHeight().weight(flexFrac).background(MaterialTheme.colorScheme.primary))</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$text = if (rate &gt;= 0) stringResource(R.string.insights_savings_tag_saved) else stringResource(R.string.insights_savings_tag_over)</ID>
+    <ID>MaxLineLength:InsightsScreen.kt$text = if (trend.bucketing == TrendBucketing.DAILY) stringResource(R.string.insights_trend_daily) else stringResource(R.string.insights_trend_monthly)</ID>
+    <ID>MaxLineLength:InsightsViewModel.kt$Highlight.CategoryMove$data</ID>
+    <ID>MaxLineLength:LoginScreen.kt$*</ID>
+    <ID>MaxLineLength:LoginScreen.kt$.</ID>
+    <ID>MaxLineLength:LoginScreen.kt$PasswordRequirementRow(stringResource(R.string.login_password_req_length), PasswordPolicy.hasMinLength(password))</ID>
+    <ID>MaxLineLength:LoginScreen.kt$contentDescription = if (passwordVisible) stringResource(R.string.login_hide_password) else stringResource(R.string.login_show_password)</ID>
+    <ID>MaxLineLength:LoginScreen.kt$text = (if (isSignUp) stringResource(R.string.login_have_account) else stringResource(R.string.login_new_here)) + " "</ID>
+    <ID>MaxLineLength:LoginScreen.kt$text = if (isSignUp) stringResource(R.string.login_create_account) else stringResource(R.string.login_sign_in)</ID>
+    <ID>MaxLineLength:LoginScreen.kt$text = if (isSignUp) stringResource(R.string.login_sign_in) else stringResource(R.string.login_create_account_link)</ID>
+    <ID>MaxLineLength:LoginScreen.kt$text = if (isSignUp) stringResource(R.string.login_subtitle_signup) else stringResource(R.string.login_subtitle_signin)</ID>
+    <ID>MaxLineLength:OnboardingScreen.kt$.</ID>
+    <ID>MaxLineLength:OnboardingScreen.kt$val width by animateDpAsState(if (selected) MaterialTheme.dimens.xxl else MaterialTheme.dimens.sm, label = "dotWidth")</ID>
+    <ID>MaxLineLength:PaywallScreen.kt$Button(onClick = onSubscribe, modifier = Modifier.height(MaterialTheme.dimens.buttonHeight)) { Text(stringResource(R.string.paywall_subscribe)) }</ID>
+    <ID>MaxLineLength:PaywallScreen.kt$Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(MaterialTheme.dimens.avatar))</ID>
+    <ID>MaxLineLength:PeriodFilterMenu.kt${ Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary) }</ID>
+    <ID>MaxLineLength:PeriodStepper.kt$.</ID>
+    <ID>MaxLineLength:PeriodStepper.kt$Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = MaterialTheme.colorScheme.primary)</ID>
+    <ID>MaxLineLength:PeriodStepper.kt$Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)</ID>
+    <ID>MaxLineLength:PeriodStepper.kt${ Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary) }</ID>
+    <ID>MaxLineLength:PriceRangeSheet.kt$modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.xl, bottom = MaterialTheme.dimens.sm)</ID>
+    <ID>MaxLineLength:ReceiptDetailSheet.kt$text = "${receipt.timestamp.formatDate()} · ${pluralStringResource(R.plurals.item_count, receipt.transactions.size, receipt.transactions.size)}"</ID>
+    <ID>MaxLineLength:ScanWidget.kt$style = TextStyle(color = WidgetColors.onSurface, fontSize = 14.sp, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:ScanWidget.kt$style = TextStyle(color = WidgetColors.onSurface, fontSize = 19.sp, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:SegmentedToggle.kt$color = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant</ID>
+    <ID>MaxLineLength:ThisWeekWidget.kt$style = TextStyle(color = deltaColor, fontSize = if (large) 13.sp else 11.sp, fontWeight = FontWeight.Medium)</ID>
+    <ID>MaxLineLength:TopCategoriesWidget.kt$if (other.signum() &gt; 0) add(WidgetCategory(context.getString(R.string.widget_other), other, Categories.colorOf("Other")))</ID>
+    <ID>MaxLineLength:TransactionRow.kt$contentPadding: PaddingValues = PaddingValues(horizontal = MaterialTheme.dimens.lg, vertical = MaterialTheme.dimens.md)</ID>
+    <ID>MaxLineLength:UploadScreen.kt$Column</ID>
+    <ID>MaxLineLength:UploadScreen.kt$Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))</ID>
+    <ID>MaxLineLength:UploadScreen.kt$contentPadding = PaddingValues(start = MaterialTheme.dimens.lg, end = MaterialTheme.dimens.lg, top = MaterialTheme.dimens.md, bottom = MaterialTheme.dimens.lg)</ID>
+    <ID>MaxLineLength:UploadScreen.kt$primaryLabel = pluralStringResource(R.plurals.rule_prompt_apply, prompt.otherCount, prompt.otherCount)</ID>
+    <ID>MaxLineLength:UploadScreen.kt$stringResource(R.string.upload_total_currency_notice, gross.formatMoney(), inflatedTotal.formatMoney())</ID>
+    <ID>MaxLineLength:UploadScreen.kt$val saveLabel = "${if (isEdit) stringResource(R.string.action_save) else stringResource(R.string.upload_finalize)} · ${total.formatMoney()}"</ID>
+    <ID>MaxLineLength:UploadViewModel.kt$UploadUiState$/** Money paid beyond items, discount and tax (delivery/service fees, a courier tip); added to the total, not itemized. */</ID>
+    <ID>MaxLineLength:UploadViewModel.kt$UploadUiState$/** The receipt's printed subtotal (clean item-sum anchor); drives the blocking "a line may be missing" check. Null = no check. */</ID>
+    <ID>MaxLineLength:UploadViewModel.kt$UploadUiState$/** What the items should sum to per the receipt (subtotal/total); drives the soft price-mismatch warning. Null = no warning. */</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(MaterialTheme.dimens.xl))</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Icon(Icons.Filled.DonutLarge, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(if (large) 15.dp else 14.dp))</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Icon(Icons.Filled.PhotoCamera, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(28.dp))</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Icon(Icons.Filled.PhotoCamera, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(30.dp))</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text("${(ratio * 100).toInt()}%", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text("Jun 2026", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(label, modifier = Modifier.width(58.dp), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(stringResource(R.string.widget_scan), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(stringResource(R.string.widget_scan_action), style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(stringResource(R.string.widget_scan_action), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(stringResource(R.string.widget_scan_body), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(stringResource(R.string.widget_scans_left, 3), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(stringResource(R.string.widget_topcat), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(text = "Jun 24–30", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$Text(text = chip, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$WeekCompareRow(stringResource(R.string.widget_last_week), "146 $symbol", 0.84f, MaterialTheme.colorScheme.onSurfaceVariant, false)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$WeekCompareRow(stringResource(R.string.widget_this_week), "173 $symbol", 1f, MaterialTheme.colorScheme.primary, true)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$modifier = Modifier.clip(RoundedCornerShape(50)).background(MaterialTheme.colorScheme.primary).padding(horizontal = 18.dp, vertical = 9.dp)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$modifier = Modifier.size(56.dp).clip(RoundedCornerShape(MaterialTheme.dimens.radiusLg)).background(MaterialTheme.colorScheme.primary)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$modifier = Modifier.size(60.dp).clip(RoundedCornerShape(18.dp)).background(MaterialTheme.colorScheme.primary)</ID>
+    <ID>MaxLineLength:WidgetsScreen.kt$modifier = Modifier.size(if (large) 26.dp else MaterialTheme.dimens.xxl).clip(RoundedCornerShape(MaterialTheme.dimens.radiusSm)).background(MaterialTheme.colorScheme.primary)</ID>
+    <ID>NewLineAtEndOfFile:ExampleUnitTest.kt$com.budgetty.app.ExampleUnitTest.kt</ID>
+    <ID>NoConsecutiveBlankLines:HomeScreen.kt$ </ID>
+    <ID>NoMultipleSpaces:Color.kt$ </ID>
+    <ID>NoMultipleSpaces:HaikuReceiptExtractor.kt$HaikuReceiptExtractor.Companion$ </ID>
+    <ID>NoMultipleSpaces:Theme.kt$ </ID>
+    <ID>NoUnusedImports:BudgetScreen.kt$com.budgetty.app.ui.budget.BudgetScreen.kt</ID>
+    <ID>NoUnusedImports:BudgettyApp.kt$com.budgetty.app.ui.navigation.BudgettyApp.kt</ID>
+    <ID>NoUnusedImports:CategoryTransactionsSheet.kt$com.budgetty.app.ui.components.CategoryTransactionsSheet.kt</ID>
+    <ID>NoUnusedImports:HistoryScreen.kt$com.budgetty.app.ui.history.HistoryScreen.kt</ID>
+    <ID>NoUnusedImports:HomeScreen.kt$com.budgetty.app.ui.home.HomeScreen.kt</ID>
+    <ID>NoUnusedImports:LoginScreen.kt$com.budgetty.app.ui.auth.LoginScreen.kt</ID>
+    <ID>NoUnusedImports:OnboardingScreen.kt$com.budgetty.app.ui.onboarding.OnboardingScreen.kt</ID>
+    <ID>NoUnusedImports:PeriodFilterMenu.kt$com.budgetty.app.ui.components.PeriodFilterMenu.kt</ID>
+    <ID>NoUnusedImports:PeriodStepper.kt$com.budgetty.app.ui.insights.PeriodStepper.kt</ID>
+    <ID>NoUnusedImports:PieChart.kt$com.budgetty.app.ui.components.PieChart.kt</ID>
+    <ID>NoUnusedImports:ThisWeekWidget.kt$com.budgetty.app.widget.ThisWeekWidget.kt</ID>
+    <ID>NoUnusedImports:UploadScreen.kt$com.budgetty.app.ui.upload.UploadScreen.kt</ID>
+    <ID>NoWildcardImports:ExampleUnitTest.kt$import org.junit.Assert.*</ID>
+    <ID>ParameterWrapping:TransactionRow.kt$contentPadding: PaddingValues = PaddingValues(horizontal = MaterialTheme.dimens.lg, vertical = MaterialTheme.dimens.md)</ID>
+    <ID>SpacingAroundComma:StoreNormalizer.kt$StoreNormalizer$,</ID>
+    <ID>SpreadOperator:UserDatabaseManager.kt$UserDatabaseManager$(*ALL_MIGRATIONS)</ID>
+    <ID>SwallowedException:AccountScreen.kt$e: ActivityNotFoundException</ID>
+    <ID>SwallowedException:AccountScreen.kt$e: Exception</ID>
+    <ID>SwallowedException:AccountViewModel.kt$AccountViewModel$e: Exception</ID>
+    <ID>SwallowedException:AccountViewModel.kt$AccountViewModel$e: FirebaseAuthRecentLoginRequiredException</ID>
+    <ID>SwallowedException:HaikuReceiptExtractor.kt$HaikuReceiptExtractor$e: Exception</ID>
+    <ID>SwallowedException:UploadScreen.kt$e: Exception</ID>
+    <ID>ThrowsCount:HaikuReceiptExtractor.kt$HaikuReceiptExtractor$private fun validateExtraction(response: ExtractResponse, items: List&lt;ParsedTransaction&gt;)</ID>
+    <ID>TooGenericExceptionCaught:AccountScreen.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AccountViewModel.kt$AccountViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AuthViewModel.kt$AuthViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:BackupManager.kt$BackupManager$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:HaikuReceiptExtractor.kt$HaikuReceiptExtractor$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:UploadScreen.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:UploadViewModel.kt$UploadViewModel$e: Exception</ID>
+    <ID>TooManyFunctions:TransactionDao.kt$TransactionDao</ID>
+    <ID>TopLevelPropertyNaming:LoginScreen.kt$/** * Stable test tags on the three login controls. The root `testTagsAsResourceId` (see MainActivity) * exposes these to UI-automation tools as view resource-ids, so Firebase Test Lab's Robo login * directives can target them by name (kept in sync with scripts/testlab-robo.sh) to sign in during * an automated crawl. Invisible at runtime. */ const val LoginTagEmail = "login_email"</ID>
+    <ID>TopLevelPropertyNaming:LoginScreen.kt$const val LoginTagPassword = "login_password"</ID>
+    <ID>TopLevelPropertyNaming:LoginScreen.kt$const val LoginTagSignIn = "login_sign_in"</ID>
+    <ID>UnusedParameter:BudgetScreen.kt$categories: List&lt;CategoryEntity&gt; = emptyList()</ID>
+    <ID>UnusedParameter:UploadScreen.kt$categories: List&lt;CategoryEntity&gt;</ID>
+    <ID>WildcardImport:ExampleUnitTest.kt$import org.junit.Assert.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

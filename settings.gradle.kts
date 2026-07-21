@@ -22,4 +22,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Budgetty"
 include(":app")
+include(":baselineprofile")
  

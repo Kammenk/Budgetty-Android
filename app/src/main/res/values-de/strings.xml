@@ -29,6 +29,8 @@
     <string name="account_contact_subtitle">Melde ein Problem, schlage eine Funktion vor oder sag einfach Hallo</string>
     <string name="account_rate">Budgetty bewerten</string>
     <string name="account_privacy_policy">Datenschutzerklärung</string>
+    <string name="account_crash_reporting">Absturzberichte</string>
+    <string name="account_crash_reporting_subtitle">Anonyme Absturzberichte senden, um Fehler zu beheben</string>
     <string name="account_sign_out">Abmelden</string>
     <string name="account_delete">Konto löschen</string>
     <string name="account_edit_name">Namen bearbeiten</string>

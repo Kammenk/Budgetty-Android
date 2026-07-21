@@ -3,6 +3,8 @@ package com.budgetty.app.di
 import com.budgetty.app.data.backup.BackupManager
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.quota.ScanQuota
+import com.budgetty.app.crash.CrashReporting
+import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.data.ingest.HaikuReceiptExtractor
 import com.budgetty.app.data.ingest.ReceiptIngestManager
 import com.budgetty.app.data.local.UserDatabaseManager
@@ -60,6 +62,12 @@ val appModule = module {
     // Free-tier scan quota
     single { ScanQuota(androidContext()) }
 
+    // Decides when to ask for a Play rating (the asking itself lives in MainActivity)
+    single { ReviewTracker(androidContext()) }
+
+    // Crash reporting (Crashlytics collection control)
+    single { CrashReporting() }
+
     // Play Billing (subscriptions)
     single { BillingManager(androidContext()) }
 
@@ -102,12 +110,12 @@ val appModule = module {
 
     // ViewModels
     viewModel { AuthViewModel(get(), get()) }
-    viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get()) }

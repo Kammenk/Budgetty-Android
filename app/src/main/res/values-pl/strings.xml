@@ -29,6 +29,8 @@
     <string name="account_contact_subtitle">Zgłoś problem, zaproponuj funkcję lub po prostu się przywitaj</string>
     <string name="account_rate">Oceń Budgetty</string>
     <string name="account_privacy_policy">Polityka prywatności</string>
+    <string name="account_crash_reporting">Raporty o awariach</string>
+    <string name="account_crash_reporting_subtitle">Wysyłaj anonimowe raporty o awariach, aby pomóc naprawiać błędy</string>
     <string name="account_sign_out">Wyloguj się</string>
     <string name="account_delete">Usuń konto</string>
     <string name="account_edit_name">Edytuj imię</string>

@@ -104,4 +104,6 @@ data class AppSettings(
     val historySort: String = "NEWEST",
     /** Recent History search terms, most-recent first (capped); powers the search quick-find. */
     val recentSearches: List<String> = emptyList(),
+    /** Whether Crashlytics crash collection is on. Default-on with an opt-out toggle in Account. */
+    val crashReportingEnabled: Boolean = true,
 )

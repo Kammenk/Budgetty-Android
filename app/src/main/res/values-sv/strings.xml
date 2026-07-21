@@ -81,6 +81,8 @@
     <string name="account_contact_subtitle">Rapportera ett problem, föreslå en funktion eller säg bara hej</string>
     <string name="account_rate">Betygsätt Budgetty</string>
     <string name="account_privacy_policy">Integritetspolicy</string>
+    <string name="account_crash_reporting">Kraschrapportering</string>
+    <string name="account_crash_reporting_subtitle">Skicka anonyma kraschrapporter för att åtgärda buggar</string>
     <string name="account_sign_out">Logga ut</string>
     <string name="account_delete">Radera konto</string>
     <string name="account_edit_name">Redigera namn</string>

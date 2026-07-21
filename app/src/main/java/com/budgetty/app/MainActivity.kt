@@ -30,6 +30,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.data.settings.LocaleHelper
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.data.settings.ThemeMode
+import com.budgetty.app.debug.DebugAuth
+import com.budgetty.app.review.ReviewPrompter
+import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.ui.navigation.BudgettyApp
 import com.budgetty.app.ui.navigation.Routes
 import com.budgetty.app.ui.theme.BudgettyTheme
@@ -43,6 +46,10 @@ class MainActivity : ComponentActivity() {
 
     // Google Play In-App Updates — actively prompts eligible users to move to the latest build.
     private lateinit var inAppUpdateManager: InAppUpdateManager
+
+    // Google Play In-App Review — the rating card, asked after enough successful scans.
+    private val reviewTracker: ReviewTracker by inject()
+    private lateinit var reviewPrompter: ReviewPrompter
 
     // The nav route a home-screen-widget tap asked us to open (null = normal launch).
     private val startRoute = mutableStateOf<String?>(null)
@@ -60,6 +67,13 @@ class MainActivity : ComponentActivity() {
         // then ask Play whether a newer build is available for this user.
         inAppUpdateManager = InAppUpdateManager(this)
         inAppUpdateManager.checkForUpdate()
+        reviewPrompter = ReviewPrompter(this)
+        // Debug/profiling-only: a test harness can pass SKIP_AUTH to land directly on the main app.
+        // TEST_HOOKS_ENABLED is true for debug + the Baseline-Profile variants but false for the
+        // shipped release, so a crafted intent can never bypass login in production.
+        if (BuildConfig.TEST_HOOKS_ENABLED && intent.getBooleanExtra(EXTRA_SKIP_AUTH, false)) {
+            DebugAuth.skipAuth = true
+        }
         startRoute.value = startRouteFor(intent)
         enableEdgeToEdge()
         setContent {
@@ -110,6 +124,18 @@ class MainActivity : ComponentActivity() {
                             if (result == SnackbarResult.ActionPerformed) {
                                 inAppUpdateManager.completeUpdate()
                             }
+                        }
+                    }
+                    // Ask for a Play rating once a scan has earned one. Driven from here rather than
+                    // from the upload screen on purpose: by the time this fires the upload flow has
+                    // already navigated away, so the card lands on a settled screen instead of
+                    // fighting a transition.
+                    val promptForReview by reviewTracker.pendingPrompt
+                        .collectAsStateWithLifecycle()
+                    LaunchedEffect(promptForReview) {
+                        if (promptForReview) {
+                            reviewTracker.onPromptRequested()
+                            reviewPrompter.request()
                         }
                     }
                     Box(modifier = Modifier.fillMaxSize()) {
@@ -164,5 +190,8 @@ class MainActivity : ComponentActivity() {
         /** App-launcher shortcut actions, mapped to nav routes in [startRouteFor]. */
         const val ACTION_SCAN_RECEIPT = "com.budgetty.app.action.SCAN_RECEIPT"
         const val ACTION_ADD_MANUAL = "com.budgetty.app.action.ADD_MANUAL"
+
+        /** Debug-only launch extra (boolean): skip onboarding/login/quiz to the main app. See [DebugAuth]. */
+        const val EXTRA_SKIP_AUTH = "com.budgetty.app.SKIP_AUTH"
     }
 }
