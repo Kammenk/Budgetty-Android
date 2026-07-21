@@ -18,7 +18,10 @@ import org.junit.runner.RunWith
  *
  * Run both variants and compare `timeToInitialDisplayMs`:
  *
- *     ./gradlew :baselineprofile:connectedReleaseAndroidTest
+ *     ./gradlew :baselineprofile:connectedBenchmarkReleaseAndroidTest
+ *
+ * (Not `connectedReleaseAndroidTest` — that's ambiguous. The plugin creates two connected-test tasks:
+ * `benchmarkRelease` is this measurement, `nonMinifiedRelease` is profile *generation*.)
  *
  * [none] is the floor (JIT only); [baselineProfile] is what ships. The gap is the startup improvement.
  *
