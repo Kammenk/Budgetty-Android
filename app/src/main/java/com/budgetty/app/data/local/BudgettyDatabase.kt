@@ -12,7 +12,7 @@ import com.budgetty.app.category.Categories
         TransactionEntity::class, CategoryEntity::class, BudgetEntity::class, ReceiptEntity::class,
         CategoryRuleEntity::class, RecurringEntity::class,
     ],
-    version = 17,
+    version = 18,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -230,6 +230,40 @@ val MIGRATION_16_17 = object : Migration(16, 17) {
     }
 }
 
+/**
+ * v18: splits the sub-category "Subscriptions & Services" into "Subscriptions" and "Services".
+ *
+ * The old name sat inside a group called "Services & Subscriptions" — the two were near-identical and
+ * unreadable in a picker. "Services" is added by the onOpen re-seed (no SQL needed); everything here
+ * exists to repoint what already referenced the old name, which is stored as the category *name*, not
+ * an id — so a plain rename is the whole migration.
+ *
+ * Everything lands on "Subscriptions": the old category covered both meanings, and subscriptions are
+ * the far more common case for a recurring line. Re-filing the genuine one-off services is a
+ * two-tap edit; silently splitting them by guesswork would not be.
+ *
+ * The `categories` row is renamed rather than deleted: seeding is INSERT-OR-IGNORE and never removes
+ * rows, so a leftover would linger as a category outside the predefined set — showing its raw English
+ * name in every locale (no [com.budgetty.app.ui.util.CategoryNames] mapping) and reading as
+ * user-created. Migrations run before the onOpen re-seed, so "Subscriptions" cannot exist yet and the
+ * rename can't collide.
+ */
+val MIGRATION_17_18 = object : Migration(17, 18) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        val old = "Subscriptions & Services"
+        val new = "Subscriptions"
+        db.execSQL("UPDATE OR REPLACE categories SET name = ? WHERE name = ?", arrayOf<Any>(new, old))
+        db.execSQL("UPDATE transactions SET category = ? WHERE category = ?", arrayOf<Any>(new, old))
+        db.execSQL("UPDATE recurring SET category = ? WHERE category = ?", arrayOf<Any>(new, old))
+        db.execSQL("UPDATE category_rules SET category = ? WHERE category = ?", arrayOf<Any>(new, old))
+        // Per-category budgets are keyed "CAT:<name>" (see BudgetViewModel), so the key moves too.
+        db.execSQL(
+            "UPDATE OR REPLACE budgets SET budgetKey = ? WHERE budgetKey = ?",
+            arrayOf<Any>("CAT:$new", "CAT:$old"),
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -272,5 +306,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5,
     MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
     MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
-    MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17,
+    MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
 )

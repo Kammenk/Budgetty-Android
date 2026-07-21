@@ -156,6 +156,57 @@ class MigrationTest {
     }
 
     /**
+     * [MIGRATION_17_18] renames the sub-category "Subscriptions & Services" to "Subscriptions".
+     * The category name IS the stored reference — there is no id — so the rename has to reach four
+     * tables at once. Missing any one of them silently orphans that reference: a transaction filed
+     * under a category that no longer exists, or a per-category budget that stops matching its
+     * category. Pinned here because nothing else would catch it until a user noticed.
+     */
+    @Test
+    fun migration17To18RepointsEveryReferenceToTheSplitCategory() {
+        openRawAtV1().use { db ->
+            ALL_MIGRATIONS.filter { it.endVersion <= 17 }.forEach { it.migrate(db) }
+            val old = "Subscriptions & Services"
+            db.execSQL("INSERT OR REPLACE INTO categories (name, colorArgb) VALUES (?, ?)", arrayOf<Any>(old, 1))
+            db.execSQL(
+                "INSERT INTO transactions (name, timestamp, price, quantity, category, receiptId) VALUES (?, ?, ?, ?, ?, ?)",
+                arrayOf<Any>("Netflix", 1_700_000_000_000L, "12.00", 1, old, 0),
+            )
+            db.execSQL(
+                "INSERT INTO recurring (label, amount, isIncome, category) VALUES (?, ?, ?, ?)",
+                arrayOf<Any>("Netflix", "12", 0, old),
+            )
+            db.execSQL("INSERT INTO category_rules (name, category) VALUES (?, ?)", arrayOf<Any>("netflix", old))
+            db.execSQL("INSERT INTO budgets (budgetKey, amount) VALUES (?, ?)", arrayOf<Any>("CAT:$old", "50"))
+            db.version = 17
+        }
+
+        openWithRoom().useSqlite { db ->
+            fun single(sql: String): String? = db.query(sql).use { c -> if (c.moveToFirst()) c.getString(0) else null }
+
+            assertEquals("the transaction must follow the rename", "Subscriptions", single("SELECT category FROM transactions WHERE name = 'Netflix'"))
+            assertEquals("the recurring bill must follow the rename", "Subscriptions", single("SELECT category FROM recurring WHERE label = 'Netflix'"))
+            assertEquals("the learned rule must follow the rename", "Subscriptions", single("SELECT category FROM category_rules WHERE name = 'netflix'"))
+            assertEquals("the per-category budget key must follow the rename", "50", single("SELECT amount FROM budgets WHERE budgetKey = 'CAT:Subscriptions'"))
+
+            // The old name must be gone from categories, or it lingers as an unmapped, custom-looking
+            // row (the re-seed is INSERT-OR-IGNORE and never deletes).
+            db.query("SELECT COUNT(*) FROM categories WHERE name = 'Subscriptions & Services'").use { c ->
+                assertTrue(c.moveToFirst())
+                assertEquals("the pre-split category must not survive", 0, c.getInt(0))
+            }
+            // Both halves of the split must exist afterwards — "Subscriptions" via the rename,
+            // "Services" via the onOpen re-seed.
+            for (name in listOf("Subscriptions", "Services")) {
+                db.query("SELECT COUNT(*) FROM categories WHERE name = ?", arrayOf<Any>(name)).use { c ->
+                    assertTrue(c.moveToFirst())
+                    assertEquals("$name must exist after the split", 1, c.getInt(0))
+                }
+            }
+        }
+    }
+
+    /**
      * Opens [TEST_DB] with the schema as it stood at v1: transactions only, before
      * [MIGRATION_1_2] added category and [MIGRATION_6_7] added receiptId.
      */

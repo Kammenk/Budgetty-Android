@@ -305,7 +305,8 @@
     <string name="cat_fuel">Brandstof</string>
     <string name="cat_car_maintenance">Auto-onderhoud</string>
     <string name="cat_services_subscriptions">Diensten en abonnementen</string>
-    <string name="cat_subscriptions_services">Abonnementen en diensten</string>
+    <string name="cat_subscriptions">Abonnementen</string>
+    <string name="cat_services">Diensten</string>
     <string name="cat_investments">Beleggingen</string>
     <string name="cat_education">Onderwijs</string>
     <string name="cat_travel_accommodation">Reizen en accommodatie</string>

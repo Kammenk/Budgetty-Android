@@ -621,7 +621,8 @@
     <string name="cat_fuel">Polttoaine</string>
     <string name="cat_car_maintenance">Auton huolto</string>
     <string name="cat_services_subscriptions">Palvelut &amp; tilaukset</string>
-    <string name="cat_subscriptions_services">Tilaukset &amp; palvelut</string>
+    <string name="cat_subscriptions">Tilaukset</string>
+    <string name="cat_services">Palvelut</string>
     <string name="cat_investments">Sijoitukset</string>
     <string name="cat_education">Koulutus</string>
     <string name="cat_travel_accommodation">Matkailu &amp; majoitus</string>

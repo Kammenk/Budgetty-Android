@@ -305,7 +305,8 @@
     <string name="cat_fuel">Carburante</string>
     <string name="cat_car_maintenance">Manutenzione auto</string>
     <string name="cat_services_subscriptions">Servizi e abbonamenti</string>
-    <string name="cat_subscriptions_services">Abbonamenti e servizi</string>
+    <string name="cat_subscriptions">Abbonamenti</string>
+    <string name="cat_services">Servizi</string>
     <string name="cat_investments">Investimenti</string>
     <string name="cat_education">Istruzione</string>
     <string name="cat_travel_accommodation">Viaggi e alloggio</string>

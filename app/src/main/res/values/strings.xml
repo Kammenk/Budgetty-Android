@@ -667,7 +667,8 @@
     <string name="cat_fuel">Fuel</string>
     <string name="cat_car_maintenance">Car Maintenance</string>
     <string name="cat_services_subscriptions">Services &amp; Subscriptions</string>
-    <string name="cat_subscriptions_services">Subscriptions &amp; Services</string>
+    <string name="cat_subscriptions">Subscriptions</string>
+    <string name="cat_services">Services</string>
     <string name="cat_investments">Investments</string>
     <string name="cat_education">Education</string>
     <string name="cat_travel_accommodation">Travel &amp; Accommodation</string>

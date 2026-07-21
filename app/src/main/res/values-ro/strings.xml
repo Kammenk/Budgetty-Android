@@ -621,7 +621,8 @@
     <string name="cat_fuel">Combustibil</string>
     <string name="cat_car_maintenance">Întreținere auto</string>
     <string name="cat_services_subscriptions">Servicii &amp; abonamente</string>
-    <string name="cat_subscriptions_services">Abonamente &amp; servicii</string>
+    <string name="cat_subscriptions">Abonamente</string>
+    <string name="cat_services">Servicii</string>
     <string name="cat_investments">Investiții</string>
     <string name="cat_education">Educație</string>
     <string name="cat_travel_accommodation">Călătorii &amp; cazare</string>

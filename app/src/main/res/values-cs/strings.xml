@@ -621,7 +621,8 @@
     <string name="cat_fuel">Palivo</string>
     <string name="cat_car_maintenance">Údržba auta</string>
     <string name="cat_services_subscriptions">Služby &amp; předplatná</string>
-    <string name="cat_subscriptions_services">Předplatná &amp; služby</string>
+    <string name="cat_subscriptions">Předplatné</string>
+    <string name="cat_services">Služby</string>
     <string name="cat_investments">Investice</string>
     <string name="cat_education">Vzdělávání</string>
     <string name="cat_travel_accommodation">Cestování &amp; ubytování</string>

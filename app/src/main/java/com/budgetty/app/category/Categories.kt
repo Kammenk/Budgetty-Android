@@ -87,7 +87,10 @@ object Categories {
         Def("Car Maintenance", "🔧", "Transportation"),
         // 📋 Services & Subscriptions
         Def("Services & Subscriptions", "📋", null),
-        Def("Subscriptions & Services", "🔁", "Services & Subscriptions"),
+        // Replaces the old "Subscriptions & Services", which was near-indistinguishable from its own
+        // parent group. Kept at the same index on purpose: sub-hues walk `defs` in order, so reusing
+        // the slot keeps this category's existing color (its sibling "Services" is appended below).
+        Def("Subscriptions", "🔁", "Services & Subscriptions"),
         Def("Education", "🎓", "Services & Subscriptions"),
         Def("Travel & Accommodation", "🧳", "Services & Subscriptions"),
         Def("Insurance & Utilities", "🛡️", "Services & Subscriptions"),
@@ -100,6 +103,10 @@ object Categories {
         // `children()` filters by parent, so they still render inside their own group.
         Def("Video Games", "🎮", "Dining & Entertainment"),
         Def("Investments", "📈", "Services & Subscriptions"),
+        // The non-subscription half of the old "Subscriptions & Services" (repairs, haircuts, cleaning
+        // — one-off paid-for work). Appended for the same reason as the two above: a mid-list insert
+        // would recolor every sub-category after it.
+        Def("Services", "🧰", "Services & Subscriptions"),
         // 🪙 Gratuity on a delivery/restaurant order — its own line, kept apart from the food.
         Def("Tips", "🪙", "Dining & Entertainment"),
         // 🛵 Combined delivery + service + bag/booking fees on a delivery-app order.

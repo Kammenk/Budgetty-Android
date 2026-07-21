@@ -22,7 +22,7 @@ const CATEGORIES = [
   "Shopping & Lifestyle", "Clothing & Accessories", "Electronics", "Garden & Plants",
   "Home Improvement", "Tobacco & Alcohol",
   "Transportation", "Fuel", "Car Maintenance",
-  "Services & Subscriptions", "Subscriptions & Services", "Education", "Travel & Accommodation",
+  "Services & Subscriptions", "Subscriptions", "Services", "Education", "Travel & Accommodation",
   "Insurance & Utilities", "Rent", "Office & Work Supplies", "Gifts & Charitable Donations",
   "Other",
 ];

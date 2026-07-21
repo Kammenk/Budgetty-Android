@@ -621,7 +621,8 @@
     <string name="cat_fuel">Bränsle</string>
     <string name="cat_car_maintenance">Bilunderhåll</string>
     <string name="cat_services_subscriptions">Tjänster &amp; prenumerationer</string>
-    <string name="cat_subscriptions_services">Prenumerationer &amp; tjänster</string>
+    <string name="cat_subscriptions">Prenumerationer</string>
+    <string name="cat_services">Tjänster</string>
     <string name="cat_investments">Investeringar</string>
     <string name="cat_education">Utbildning</string>
     <string name="cat_travel_accommodation">Resor &amp; boende</string>
