@@ -32,6 +32,12 @@
     <string name="widgets_added">Adăugat ✓</string>
     <string name="widgets_last_added">Ultimul adăugat: %1$s</string>
     <string name="widgets_pin_unsupported">Lansatorul tău nu poate adăuga widgeturi în acest fel — apasă lung pe ecranul principal pentru a adăuga unul.</string>
+    <string name="widgets_slots_used">%1$d din %2$d sloturi gratuite pentru widgeturi folosite</string>
+    <string name="widgets_slots_full">Sloturile gratuite pentru widgeturi sunt pline. Elimină unul de pe ecranul principal sau fă upgrade pentru widgeturi nelimitate.</string>
+    <string name="widgets_slots_unlimited">Premium · widgeturi nelimitate</string>
+    <string name="widgets_unlock">Deblochează mai multe widgeturi</string>
+    <string name="widget_locked_title">Widget blocat</string>
+    <string name="widget_locked_body">Atinge pentru upgrade</string>
     <string name="widget_monthly_desc">Progresul cheltuielilor &amp; rămas</string>
     <string name="widget_weekly_desc">Cheltuielile săptămânii dintr-o privire</string>
     <string name="widget_summary">Rezumat lunar</string>
@@ -422,6 +428,8 @@
     <string name="paywall_benefit_categories_detail">Planul gratuit include %1$d</string>
     <string name="paywall_benefit_recurring">Facturi recurente nelimitate</string>
     <string name="paywall_benefit_recurring_detail">Planul gratuit include %1$d</string>
+    <string name="paywall_benefit_widgets">Widgeturi nelimitate pe ecranul principal</string>
+    <string name="paywall_benefit_widgets_detail">Planul gratuit include %1$d</string>
     <string name="paywall_benefit_themes">Toate temele de accent</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean și Plum</string>
     <string name="paywall_benefit_cloud">Backup &amp; sincronizare în cloud</string>

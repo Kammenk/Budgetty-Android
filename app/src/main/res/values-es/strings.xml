@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">El plan gratuito incluye %1$d</string>
     <string name="paywall_benefit_recurring">Pagos recurrentes ilimitados</string>
     <string name="paywall_benefit_recurring_detail">El plan gratuito incluye %1$d</string>
+    <string name="paywall_benefit_widgets">Widgets ilimitados en la pantalla de inicio</string>
+    <string name="paywall_benefit_widgets_detail">El plan gratuito incluye %1$d</string>
     <string name="paywall_benefit_themes">Todos los temas de acento</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean y Plum</string>
     <string name="paywall_benefit_cloud">Copia y sincronización en la nube</string>
@@ -393,6 +395,12 @@
     <string name="widgets_added">Añadido ✓</string>
     <string name="widgets_last_added">Añadido por última vez: %1$s</string>
     <string name="widgets_pin_unsupported">Tu launcher no puede añadir widgets de esta forma: mantén pulsada la pantalla de inicio para añadir uno.</string>
+    <string name="widgets_slots_used">%1$d de %2$d espacios de widget gratis usados</string>
+    <string name="widgets_slots_full">Los espacios de widget gratis están llenos. Quita uno de la pantalla de inicio o mejora para tener widgets ilimitados.</string>
+    <string name="widgets_slots_unlimited">Premium · widgets ilimitados</string>
+    <string name="widgets_unlock">Desbloquear más widgets</string>
+    <string name="widget_locked_title">Widget bloqueado</string>
+    <string name="widget_locked_body">Toca para mejorar</string>
     <string name="widget_monthly_desc">Progreso de gasto y restante</string>
     <string name="widget_weekly_desc">El gasto de esta semana de un vistazo</string>
     <string name="widget_summary">Resumen mensual</string>

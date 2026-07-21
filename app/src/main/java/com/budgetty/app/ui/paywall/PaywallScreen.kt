@@ -68,6 +68,7 @@ import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.util.isCompactHeight
 import com.budgetty.app.ui.util.isWideWidth
+import com.budgetty.app.widget.WidgetQuota
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -116,6 +117,10 @@ private fun premiumBenefits(): List<PremiumBenefit> = listOf(
     PremiumBenefit(
         title = stringResource(R.string.paywall_benefit_recurring),
         detail = stringResource(R.string.paywall_benefit_recurring_detail, RecurringRepository.FREE_RECURRING_LIMIT),
+    ),
+    PremiumBenefit(
+        title = stringResource(R.string.paywall_benefit_widgets),
+        detail = stringResource(R.string.paywall_benefit_widgets_detail, WidgetQuota.FREE_LIMIT),
     ),
     PremiumBenefit(
         title = stringResource(R.string.paywall_benefit_themes),

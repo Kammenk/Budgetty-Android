@@ -76,7 +76,7 @@ val appModule = module {
 
     // Home-screen widgets: snapshot provider + auto-refresh on budget/transaction/currency changes
     single { WidgetDataProvider(get(), get(), get(), get(), get(), get(), get()) }
-    single { WidgetUpdater(androidContext(), get(), get(), get(), get()) }
+    single { WidgetUpdater(androidContext(), get(), get(), get(), get(), get()) }
 
     // Auth
     single<FirebaseAuth> { FirebaseAuth.getInstance() }

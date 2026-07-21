@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">На бесплатном плане — %1$d</string>
     <string name="paywall_benefit_recurring">Безлимитные регулярные счета</string>
     <string name="paywall_benefit_recurring_detail">На бесплатном плане — %1$d</string>
+    <string name="paywall_benefit_widgets">Безлимитные виджеты на главном экране</string>
+    <string name="paywall_benefit_widgets_detail">На бесплатном плане — %1$d</string>
     <string name="paywall_benefit_themes">Все акцентные темы</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean и Plum</string>
     <string name="paywall_benefit_cloud">Облачное резервное копирование и синхронизация</string>
@@ -393,6 +395,12 @@
     <string name="widgets_added">Добавлено ✓</string>
     <string name="widgets_last_added">Последнее добавление: %1$s</string>
     <string name="widgets_pin_unsupported">Ваш лаунчер не может добавлять виджеты таким способом — нажмите и удерживайте главный экран, чтобы добавить.</string>
+    <string name="widgets_slots_used">Использовано %1$d из %2$d бесплатных слотов для виджетов</string>
+    <string name="widgets_slots_full">Бесплатные слоты для виджетов заняты. Удалите один с главного экрана или оформите подписку для безлимитных виджетов.</string>
+    <string name="widgets_slots_unlimited">Премиум · безлимитные виджеты</string>
+    <string name="widgets_unlock">Разблокировать больше виджетов</string>
+    <string name="widget_locked_title">Виджет заблокирован</string>
+    <string name="widget_locked_body">Нажмите, чтобы оформить подписку</string>
     <string name="widget_monthly_desc">Прогресс расходов и остаток</string>
     <string name="widget_weekly_desc">Расходы этой недели с одного взгляда</string>
     <string name="widget_summary">Сводка за месяц</string>

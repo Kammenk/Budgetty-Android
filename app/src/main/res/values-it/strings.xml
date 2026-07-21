@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">Il piano gratuito ne include %1$d</string>
     <string name="paywall_benefit_recurring">Spese ricorrenti illimitate</string>
     <string name="paywall_benefit_recurring_detail">Il piano gratuito ne include %1$d</string>
+    <string name="paywall_benefit_widgets">Widget illimitati nella schermata Home</string>
+    <string name="paywall_benefit_widgets_detail">Il piano gratuito ne include %1$d</string>
     <string name="paywall_benefit_themes">Tutti i temi colore</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean e Plum</string>
     <string name="paywall_benefit_cloud">Backup e sincronizzazione cloud</string>
@@ -393,6 +395,12 @@
     <string name="widgets_added">Aggiunto ✓</string>
     <string name="widgets_last_added">Ultimo aggiunto: %1$s</string>
     <string name="widgets_pin_unsupported">Il tuo launcher non può aggiungere widget in questo modo — tieni premuta la schermata Home per aggiungerne uno.</string>
+    <string name="widgets_slots_used">%1$d di %2$d slot widget gratuiti usati</string>
+    <string name="widgets_slots_full">Gli slot widget gratuiti sono esauriti. Rimuovine uno dalla schermata Home o passa a Premium per widget illimitati.</string>
+    <string name="widgets_slots_unlimited">Premium · widget illimitati</string>
+    <string name="widgets_unlock">Sblocca altri widget</string>
+    <string name="widget_locked_title">Widget bloccato</string>
+    <string name="widget_locked_body">Tocca per passare a Premium</string>
     <string name="widget_monthly_desc">Avanzamento spese e residuo</string>
     <string name="widget_weekly_desc">Le spese di questa settimana in breve</string>
     <string name="widget_summary">Riepilogo mensile</string>

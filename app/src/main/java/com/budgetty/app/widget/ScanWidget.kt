@@ -1,18 +1,14 @@
 package com.budgetty.app.widget
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
-import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.cornerRadius
-import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -29,8 +25,6 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import com.budgetty.app.R
 import com.budgetty.app.ui.navigation.Routes
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 private val CompactSize = DpSize(150.dp, 150.dp)
 private val LargeSize = DpSize(250.dp, 120.dp)
@@ -40,16 +34,12 @@ private val LargeSize = DpSize(250.dp, 120.dp)
  * action). Tapping anywhere on the card opens upload/camera. Large shows a label, a "Scan" button
  * and the free-tier quota; Compact is a centred camera button.
  */
-class ScanWidget : GlanceAppWidget(), KoinComponent {
-
-    private val dataProvider: WidgetDataProvider by inject()
+class ScanWidget : BudgettyGlanceWidget() {
 
     override val sizeMode = SizeMode.Responsive(setOf(CompactSize, LargeSize))
 
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val data = dataProvider.load()
-        provideContent { ScanWidgetContent(data) }
-    }
+    @Composable
+    override fun Content(data: WidgetData) = ScanWidgetContent(data)
 }
 
 @Composable

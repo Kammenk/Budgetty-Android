@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">Безплатният план включва %1$d</string>
     <string name="paywall_benefit_recurring">Неограничени повтарящи се сметки</string>
     <string name="paywall_benefit_recurring_detail">Безплатният план включва %1$d</string>
+    <string name="paywall_benefit_widgets">Неограничени джаджи на началния екран</string>
+    <string name="paywall_benefit_widgets_detail">Безплатният план включва %1$d</string>
     <string name="paywall_benefit_themes">Всички акцентни теми</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean и Plum</string>
     <string name="paywall_benefit_cloud">Облачно резервно копие и синхронизация</string>
@@ -393,6 +395,12 @@
     <string name="widgets_added">Добавено ✓</string>
     <string name="widgets_last_added">Последно добавено: %1$s</string>
     <string name="widgets_pin_unsupported">Твоят стартер не може да добавя джаджети по този начин — задръж началния екран, за да добавиш.</string>
+    <string name="widgets_slots_used">Използвани %1$d от %2$d безплатни слота за джаджи</string>
+    <string name="widgets_slots_full">Безплатните слотове за джаджи са запълнени. Премахни една от началния екран или надгради за неограничени джаджи.</string>
+    <string name="widgets_slots_unlimited">Премиум · неограничени джаджи</string>
+    <string name="widgets_unlock">Отключи още джаджи</string>
+    <string name="widget_locked_title">Заключена джаджа</string>
+    <string name="widget_locked_body">Докосни, за да надградиш</string>
     <string name="widget_monthly_desc">Напредък на разходите и остатък</string>
     <string name="widget_weekly_desc">Разходите тази седмица накратко</string>
     <string name="widget_summary">Месечно обобщение</string>

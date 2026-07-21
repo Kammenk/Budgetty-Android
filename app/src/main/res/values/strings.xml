@@ -35,6 +35,12 @@
     <string name="widgets_added">Added ✓</string>
     <string name="widgets_last_added">Last added: %1$s</string>
     <string name="widgets_pin_unsupported">Your launcher can\'t add widgets this way — long-press the home screen to add one.</string>
+    <string name="widgets_slots_used">%1$d of %2$d free widget slots used</string>
+    <string name="widgets_slots_full">Free widget slots are full. Remove one from your home screen, or upgrade for unlimited widgets.</string>
+    <string name="widgets_slots_unlimited">Premium · unlimited widgets</string>
+    <string name="widgets_unlock">Unlock more widgets</string>
+    <string name="widget_locked_title">Widget locked</string>
+    <string name="widget_locked_body">Tap to upgrade</string>
     <string name="widget_monthly_desc">Spending progress &amp; remaining</string>
     <string name="widget_weekly_desc">This week\'s spend at a glance</string>
     <string name="widget_summary">Monthly summary</string>
@@ -459,6 +465,8 @@
     <string name="paywall_benefit_categories_detail">Free plan includes %1$d</string>
     <string name="paywall_benefit_recurring">Unlimited recurring bills</string>
     <string name="paywall_benefit_recurring_detail">Free plan includes %1$d</string>
+    <string name="paywall_benefit_widgets">Unlimited home-screen widgets</string>
+    <string name="paywall_benefit_widgets_detail">Free plan includes %1$d</string>
     <string name="paywall_benefit_themes">Every accent theme</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean and Plum</string>
     <string name="paywall_benefit_cloud">Cloud backup &amp; sync</string>
