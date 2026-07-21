@@ -13,10 +13,8 @@ import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryProductDetailsResult
 import com.android.billingclient.api.QueryPurchasesParams
-import com.android.billingclient.api.acknowledgePurchase
-import com.android.billingclient.api.queryProductDetails
-import com.android.billingclient.api.queryPurchasesAsync
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,6 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 /**
  * Wraps Google Play Billing for the two subscriptions. [isPremium] is true while an active
@@ -66,6 +66,10 @@ class BillingManager(context: Context) {
     private val client = BillingClient.newBuilder(context)
         .setListener(purchasesListener)
         .enablePendingPurchases(PendingPurchasesParams.newBuilder().enableOneTimeProducts().build())
+        // The library re-establishes the service connection itself. Before this existed the
+        // disconnect callback below was empty and [refresh] is gated on `client.isReady`, so a
+        // single disconnect left ownership permanently stale until the process restarted.
+        .enableAutoServiceReconnection()
         .build()
 
     init {
@@ -76,6 +80,7 @@ class BillingManager(context: Context) {
                 }
             }
 
+            /** Intentionally empty: reconnection is handled by `enableAutoServiceReconnection`. */
             override fun onBillingServiceDisconnected() {}
         })
     }
@@ -101,9 +106,11 @@ class BillingManager(context: Context) {
                 },
             )
             .build()
-        val result = client.queryProductDetails(params)
-        if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-            _products.value = result.productDetailsList.orEmpty()
+        val (result, details) = queryProductDetails(params)
+        if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+            // A product the Play Console doesn't serve yet no longer vanishes silently — it comes
+            // back in `unfetchedProductList` with a status code instead of being omitted.
+            _products.value = details.productDetailsList
         }
     }
 
@@ -111,11 +118,11 @@ class BillingManager(context: Context) {
         val params = QueryPurchasesParams.newBuilder()
             .setProductType(BillingClient.ProductType.SUBS)
             .build()
-        val result = client.queryPurchasesAsync(params)
-        _isPremium.value = forcePremium || testerPremium || result.purchasesList.any {
+        val purchases = queryPurchases(params)
+        _isPremium.value = forcePremium || testerPremium || purchases.any {
             it.purchaseState == Purchase.PurchaseState.PURCHASED
         }
-        result.purchasesList.forEach { acknowledge(it) }
+        purchases.forEach { acknowledge(it) }
     }
 
     private suspend fun handlePurchase(purchase: Purchase) {
@@ -127,13 +134,32 @@ class BillingManager(context: Context) {
 
     private suspend fun acknowledge(purchase: Purchase) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged) {
-            client.acknowledgePurchase(
-                AcknowledgePurchaseParams.newBuilder()
-                    .setPurchaseToken(purchase.purchaseToken)
-                    .build(),
-            )
+            val params = AcknowledgePurchaseParams.newBuilder()
+                .setPurchaseToken(purchase.purchaseToken)
+                .build()
+            suspendCancellableCoroutine { cont ->
+                client.acknowledgePurchase(params) { cont.resume(Unit) }
+            }
         }
     }
+
+    /*
+     * Billing 9 dropped the `billing-ktx` artifact from this project: its 9.1.0 build carries
+     * Kotlin 2.3 metadata, which the Kotlin 2.0.21 this project is pinned to cannot read. The base
+     * `billing` artifact is plain Java and has no such constraint, so the three suspend calls the
+     * KTX extensions used to provide are wrapped by hand below.
+     */
+
+    private suspend fun queryProductDetails(
+        params: QueryProductDetailsParams,
+    ): Pair<BillingResult, QueryProductDetailsResult> = suspendCancellableCoroutine { cont ->
+        client.queryProductDetailsAsync(params) { result, details -> cont.resume(result to details) }
+    }
+
+    private suspend fun queryPurchases(params: QueryPurchasesParams): List<Purchase> =
+        suspendCancellableCoroutine { cont ->
+            client.queryPurchasesAsync(params) { _, purchases -> cont.resume(purchases) }
+        }
 
     /** Launches the Play purchase flow for [productId] (its first available offer). */
     fun purchase(activity: Activity, productId: String) {

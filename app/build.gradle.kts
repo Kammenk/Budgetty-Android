@@ -227,7 +227,7 @@ dependencies {
     implementation(libs.googleid)
 
     // Play Billing (subscriptions)
-    implementation(libs.billing.ktx)
+    implementation(libs.billing)
 
     // Networking — Haiku receipt extraction via the Cloud Function proxy
     implementation(libs.retrofit)
