@@ -7,6 +7,9 @@
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+# Per-developer, per-machine device selection — only ever changes a timestamp, so it dirties
+# the working tree for everyone. Untracked 2026-07-21 (`git rm --cached`); the file stays on disk.
+/.idea/deploymentTargetSelector.xml
 .DS_Store
 /build
 /captures
