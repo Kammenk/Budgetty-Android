@@ -15,6 +15,29 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.7.0 (versionCode 1070) — 2026-07-22
+
+A feature (MINOR) release: crash reporting you can switch off, a faster cold start, two
+categories where there had been one confusing one, and home-screen widgets becoming a
+Premium feature past the first two.
+
+### Added
+- **Crash reporting, with a switch to turn it off** — when Budgetty crashes it can now send an anonymous report so the fault can actually be found and fixed. It's on by default and there's a real off switch in **Account → Support**; turning it off stops collection there and then. The report carries the stack trace, your device model and OS, the app version and whether the app was in the foreground — never receipts, items, prices or budgets. Reports are kept 90 days. Section 1(f) of the privacy policy sets this out in full.
+- **A prompt to rate Budgetty** — after a scan goes through, and only after three successful scans and three days of use, Budgetty asks once whether you'd rate it. Declining is remembered; it won't ask again for 90 days.
+
+### Changed
+- **"Subscriptions & Services" is now two categories** — the old sub-category was near-indistinguishable from the *Services & Subscriptions* group containing it, which made picking one genuinely confusing. It becomes **Subscriptions** and **Services**. Anything already filed under the old name moves to **Subscriptions**, since a recurring line is far more often a subscription; re-filing a genuine service is two taps. Your budgets, rules and recurring bills follow the rename — nothing needs redoing.
+- **Home-screen widgets past the first two now need Premium** — widgets become the fifth thing Premium unlocks, alongside scans, custom categories, recurring bills and accent themes. Free accounts can keep **two** widgets on the home screen at once, counted across all five types and both sizes. The limit is live, not a high-water mark: remove one and the slot is free again immediately. Widgets already placed keep working — add a third and it's the *new* one that shows a locked card, never an older one.
+- **A faster cold start** — Budgetty now ships a baseline profile, which lets Android pre-compile the code that runs on launch. Measured on a physical Pixel 6 over ten cold starts: a median of **291ms to first display, down from 321ms** — about 9% quicker.
+- **Rebuilt on Google Play Billing 9.1.0** — the subscription plumbing moves off version 7.1.1, which Google retires on 31 August 2026. No change to how subscribing works or what anything costs.
+
+### Removed
+- **The Help & FAQ row in Support** — it linked to an anchor that had never existed on the site, so it did nothing at all. **Contact us** on the same screen still reaches a human.
+
+> Under the hood this release adds the testing and quality tooling the project had been missing: static analysis (detekt), a JVM test stack with real database tests, screenshot tests, and GitHub Actions CI running all of it on every push. None of it changes shipped behaviour. The database moves to **v18** with a migration covering the category split, pinned by an instrumented test.
+
+> ⚠️ **Not yet device-verified in this build:** the two-widget free cap was built and merged straight from its branch. Worth placing a third widget on a real home screen before this goes wide.
+
 ## 10.6.2 (versionCode 1062) — 2026-07-20
 
 A fix (PATCH) release: receipts bought in multiples are no longer rejected as unreadable.
