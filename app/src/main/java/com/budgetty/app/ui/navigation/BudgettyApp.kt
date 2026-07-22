@@ -308,7 +308,10 @@ private fun BudgettyNavHost(
             )
         }
         composable(Routes.WIDGETS) {
-            WidgetsScreen(onNavigateBack = { navController.popBackStack() })
+            WidgetsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+            )
         }
         composable(Routes.CATEGORY_RULES) {
             CategoryRulesScreen(onNavigateBack = { navController.popBackStack() })

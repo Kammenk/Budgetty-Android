@@ -32,6 +32,12 @@
     <string name="widgets_added">Lisätty ✓</string>
     <string name="widgets_last_added">Viimeksi lisätty: %1$s</string>
     <string name="widgets_pin_unsupported">Käynnistysohjelmasi ei voi lisätä widgetejä tällä tavalla — lisää widget painamalla aloitusnäyttöä pitkään.</string>
+    <string name="widgets_slots_used">%1$d / %2$d ilmaista widget-paikkaa käytössä</string>
+    <string name="widgets_slots_full">Ilmaiset widget-paikat ovat täynnä. Poista yksi aloitusnäytöltä tai päivitä saadaksesi rajattomat widgetit.</string>
+    <string name="widgets_slots_unlimited">Premium · rajattomat widgetit</string>
+    <string name="widgets_unlock">Avaa lisää widgetejä</string>
+    <string name="widget_locked_title">Widget lukittu</string>
+    <string name="widget_locked_body">Päivitä napauttamalla</string>
     <string name="widget_monthly_desc">Kulutuksen edistyminen &amp; jäljellä</string>
     <string name="widget_weekly_desc">Viikon kulutus yhdellä silmäyksellä</string>
     <string name="widget_summary">Kuukausiyhteenveto</string>
@@ -422,6 +428,8 @@
     <string name="paywall_benefit_categories_detail">Ilmaisversiossa %1$d</string>
     <string name="paywall_benefit_recurring">Rajattomat toistuvat laskut</string>
     <string name="paywall_benefit_recurring_detail">Ilmaisversiossa %1$d</string>
+    <string name="paywall_benefit_widgets">Rajattomat aloitusnäytön widgetit</string>
+    <string name="paywall_benefit_widgets_detail">Ilmaisversiossa %1$d</string>
     <string name="paywall_benefit_themes">Kaikki korostusväriteemat</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean ja Plum</string>
     <string name="paywall_benefit_cloud">Pilvivarmuuskopiointi &amp; synkronointi</string>

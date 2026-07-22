@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">Plan darmowy obejmuje %1$d</string>
     <string name="paywall_benefit_recurring">Nielimitowane rachunki cykliczne</string>
     <string name="paywall_benefit_recurring_detail">Plan darmowy obejmuje %1$d</string>
+    <string name="paywall_benefit_widgets">Nielimitowane widżety na ekranie głównym</string>
+    <string name="paywall_benefit_widgets_detail">Plan darmowy obejmuje %1$d</string>
     <string name="paywall_benefit_themes">Wszystkie motywy akcentu</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean i Plum</string>
     <string name="paywall_benefit_cloud">Kopia i synchronizacja w chmurze</string>
@@ -393,6 +395,12 @@
     <string name="widgets_added">Dodano ✓</string>
     <string name="widgets_last_added">Ostatnio dodano: %1$s</string>
     <string name="widgets_pin_unsupported">Twój launcher nie może dodawać widżetów w ten sposób — przytrzymaj ekran główny, aby dodać.</string>
+    <string name="widgets_slots_used">Wykorzystano %1$d z %2$d darmowych miejsc na widżety</string>
+    <string name="widgets_slots_full">Darmowe miejsca na widżety są zajęte. Usuń jeden z ekranu głównego lub ulepsz plan, aby mieć nielimitowane widżety.</string>
+    <string name="widgets_slots_unlimited">Premium · nielimitowane widżety</string>
+    <string name="widgets_unlock">Odblokuj więcej widżetów</string>
+    <string name="widget_locked_title">Widżet zablokowany</string>
+    <string name="widget_locked_body">Dotknij, aby ulepszyć</string>
     <string name="widget_monthly_desc">Postęp wydatków i pozostało</string>
     <string name="widget_weekly_desc">Wydatki tego tygodnia w skrócie</string>
     <string name="widget_summary">Podsumowanie miesiąca</string>

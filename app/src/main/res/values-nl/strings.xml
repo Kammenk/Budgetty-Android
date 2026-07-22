@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">Gratis versie bevat er %1$d</string>
     <string name="paywall_benefit_recurring">Onbeperkt terugkerende rekeningen</string>
     <string name="paywall_benefit_recurring_detail">Gratis versie bevat er %1$d</string>
+    <string name="paywall_benefit_widgets">Onbeperkt widgets op het startscherm</string>
+    <string name="paywall_benefit_widgets_detail">Gratis versie bevat er %1$d</string>
     <string name="paywall_benefit_themes">Alle accentkleurthema\'s</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean en Plum</string>
     <string name="paywall_benefit_cloud">Cloudback-up en -synchronisatie</string>
@@ -393,6 +395,12 @@
     <string name="widgets_added">Toegevoegd ✓</string>
     <string name="widgets_last_added">Laatst toegevoegd: %1$s</string>
     <string name="widgets_pin_unsupported">Je launcher kan op deze manier geen widgets toevoegen — houd het startscherm ingedrukt om er een toe te voegen.</string>
+    <string name="widgets_slots_used">%1$d van %2$d gratis widgetplekken gebruikt</string>
+    <string name="widgets_slots_full">De gratis widgetplekken zijn vol. Verwijder er een van het startscherm of upgrade voor onbeperkt widgets.</string>
+    <string name="widgets_slots_unlimited">Premium · onbeperkt widgets</string>
+    <string name="widgets_unlock">Meer widgets ontgrendelen</string>
+    <string name="widget_locked_title">Widget vergrendeld</string>
+    <string name="widget_locked_body">Tik om te upgraden</string>
     <string name="widget_monthly_desc">Uitgavenvoortgang en resterend</string>
     <string name="widget_weekly_desc">De uitgaven van deze week in één oogopslag</string>
     <string name="widget_summary">Maandoverzicht</string>

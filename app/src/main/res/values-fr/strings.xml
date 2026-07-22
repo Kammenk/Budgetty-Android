@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">L\'offre gratuite en inclut %1$d</string>
     <string name="paywall_benefit_recurring">Factures récurrentes illimitées</string>
     <string name="paywall_benefit_recurring_detail">L\'offre gratuite en inclut %1$d</string>
+    <string name="paywall_benefit_widgets">Widgets d\'écran d\'accueil illimités</string>
+    <string name="paywall_benefit_widgets_detail">L\'offre gratuite en inclut %1$d</string>
     <string name="paywall_benefit_themes">Tous les thèmes d\'accentuation</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean et Plum</string>
     <string name="paywall_benefit_cloud">Sauvegarde et synchronisation cloud</string>
@@ -393,6 +395,12 @@
     <string name="widgets_added">Ajouté ✓</string>
     <string name="widgets_last_added">Dernier ajout : %1$s</string>
     <string name="widgets_pin_unsupported">Votre lanceur ne peut pas ajouter de widgets ainsi — appuyez longuement sur l\'écran d\'accueil pour en ajouter un.</string>
+    <string name="widgets_slots_used">%1$d sur %2$d emplacements de widget gratuits utilisés</string>
+    <string name="widgets_slots_full">Les emplacements de widget gratuits sont pleins. Retirez-en un de l\'écran d\'accueil ou passez à Premium pour des widgets illimités.</string>
+    <string name="widgets_slots_unlimited">Premium · widgets illimités</string>
+    <string name="widgets_unlock">Débloquer plus de widgets</string>
+    <string name="widget_locked_title">Widget verrouillé</string>
+    <string name="widget_locked_body">Appuyez pour passer à Premium</string>
     <string name="widget_monthly_desc">Progression des dépenses et reste</string>
     <string name="widget_weekly_desc">Les dépenses de la semaine en un coup d\'œil</string>
     <string name="widget_summary">Résumé mensuel</string>

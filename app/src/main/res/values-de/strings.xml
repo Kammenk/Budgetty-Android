@@ -132,6 +132,8 @@
     <string name="paywall_benefit_categories_detail">Gratis-Tarif enthält %1$d</string>
     <string name="paywall_benefit_recurring">Unbegrenzte wiederkehrende Rechnungen</string>
     <string name="paywall_benefit_recurring_detail">Gratis-Tarif enthält %1$d</string>
+    <string name="paywall_benefit_widgets">Unbegrenzte Startbildschirm-Widgets</string>
+    <string name="paywall_benefit_widgets_detail">Gratis-Tarif enthält %1$d</string>
     <string name="paywall_benefit_themes">Alle Akzent-Designs</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean und Plum</string>
     <string name="paywall_benefit_cloud">Cloud-Backup und -Sync</string>
@@ -394,6 +396,12 @@
     <string name="widgets_added">Hinzugefügt ✓</string>
     <string name="widgets_last_added">Zuletzt hinzugefügt: %1$s</string>
     <string name="widgets_pin_unsupported">Dein Launcher kann Widgets nicht auf diese Weise hinzufügen – halte den Startbildschirm gedrückt, um eines hinzuzufügen.</string>
+    <string name="widgets_slots_used">%1$d von %2$d kostenlosen Widget-Plätzen belegt</string>
+    <string name="widgets_slots_full">Die kostenlosen Widget-Plätze sind belegt. Entferne eines vom Startbildschirm oder mach ein Upgrade für unbegrenzte Widgets.</string>
+    <string name="widgets_slots_unlimited">Premium · unbegrenzte Widgets</string>
+    <string name="widgets_unlock">Mehr Widgets freischalten</string>
+    <string name="widget_locked_title">Widget gesperrt</string>
+    <string name="widget_locked_body">Zum Upgrade tippen</string>
     <string name="widget_monthly_desc">Ausgabenfortschritt &amp; Rest</string>
     <string name="widget_weekly_desc">Die Ausgaben dieser Woche auf einen Blick</string>
     <string name="widget_summary">Monatsübersicht</string>

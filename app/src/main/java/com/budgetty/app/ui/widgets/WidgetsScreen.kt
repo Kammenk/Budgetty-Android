@@ -27,6 +27,7 @@ import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DonutLarge
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.material3.Button
@@ -67,8 +68,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
+import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
@@ -76,25 +79,41 @@ import com.budgetty.app.ui.theme.budgetWarnColor
 import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.widget.WidgetKind
 import com.budgetty.app.widget.WidgetPinning
+import com.budgetty.app.widget.WidgetQuota
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 /**
  * Account → Widgets: a picker for the home-screen widgets. One card per type with a live Compose
  * mock, a Large/Compact size toggle, and an "Add to home screen" button that asks the launcher to
  * pin the chosen widget (then flips to a confirmation state).
+ *
+ * Free users cap out at [WidgetQuota.FREE_LIMIT] placed widgets. This screen's gate is a courtesy
+ * one — the launcher's own widget picker can't be intercepted — so the cap is really enforced by
+ * each widget rendering locked when it's over the limit.
  */
 @Composable
 fun WidgetsScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToPaywall: () -> Unit,
+    billingManager: BillingManager = koinInject(),
     modifier: Modifier = Modifier,
 ) {
-    WidgetsScreenContent(onNavigateBack = onNavigateBack, modifier = modifier)
+    val isPremium by billingManager.isPremium.collectAsStateWithLifecycle()
+    WidgetsScreenContent(
+        onNavigateBack = onNavigateBack,
+        onNavigateToPaywall = onNavigateToPaywall,
+        isPremium = isPremium,
+        modifier = modifier,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun WidgetsScreenContent(
     onNavigateBack: () -> Unit,
+    onNavigateToPaywall: () -> Unit,
+    isPremium: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -142,11 +161,24 @@ private fun WidgetsScreenContent(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                // Counted here rather than per card: the cap is on placed widgets overall, so every
+                // card shares one budget. Recomputed on resume so removing one frees its slot.
+                val context = LocalContext.current
+                val placed = remember(refreshKey) { WidgetQuota.placedCount(context) }
+                val canAdd = isPremium || placed < WidgetQuota.FREE_LIMIT
+                SlotsBanner(
+                    isPremium = isPremium,
+                    placed = placed,
+                    onNavigateToPaywall = onNavigateToPaywall,
+                )
+                Spacer(Modifier.height(MaterialTheme.dimens.lg))
                 WidgetKind.entries.forEach { kind ->
                     WidgetTypeCard(
                         kind = kind,
                         snackbarHostState = snackbarHostState,
                         refreshKey = refreshKey,
+                        canAdd = canAdd,
+                        onNavigateToPaywall = onNavigateToPaywall,
                     )
                     Spacer(Modifier.height(MaterialTheme.dimens.lg))
                 }
@@ -155,9 +187,92 @@ private fun WidgetsScreenContent(
     }
 }
 
+/**
+ * The free tier's slot counter, above the cards. Reads as a plain status line while the user has
+ * room and turns into a tappable upgrade prompt once the slots are full — the moment the cap is
+ * actually costing them something is the only moment it's worth selling against.
+ */
+@Composable
+private fun SlotsBanner(
+    isPremium: Boolean,
+    placed: Int,
+    onNavigateToPaywall: () -> Unit,
+) {
+    val full = !isPremium && placed >= WidgetQuota.FREE_LIMIT
+    val container = when {
+        isPremium -> MaterialTheme.colorScheme.primaryContainer
+        full -> MaterialTheme.colorScheme.secondaryContainer
+        else -> MaterialTheme.colorScheme.surfaceContainerHighest
+    }
+    val onContainer = when {
+        isPremium -> MaterialTheme.colorScheme.onPrimaryContainer
+        full -> MaterialTheme.colorScheme.onSecondaryContainer
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    @Composable
+    fun Body() {
+        Row(
+            modifier = Modifier.padding(MaterialTheme.dimens.lg),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            if (full) {
+                Icon(
+                    Icons.Filled.Lock,
+                    contentDescription = null,
+                    tint = onContainer,
+                    modifier = Modifier.size(MaterialTheme.dimens.xl),
+                )
+                Spacer(Modifier.width(MaterialTheme.dimens.md))
+            }
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = if (isPremium) {
+                        stringResource(R.string.widgets_slots_unlimited)
+                    } else {
+                        stringResource(R.string.widgets_slots_used, placed, WidgetQuota.FREE_LIMIT)
+                    },
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = onContainer,
+                )
+                if (full) {
+                    Spacer(Modifier.height(MaterialTheme.dimens.xs))
+                    Text(
+                        text = stringResource(R.string.widgets_slots_full),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = onContainer,
+                    )
+                }
+            }
+        }
+    }
+
+    if (full) {
+        Surface(
+            onClick = onNavigateToPaywall,
+            shape = RoundedCornerShape(MaterialTheme.dimens.radiusLg),
+            color = container,
+            modifier = Modifier.fillMaxWidth(),
+        ) { Body() }
+    } else {
+        Surface(
+            shape = RoundedCornerShape(MaterialTheme.dimens.radiusLg),
+            color = container,
+            modifier = Modifier.fillMaxWidth(),
+        ) { Body() }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WidgetTypeCard(kind: WidgetKind, snackbarHostState: SnackbarHostState, refreshKey: Int) {
+private fun WidgetTypeCard(
+    kind: WidgetKind,
+    snackbarHostState: SnackbarHostState,
+    refreshKey: Int,
+    canAdd: Boolean,
+    onNavigateToPaywall: () -> Unit,
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     // Default the toggle to the size the user last added for this type (else Large), so reopening the
@@ -232,8 +347,15 @@ private fun WidgetTypeCard(kind: WidgetKind, snackbarHostState: SnackbarHostStat
             }
             Spacer(Modifier.height(MaterialTheme.dimens.md))
 
+            // Out of free slots: the button sells the upgrade instead of pinning. A type that's
+            // already placed keeps its "Added" state — the cap only blocks *new* widgets.
+            val blocked = !canAdd && !added
             Button(
                 onClick = {
+                    if (blocked) {
+                        onNavigateToPaywall()
+                        return@Button
+                    }
                     // Ask the launcher to pin; the button flips to "Added" once the widget is
                     // actually placed (detected on resume), not optimistically here.
                     if (WidgetPinning.request(context, kind, large)) {
@@ -249,16 +371,30 @@ private fun WidgetTypeCard(kind: WidgetKind, snackbarHostState: SnackbarHostStat
                     .fillMaxWidth()
                     .height(MaterialTheme.dimens.buttonHeight),
             ) {
-                if (added) {
-                    Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(MaterialTheme.dimens.xl))
-                    Spacer(Modifier.width(MaterialTheme.dimens.sm))
-                    Text(
-                        text = stringResource(R.string.widgets_added),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                } else {
-                    Text(
+                when {
+                    added -> {
+                        Icon(Icons.Filled.Check, contentDescription = null, modifier = Modifier.size(MaterialTheme.dimens.xl))
+                        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                        Text(
+                            text = stringResource(R.string.widgets_added),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                    blocked -> {
+                        Icon(
+                            Icons.Filled.Lock,
+                            contentDescription = null,
+                            modifier = Modifier.size(MaterialTheme.dimens.xl),
+                        )
+                        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                        Text(
+                            text = stringResource(R.string.widgets_unlock),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                    else -> Text(
                         text = stringResource(R.string.widgets_add),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
@@ -649,7 +785,7 @@ private fun WidgetKind.icon(): ImageVector = when (this) {
 @Composable
 private fun WidgetsScreenPreview() {
     BudgettyTheme {
-        WidgetsScreenContent(onNavigateBack = {})
+        WidgetsScreenContent(onNavigateBack = {}, onNavigateToPaywall = {}, isPremium = false)
     }
 }
 

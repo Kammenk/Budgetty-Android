@@ -1,17 +1,13 @@
 package com.budgetty.app.widget
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.LocalContext
 import androidx.glance.LocalSize
-import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
-import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
@@ -26,8 +22,6 @@ import com.budgetty.app.ui.navigation.Routes
 import com.budgetty.app.ui.util.budgetRatio
 import com.budgetty.app.ui.util.monthlyToWeekly
 import com.budgetty.app.ui.util.weeklyToMonthly
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import java.math.BigDecimal
 import kotlin.math.roundToInt
 
@@ -40,16 +34,12 @@ private val LargeSize = DpSize(250.dp, 120.dp)
  * size a "≈ X / week|month" equivalent for the other cadence. Both sizes (Compact 2×2 / Large 4×2)
  * render from one [WidgetData] snapshot, chosen by [LocalSize].
  */
-class BudgetWidget : GlanceAppWidget(), KoinComponent {
-
-    private val dataProvider: WidgetDataProvider by inject()
+class BudgetWidget : BudgettyGlanceWidget() {
 
     override val sizeMode = SizeMode.Responsive(setOf(CompactSize, LargeSize))
 
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val data = dataProvider.load()
-        provideContent { BudgetWidgetContent(data) }
-    }
+    @Composable
+    override fun Content(data: WidgetData) = BudgetWidgetContent(data)
 }
 
 @Composable

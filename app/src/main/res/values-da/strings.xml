@@ -32,6 +32,12 @@
     <string name="widgets_added">Tilføjet ✓</string>
     <string name="widgets_last_added">Sidst tilføjet: %1$s</string>
     <string name="widgets_pin_unsupported">Din launcher kan ikke tilføje widgets på denne måde — hold nede på startskærmen for at tilføje en.</string>
+    <string name="widgets_slots_used">%1$d af %2$d gratis widgetpladser brugt</string>
+    <string name="widgets_slots_full">De gratis widgetpladser er fyldt. Fjern en fra startskærmen, eller opgrader for ubegrænsede widgets.</string>
+    <string name="widgets_slots_unlimited">Premium · ubegrænsede widgets</string>
+    <string name="widgets_unlock">Lås op for flere widgets</string>
+    <string name="widget_locked_title">Widget låst</string>
+    <string name="widget_locked_body">Tryk for at opgradere</string>
     <string name="widget_monthly_desc">Forbrugsfremgang &amp; resterende</string>
     <string name="widget_weekly_desc">Ugens forbrug i ét overblik</string>
     <string name="widget_summary">Månedsoversigt</string>
@@ -422,6 +428,8 @@
     <string name="paywall_benefit_categories_detail">Gratisplanen indeholder %1$d</string>
     <string name="paywall_benefit_recurring">Ubegrænsede faste regninger</string>
     <string name="paywall_benefit_recurring_detail">Gratisplanen indeholder %1$d</string>
+    <string name="paywall_benefit_widgets">Ubegrænsede widgets på startskærmen</string>
+    <string name="paywall_benefit_widgets_detail">Gratisplanen indeholder %1$d</string>
     <string name="paywall_benefit_themes">Alle accentfarvetemaer</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean og Plum</string>
     <string name="paywall_benefit_cloud">Cloud-sikkerhedskopi &amp; synk.</string>

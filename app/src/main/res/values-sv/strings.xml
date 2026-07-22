@@ -32,6 +32,12 @@
     <string name="widgets_added">Tillagd ✓</string>
     <string name="widgets_last_added">Senast tillagd: %1$s</string>
     <string name="widgets_pin_unsupported">Din launcher kan inte lägga till widgetar på det här sättet — håll in på hemskärmen för att lägga till en.</string>
+    <string name="widgets_slots_used">%1$d av %2$d gratis widgetplatser använda</string>
+    <string name="widgets_slots_full">De gratis widgetplatserna är fulla. Ta bort en från hemskärmen eller uppgradera för obegränsade widgetar.</string>
+    <string name="widgets_slots_unlimited">Premium · obegränsade widgetar</string>
+    <string name="widgets_unlock">Lås upp fler widgetar</string>
+    <string name="widget_locked_title">Widget låst</string>
+    <string name="widget_locked_body">Tryck för att uppgradera</string>
     <string name="widget_monthly_desc">Utgiftsförlopp &amp; återstående</string>
     <string name="widget_weekly_desc">Veckans utgifter i en överblick</string>
     <string name="widget_summary">Månadssammanfattning</string>
@@ -422,6 +428,8 @@
     <string name="paywall_benefit_categories_detail">Gratisplanen innehåller %1$d</string>
     <string name="paywall_benefit_recurring">Obegränsade återkommande räkningar</string>
     <string name="paywall_benefit_recurring_detail">Gratisplanen innehåller %1$d</string>
+    <string name="paywall_benefit_widgets">Obegränsade widgetar på hemskärmen</string>
+    <string name="paywall_benefit_widgets_detail">Gratisplanen innehåller %1$d</string>
     <string name="paywall_benefit_themes">Alla accentfärgteman</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean och Plum</string>
     <string name="paywall_benefit_cloud">Molnbackup &amp; synk</string>

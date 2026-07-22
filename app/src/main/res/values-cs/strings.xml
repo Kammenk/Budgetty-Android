@@ -32,6 +32,12 @@
     <string name="widgets_added">Přidáno ✓</string>
     <string name="widgets_last_added">Naposledy přidáno: %1$s</string>
     <string name="widgets_pin_unsupported">Váš launcher neumí přidat widgety tímto způsobem — přidejte jej podržením domovské obrazovky.</string>
+    <string name="widgets_slots_used">Využito %1$d z %2$d bezplatných slotů pro widgety</string>
+    <string name="widgets_slots_full">Bezplatné sloty pro widgety jsou plné. Odeberte jeden z domovské obrazovky nebo upgradujte pro neomezené widgety.</string>
+    <string name="widgets_slots_unlimited">Premium · neomezené widgety</string>
+    <string name="widgets_unlock">Odemknout více widgetů</string>
+    <string name="widget_locked_title">Widget uzamčen</string>
+    <string name="widget_locked_body">Klepnutím upgradujte</string>
     <string name="widget_monthly_desc">Průběh útraty &amp; zbývá</string>
     <string name="widget_weekly_desc">Útrata tohoto týdne na první pohled</string>
     <string name="widget_summary">Měsíční souhrn</string>
@@ -422,6 +428,8 @@
     <string name="paywall_benefit_categories_detail">Bezplatný plán zahrnuje %1$d</string>
     <string name="paywall_benefit_recurring">Neomezené pravidelné účty</string>
     <string name="paywall_benefit_recurring_detail">Bezplatný plán zahrnuje %1$d</string>
+    <string name="paywall_benefit_widgets">Neomezené widgety na domovské obrazovce</string>
+    <string name="paywall_benefit_widgets_detail">Bezplatný plán zahrnuje %1$d</string>
     <string name="paywall_benefit_themes">Všechny motivy zvýraznění</string>
     <string name="paywall_benefit_themes_detail">Sage, Ocean a Plum</string>
     <string name="paywall_benefit_cloud">Cloudová záloha &amp; synchronizace</string>
