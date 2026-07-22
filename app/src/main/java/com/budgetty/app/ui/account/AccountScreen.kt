@@ -595,8 +595,11 @@ private fun SupportSectionRows(
     crashReportingEnabled: Boolean,
     onSetCrashReporting: (Boolean) -> Unit,
 ) {
-    SettingRow(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.account_help)) { openUrl(context, URL_HELP) }
-    RowDivider()
+    // "Help & FAQ" used to lead here, pointing at budgetty-96a3d.web.app/#faq — an anchor that has
+    // never existed on a page that is only a privacy policy, so the link silently dumped people at
+    // the top of a legal document. Contact us already covers the same ground, and its subtitle says
+    // so. Removed rather than pointed somewhere equally unhelpful; if a real FAQ is ever written,
+    // bring the row back with an anchor that resolves. (iOS dropped its matching row the same day.)
     SettingRow(
         icon = Icons.Filled.MailOutline,
         title = stringResource(R.string.account_contact),
@@ -927,7 +930,6 @@ private fun DeleteAccountButton(enabled: Boolean, onClick: () -> Unit) {
 // Taps on the version label that unlock tester Premium (hidden gesture; see footerSection).
 private const val VERSION_TAPS_TO_UNLOCK = 11
 
-private const val URL_HELP = "https://budgetty-96a3d.web.app/#faq"
 private const val URL_PRIVACY = "https://budgetty-96a3d.web.app/"
 private const val SUPPORT_EMAIL = "kamskstudio@gmail.com"
 
