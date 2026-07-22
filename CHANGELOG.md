@@ -36,7 +36,11 @@ Premium feature past the first two.
 
 > Under the hood this release adds the testing and quality tooling the project had been missing: static analysis (detekt), a JVM test stack with real database tests, screenshot tests, and GitHub Actions CI running all of it on every push. None of it changes shipped behaviour. The database moves to **v18** with a migration covering the category split, pinned by an instrumented test.
 
-> ⚠️ **Not yet device-verified in this build:** the two-widget free cap was built and merged straight from its branch. Worth placing a third widget on a real home screen before this goes wide.
+> **Play status — uploaded and released to the Closed testing ("Alpha") track on 2026-07-22.** It supersedes 10.6.2 (vc1062), which is what testers were running until now. Swapping the build on a running closed track does not restart the 14-day tester clock.
+
+> ⚠️ **Shipped without a device check:** the two-widget free cap went from its branch into this build without ever running on a real home screen. Place a third widget and confirm the third card locks — and that removing one frees the slot again. Also worth re-checking the paywall in landscape: its benefit list is now six rows, and that layout has overflowed at compact heights before.
+
+> The yearly subscription was verified end-to-end on a Pixel 6 the same day: the paywall's €59.99 annual plan now purchases successfully, and Play reports it on a genuinely yearly billing period. An earlier misconfiguration had that plan billing monthly at the annual price; it was replaced before any tester could reach it.
 
 ## 10.6.2 (versionCode 1062) — 2026-07-20
 
