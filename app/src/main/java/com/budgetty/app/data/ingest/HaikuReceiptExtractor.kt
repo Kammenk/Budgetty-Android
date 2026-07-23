@@ -70,6 +70,18 @@ class HaikuReceiptExtractor(
         val chargeItems = chargeItemsOf(response)
         val chargesTotal = grossOf(chargeItems)
 
+        // Itemless slip: no product lines and no fee/tip lines, but a real printed total — the
+        // card-payment / terminal receipts couriers print carry just "СУМА / TOTAL", with nothing to
+        // itemize. Surface that total as a single editable line the user can name and categorize,
+        // instead of burying it in the invisible extraCharges residual — where adding the one obvious
+        // item doubles the finalized total (a 36.92 slip finalizing at 73.84) and trips the misleading
+        // euro/leva warning. When this line stands in, the residual is zero (it already equals the total).
+        val printedTotal = (response.total ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) }
+        val fallbackItems = printedTotal
+            ?.takeIf { items.isEmpty() && chargeItems.isEmpty() }
+            ?.let { listOf(ParsedTransaction(price = it)) }
+            .orEmpty()
+
         // The printed item-sum anchors describe the PRODUCT rows; the review screen sums all rows
         // (products + these charges), so lift both anchors by the charges to keep the soft "prices too
         // high" and blocking "line missing" checks aligned. Tax-on-top items anchor on the net SUBTOTAL.
@@ -90,10 +102,15 @@ class HaikuReceiptExtractor(
             taxOnTop = taxOnTop,
             // The itemized charges come OUT of the total-gap; only a still-unexplained residual (an
             // uncaptured deposit/fee) stays as the invisible add-on so the total still equals what was
-            // paid, without double-counting the delivery/tip rows we just added.
-            extraCharges = (extraChargesOf(response, gross, discount, taxOnTop) - chargesTotal)
-                .coerceAtLeast(BigDecimal.ZERO),
-            items = items + chargeItems,
+            // paid, without double-counting the delivery/tip rows we just added. A stand-in total line
+            // already accounts for the whole amount, so its residual is zero (never re-added on top).
+            extraCharges = if (fallbackItems.isNotEmpty()) {
+                BigDecimal.ZERO
+            } else {
+                (extraChargesOf(response, gross, discount, taxOnTop) - chargesTotal)
+                    .coerceAtLeast(BigDecimal.ZERO)
+            },
+            items = items + chargeItems + fallbackItems,
         )
     }
 
