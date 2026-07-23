@@ -100,6 +100,12 @@ exports.extractReceipt = onRequest(
         total: input.total || 0,
         subtotal: input.subtotal || 0,
         tax: input.tax || 0,
+        // Forward the fee/tip breakdown so the client can materialize them as visible "Delivery &
+        // fees" / "Tip" line items (HaikuReceiptExtractor.chargeItemsOf). Without these the amounts
+        // silently collapse into the invisible extraCharges residual, hiding delivery from the user
+        // and double-counting it if they re-add it by hand.
+        deliveryAndFees: input.deliveryAndFees || 0,
+        tip: input.tip || 0,
         // Default to readable when the field is absent, so a missing flag never blocks a scan;
         // only an explicit `false` from the model signals "too poor to read".
         readable: input.readable !== false,
