@@ -88,3 +88,10 @@ comments:
     active: false
   CommentOverPrivateProperty:
     active: false
+
+# Budgetty's own rules (:detekt-rules module, loaded via detektPlugins). Custom rulesets are inactive
+# by default, so each rule is turned on explicitly here.
+budgetty:
+  active: true
+  SheetScrollNotCapped:
+    active: true

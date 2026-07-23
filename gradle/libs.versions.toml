@@ -84,6 +84,10 @@ androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomato
 
 # detekt formatting rules (ktlint-backed), applied via the detekt plugin's detektPlugins config
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+# detekt custom-rule authoring: detekt-api to write the rule (compileOnly — detekt provides it at
+# runtime), detekt-test to unit-test it. Used by the :detekt-rules module.
+detekt-api = { group = "io.gitlab.arturbosch.detekt", name = "detekt-api", version.ref = "detekt" }
+detekt-test = { group = "io.gitlab.arturbosch.detekt", name = "detekt-test", version.ref = "detekt" }
 
 # Unit-test stack: Robolectric (JVM Android runtime), Turbine (Flow assertions), coroutines-test
 # (runTest + virtual time), Room in-memory testing, Truth assertions. coroutines-test and room-testing
@@ -109,6 +113,7 @@ androidx-baselineprofile = { id = "androidx.baselineprofile", version.ref = "ben
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }

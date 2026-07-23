@@ -23,4 +23,5 @@ dependencyResolutionManagement {
 rootProject.name = "Budgetty"
 include(":app")
 include(":baselineprofile")
+include(":detekt-rules")
  

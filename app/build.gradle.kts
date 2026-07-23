@@ -185,6 +185,9 @@ tasks.withType<Detekt>().configureEach {
 
 dependencies {
     detektPlugins(libs.detekt.formatting)
+    // Budgetty's own rules — currently SheetScrollNotCapped, which guards the bottom-sheet
+    // weight(1f, fill = false) convention so a new sheet can't reintroduce the "sheet jumps" bug.
+    detektPlugins(project(":detekt-rules"))
 
 
     implementation(libs.androidx.core.ktx)
