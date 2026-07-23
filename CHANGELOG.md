@@ -15,6 +15,19 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.7.1 (versionCode 1071) — 2026-07-23
+
+A bug-fix (PATCH) release: three fixes to receipt scanning and the category breakdown, all reported from closed testing.
+
+### Fixed
+- **Delivery and service fees now show as their own lines** — on an order that charges delivery, a service fee or a courier tip (a food-delivery receipt, say), those amounts were being folded invisibly into the total instead of appearing as items. It looked like the delivery hadn't been counted, and adding it back by hand quietly doubled it. A scanned receipt now lists a **Delivery & fees** row and a **Tip** row where they apply, so the total is right and nothing is counted twice.
+- **A card-payment slip no longer doubles its total** — a receipt with a total but no itemised lines (the slip a card terminal prints) opened with empty fields and its whole amount hidden behind the total, so typing in the one obvious item doubled it. Such a slip now opens with a single editable line already holding the amount, ready to name and categorise — no doubling.
+- **The "All categories" breakdown no longer jumps** — opening **Insights → See all categories** with enough categories to fill the screen could make the sheet bounce up and down instead of settling. It now opens steady and scrolls smoothly to the end.
+
+> None of these change the database or how anything is stored — a scanned delivery receipt simply reads the same way it always should have.
+
+> **Play status — built for the Closed testing ("Alpha") track (versionCode 1071) on 2026-07-23; pending upload.** It supersedes 10.7.0 (vc1070). Swapping the build on a running closed track does not restart the 14-day tester clock.
+
 ## 10.7.0 (versionCode 1070) — 2026-07-22
 
 A feature (MINOR) release: crash reporting you can switch off, a faster cold start, two
