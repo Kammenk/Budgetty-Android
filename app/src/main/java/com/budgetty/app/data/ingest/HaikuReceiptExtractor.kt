@@ -70,17 +70,10 @@ class HaikuReceiptExtractor(
         val chargeItems = chargeItemsOf(response)
         val chargesTotal = grossOf(chargeItems)
 
-        // Itemless slip: no product lines and no fee/tip lines, but a real printed total — the
-        // card-payment / terminal receipts couriers print carry just "СУМА / TOTAL", with nothing to
-        // itemize. Surface that total as a single editable line the user can name and categorize,
-        // instead of burying it in the invisible extraCharges residual — where adding the one obvious
-        // item doubles the finalized total (a 36.92 slip finalizing at 73.84) and trips the misleading
-        // euro/leva warning. When this line stands in, the residual is zero (it already equals the total).
-        val printedTotal = (response.total ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) }
-        val fallbackItems = printedTotal
-            ?.takeIf { items.isEmpty() && chargeItems.isEmpty() }
-            ?.let { listOf(ParsedTransaction(price = it)) }
-            .orEmpty()
+        // Itemless slip (a card-payment / terminal receipt prints just "СУМА / TOTAL", nothing to
+        // itemize) → one editable stand-in line for the whole total instead of an invisible residual.
+        // See [itemlessTotalFallback]; when it stands in, extraCharges is zeroed below.
+        val fallbackItems = itemlessTotalFallback(response.total, items, chargeItems)
 
         // The printed item-sum anchors describe the PRODUCT rows; the review screen sums all rows
         // (products + these charges), so lift both anchors by the charges to keep the soft "prices too
@@ -423,4 +416,30 @@ class HaikuReceiptExtractor(
         /** Ignore a sub-5-cent gap between the printed total and the reconciled items as rounding, not a charge. */
         val EXTRA_CHARGES_MIN: BigDecimal = BigDecimal("0.05")
     }
+}
+
+/**
+ * A stand-in line item for an *itemless slip* — a receipt with no product lines and no fee/tip lines
+ * but a real printed total. The card-payment / terminal slips couriers print carry just
+ * "СУМА / TOTAL", with nothing to itemize; extraction returns a total and zero items.
+ *
+ * Returns a single editable line worth the whole [total] (blank name/category for the user to fill),
+ * so the amount is a visible, editable row rather than being folded into the invisible extraCharges
+ * residual — where adding the one obvious item by hand would DOUBLE the finalized total (a 36.92 slip
+ * finalizing at 73.84). The caller zeroes extraCharges when this is non-empty, since the line already
+ * equals the total, so there is nothing left to re-add.
+ *
+ * Returns empty for any receipt that already has product lines ([products]) or fee/tip lines
+ * ([chargeItems]), or that has no positive total — so a normal receipt is never touched.
+ */
+internal fun itemlessTotalFallback(
+    total: Double?,
+    products: List<ParsedTransaction>,
+    chargeItems: List<ParsedTransaction>,
+): List<ParsedTransaction> {
+    val printedTotal = (total ?: 0.0).takeIf { it > 0 }?.let { BigDecimal.valueOf(it) }
+    return printedTotal
+        ?.takeIf { products.isEmpty() && chargeItems.isEmpty() }
+        ?.let { listOf(ParsedTransaction(price = it)) }
+        .orEmpty()
 }
