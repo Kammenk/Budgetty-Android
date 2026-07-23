@@ -465,7 +465,10 @@ fun AllCategoriesSheet(
         .toFloat().coerceAtLeast(0.0001f)
     AdaptiveSheet(
         onDismiss = onDismiss,
-        sheetState = rememberModalBottomSheetState(),
+        // Expanded-only, like every sibling sheet. This one used to enable the half-height partial
+        // anchor; paired with the tall, previously un-capped list below it let the sheet oscillate
+        // between the partial and expanded targets on shorter phones (the reported "jumping").
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
     ) {
         Column(
@@ -490,6 +493,12 @@ fun AllCategoriesSheet(
             color = MaterialTheme.colorScheme.outlineVariant,
         )
         LazyColumn(
+            // weight(fill = false) caps the list at the sheet's available height and scrolls it
+            // within, instead of letting an unbounded list drive the sheet height and jitter at the
+            // scroll edge (same fix as CategoryTransactionsSheet / GroupBudgetSheet).
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f, fill = false),
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
                 start = 18.dp,
                 end = 18.dp,
