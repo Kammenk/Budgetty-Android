@@ -15,6 +15,21 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.8.0 (versionCode 1080) — 2026-07-25
+
+A feature (MINOR) release: budgeting can now follow your pay cycle instead of the calendar, a new "All time" view, and a money-flow correction — all from closed-testing feedback.
+
+### Added
+- **Set the day your month starts** — if you're paid on, say, the 25th, your "month" can now run the 25th → the 24th of the next month instead of the 1st → month-end. Turn it on in **Account → Preferences → Month starts on** (it defaults to 1, the ordinary calendar month, so nothing changes until you pick a day). Once set, "this month", stepping back to previous months, the monthly budget, and the home-screen widgets all follow your pay cycle. A pay day of 29–31 falls back to the last day of a short month (February, etc.).
+- **"All time" period** — a new option to see your whole history at once: in the Insights period menu, in History, and on Home in the wide/tablet layout.
+
+### Fixed
+- **Income and bills no longer count for months before you added them** — viewing a multi-month span (a half-year, say) used to project your current salary and bills backwards across every month, so a period from before you'd entered them showed income you never actually recorded. Each income source and bill now counts only from the month it was added, so past periods and the "money in vs. out" card read truthfully. The current period still shows the full expected month.
+
+> No database change — this only affects how existing income/bill planning data is scaled to the selected period.
+
+> **Play status — built for the Closed testing ("Alpha") track (versionCode 1080) on 2026-07-25; pending upload.** It supersedes 10.7.1 (vc1071), which was built but never uploaded, and carries its three receipt/breakdown fixes forward. Swapping the build on a running closed track does not restart the 14-day tester clock.
+
 ## 10.7.1 (versionCode 1071) — 2026-07-23
 
 A bug-fix (PATCH) release: three fixes to receipt scanning and the category breakdown, all reported from closed testing.
