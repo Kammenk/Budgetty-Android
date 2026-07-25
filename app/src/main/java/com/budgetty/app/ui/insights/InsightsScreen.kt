@@ -155,10 +155,11 @@ private fun InsightsScreenContent(
     // Disable the back arrow once the on-screen block already reaches the earliest recorded spend,
     // so the stepper can't page endlessly into empty past periods (nothing before the first receipt).
     val earliest = state.earliestDate
-    val canStepBackward = stepped != null && earliest != null && stepped.bounds().first.isAfter(earliest)
+    val canStepBackward = stepped != null && earliest != null &&
+        stepped.bounds(monthStartDay = state.monthStartDay).first.isAfter(earliest)
     // Friendly period label, shared by the stepper, the Breakdown sub-label and the category sheet
     // ("This month", "Last week", "Q2 2026", or a date span for weeks / custom ranges).
-    val periodLabel = periodFriendlyLabel(state.period)
+    val periodLabel = periodFriendlyLabel(state.period, monthStartDay = state.monthStartDay)
 
     // One stepper instance, wired identically for both layouts; each body places it in its header.
     val stepper: @Composable (Modifier, Boolean) -> Unit = { mod, fill ->
@@ -467,6 +468,7 @@ private fun BudgetSectionCard(
     total: BigDecimal,
     slices: List<PieSlice>,
     budgets: Map<String, BigDecimal>,
+    monthStartDay: Int,
 ) {
     val unit = (period as? InsightsPeriod.Stepped)?.unit
     if (unit != PeriodUnit.MONTH && unit != PeriodUnit.WEEK) return
@@ -483,7 +485,7 @@ private fun BudgetSectionCard(
         )
         if (overall != null) {
             Spacer(Modifier.height(MaterialTheme.dimens.lg))
-            OverallBudgetProgress(period = period, spent = total, budget = overall)
+            OverallBudgetProgress(period = period, spent = total, budget = overall, monthStartDay = monthStartDay)
         }
         if (categoryRows.isNotEmpty()) {
             Spacer(Modifier.height(if (overall != null) MaterialTheme.dimens.xl else MaterialTheme.dimens.lg))
@@ -500,13 +502,17 @@ private fun BudgetSectionCard(
  * bar, and — for the current period only — a "N days left" line.
  */
 @Composable
-private fun OverallBudgetProgress(period: InsightsPeriod, spent: BigDecimal, budget: BigDecimal) {
+private fun OverallBudgetProgress(period: InsightsPeriod, spent: BigDecimal, budget: BigDecimal, monthStartDay: Int) {
     val color = budgetColor(spent, budget)
     val remaining = budget.subtract(spent)
     val pct = if (budget.signum() <= 0) 0 else (spent.toDouble() / budget.toDouble() * 100).roundToInt()
     val daysLeft = (period as? InsightsPeriod.Stepped)
         ?.takeIf { it.offset == 0 }
-        ?.let { ChronoUnit.DAYS.between(LocalDate.now(), it.bounds().second).coerceAtLeast(0) }
+        ?.let {
+            ChronoUnit.DAYS
+                .between(LocalDate.now(), it.bounds(monthStartDay = monthStartDay).second)
+                .coerceAtLeast(0)
+        }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -791,7 +797,10 @@ private fun InsightsPhoneBody(
                     }
 
                     InsightsSection.BUDGET -> if (state.isLoaded)
-                        BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+                        BudgetSectionCard(
+                            state.period, periodLabel, state.total,
+                            state.slices, state.budgets, state.monthStartDay,
+                        )
 
                     // Money-flow cards render once any income/bills exist (each shows its own nudge
                     // for the partial cases); a user with no plan at all sees none of them.
@@ -831,7 +840,7 @@ private fun InsightsPhoneBody(
                     // Only appears once there's a previous-period total to compare against.
                     InsightsSection.PERIOD_COMPARISON -> if (hasData) {
                         state.periodComparison?.let { comparison ->
-                            InsightCard { PeriodComparisonContent(comparison, state.period) }
+                            InsightCard { PeriodComparisonContent(comparison, state.period, state.monthStartDay) }
                         }
                     }
 
@@ -901,7 +910,7 @@ private fun InsightsTabletBody(
     // renders nothing when there's no previous period to compare against.
     val periodComparisonCard: @Composable (Modifier) -> Unit = { mod ->
         if (shows(InsightsSection.PERIOD_COMPARISON)) state.periodComparison?.let { comparison ->
-            InsightCard(modifier = mod) { PeriodComparisonContent(comparison, state.period) }
+            InsightCard(modifier = mod) { PeriodComparisonContent(comparison, state.period, state.monthStartDay) }
         }
     }
     // Total / Receipts / Avg / Saved as a compact 2×2 tile grid (fits both the pane and the column).
@@ -964,7 +973,10 @@ private fun InsightsTabletBody(
             InsightCard { BiggestPurchasesContent(state.biggestPurchases, state.storeByReceiptId) }
         }
         if (shows(InsightsSection.BUDGET)) {
-            BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+            BudgetSectionCard(
+                state.period, periodLabel, state.total,
+                state.slices, state.budgets, state.monthStartDay,
+            )
         }
         if (state.categoryDeltas.isNotEmpty()) {
             InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
@@ -994,7 +1006,10 @@ private fun InsightsTabletBody(
                             InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
                         }
                         if (shows(InsightsSection.BUDGET)) {
-                            BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+                            BudgetSectionCard(
+                                state.period, periodLabel, state.total,
+                                state.slices, state.budgets, state.monthStartDay,
+                            )
                         }
                     }
                 }
@@ -1052,7 +1067,10 @@ private fun InsightsTabletBody(
                             InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
                         }
                         if (shows(InsightsSection.BUDGET)) {
-                            BudgetSectionCard(state.period, periodLabel, state.total, state.slices, state.budgets)
+                            BudgetSectionCard(
+                                state.period, periodLabel, state.total,
+                                state.slices, state.budgets, state.monthStartDay,
+                            )
                         }
                     }
                 }
@@ -1725,10 +1743,12 @@ private fun previousPeriodNoun(period: InsightsPeriod): String = when (period) {
  * the "previous …" noun and the labelled totals follow the active [period].
  */
 @Composable
-private fun PeriodComparisonContent(comparison: PeriodComparison, period: InsightsPeriod) {
+private fun PeriodComparisonContent(comparison: PeriodComparison, period: InsightsPeriod, monthStartDay: Int) {
     val green = budgetGoodColor()
     val red = budgetBadColor()
     val previousNoun = previousPeriodNoun(period)
+    val currentLabel = periodFriendlyLabel(period, monthStartDay = monthStartDay)
+    val previousLabel = periodFriendlyLabel(period.previousPeriod(), monthStartDay = monthStartDay)
     val (icon, accent, headline) = when {
         comparison.deltaPercent < 0 -> Triple(
             Icons.AutoMirrored.Filled.TrendingDown,
@@ -1764,8 +1784,8 @@ private fun PeriodComparisonContent(comparison: PeriodComparison, period: Insigh
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "${periodFriendlyLabel(period)}: ${comparison.currentTotal.formatMoney()} · " +
-                    "${periodFriendlyLabel(period.previousPeriod())}: ${comparison.previousTotal.formatMoney()}",
+                text = "$currentLabel: ${comparison.currentTotal.formatMoney()} · " +
+                    "$previousLabel: ${comparison.previousTotal.formatMoney()}",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

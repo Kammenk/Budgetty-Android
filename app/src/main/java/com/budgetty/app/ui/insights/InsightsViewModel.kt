@@ -23,7 +23,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -138,6 +140,9 @@ data class InsightsUiState(
     // empty state on this so the breakdown's "no spending" view doesn't flash on cold start.
     val isLoaded: Boolean = false,
     val period: InsightsPeriod = InsightsPeriod.Stepped(PeriodUnit.MONTH),
+    /** The pay-day the financial month starts on (1 = calendar month); a MONTH period runs from it,
+     *  and the stepper's labels resolve its bounds with it. */
+    val monthStartDay: Int = 1,
     /** Date of the earliest recorded transaction, or null when there's none; bounds the stepper's
      *  back arrow so it can't page into periods before any data exists. */
     val earliestDate: LocalDate? = null,
@@ -204,26 +209,35 @@ class InsightsViewModel(
         ),
     )
 
-    private val transactions = selectedPeriod.flatMapLatest { period ->
-        val (start, end) = period.toRange()
+    // The pay-day the financial month starts on; the MONTH period and its comparison window follow it.
+    private val monthStartDay = settingsStore.settings.map { it.monthStartDay }.distinctUntilChanged()
+
+    // The selected period paired with the pay-cycle start day, so both windows recompute when either
+    // the period or the "month starts on" setting changes.
+    private val periodWithDay = combine(selectedPeriod, monthStartDay) { period, day ->
+        PeriodCtx(period, day)
+    }
+
+    private val transactions = periodWithDay.flatMapLatest { (period, day) ->
+        val (start, end) = period.toRange(monthStartDay = day)
         repository.getBetween(start, end)
     }
 
     /** Transactions in the period immediately before the selected one, feeding the period-over-period
      *  comparison cards. Re-queries with the filter, so the comparison tracks whatever's on screen. */
-    private val previousPeriodTxns: Flow<List<TransactionEntity>> = selectedPeriod.flatMapLatest { period ->
-        val (start, end) = period.previousPeriod().toRange()
+    private val previousPeriodTxns: Flow<List<TransactionEntity>> = periodWithDay.flatMapLatest { (period, day) ->
+        val (start, end) = period.previousPeriod().toRange(monthStartDay = day)
         repository.getBetween(start, end)
     }
 
     val uiState: StateFlow<InsightsUiState> =
         combine(
-            selectedPeriod,
+            periodWithDay,
             transactions,
             categoryRepository.categories,
             receiptRepository.getAll(),
             previousPeriodTxns,
-        ) { period, txns, categories, receipts, prevTxns ->
+        ) { (period, startDay), txns, categories, receipts, prevTxns ->
             val receiptsById = receipts.associateBy { it.timestamp }
             // Adjust the headline spend to what was actually paid: add on-top tax (tax-exclusive
             // receipts) and extra charges, and subtract order discounts. The per-category slices,
@@ -245,11 +259,11 @@ class InsightsViewModel(
                 BigDecimal.ZERO
             }
             val avgPerDay = if (total.signum() > 0) {
-                total.divide(BigDecimal(periodElapsedDays(period)), 2, RoundingMode.HALF_UP)
+                total.divide(BigDecimal(periodElapsedDays(period, monthStartDay = startDay)), 2, RoundingMode.HALF_UP)
             } else {
                 BigDecimal.ZERO
             }
-            val projectedTotal = projectPeriodTotal(period, total)
+            val projectedTotal = projectPeriodTotal(period, total, startDay)
             val topStores = txns
                 .groupBy { storeByReceiptId[it.receiptId].orEmpty() }
                 .filterKeys { it.isNotBlank() }
@@ -266,6 +280,7 @@ class InsightsViewModel(
             InsightsUiState(
                 isLoaded = true,
                 period = period,
+                monthStartDay = startDay,
                 slices = txns.toSlices(colorByCategory),
                 total = total,
                 receiptCount = receiptCount,
@@ -277,7 +292,7 @@ class InsightsViewModel(
                 biggestPurchases = biggestPurchases,
                 transactions = txns,
                 storeByReceiptId = storeByReceiptId,
-                trend = computeTrend(period, txns),
+                trend = computeTrend(period, txns, startDay),
                 periodComparison = periodComparison,
                 categoryDeltas = categoryDeltas,
                 highlights = highlights,
@@ -285,7 +300,7 @@ class InsightsViewModel(
         }
             .combine(budgetRepository.budgets) { state, budgets -> state.copy(budgets = budgets) }
             .combine(recurringRepository.items) { state, recurring ->
-                val ri = recurringInsights(state.period, recurring)
+                val ri = recurringInsights(state.period, recurring, state.monthStartDay)
                 state.copy(
                     periodIncome = ri.periodIncome,
                     periodBills = ri.periodBills,
@@ -313,9 +328,9 @@ class InsightsViewModel(
      * the active filter (same range the rest of the screen uses), then grouped by month when it
      * spans three or more calendar months and by day otherwise.
      */
-    private fun computeTrend(period: InsightsPeriod, txns: List<TransactionEntity>): TrendData {
+    private fun computeTrend(period: InsightsPeriod, txns: List<TransactionEntity>, monthStartDay: Int): TrendData {
         val zone = ZoneId.systemDefault()
-        val (startMillis, endMillis) = period.toRange()
+        val (startMillis, endMillis) = period.toRange(monthStartDay = monthStartDay)
         val startDate = Instant.ofEpochMilli(startMillis).atZone(zone).toLocalDate()
         val endDate = Instant.ofEpochMilli(endMillis).atZone(zone).toLocalDate()
         val monthSpan = ChronoUnit.MONTHS.between(YearMonth.from(startDate), YearMonth.from(endDate)) + 1
@@ -525,6 +540,9 @@ class InsightsViewModel(
         selectedPeriod.value = InsightsPeriod.Custom(start, end)
     }
 
+    /** The selected period plus the pay-cycle start day, so one combine slot carries both. */
+    private data class PeriodCtx(val period: InsightsPeriod, val monthStartDay: Int)
+
     private data class RecurringInsights(
         val periodIncome: BigDecimal,
         val periodBills: BigDecimal,
@@ -541,8 +559,12 @@ class InsightsViewModel(
      * entry existed, rather than back-projecting the current plan onto "what he earned before". Also
      * builds the per-source income split and the next-occurrence list for upcoming bills.
      */
-    private fun recurringInsights(period: InsightsPeriod, recurring: List<RecurringEntity>): RecurringInsights {
-        val (windowStart, windowEnd) = period.toRange()
+    private fun recurringInsights(
+        period: InsightsPeriod,
+        recurring: List<RecurringEntity>,
+        monthStartDay: Int,
+    ): RecurringInsights {
+        val (windowStart, windowEnd) = period.toRange(monthStartDay = monthStartDay)
         val incomeEntities = recurring.filter { it.isIncome }
         val billEntities = recurring.filterNot { it.isIncome }
 
@@ -617,9 +639,13 @@ class InsightsViewModel(
 
     /** Days elapsed in [period] up to today (a past period uses its full length), at least 1, for
      *  daily-average figures. */
-    private fun periodElapsedDays(period: InsightsPeriod, today: LocalDate = LocalDate.now()): Long {
+    private fun periodElapsedDays(
+        period: InsightsPeriod,
+        today: LocalDate = LocalDate.now(),
+        monthStartDay: Int = 1,
+    ): Long {
         val zone = ZoneId.systemDefault()
-        val (startMillis, endMillis) = period.toRange()
+        val (startMillis, endMillis) = period.toRange(monthStartDay = monthStartDay)
         val start = Instant.ofEpochMilli(startMillis).atZone(zone).toLocalDate()
         val end = Instant.ofEpochMilli(endMillis).atZone(zone).toLocalDate()
         val last = if (end.isAfter(today)) today else end
@@ -632,12 +658,12 @@ class InsightsViewModel(
      * offset 0, not yet over, with at least two elapsed days). Null for past/complete periods and
      * custom ranges, where a projection is meaningless.
      */
-    private fun projectPeriodTotal(period: InsightsPeriod, total: BigDecimal): BigDecimal? {
+    private fun projectPeriodTotal(period: InsightsPeriod, total: BigDecimal, monthStartDay: Int): BigDecimal? {
         val stepped = period as? InsightsPeriod.Stepped ?: return null
         if (stepped.offset != 0 || total.signum() <= 0) return null
-        val (start, end) = stepped.bounds()
+        val (start, end) = stepped.bounds(monthStartDay = monthStartDay)
         if (!LocalDate.now().isBefore(end)) return null
-        val elapsed = periodElapsedDays(period)
+        val elapsed = periodElapsedDays(period, monthStartDay = monthStartDay)
         val totalDays = ChronoUnit.DAYS.between(start, end) + 1
         if (elapsed < 2 || elapsed >= totalDays) return null
         return total.multiply(BigDecimal(totalDays)).divide(BigDecimal(elapsed), 2, RoundingMode.HALF_UP)

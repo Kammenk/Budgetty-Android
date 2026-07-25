@@ -10,6 +10,8 @@ import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
+import com.budgetty.app.ui.util.PayCycle
+import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.monthlyToWeekly
 import com.budgetty.app.ui.util.weeklyToMonthly
 import kotlinx.coroutines.flow.first
@@ -46,9 +48,11 @@ class WidgetDataProvider(
         val monthlyBudget = monthlySet ?: weeklySet?.let { weeklyToMonthly(it) } ?: BigDecimal.ZERO
         val weeklyBudget = weeklySet ?: monthlySet?.let { monthlyToWeekly(it) } ?: BigDecimal.ZERO
 
-        val (monthStart, monthEnd) = monthRange(today)
+        // Honor the user's pay-cycle "month starts on" setting so the widgets agree with the app.
+        val monthStartDay = settingsStore.settings.value.monthStartDay
+        val (monthStart, monthEnd) = currentMonthRange(today, monthStartDay)
         val (weekStart, weekEnd) = weekRange(today)
-        val (prevStart, prevEnd) = monthRange(today.minusMonths(1))
+        val (prevStart, prevEnd) = currentMonthRange(today.minusMonths(1), monthStartDay)
         val (lastWeekStart, lastWeekEnd) = weekRange(today.minusWeeks(1))
 
         val monthTxns = transactionRepository.getBetween(monthStart, monthEnd).first()
@@ -104,7 +108,7 @@ class WidgetDataProvider(
             weekLabel = weekLabel(today),
             monthReceiptCount = monthTxns.map { it.receiptId }.toSet().size,
             topCategories = topCategories,
-            monthLabel = MONTH_YEAR.format(YearMonth.from(today)),
+            monthLabel = MONTH_YEAR.format(YearMonth.from(PayCycle.month(today, monthStartDay).first)),
             isPremium = billingManager.isPremium.value,
             scansRemaining = scanQuota.remaining(),
         )
@@ -113,15 +117,6 @@ class WidgetDataProvider(
     /** Summed price × quantity across the transactions (matches the app's spend math). */
     private fun List<TransactionEntity>.spend(): BigDecimal =
         fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
-
-    /** Inclusive [start, end] epoch-millis window for [date]'s calendar month. */
-    private fun monthRange(date: LocalDate): Pair<Long, Long> {
-        val zone = ZoneId.systemDefault()
-        val month = YearMonth.from(date)
-        val start = month.atDay(1).atStartOfDay(zone).toInstant().toEpochMilli()
-        val end = month.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
-        return start to end
-    }
 
     /** Inclusive [start, end] epoch-millis window for [date]'s Mon–Sun week. */
     private fun weekRange(date: LocalDate): Pair<Long, Long> {

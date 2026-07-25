@@ -213,11 +213,11 @@ fun PeriodStepper(
  * further out, and a plain date span for weeks and custom ranges.
  */
 @Composable
-fun periodFriendlyLabel(period: InsightsPeriod, today: LocalDate = LocalDate.now()): String =
+fun periodFriendlyLabel(period: InsightsPeriod, today: LocalDate = LocalDate.now(), monthStartDay: Int = 1): String =
     when (period) {
         is InsightsPeriod.Custom -> formatDateRange(period.start, period.end)
         is InsightsPeriod.Stepped -> {
-            val (start, end) = period.bounds(today)
+            val (start, end) = period.bounds(today, monthStartDay = monthStartDay)
             when (period.unit) {
                 PeriodUnit.WEEK -> when (period.offset) {
                     0 -> stringResource(R.string.period_this_week)

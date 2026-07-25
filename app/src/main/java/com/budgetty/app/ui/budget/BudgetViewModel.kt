@@ -14,17 +14,21 @@ import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.TransactionRepository
+import com.budgetty.app.data.settings.SettingsStore
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.monthlyAmount
 import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.YearMonth
 import java.time.ZoneId
 import java.time.temporal.TemporalAdjusters
 
@@ -36,6 +40,7 @@ data class RecurringUi(
     val monthlyBills: BigDecimal = BigDecimal.ZERO,
 )
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BudgetViewModel(
     private val repository: BudgetRepository,
     private val transactionRepository: TransactionRepository,
@@ -44,6 +49,7 @@ class BudgetViewModel(
     private val categoryRuleRepository: CategoryRuleRepository,
     billingManager: BillingManager,
     receiptRepository: ReceiptRepository,
+    settingsStore: SettingsStore,
 ) : ViewModel() {
 
     /** Saved budgets as key -> amount (keys from [BudgetRepository]). */
@@ -53,9 +59,12 @@ class BudgetViewModel(
         emptyMap(),
     )
 
-    // Current calendar month's transactions, shared by the per-category bars and the monthly total.
-    private val monthlyTransactions = run {
-        val (start, end) = currentMonthRange()
+    // The pay-day the financial month starts on; the monthly budget + recurring plan follow it.
+    private val monthStartDay = settingsStore.settings.map { it.monthStartDay }.distinctUntilChanged()
+
+    // Current pay-cycle month's transactions, shared by the per-category bars and the monthly total.
+    private val monthlyTransactions = monthStartDay.flatMapLatest { day ->
+        val (start, end) = currentMonthRange(monthStartDay = day)
         transactionRepository.getBetween(start, end)
     }
 
@@ -86,8 +95,7 @@ class BudgetViewModel(
 
     /** Income sources + recurring payments, split and summed to monthly-equivalent totals. */
     val recurring: StateFlow<RecurringUi> =
-        recurringRepository.items
-            .map { it.toUi() }
+        combine(recurringRepository.items, monthStartDay) { items, day -> items.toUi(day) }
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), RecurringUi())
 
     /** Saved categories — for the recurring-payment category picker (shows custom categories too). */
@@ -222,8 +230,8 @@ class BudgetViewModel(
         fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
 
     /** Splits recurring rows into income/bills and sums each to its monthly-equivalent total. */
-    private fun List<RecurringEntity>.toUi(): RecurringUi {
-        val (monthStart, monthEnd) = currentMonthRange()
+    private fun List<RecurringEntity>.toUi(monthStartDay: Int): RecurringUi {
+        val (monthStart, monthEnd) = currentMonthRange(monthStartDay = monthStartDay)
         val income = filter { it.isIncome }
         val bills = filterNot { it.isIncome }
         return RecurringUi(
@@ -232,15 +240,6 @@ class BudgetViewModel(
             monthlyIncome = income.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(monthStart, monthEnd) },
             monthlyBills = bills.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(monthStart, monthEnd) },
         )
-    }
-
-    /** Inclusive [start, end] epoch-millis window for the current calendar month. */
-    private fun currentMonthRange(today: LocalDate = LocalDate.now()): Pair<Long, Long> {
-        val zone = ZoneId.systemDefault()
-        val month = YearMonth.from(today)
-        val start = month.atDay(1).atStartOfDay(zone).toInstant().toEpochMilli()
-        val end = month.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
-        return start to end
     }
 
     /** Inclusive [start, end] epoch-millis window for the current Mon–Sun week. */

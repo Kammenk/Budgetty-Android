@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
@@ -136,6 +137,7 @@ fun AccountScreen(
         onSetAccent = { accountViewModel.setAccent(it) },
         onSetCurrency = { accountViewModel.setCurrency(it) },
         onSetDateFormat = { accountViewModel.setDateFormat(it) },
+        onSetMonthStartDay = { accountViewModel.setMonthStartDay(it) },
         onSetLanguage = { accountViewModel.setLanguage(it) },
         onSetCrashReporting = accountViewModel::setCrashReporting,
         onBuildBackupJson = { accountViewModel.buildBackupJson() },
@@ -163,6 +165,7 @@ private fun AccountScreenContent(
     onSetAccent: (AccentTheme) -> Unit,
     onSetCurrency: (Currency) -> Unit,
     onSetDateFormat: (DateFormatOption) -> Unit,
+    onSetMonthStartDay: (Int) -> Unit,
     onSetLanguage: (Language) -> Unit,
     onSetCrashReporting: (Boolean) -> Unit,
     onBuildBackupJson: suspend () -> String,
@@ -516,11 +519,22 @@ private fun AccountScreenContent(
             onSelect = { onSetLanguage(it); openPicker = null },
             onDismiss = { openPicker = null },
         )
+        Picker.MONTH_START -> {
+            val calendarLabel = stringResource(R.string.month_start_calendar)
+            SelectionDialog(
+                title = stringResource(R.string.account_month_start),
+                options = (1..31).toList(),
+                selected = settings.monthStartDay.coerceIn(1, 31),
+                label = { if (it == 1) calendarLabel else it.toString() },
+                onSelect = { onSetMonthStartDay(it); openPicker = null },
+                onDismiss = { openPicker = null },
+            )
+        }
         null -> Unit
     }
 }
 
-private enum class Picker { THEME, ACCENT, CURRENCY, DATE, LANGUAGE }
+private enum class Picker { THEME, ACCENT, CURRENCY, DATE, MONTH_START, LANGUAGE }
 
 /** Rows of the "Account" settings group, shared by the phone and tablet layouts. */
 @Composable
@@ -581,6 +595,18 @@ private fun PreferencesSectionRows(
     RowDivider()
     SettingRow(Icons.Filled.CalendarMonth, stringResource(R.string.account_date_format), value = settings.dateFormat.sample) {
         onOpenPicker(Picker.DATE)
+    }
+    RowDivider()
+    SettingRow(
+        icon = Icons.Filled.Event,
+        title = stringResource(R.string.account_month_start),
+        value = if (settings.monthStartDay == 1) {
+            stringResource(R.string.month_start_calendar)
+        } else {
+            settings.monthStartDay.toString()
+        },
+    ) {
+        onOpenPicker(Picker.MONTH_START)
     }
     RowDivider()
     SettingRow(Icons.Filled.Language, stringResource(R.string.account_language), value = settings.language.label) {
@@ -1033,6 +1059,7 @@ private fun AccountScreenPreview() {
             onSetAccent = {},
             onSetCurrency = {},
             onSetDateFormat = {},
+            onSetMonthStartDay = {},
             onSetLanguage = {},
             onSetCrashReporting = {},
             onBuildBackupJson = { "" },
@@ -1063,6 +1090,7 @@ private fun AccountScreenTabletPreview() {
             onSetAccent = {},
             onSetCurrency = {},
             onSetDateFormat = {},
+            onSetMonthStartDay = {},
             onSetLanguage = {},
             onSetCrashReporting = {},
             onBuildBackupJson = { "" },

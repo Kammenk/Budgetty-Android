@@ -14,13 +14,17 @@ import java.time.temporal.ChronoUnit
  * "Budgets" tab compute identical monthly totals (and treat one-time entries the same way).
  */
 
-/** Inclusive [start, end] epoch-millis window for [today]'s calendar month. */
-fun currentMonthRange(today: LocalDate = LocalDate.now()): Pair<Long, Long> {
+/**
+ * Inclusive [start, end] epoch-millis window for [today]'s pay-cycle month, which starts on
+ * [monthStartDay] (1 = the ordinary calendar month). Shifting it moves the monthly budget and the
+ * recurring plan's "current month" onto the user's pay day. See [PayCycle].
+ */
+fun currentMonthRange(today: LocalDate = LocalDate.now(), monthStartDay: Int = 1): Pair<Long, Long> {
     val zone = ZoneId.systemDefault()
-    val month = YearMonth.from(today)
-    val start = month.atDay(1).atStartOfDay(zone).toInstant().toEpochMilli()
-    val end = month.plusMonths(1).atDay(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
-    return start to end
+    val (start, end) = PayCycle.month(today, monthStartDay)
+    val startMillis = start.atStartOfDay(zone).toInstant().toEpochMilli()
+    val endMillis = end.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
+    return startMillis to endMillis
 }
 
 /**

@@ -14,9 +14,11 @@ import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.TransactionRepository
+import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
+import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.monthlyAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -74,32 +77,45 @@ class HomeViewModel(
     private val scanQuota: ScanQuota,
     private val billingManager: BillingManager,
     recurringRepository: RecurringRepository,
+    settingsStore: SettingsStore,
 ) : ViewModel() {
 
     private val selectedFilter = MutableStateFlow(DateRangeFilter.CURRENT_MONTH)
     val filter: StateFlow<DateRangeFilter> = selectedFilter.asStateFlow()
 
-    private val transactions = selectedFilter.flatMapLatest { filter ->
-        val (start, end) = filter.toRange()
+    // The pay-day the financial month starts on; every month window below recomputes when it changes.
+    private val monthStartDay: Flow<Int> =
+        settingsStore.settings.map { it.monthStartDay }.distinctUntilChanged()
+
+    // The selected preset paired with the pay-cycle start day, so the window reacts to either.
+    private val filterCtx: Flow<FilterCtx> =
+        combine(selectedFilter, monthStartDay) { filter, day -> FilterCtx(filter, day) }
+
+    private val transactions = filterCtx.flatMapLatest { (filter, day) ->
+        val (start, end) = filter.toRange(monthStartDay = day)
         repository.getBetween(start, end)
     }
 
     // The equal-length period before the selected one, for the "vs last month" comparison.
-    private val previousTransactions = selectedFilter.flatMapLatest { filter ->
-        val (start, end) = filter.previousRange()
+    private val previousTransactions = filterCtx.flatMapLatest { (filter, day) ->
+        val (start, end) = filter.previousRange(monthStartDay = day)
         repository.getBetween(start, end)
     }
 
-    // Current calendar month's spend, independent of the selected filter (for the budget box).
-    private val monthRange = DateRangeFilter.CURRENT_MONTH.toRange()
-    private val monthlyTransactions = repository.getBetween(monthRange.first, monthRange.second)
-
-    // Recurring bills expressed as a current-month total (weekly ×52/12, yearly ÷12, one-time only in
-    // its own month). Income rows are excluded — only bills count toward the "with bills" figure.
-    private val monthlyBills: Flow<BigDecimal> = recurringRepository.items.map { items ->
-        items.filterNot { it.isIncome }
-            .fold(BigDecimal.ZERO) { acc, r -> acc + r.monthlyAmount(monthRange.first, monthRange.second) }
+    // Current pay-cycle month's spend, independent of the selected filter (for the budget box).
+    private val monthlyTransactions = monthStartDay.flatMapLatest { day ->
+        val (start, end) = DateRangeFilter.CURRENT_MONTH.toRange(monthStartDay = day)
+        repository.getBetween(start, end)
     }
+
+    // Recurring bills expressed as a current pay-cycle-month total (weekly ×52/12, yearly ÷12,
+    // one-time only in its own month). Income rows are excluded — only bills count.
+    private val monthlyBills: Flow<BigDecimal> =
+        combine(recurringRepository.items, monthStartDay) { items, day ->
+            val (start, end) = currentMonthRange(monthStartDay = day)
+            items.filterNot { it.isIncome }
+                .fold(BigDecimal.ZERO) { acc, r -> acc + r.monthlyAmount(start, end) }
+        }
 
     // Current calendar week's spend (Mon–Sun), independent of the filter (for the weekly box).
     private val weekRange = currentWeekRange()
@@ -111,7 +127,7 @@ class HomeViewModel(
 
     val uiState: StateFlow<HomeUiState> =
         combine(
-            selectedFilter,
+            filterCtx,
             transactions,
             categoryRepository.categories,
             combine(monthlyTransactions, monthlyBills) { t, b -> MonthlyData(t, b) },
@@ -122,7 +138,7 @@ class HomeViewModel(
                 lastWeeklyTransactions,
                 previousTransactions,
             ) { b, r, w, lw, pt -> BudgetsReceiptsWeeks(b, r, w, lw, pt) },
-        ) { filter, txns, categories, monthlyData, brw ->
+        ) { ctx, txns, categories, monthlyData, brw ->
             val receiptsById = brw.receipts.associateBy { it.timestamp }
             // Adjust each period's summed line prices to what was actually paid: add on-top tax
             // (tax-exclusive receipts) and extra charges, and subtract order discounts — so the spend
@@ -138,7 +154,7 @@ class HomeViewModel(
                 .maxByOrNull { it.value }
             HomeUiState(
                 isLoaded = true,
-                filter = filter,
+                filter = ctx.filter,
                 transactions = txns,
                 receipts = txns.toReceipts(receiptsById),
                 slices = txns.toSlices(colorByCategory),
@@ -153,7 +169,7 @@ class HomeViewModel(
                 topCategory = topByCategory?.key,
                 topCategoryAmount = topByCategory?.value ?: BigDecimal.ZERO,
                 previousPeriodSpent = previousSpent.takeIf { it.signum() > 0 },
-                dailyAvg = dailyAverage(total, filter),
+                dailyAvg = dailyAverage(total, ctx.filter, ctx.monthStartDay),
             )
         }.stateIn(
             scope = viewModelScope,
@@ -234,6 +250,9 @@ class HomeViewModel(
     private fun List<TransactionEntity>.spend(): BigDecimal =
         fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
 
+    /** The selected preset plus the pay-cycle start day, so one combine slot carries both. */
+    private data class FilterCtx(val filter: DateRangeFilter, val monthStartDay: Int)
+
     /** Pairs the current-month transactions with the recurring-bills total so the outer combine keeps
      *  one slot for both current-month sources. */
     private data class MonthlyData(
@@ -255,9 +274,9 @@ class HomeViewModel(
      * from the period's start through today (or the period end, whichever is sooner), so the
      * current month isn't diluted by days that haven't happened yet.
      */
-    private fun dailyAverage(total: BigDecimal, filter: DateRangeFilter): BigDecimal {
+    private fun dailyAverage(total: BigDecimal, filter: DateRangeFilter, monthStartDay: Int): BigDecimal {
         val zone = ZoneId.systemDefault()
-        val (startMillis, endMillis) = filter.toRange()
+        val (startMillis, endMillis) = filter.toRange(monthStartDay = monthStartDay)
         val startDate = Instant.ofEpochMilli(startMillis).atZone(zone).toLocalDate()
         val endDate = Instant.ofEpochMilli(endMillis).atZone(zone).toLocalDate()
         val today = LocalDate.now()

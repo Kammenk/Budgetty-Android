@@ -49,6 +49,7 @@ class AccountViewModel(
     fun setCurrency(value: Currency) = settingsStore.setCurrency(value)
     fun setDateFormat(value: DateFormatOption) = settingsStore.setDateFormat(value)
     fun setLanguage(value: Language) = settingsStore.setLanguage(value)
+    fun setMonthStartDay(value: Int) = settingsStore.setMonthStartDay(value)
     fun setDisplayName(value: String) = settingsStore.setDisplayName(value.trim())
 
     /** Persist the crash-reporting choice and apply it to the Crashlytics SDK immediately. */

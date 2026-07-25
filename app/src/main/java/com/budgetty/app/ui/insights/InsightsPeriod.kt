@@ -3,6 +3,7 @@ package com.budgetty.app.ui.insights
 import androidx.annotation.StringRes
 import com.budgetty.app.R
 import com.budgetty.app.ui.home.dateRangeToEpochMillis
+import com.budgetty.app.ui.util.PayCycle
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit
@@ -29,29 +30,34 @@ enum class PeriodUnit(@param:StringRes val labelRes: Int) {
  */
 sealed interface InsightsPeriod {
 
-    fun toRange(today: LocalDate = LocalDate.now()): Pair<Long, Long>
+    fun toRange(today: LocalDate = LocalDate.now(), monthStartDay: Int = 1): Pair<Long, Long>
 
     /**
      * A calendar-aligned block of [unit], [offset] units back from the one containing today
-     * (0 = current, −1 = previous, …). Weeks honor the locale's first day of week; quarters are
-     * calendar quarters and halves are Jan–Jun / Jul–Dec. Forward stepping is capped at offset 0 by
-     * the view model — [toRange] itself imposes no cap, so a future offset is representable.
+     * (0 = current, −1 = previous, …). Weeks honor the locale's first day of week; a month follows
+     * the user's pay-cycle (see [monthStartDay]); quarters are calendar quarters and halves are
+     * Jan–Jun / Jul–Dec. Forward stepping is capped at offset 0 by the view model — [toRange] itself
+     * imposes no cap, so a future offset is representable.
      */
     data class Stepped(val unit: PeriodUnit, val offset: Int = 0) : InsightsPeriod {
-        override fun toRange(today: LocalDate): Pair<Long, Long> =
-            bounds(today).let { (start, end) -> dateRangeToEpochMillis(start, end) }
+        override fun toRange(today: LocalDate, monthStartDay: Int): Pair<Long, Long> =
+            bounds(today, monthStartDay = monthStartDay).let { (start, end) -> dateRangeToEpochMillis(start, end) }
 
-        /** The inclusive [start, end] calendar dates of this block. */
+        /**
+         * The inclusive [start, end] calendar dates of this block. A [PeriodUnit.MONTH] block runs the
+         * user's pay-cycle month starting on [monthStartDay] (1 = calendar month); the other units are
+         * unaffected by it.
+         */
         fun bounds(
             today: LocalDate = LocalDate.now(),
             locale: Locale = Locale.getDefault(),
+            monthStartDay: Int = 1,
         ): Pair<LocalDate, LocalDate> = when (unit) {
             PeriodUnit.WEEK -> {
                 val first = today.with(WeekFields.of(locale).dayOfWeek(), 1L).plusWeeks(offset.toLong())
                 first to first.plusDays(6)
             }
-            PeriodUnit.MONTH -> YearMonth.from(today).plusMonths(offset.toLong())
-                .let { it.atDay(1) to it.atEndOfMonth() }
+            PeriodUnit.MONTH -> PayCycle.month(today, monthStartDay, offset)
             PeriodUnit.QUARTER -> YearMonth.of(today.year, firstMonthOfQuarter(today.monthValue))
                 .plusMonths(offset * 3L)
                 .let { it.atDay(1) to it.plusMonths(2).atEndOfMonth() }
@@ -68,7 +74,9 @@ sealed interface InsightsPeriod {
     }
 
     data class Custom(val start: LocalDate, val end: LocalDate) : InsightsPeriod {
-        override fun toRange(today: LocalDate): Pair<Long, Long> = dateRangeToEpochMillis(start, end)
+        // An explicit date range ignores the pay-cycle start day.
+        override fun toRange(today: LocalDate, monthStartDay: Int): Pair<Long, Long> =
+            dateRangeToEpochMillis(start, end)
     }
 }
 

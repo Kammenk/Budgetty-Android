@@ -100,6 +100,12 @@ data class AppSettings(
     val insightsSectionOrder: List<String> = emptyList(),
     /** Remembered Insights period-stepper unit (a PeriodUnit name); seeds the default window. */
     val insightsPeriodUnit: String = "MONTH",
+    /**
+     * Day of the month the user's financial "month" starts on — their pay day (1–31). 1 is the
+     * ordinary calendar month; any other value shifts "this month"/"last month", the monthly budget
+     * and the Insights month stepper to run from this day (clamped to a short month's last day).
+     */
+    val monthStartDay: Int = 1,
     /** Remembered History sort order (a SortOrder name); defaults to newest-first. */
     val historySort: String = "NEWEST",
     /** Recent History search terms, most-recent first (capped); powers the search quick-find. */

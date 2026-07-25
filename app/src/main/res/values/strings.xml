@@ -86,6 +86,8 @@
     <string name="account_accent">Accent color</string>
     <string name="account_currency">Currency</string>
     <string name="account_date_format">Date format</string>
+    <string name="account_month_start">Month starts on</string>
+    <string name="month_start_calendar">1 (calendar month)</string>
     <string name="account_language">Language</string>
     <string name="section_support">Support &amp; About</string>
     <string name="account_help">Help &amp; FAQ</string>

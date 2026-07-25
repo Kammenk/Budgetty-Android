@@ -192,7 +192,7 @@ class HistoryViewModel(
             // date chip narrows the snapshot the way it narrows the Receipts/Items lists. Section
             // headers keep the per-month rate (monthlyAmount); the summary scales to the whole window.
             val period = activeFilters.date ?: DateRangeFilter.CURRENT_MONTH
-            val (windowStart, windowEnd) = period.toRange()
+            val (windowStart, windowEnd) = period.toRange(monthStartDay = settings.monthStartDay)
             val inWindow = { r: RecurringEntity ->
                 r.cadence != RecurringEntity.Cadence.ONCE || r.createdAt in windowStart..windowEnd
             }
