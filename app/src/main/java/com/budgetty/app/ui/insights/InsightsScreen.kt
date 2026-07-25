@@ -174,6 +174,9 @@ private fun InsightsScreenContent(
             onStepForward = onStepForward,
             onUnitSelected = onUnitSelected,
             onCustomClick = { showDateRangeSheet = true },
+            // "All time" reuses the custom-range window, bounded to the first recorded transaction so
+            // the trend and averages stay meaningful (no epoch-to-today blow-up).
+            onAllTimeClick = { onCustomRangeSelected(state.earliestDate ?: LocalDate.now(), LocalDate.now()) },
             fillWidth = fill,
             modifier = mod,
         )

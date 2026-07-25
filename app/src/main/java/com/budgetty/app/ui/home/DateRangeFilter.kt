@@ -11,7 +11,8 @@ enum class DateRangeFilter(val label: String, @param:StringRes val labelRes: Int
     CURRENT_MONTH("This month", R.string.period_this_month),
     LAST_MONTH("Last month", R.string.period_last_month),
     LAST_3_MONTHS("Last 3 months", R.string.period_last_3_months),
-    LAST_6_MONTHS("Last 6 months", R.string.period_last_6_months);
+    LAST_6_MONTHS("Last 6 months", R.string.period_last_6_months),
+    ALL_TIME("All time", R.string.period_all_time);
 
     /** How many calendar months this window spans, used to find the preceding equal-length period. */
     val monthSpan: Int
@@ -19,6 +20,7 @@ enum class DateRangeFilter(val label: String, @param:StringRes val labelRes: Int
             CURRENT_MONTH, LAST_MONTH -> 1
             LAST_3_MONTHS -> 3
             LAST_6_MONTHS -> 6
+            ALL_TIME -> 1
         }
 
     /**
@@ -33,6 +35,8 @@ enum class DateRangeFilter(val label: String, @param:StringRes val labelRes: Int
             LAST_MONTH -> cycle(-1)
             LAST_3_MONTHS -> cycle(-2).first to cycle(0).second
             LAST_6_MONTHS -> cycle(-5).first to cycle(0).second
+            // Everything ever recorded, through the end of today.
+            ALL_TIME -> LocalDate.EPOCH to today
         }
         return dateRangeToEpochMillis(startDate, endInclusive)
     }
@@ -40,10 +44,11 @@ enum class DateRangeFilter(val label: String, @param:StringRes val labelRes: Int
     /**
      * Inclusive [start, end] epoch-millis window for the equal-length period immediately preceding
      * this one — e.g. for [CURRENT_MONTH] it's last month. Since every preset is month-aligned, the
-     * preceding window is just this filter re-anchored [monthSpan] pay-cycles earlier.
+     * preceding window is just this filter re-anchored [monthSpan] pay-cycles earlier. [ALL_TIME] has
+     * no "before", so it returns an empty window (no period-over-period comparison).
      */
     fun previousRange(today: LocalDate = LocalDate.now(), monthStartDay: Int = 1): Pair<Long, Long> =
-        toRange(today.minusMonths(monthSpan.toLong()), monthStartDay)
+        if (this == ALL_TIME) 0L to 0L else toRange(today.minusMonths(monthSpan.toLong()), monthStartDay)
 }
 
 /**

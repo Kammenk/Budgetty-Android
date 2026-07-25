@@ -169,7 +169,7 @@ class HomeViewModel(
                 topCategory = topByCategory?.key,
                 topCategoryAmount = topByCategory?.value ?: BigDecimal.ZERO,
                 previousPeriodSpent = previousSpent.takeIf { it.signum() > 0 },
-                dailyAvg = dailyAverage(total, ctx.filter, ctx.monthStartDay),
+                dailyAvg = dailyAverage(total, ctx.filter, ctx.monthStartDay, txns),
             )
         }.stateIn(
             scope = viewModelScope,
@@ -274,10 +274,18 @@ class HomeViewModel(
      * from the period's start through today (or the period end, whichever is sooner), so the
      * current month isn't diluted by days that haven't happened yet.
      */
-    private fun dailyAverage(total: BigDecimal, filter: DateRangeFilter, monthStartDay: Int): BigDecimal {
+    private fun dailyAverage(
+        total: BigDecimal,
+        filter: DateRangeFilter,
+        monthStartDay: Int,
+        txns: List<TransactionEntity>,
+    ): BigDecimal {
         val zone = ZoneId.systemDefault()
         val (startMillis, endMillis) = filter.toRange(monthStartDay = monthStartDay)
-        val startDate = Instant.ofEpochMilli(startMillis).atZone(zone).toLocalDate()
+        // For "All time" the window opens at the epoch, so anchor the average to the first recorded
+        // transaction instead — otherwise it's divided across decades of empty pre-history.
+        val effectiveStartMillis = maxOf(startMillis, txns.minOfOrNull { it.timestamp } ?: startMillis)
+        val startDate = Instant.ofEpochMilli(effectiveStartMillis).atZone(zone).toLocalDate()
         val endDate = Instant.ofEpochMilli(endMillis).atZone(zone).toLocalDate()
         val today = LocalDate.now()
         val lastDay = if (endDate.isAfter(today)) today else endDate

@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -69,6 +70,7 @@ fun PeriodStepper(
     onStepForward: () -> Unit,
     onUnitSelected: (PeriodUnit) -> Unit,
     onCustomClick: () -> Unit,
+    onAllTimeClick: () -> Unit,
     fillWidth: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
@@ -175,6 +177,22 @@ fun PeriodStepper(
                     )
                 }
                 HorizontalDivider()
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = stringResource(R.string.period_all_time),
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    },
+                    onClick = {
+                        onAllTimeClick()
+                        expanded = false
+                    },
+                    leadingIcon = {
+                        Icon(Icons.Filled.AllInclusive, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    },
+                )
                 DropdownMenuItem(
                     text = {
                         Text(

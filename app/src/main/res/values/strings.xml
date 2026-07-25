@@ -132,6 +132,7 @@
     <string name="period_last_month">Last month</string>
     <string name="period_last_3_months">Last 3 months</string>
     <string name="period_last_6_months">Last 6 months</string>
+    <string name="period_all_time">All time</string>
 
     <!-- Insights period stepper -->
     <string name="period_this_week">This week</string>
