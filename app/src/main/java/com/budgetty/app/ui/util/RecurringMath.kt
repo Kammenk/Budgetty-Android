@@ -3,9 +3,11 @@ package com.budgetty.app.ui.util
 import com.budgetty.app.data.local.RecurringEntity
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 
 /**
  * Shared money-flow math for income & recurring payments, so the Budget screen and the History
@@ -36,15 +38,47 @@ fun RecurringEntity.monthlyAmount(monthStart: Long, monthEnd: Long): BigDecimal 
 }
 
 /**
- * The entry's contribution to a whole [monthSpan]-month window running [windowStart]..[windowEnd].
- * Recurring cadences repeat, so they scale to their monthly-equivalent × [monthSpan]; a one-time
- * entry instead counts its full amount exactly once (only when it was added inside the window),
- * rather than being multiplied across every month of it. Used to scale the History Budgets snapshot
- * to the selected date range the same way the rest of the History filters narrow by period.
+ * The entry's contribution to the inclusive [windowStart]..[windowEnd] epoch-millis window, counting
+ * a recurring cadence only from the calendar month it was added ([RecurringEntity.createdAt]) onward.
+ * A salary or bill is therefore never projected backward onto months it didn't yet exist for — a
+ * half-year view no longer shows 6× a salary that was only just added — while a one-time entry still
+ * counts its full amount exactly once, and only when it was added inside the window. Used by the
+ * Insights money-flow cards and the History Budgets snapshot so both scale a plan to the selected
+ * range using only what's actually known, rather than predicting the past.
  */
-fun RecurringEntity.periodAmount(windowStart: Long, windowEnd: Long, monthSpan: Int): BigDecimal =
+fun RecurringEntity.windowAmount(
+    windowStart: Long,
+    windowEnd: Long,
+    zone: ZoneId = ZoneId.systemDefault(),
+): BigDecimal {
     if (cadence == RecurringEntity.Cadence.ONCE) {
-        if (createdAt in windowStart..windowEnd) amount else BigDecimal.ZERO
-    } else {
-        monthlyAmount(windowStart, windowEnd).multiply(BigDecimal(monthSpan))
+        return if (createdAt in windowStart..windowEnd) amount else BigDecimal.ZERO
     }
+    // Recurring cadences ignore the month bounds passed to monthlyAmount — it returns the per-month rate.
+    val rate = monthlyAmount(windowStart, windowEnd)
+    if (rate.signum() == 0) return BigDecimal.ZERO
+
+    val startDate = Instant.ofEpochMilli(windowStart).atZone(zone).toLocalDate()
+    val endDate = Instant.ofEpochMilli(windowEnd).atZone(zone).toLocalDate()
+    val createdMonth = YearMonth.from(Instant.ofEpochMilli(createdAt).atZone(zone))
+    // Clip the window to the part on/after the month the entry was added; nothing left ⇒ no contribution.
+    val activeStart = maxOf(startDate, createdMonth.atDay(1))
+    if (activeStart.isAfter(endDate)) return BigDecimal.ZERO
+
+    val startMonth = YearMonth.from(startDate)
+    val endMonth = YearMonth.from(endDate)
+    val wholeMonths = startDate == startMonth.atDay(1) && endDate == endMonth.atEndOfMonth()
+    return if (wholeMonths) {
+        // Whole calendar-month window (every Home/History preset and the Insights month/quarter/half
+        // steps): count the eligible months exactly for clean integer scaling of the monthly rate.
+        val eligibleMonths = generateSequence(startMonth) { it.plusMonths(1) }
+            .takeWhile { !it.isAfter(endMonth) }
+            .count { !it.isBefore(createdMonth) }
+        rate.multiply(BigDecimal(eligibleMonths)).setScale(2, RoundingMode.HALF_UP)
+    } else {
+        // Partial window (a week step or a custom range): scale by active days over an average month,
+        // matching the Insights custom-range factor.
+        val activeDays = ChronoUnit.DAYS.between(activeStart, endDate) + 1
+        rate.multiply(BigDecimal(activeDays)).divide(BigDecimal("30.4375"), 2, RoundingMode.HALF_UP)
+    }
+}

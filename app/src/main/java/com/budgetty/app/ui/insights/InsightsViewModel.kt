@@ -16,8 +16,7 @@ import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.AppFormats
-import com.budgetty.app.ui.util.currentMonthRange
-import com.budgetty.app.ui.util.monthlyAmount
+import com.budgetty.app.ui.util.windowAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -536,30 +535,31 @@ class InsightsViewModel(
     )
 
     /**
-     * Derives the money-flow card data for [period] from the recurring rows: income and bills summed
-     * to a monthly-equivalent (one-offs count only in their added month) then scaled to the period's
-     * length, plus the per-source income split and the next-occurrence list for upcoming bills.
+     * Derives the money-flow card data for [period] from the recurring rows. Each entry's income/bill
+     * amount is scoped to the selected window and, for recurring cadences, counted only from the month
+     * it was added ([windowAmount]) — so a past period never shows income/bills for months before the
+     * entry existed, rather than back-projecting the current plan onto "what he earned before". Also
+     * builds the per-source income split and the next-occurrence list for upcoming bills.
      */
     private fun recurringInsights(period: InsightsPeriod, recurring: List<RecurringEntity>): RecurringInsights {
-        val (monthStart, monthEnd) = currentMonthRange()
-        val factor = periodMonthFactor(period)
+        val (windowStart, windowEnd) = period.toRange()
         val incomeEntities = recurring.filter { it.isIncome }
         val billEntities = recurring.filterNot { it.isIncome }
 
-        val perSourceMonthly = incomeEntities.map { it to it.monthlyAmount(monthStart, monthEnd) }
-        val monthlyIncome = perSourceMonthly.fold(BigDecimal.ZERO) { acc, (_, m) -> acc + m }
-        val monthlyBills = billEntities.fold(BigDecimal.ZERO) { acc, b -> acc + b.monthlyAmount(monthStart, monthEnd) }
+        val perSourcePeriod = incomeEntities.map { it to it.windowAmount(windowStart, windowEnd) }
+        val periodIncome = perSourcePeriod.fold(BigDecimal.ZERO) { acc, (_, a) -> acc + a }
+        val periodBills = billEntities.fold(BigDecimal.ZERO) { acc, b -> acc + b.windowAmount(windowStart, windowEnd) }
 
-        val incomeSources = perSourceMonthly
-            .filter { (_, m) -> m.signum() > 0 }
-            .sortedByDescending { (_, m) -> m }
-            .map { (entity, m) ->
-                val percent = if (monthlyIncome.signum() > 0) {
-                    (m.toDouble() / monthlyIncome.toDouble() * 100).roundToInt()
+        val incomeSources = perSourcePeriod
+            .filter { (_, a) -> a.signum() > 0 }
+            .sortedByDescending { (_, a) -> a }
+            .map { (entity, a) ->
+                val percent = if (periodIncome.signum() > 0) {
+                    (a.toDouble() / periodIncome.toDouble() * 100).roundToInt()
                 } else {
                     0
                 }
-                IncomeSourceUi(entity, (m * factor).setScale(2, RoundingMode.HALF_UP), percent)
+                IncomeSourceUi(entity, a.setScale(2, RoundingMode.HALF_UP), percent)
             }
 
         val today = LocalDate.now()
@@ -568,27 +568,13 @@ class InsightsViewModel(
             .sortedBy { it.daysUntil }
 
         return RecurringInsights(
-            periodIncome = (monthlyIncome * factor).setScale(2, RoundingMode.HALF_UP),
-            periodBills = (monthlyBills * factor).setScale(2, RoundingMode.HALF_UP),
+            periodIncome = periodIncome.setScale(2, RoundingMode.HALF_UP),
+            periodBills = periodBills.setScale(2, RoundingMode.HALF_UP),
             incomeSources = incomeSources,
             upcomingBills = upcomingBills,
             hasIncome = incomeEntities.isNotEmpty(),
             hasBills = billEntities.isNotEmpty(),
         )
-    }
-
-    /** How many "months" the selected period spans, for scaling monthly income/bills to it. */
-    private fun periodMonthFactor(period: InsightsPeriod): BigDecimal = when (period) {
-        is InsightsPeriod.Stepped -> when (period.unit) {
-            PeriodUnit.WEEK -> BigDecimal(12).divide(BigDecimal(52), 6, RoundingMode.HALF_UP)
-            PeriodUnit.MONTH -> BigDecimal.ONE
-            PeriodUnit.QUARTER -> BigDecimal(3)
-            PeriodUnit.HALF_YEAR -> BigDecimal(6)
-        }
-        is InsightsPeriod.Custom -> {
-            val days = ChronoUnit.DAYS.between(period.start, period.end) + 1
-            BigDecimal(days).divide(BigDecimal("30.4375"), 6, RoundingMode.HALF_UP)
-        }
     }
 
     /** Days from [today] to the bill's next occurrence, or null when it has no monthly/weekly schedule

@@ -13,7 +13,7 @@ import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.home.DateRangeFilter
 import com.budgetty.app.ui.util.monthlyAmount
-import com.budgetty.app.ui.util.periodAmount
+import com.budgetty.app.ui.util.windowAmount
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -193,7 +193,6 @@ class HistoryViewModel(
             // headers keep the per-month rate (monthlyAmount); the summary scales to the whole window.
             val period = activeFilters.date ?: DateRangeFilter.CURRENT_MONTH
             val (windowStart, windowEnd) = period.toRange()
-            val span = period.monthSpan
             val inWindow = { r: RecurringEntity ->
                 r.cadence != RecurringEntity.Cadence.ONCE || r.createdAt in windowStart..windowEnd
             }
@@ -221,8 +220,8 @@ class HistoryViewModel(
                 bills = bills,
                 monthlyIncome = income.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(windowStart, windowEnd) },
                 monthlyBills = bills.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(windowStart, windowEnd) },
-                periodIncome = income.fold(BigDecimal.ZERO) { a, r -> a + r.periodAmount(windowStart, windowEnd, span) },
-                periodBills = bills.fold(BigDecimal.ZERO) { a, r -> a + r.periodAmount(windowStart, windowEnd, span) },
+                periodIncome = income.fold(BigDecimal.ZERO) { a, r -> a + r.windowAmount(windowStart, windowEnd) },
+                periodBills = bills.fold(BigDecimal.ZERO) { a, r -> a + r.windowAmount(windowStart, windowEnd) },
             )
         }.stateIn(
             scope = viewModelScope,
