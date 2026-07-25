@@ -16,6 +16,7 @@ import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.AppFormats
+import com.budgetty.app.ui.util.isPaidThisCycle
 import com.budgetty.app.ui.util.windowAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -586,6 +587,8 @@ class InsightsViewModel(
 
         val today = LocalDate.now()
         val upcomingBills = billEntities
+            // A bill marked paid for this cycle drops off "upcoming" until its next occurrence.
+            .filterNot { it.isPaidThisCycle(today, monthStartDay) }
             .mapNotNull { bill -> nextOccurrenceDays(bill, today)?.let { UpcomingBill(bill, it) } }
             .sortedBy { it.daysUntil }
 

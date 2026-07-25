@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import com.budgetty.app.ui.util.currentMonthRange
+import com.budgetty.app.ui.util.isPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
 import java.math.BigDecimal
 import java.time.DayOfWeek
@@ -38,6 +39,8 @@ data class RecurringUi(
     val bills: List<RecurringEntity> = emptyList(),
     val monthlyIncome: BigDecimal = BigDecimal.ZERO,
     val monthlyBills: BigDecimal = BigDecimal.ZERO,
+    /** Ids of bills marked paid for the current cycle (checkmark + hidden from "upcoming"). */
+    val paidBillIds: Set<Long> = emptySet(),
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -232,6 +235,7 @@ class BudgetViewModel(
     /** Splits recurring rows into income/bills and sums each to its monthly-equivalent total. */
     private fun List<RecurringEntity>.toUi(monthStartDay: Int): RecurringUi {
         val (monthStart, monthEnd) = currentMonthRange(monthStartDay = monthStartDay)
+        val today = LocalDate.now()
         val income = filter { it.isIncome }
         val bills = filterNot { it.isIncome }
         return RecurringUi(
@@ -239,7 +243,15 @@ class BudgetViewModel(
             bills = bills,
             monthlyIncome = income.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(monthStart, monthEnd) },
             monthlyBills = bills.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(monthStart, monthEnd) },
+            paidBillIds = bills.filter { it.isPaidThisCycle(today, monthStartDay) }.map { it.id }.toSet(),
         )
+    }
+
+    /** Marks a bill paid (or not) for its current cycle; auto-resets when the next occurrence begins. */
+    fun setBillPaid(item: RecurringEntity, paid: Boolean) {
+        viewModelScope.launch {
+            recurringRepository.setPaid(item.id, if (paid) System.currentTimeMillis() else 0L)
+        }
     }
 
     /** Inclusive [start, end] epoch-millis window for the current Mon–Sun week. */
