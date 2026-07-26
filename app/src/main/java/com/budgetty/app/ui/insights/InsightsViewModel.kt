@@ -7,6 +7,7 @@ import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.repository.BudgetRepository
+import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
@@ -177,6 +178,9 @@ data class InsightsUiState(
     val highlights: List<Highlight> = emptyList(),
     /** Saved budget limits (keys from BudgetRepository: MONTHLY/WEEKLY/CAT:…), for the budget card. */
     val budgets: Map<String, BigDecimal> = emptyMap(),
+    /** Unspent budget carried into the current period per budget key (empty unless rollover is on);
+     *  the budget card adds it on top of the base limit, but only for the current pay-cycle month. */
+    val carried: Map<String, BigDecimal> = emptyMap(),
     // ── Income & recurring payments (money-flow cards), scaled to the selected period ──
     /** Total income for the selected period (monthly-equivalent × period length). */
     val periodIncome: BigDecimal = BigDecimal.ZERO,
@@ -200,6 +204,7 @@ class InsightsViewModel(
     budgetRepository: BudgetRepository,
     recurringRepository: RecurringRepository,
     private val settingsStore: SettingsStore,
+    rolloverRepository: BudgetRolloverRepository,
 ) : ViewModel() {
 
     private val selectedPeriod = MutableStateFlow<InsightsPeriod>(
@@ -300,6 +305,14 @@ class InsightsViewModel(
             )
         }
             .combine(budgetRepository.budgets) { state, budgets -> state.copy(budgets = budgets) }
+            .combine(
+                // Gate the carry-over map on the opt-in; empty when off, so the budget card falls
+                // back to base limits. Which keys actually apply (current month only) is decided in
+                // the UI, since it depends on the selected period/offset.
+                combine(rolloverRepository.carried, settingsStore.settings) { carried, settings ->
+                    if (settings.budgetRolloverEnabled) carried else emptyMap()
+                },
+            ) { state, carried -> state.copy(carried = carried) }
             .combine(recurringRepository.items) { state, recurring ->
                 val ri = recurringInsights(state.period, recurring, state.monthStartDay)
                 state.copy(

@@ -10,9 +10,9 @@ import com.budgetty.app.category.Categories
 @Database(
     entities = [
         TransactionEntity::class, CategoryEntity::class, BudgetEntity::class, ReceiptEntity::class,
-        CategoryRuleEntity::class, RecurringEntity::class,
+        CategoryRuleEntity::class, RecurringEntity::class, BudgetRolloverEntity::class,
     ],
-    version = 18,
+    version = 19,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -23,6 +23,7 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun receiptDao(): ReceiptDao
     abstract fun categoryRuleDao(): CategoryRuleDao
     abstract fun recurringDao(): RecurringDao
+    abstract fun budgetRolloverDao(): BudgetRolloverDao
 }
 
 /** v2 adds the [TransactionEntity.category] column, defaulting existing rows to "Groceries". */
@@ -264,6 +265,17 @@ val MIGRATION_17_18 = object : Migration(17, 18) {
     }
 }
 
+/** v19 adds the budget_rollover table: per-key unspent budget carried into the current period. */
+val MIGRATION_18_19 = object : Migration(18, 19) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `budget_rollover` " +
+                "(`budgetKey` TEXT NOT NULL, `carried` TEXT NOT NULL, `periodKey` TEXT NOT NULL, " +
+                "PRIMARY KEY(`budgetKey`))",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -307,4 +319,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
     MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
+    MIGRATION_18_19,
 )

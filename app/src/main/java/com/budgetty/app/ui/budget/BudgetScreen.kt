@@ -38,6 +38,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -119,11 +120,16 @@ fun BudgetScreen(
     val recurring by viewModel.recurring.collectAsStateWithLifecycle()
     val categories by viewModel.categories.collectAsStateWithLifecycle()
     val isPremium by viewModel.isPremium.collectAsStateWithLifecycle()
+    val carried by viewModel.carried.collectAsStateWithLifecycle()
+    val rolloverEnabled by viewModel.rolloverEnabled.collectAsStateWithLifecycle()
     BudgetScreenContent(
         budgets = budgets,
         spending = spending,
         monthlySpent = monthlySpent,
         weeklySpent = weeklySpent,
+        carried = carried,
+        rolloverEnabled = rolloverEnabled,
+        onSetRolloverEnabled = viewModel::setRolloverEnabled,
         recurring = recurring,
         categories = categories,
         isPremium = isPremium,
@@ -160,6 +166,9 @@ private fun BudgetScreenContent(
     onNavigateBack: () -> Unit,
     onSetBudget: (String, String) -> Unit,
     onSaveSingleBudget: (Boolean, String) -> Unit,
+    carried: Map<String, BigDecimal> = emptyMap(),
+    rolloverEnabled: Boolean = false,
+    onSetRolloverEnabled: (Boolean) -> Unit = {},
     recurring: RecurringUi = RecurringUi(),
     categories: List<CategoryEntity> = emptyList(),
     isPremium: Boolean = false,
@@ -221,6 +230,13 @@ private fun BudgetScreenContent(
     val activeSpent = if (isMonthly) monthlySpent else weeklySpent
     val activeBudget = if (isMonthly) storedMonthly else storedWeekly
     val activeLabel = stringResource(if (isMonthly) R.string.budget_monthly else R.string.budget_weekly)
+    val activeKey = if (isMonthly) BudgetRepository.MONTHLY else BudgetRepository.WEEKLY
+
+    // Carry-over amount for a budget key (0 unless rollover is on and this key has accrued some), and
+    // the effective budget = the saved amount + what's carried in. Progress bars use the effective one.
+    fun carriedFor(key: String): BigDecimal =
+        if (rolloverEnabled) (carried[key] ?: BigDecimal.ZERO) else BigDecimal.ZERO
+    fun effectiveBudget(key: String, base: BigDecimal?): BigDecimal? = base?.let { it + carriedFor(key) }
 
     // Aggregate spend for a top-level group = its own spend plus all its sub-categories'.
     fun groupSpend(group: Categories.Predefined): BigDecimal =
@@ -276,9 +292,11 @@ private fun BudgetScreenContent(
                     value = amountText,
                     emphasized = true,
                     spent = activeSpent,
-                    budget = activeBudget,
+                    budget = effectiveBudget(activeKey, activeBudget),
+                    carried = carriedFor(activeKey),
                     onChange = { amountText = it },
                 )
+                BudgetRolloverToggle(enabled = rolloverEnabled, onToggle = onSetRolloverEnabled)
                 // Live "≈ X / other-period" equivalent, so the single amount reads at both cadences.
                 amountText.toBudgetAmount()?.let { amt ->
                     val equivalent = if (isMonthly) monthlyToWeekly(amt) else weeklyToMonthly(amt)
@@ -379,6 +397,7 @@ private fun BudgetScreenContent(
                         groups = Categories.groups,
                         spendOf = { groupSpend(it) },
                         budgets = budgets,
+                        carriedFor = ::carriedFor,
                         onOpenGroup = { sheetGroup = it },
                     )
                 } else {
@@ -392,11 +411,13 @@ private fun BudgetScreenContent(
                         ) {
                             rowGroups.forEach { group ->
                                 val children = Categories.children(group.name)
+                                val groupKey = BudgetRepository.categoryKey(group.name)
                                 CategoryGroupBox(
                                     emoji = group.emoji,
                                     name = categoryDisplayName(group.name),
                                     spent = groupSpend(group),
-                                    budget = budgets[BudgetRepository.categoryKey(group.name)],
+                                    budget = effectiveBudget(groupKey, budgets[groupKey]),
+                                    carried = carriedFor(groupKey),
                                     activeSubCount = children.count {
                                         (budgets[BudgetRepository.categoryKey(it.name)]?.signum() ?: 0) > 0
                                     },
@@ -543,6 +564,7 @@ private fun BudgetAmountCard(
     budget: BigDecimal?,
     onChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    carried: BigDecimal = BigDecimal.ZERO,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Card(
@@ -594,6 +616,15 @@ private fun BudgetAmountCard(
                         color = color,
                     )
                 }
+                if (carried.signum() > 0) {
+                    Spacer(Modifier.height(MaterialTheme.dimens.xs))
+                    Text(
+                        text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = budgetGoodColor(),
+                    )
+                }
                 Spacer(Modifier.height(10.dp))
                 LinearProgressIndicator(
                     progress = { budgetRatio(spent, budget) },
@@ -606,6 +637,34 @@ private fun BudgetAmountCard(
                 )
             }
         }
+    }
+}
+
+/** Opt-in "carry over unused budget" toggle — off by default; unspent budget rolls to next period. */
+@Composable
+private fun BudgetRolloverToggle(enabled: Boolean, onToggle: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusLg))
+            .clickable { onToggle(!enabled) }
+            .padding(horizontal = MaterialTheme.dimens.lg, vertical = MaterialTheme.dimens.sm),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.budget_rollover_title),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+            )
+            Text(
+                text = stringResource(R.string.budget_rollover_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Switch(checked = enabled, onCheckedChange = onToggle)
     }
 }
 
@@ -625,6 +684,7 @@ private fun CategoryGroupBox(
     totalSubCount: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    carried: BigDecimal = BigDecimal.ZERO,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Card(
@@ -688,6 +748,16 @@ private fun CategoryGroupBox(
                         .height(MaterialTheme.dimens.sm)
                         .clip(RoundedCornerShape(50)),
                 )
+                if (carried.signum() > 0) {
+                    Spacer(Modifier.height(MaterialTheme.dimens.xs))
+                    Text(
+                        text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = budgetGoodColor(),
+                        maxLines = 1,
+                    )
+                }
             } else {
                 Spacer(Modifier.height(MaterialTheme.dimens.xs))
                 Text(
@@ -712,6 +782,7 @@ private fun CategoryBudgetList(
     groups: List<Categories.Predefined>,
     spendOf: (Categories.Predefined) -> BigDecimal,
     budgets: Map<String, BigDecimal>,
+    carriedFor: (String) -> BigDecimal,
     onOpenGroup: (Categories.Predefined) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -721,12 +792,15 @@ private fun CategoryBudgetList(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
         groups.forEachIndexed { index, group ->
+            val groupKey = BudgetRepository.categoryKey(group.name)
+            val carried = carriedFor(groupKey)
             CategoryBudgetRow(
                 emoji = group.emoji,
                 colorArgb = group.colorArgb,
                 name = categoryDisplayName(group.name),
                 spent = spendOf(group),
-                budget = budgets[BudgetRepository.categoryKey(group.name)],
+                budget = budgets[groupKey]?.let { it + carried },
+                carried = carried,
                 onClick = { onOpenGroup(group) },
             )
             if (index < groups.lastIndex) {
@@ -750,6 +824,7 @@ private fun CategoryBudgetRow(
     budget: BigDecimal?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    carried: BigDecimal = BigDecimal.ZERO,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Row(
@@ -788,6 +863,16 @@ private fun CategoryBudgetRow(
                         .height(5.dp)
                         .clip(RoundedCornerShape(50)),
                 )
+                if (carried.signum() > 0) {
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = budgetGoodColor(),
+                        maxLines = 1,
+                    )
+                }
             }
         }
         Spacer(Modifier.width(MaterialTheme.dimens.md))

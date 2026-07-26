@@ -12,6 +12,7 @@ import com.budgetty.app.data.remote.RECEIPT_API_BASE_URL
 import com.budgetty.app.data.remote.ReceiptApi
 import com.budgetty.app.data.repository.AuthRepository
 import com.budgetty.app.data.repository.BudgetRepository
+import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
@@ -52,6 +53,7 @@ val appModule = module {
     single { TransactionRepository(get()) }
     single { CategoryRepository(get()) }
     single { BudgetRepository(get()) }
+    single { BudgetRolloverRepository(get()) }
     single { ReceiptRepository(get()) }
     single { CategoryRuleRepository(get()) }
     single { RecurringRepository(get()) }
@@ -75,7 +77,7 @@ val appModule = module {
     single { SettingsStore(androidContext()) }
 
     // Home-screen widgets: snapshot provider + auto-refresh on budget/transaction/currency changes
-    single { WidgetDataProvider(get(), get(), get(), get(), get(), get(), get()) }
+    single { WidgetDataProvider(get(), get(), get(), get(), get(), get(), get(), get()) }
     single { WidgetUpdater(androidContext(), get(), get(), get(), get(), get()) }
 
     // Auth
@@ -111,10 +113,10 @@ val appModule = module {
     // ViewModels
     viewModel { AuthViewModel(get(), get()) }
     viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
-    viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get()) }
+    viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }

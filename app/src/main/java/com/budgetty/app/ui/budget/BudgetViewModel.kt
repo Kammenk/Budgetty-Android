@@ -4,11 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.billing.BillingManager
+import com.budgetty.app.data.local.BudgetRolloverEntity
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.repository.BudgetRepository
+import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
@@ -20,10 +22,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.budgetty.app.ui.util.BudgetRollover
 import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.isPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
@@ -52,7 +56,8 @@ class BudgetViewModel(
     private val categoryRuleRepository: CategoryRuleRepository,
     billingManager: BillingManager,
     receiptRepository: ReceiptRepository,
-    settingsStore: SettingsStore,
+    private val settingsStore: SettingsStore,
+    private val rolloverRepository: BudgetRolloverRepository,
 ) : ViewModel() {
 
     /** Saved budgets as key -> amount (keys from [BudgetRepository]). */
@@ -61,6 +66,22 @@ class BudgetViewModel(
         SharingStarted.WhileSubscribed(5_000),
         emptyMap(),
     )
+
+    /** Whether unspent budget carries into the next period (opt-in). */
+    val rolloverEnabled: StateFlow<Boolean> =
+        settingsStore.settings.map { it.budgetRolloverEnabled }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    /** Per-key carried-over amount to add on top of the base budget; empty when rollover is off. */
+    val carried: StateFlow<Map<String, BigDecimal>> =
+        combine(rolloverRepository.carried, settingsStore.settings) { carried, settings ->
+            if (settings.budgetRolloverEnabled) carried else emptyMap()
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
+
+    init {
+        // Bring carry-over up to date whenever the Budget screen is opened.
+        viewModelScope.launch { rollForwardIfNeeded() }
+    }
 
     // The pay-day the financial month starts on; the monthly budget + recurring plan follow it.
     private val monthStartDay = settingsStore.settings.map { it.monthStartDay }.distinctUntilChanged()
@@ -128,6 +149,68 @@ class BudgetViewModel(
             repository.setBudget(activeKey, amount)
             repository.setBudget(otherKey, null)
         }
+    }
+
+    /** Turns rollover on/off; on enable it seeds the carry-over rows (accrual starts next period). */
+    fun setRolloverEnabled(enabled: Boolean) {
+        settingsStore.setBudgetRolloverEnabled(enabled)
+        viewModelScope.launch { rollForwardIfNeeded() }
+    }
+
+    /**
+     * Brings each budget key's carried-over amount up to the current period by accumulating every
+     * elapsed period's unspent leftover (see [BudgetRollover.rollForward]). Only monthly-period budgets
+     * carry — the overall MONTHLY budget and every category; a WEEKLY overall budget doesn't. When
+     * rollover is off, wipes any stored carry-over. Past-period spend uses net line prices (an estimate,
+     * since budget amounts have no history).
+     */
+    private suspend fun rollForwardIfNeeded() {
+        val settings = settingsStore.settings.value
+        if (!settings.budgetRolloverEnabled) {
+            rolloverRepository.clearAll()
+            return
+        }
+        val startDay = settings.monthStartDay
+        val currentKey = BudgetRollover.currentPeriodKey(LocalDate.now(), startDay)
+        val budgets = repository.budgets.first()
+        val allTxns = transactionRepository.getAll().first()
+        val zone = ZoneId.systemDefault()
+        val rolloverKeys = budgets.keys.filter {
+            it == BudgetRepository.MONTHLY || it.startsWith(BudgetRepository.CATEGORY_PREFIX)
+        }
+        for (key in rolloverKeys) {
+            val budget = budgets[key] ?: continue
+            val stored = rolloverRepository.get(key)
+            when {
+                // First time / just enabled: carry 0 now, start accruing next period.
+                stored == null ->
+                    rolloverRepository.upsert(BudgetRolloverEntity(key, BigDecimal.ZERO, currentKey))
+                stored.periodKey < currentKey -> {
+                    val category = key.removePrefix(BudgetRepository.CATEGORY_PREFIX).takeIf { it != key }
+                    val carried = BudgetRollover.rollForward(
+                        storedCarried = stored.carried,
+                        storedPeriodKey = stored.periodKey,
+                        currentPeriodKey = currentKey,
+                        budget = budget,
+                    ) { periodKey ->
+                        val (start, end) = BudgetRollover.periodWindow(periodKey, startDay)
+                        val startMs = start.atStartOfDay(zone).toInstant().toEpochMilli()
+                        val endMs = end.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
+                        allTxns
+                            .filter { t ->
+                                t.timestamp in startMs..endMs && (category == null || t.category == category)
+                            }
+                            .fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
+                    }
+                    rolloverRepository.upsert(BudgetRolloverEntity(key, carried, currentKey))
+                }
+                // else: already caught up for this period.
+            }
+        }
+        // Drop carry-over rows for budgets that no longer exist.
+        rolloverRepository.carried.first().keys
+            .filter { it !in budgets.keys }
+            .forEach { rolloverRepository.delete(it) }
     }
 
     /**

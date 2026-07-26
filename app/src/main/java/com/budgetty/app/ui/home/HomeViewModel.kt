@@ -10,6 +10,7 @@ import com.budgetty.app.data.model.Receipt
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.data.repository.BudgetRepository
+import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
@@ -55,6 +56,9 @@ data class HomeUiState(
     // summary card shows these alongside the receipt-backed spend as "planned", never merged into it.
     val monthlyBills: BigDecimal = BigDecimal.ZERO,
     val monthlyBudget: BigDecimal? = null,
+    // Unspent budget carried into this pay-cycle month (0 unless rollover is on); added on top of the
+    // overall monthly budget for the budget card's effective limit + a "+X carried over" line.
+    val monthlyCarried: BigDecimal = BigDecimal.ZERO,
     val weeklySpent: BigDecimal = BigDecimal.ZERO,
     val weeklyBudget: BigDecimal? = null,
     val hasCategoryBudgets: Boolean = false,
@@ -78,6 +82,7 @@ class HomeViewModel(
     private val billingManager: BillingManager,
     recurringRepository: RecurringRepository,
     settingsStore: SettingsStore,
+    rolloverRepository: BudgetRolloverRepository,
 ) : ViewModel() {
 
     private val selectedFilter = MutableStateFlow(DateRangeFilter.CURRENT_MONTH)
@@ -125,6 +130,14 @@ class HomeViewModel(
     private val lastWeekRange = currentWeekRange(LocalDate.now().minusWeeks(1))
     private val lastWeeklyTransactions = repository.getBetween(lastWeekRange.first, lastWeekRange.second)
 
+    // Unspent budget carried into the current pay-cycle month for the overall monthly budget; 0 when
+    // rollover is off (the stored rows only accrue while it's enabled). Weekly budgets never roll.
+    private val monthlyCarried: Flow<BigDecimal> =
+        combine(rolloverRepository.carried, settingsStore.settings) { carried, settings ->
+            if (settings.budgetRolloverEnabled) carried[BudgetRepository.MONTHLY] ?: BigDecimal.ZERO
+            else BigDecimal.ZERO
+        }
+
     val uiState: StateFlow<HomeUiState> =
         combine(
             filterCtx,
@@ -132,12 +145,12 @@ class HomeViewModel(
             categoryRepository.categories,
             combine(monthlyTransactions, monthlyBills) { t, b -> MonthlyData(t, b) },
             combine(
-                budgetRepository.budgets,
+                combine(budgetRepository.budgets, monthlyCarried) { b, mc -> b to mc },
                 receiptRepository.getAll(),
                 weeklyTransactions,
                 lastWeeklyTransactions,
                 previousTransactions,
-            ) { b, r, w, lw, pt -> BudgetsReceiptsWeeks(b, r, w, lw, pt) },
+            ) { (b, mc), r, w, lw, pt -> BudgetsReceiptsWeeks(b, mc, r, w, lw, pt) },
         ) { ctx, txns, categories, monthlyData, brw ->
             val receiptsById = brw.receipts.associateBy { it.timestamp }
             // Adjust each period's summed line prices to what was actually paid: add on-top tax
@@ -162,6 +175,7 @@ class HomeViewModel(
                 monthlySpent = monthlySpent,
                 monthlyBills = monthlyData.bills,
                 monthlyBudget = brw.budgets[BudgetRepository.MONTHLY],
+                monthlyCarried = brw.monthlyCarried,
                 weeklySpent = weeklySpent,
                 weeklyBudget = brw.budgets[BudgetRepository.WEEKLY],
                 hasCategoryBudgets = brw.budgets.keys.any { it.startsWith(BudgetRepository.CATEGORY_PREFIX) },
@@ -263,6 +277,7 @@ class HomeViewModel(
     /** Bundles the nested-combine sources so the outer combine stays within arity limits. */
     private data class BudgetsReceiptsWeeks(
         val budgets: Map<String, BigDecimal>,
+        val monthlyCarried: BigDecimal,
         val receipts: List<ReceiptEntity>,
         val weekly: List<TransactionEntity>,
         val lastWeekly: List<TransactionEntity>,

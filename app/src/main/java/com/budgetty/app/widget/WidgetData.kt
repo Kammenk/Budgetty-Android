@@ -9,7 +9,8 @@ import java.math.BigDecimal
  */
 data class WidgetData(
     val currencySymbol: String = "лв",
-    /** Effective monthly budget: the saved MONTHLY budget, else the weekly budget scaled up, else ZERO. */
+    /** Effective monthly budget: the saved MONTHLY budget (plus any carried-over balance when rollover
+     *  is on), else the weekly budget scaled up, else ZERO. */
     val monthlyBudget: BigDecimal = BigDecimal.ZERO,
     val monthlySpent: BigDecimal = BigDecimal.ZERO,
     /** Effective weekly budget: the saved WEEKLY budget, else the monthly budget scaled down, else ZERO. */

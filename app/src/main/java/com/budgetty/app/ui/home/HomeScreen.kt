@@ -1471,6 +1471,21 @@ private fun ReceiptRowBody(
     }
 }
 
+/**
+ * The Home budget card's active-period budget: the effective limit (base + any monthly carry-over)
+ * paired with the carried amount. Only the monthly overall budget carries; a weekly budget never does.
+ */
+private fun activeBudgetWithCarry(
+    showMonthly: Boolean,
+    monthlyBudget: BigDecimal?,
+    weeklyBudget: BigDecimal?,
+    monthlyCarried: BigDecimal,
+): Pair<BigDecimal?, BigDecimal> {
+    val carried = if (showMonthly) monthlyCarried else BigDecimal.ZERO
+    val base = if (showMonthly) monthlyBudget else weeklyBudget
+    return base?.let { it + carried } to carried
+}
+
 /** Budget progress for the active period; the figure + bar turn green/yellow/red by usage. Tap to edit budgets. */
 @Composable
 private fun BudgetProgressCard(
@@ -1488,7 +1503,9 @@ private fun BudgetProgressCard(
     // A single budget period is active (Monthly wins if both or neither is set); the other is derived.
     val showMonthly = hasMonthly || !hasWeekly
     val spent = if (showMonthly) monthlySpent else weeklySpent
-    val budget = if (showMonthly) monthlyBudget else weeklyBudget
+    // Unspent budget carried in rolls only onto the monthly overall budget; the effective budget it
+    // adds drives the figure, bar and equivalent, and surfaces a "+X carried over" line below.
+    val (budget, carried) = activeBudgetWithCarry(showMonthly, monthlyBudget, weeklyBudget, state.monthlyCarried)
     val hasBudget = budget != null && budget.signum() > 0
     val ratio = budgetRatio(spent, budget)
     val color = if (hasBudget) budgetColor(spent, budget!!) else MaterialTheme.colorScheme.onSurfaceVariant
@@ -1566,6 +1583,15 @@ private fun BudgetProgressCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                if (carried.signum() > 0) {
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = budgetGoodColor(),
+                    )
+                }
             }
             if (state.hasCategoryBudgets) {
                 Spacer(Modifier.height(MaterialTheme.dimens.md))
