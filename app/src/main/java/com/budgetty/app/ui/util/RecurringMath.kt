@@ -3,11 +3,13 @@ package com.budgetty.app.ui.util
 import com.budgetty.app.data.local.RecurringEntity
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalAdjusters
 
 /**
  * Shared money-flow math for income & recurring payments, so the Budget screen and the History
@@ -25,6 +27,33 @@ fun currentMonthRange(today: LocalDate = LocalDate.now(), monthStartDay: Int = 1
     val startMillis = start.atStartOfDay(zone).toInstant().toEpochMilli()
     val endMillis = end.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
     return startMillis to endMillis
+}
+
+/**
+ * Whether this bill has been marked paid for its CURRENT occurrence — i.e. [RecurringEntity.lastPosted]
+ * (set to "now" when the user taps Paid) falls inside the window of the occurrence that contains
+ * [today]: the pay-cycle month for a monthly bill, the Mon–Sun week for a weekly one, the calendar
+ * year for a yearly one. It therefore resets on its own when the next occurrence begins — last cycle's
+ * timestamp lands outside the new window — with no scheduled job. A one-time entry stays paid once set.
+ */
+fun RecurringEntity.isPaidThisCycle(
+    today: LocalDate = LocalDate.now(),
+    monthStartDay: Int = 1,
+    zone: ZoneId = ZoneId.systemDefault(),
+): Boolean {
+    if (lastPosted <= 0L) return false
+    val (start, end) = when (cadence) {
+        RecurringEntity.Cadence.ONCE -> return true
+        RecurringEntity.Cadence.WEEKLY -> {
+            val weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            weekStart to weekStart.plusDays(6)
+        }
+        RecurringEntity.Cadence.YEARLY -> LocalDate.of(today.year, 1, 1) to LocalDate.of(today.year, 12, 31)
+        else -> PayCycle.month(today, monthStartDay) // MONTHLY
+    }
+    val startMs = start.atStartOfDay(zone).toInstant().toEpochMilli()
+    val endMs = end.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
+    return lastPosted in startMs..endMs
 }
 
 /**

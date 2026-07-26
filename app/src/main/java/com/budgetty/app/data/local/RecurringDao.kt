@@ -22,6 +22,11 @@ interface RecurringDao {
     @Query("DELETE FROM recurring WHERE id = :id")
     suspend fun deleteById(id: Long)
 
+    /** Records when a bill was marked paid (0 = not paid). "Paid this cycle" is derived by checking
+     *  this timestamp against the bill's current occurrence window (see RecurringMath). */
+    @Query("UPDATE recurring SET lastPosted = :millis WHERE id = :id")
+    suspend fun setLastPosted(id: Long, millis: Long)
+
     @Query("DELETE FROM recurring")
     suspend fun clearAll()
 }

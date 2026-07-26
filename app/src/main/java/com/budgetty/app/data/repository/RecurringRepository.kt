@@ -15,6 +15,9 @@ class RecurringRepository(private val db: UserDatabaseManager) {
 
     suspend fun delete(id: Long) = dao.deleteById(id)
 
+    /** Marks a bill paid ([paidAtMillis] = now) or unpaid ([paidAtMillis] = 0) for its current cycle. */
+    suspend fun setPaid(id: Long, paidAtMillis: Long) = dao.setLastPosted(id, paidAtMillis)
+
     companion object {
         /** Recurring payments (bills) allowed on the free tier; Premium is unlimited. Income is uncapped. */
         const val FREE_RECURRING_LIMIT = 3

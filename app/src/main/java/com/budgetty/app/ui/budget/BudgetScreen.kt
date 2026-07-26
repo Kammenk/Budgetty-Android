@@ -86,8 +86,10 @@ import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
@@ -138,6 +140,7 @@ fun BudgetScreen(
             onCountTransactions = viewModel::transactionCount,
             onOpenPaywall = onNavigateToPaywall,
         ),
+        onSetBillPaid = viewModel::setBillPaid,
         onSaveRecurring = viewModel::saveRecurring,
         onDeleteRecurring = viewModel::deleteRecurring,
         onOpenPaywall = onNavigateToPaywall,
@@ -161,6 +164,7 @@ private fun BudgetScreenContent(
     categories: List<CategoryEntity> = emptyList(),
     isPremium: Boolean = false,
     customActions: CustomCategoryActions = CustomCategoryActions(),
+    onSetBillPaid: (RecurringEntity, Boolean) -> Unit = { _, _ -> },
     onSaveRecurring: (RecurringEntity?, String, String, Boolean, String, String, Int) -> Unit =
         { _, _, _, _, _, _, _ -> },
     onDeleteRecurring: (Long) -> Unit = {},
@@ -327,9 +331,11 @@ private fun BudgetScreenContent(
                         bills = recurring.bills,
                         monthlyBills = recurring.monthlyBills,
                         atLimit = billLimitReached,
+                        paidBillIds = recurring.paidBillIds,
                         onEdit = { recurringDraft = RecurringDraft(it, isIncome = false) },
                         onAdd = { recurringDraft = RecurringDraft(null, isIncome = false) },
                         onUpgrade = onOpenPaywall,
+                        onSetPaid = onSetBillPaid,
                     )
                 } else {
                     SlimAddRow(
@@ -1243,12 +1249,15 @@ private fun MoneyRow(
     amount: String,
     amountColor: Color,
     onClick: () -> Unit,
+    /** Non-null on a payable bill row: whether it's marked paid this cycle. Null on income rows. */
+    paid: Boolean? = null,
+    onTogglePaid: (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(horizontal = MaterialTheme.dimens.lg, vertical = 10.dp),
+            .padding(start = MaterialTheme.dimens.lg, end = MaterialTheme.dimens.sm, top = 10.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
     ) {
@@ -1281,9 +1290,24 @@ private fun MoneyRow(
             text = amount,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold,
-            color = amountColor,
+            // Marked-paid bills read as "handled" — dim the amount so the unpaid ones stand out.
+            color = if (paid == true) amountColor.copy(alpha = 0.4f) else amountColor,
             maxLines = 1,
         )
+        if (paid != null && onTogglePaid != null) {
+            Icon(
+                imageVector = if (paid) Icons.Filled.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
+                contentDescription = stringResource(
+                    if (paid) R.string.recurring_paid else R.string.recurring_mark_paid,
+                ),
+                tint = if (paid) budgetGoodColor() else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .clickable(onClick = onTogglePaid)
+                    .padding(6.dp)
+                    .size(MaterialTheme.dimens.iconSmall),
+            )
+        }
     }
 }
 
@@ -1350,10 +1374,13 @@ private fun RecurringCard(
     bills: List<RecurringEntity>,
     monthlyBills: BigDecimal,
     atLimit: Boolean,
+    paidBillIds: Set<Long>,
     onEdit: (RecurringEntity) -> Unit,
     onAdd: () -> Unit,
     onUpgrade: () -> Unit,
+    onSetPaid: (RecurringEntity, Boolean) -> Unit,
 ) {
+    val paidCount = bills.count { it.id in paidBillIds }
     RecurringSectionCard {
         RecurringSectionHeader(stringResource(R.string.recurring_payments)) {
             if (atLimit) {
@@ -1368,15 +1395,26 @@ private fun RecurringCard(
                         .padding(horizontal = MaterialTheme.dimens.sm, vertical = 2.dp),
                 )
             } else {
-                Text(
-                    text = stringResource(R.string.recurring_per_month, monthlyBills.formatMoney()),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                Column(horizontalAlignment = Alignment.End) {
+                    Text(
+                        text = stringResource(R.string.recurring_per_month, monthlyBills.formatMoney()),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    if (paidCount > 0) {
+                        Text(
+                            text = stringResource(R.string.recurring_paid_count, paidCount, bills.size),
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = budgetGoodColor(),
+                        )
+                    }
+                }
             }
         }
         bills.forEach { item ->
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            val isPaid = item.id in paidBillIds
             MoneyRow(
                 emoji = Categories.emojiOf(item.category),
                 tileColor = Color(Categories.colorOf(item.category)).copy(alpha = 0.16f),
@@ -1385,6 +1423,8 @@ private fun RecurringCard(
                 amount = item.amount.formatMoney(),
                 amountColor = MaterialTheme.colorScheme.onSurface,
                 onClick = { onEdit(item) },
+                paid = isPaid,
+                onTogglePaid = { onSetPaid(item, !isPaid) },
             )
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
