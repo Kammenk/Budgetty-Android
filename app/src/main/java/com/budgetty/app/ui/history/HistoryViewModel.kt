@@ -185,6 +185,10 @@ class HistoryViewModel(
 
             val sort = runCatching { SortOrder.valueOf(settings.historySort) }.getOrDefault(SortOrder.NEWEST)
 
+            // The Date filter's month presets follow the user's pay-cycle month, so "This month",
+            // "Last month" etc. mean the same window here as on Home, Insights and the widgets.
+            val monthStartDay = settings.monthStartDay
+
             // Budgets tab: split the recurring rows into income/bills, scoped to the selected window.
             // The window is the list's shared Date filter (so it carries across tabs); "All time"
             // (null) falls back to the current month, since a plan needs a bounded span to scale.
@@ -192,7 +196,7 @@ class HistoryViewModel(
             // date chip narrows the snapshot the way it narrows the Receipts/Items lists. Section
             // headers keep the per-month rate (monthlyAmount); the summary scales to the whole window.
             val period = activeFilters.date ?: DateRangeFilter.CURRENT_MONTH
-            val (windowStart, windowEnd) = period.toRange(monthStartDay = settings.monthStartDay)
+            val (windowStart, windowEnd) = period.toRange(monthStartDay = monthStartDay)
             val inWindow = { r: RecurringEntity ->
                 r.cadence != RecurringEntity.Cadence.ONCE || r.createdAt in windowStart..windowEnd
             }
@@ -203,8 +207,8 @@ class HistoryViewModel(
 
             HistoryUiState(
                 isLoaded = true,
-                groups = items.applyFilters(activeFilters).groupIntoMonths(sort),
-                receiptGroups = items.buildReceipts(receipts).applyReceiptFilters(activeFilters).groupReceiptsIntoMonths(sort),
+                groups = items.applyFilters(activeFilters, monthStartDay).groupIntoMonths(sort),
+                receiptGroups = items.buildReceipts(receipts).applyReceiptFilters(activeFilters, monthStartDay).groupReceiptsIntoMonths(sort),
                 filters = activeFilters,
                 sort = sort,
                 categories = categories,
@@ -300,9 +304,9 @@ class HistoryViewModel(
         val receipts: List<ReceiptEntity>,
     )
 
-    private fun List<HistoryItem>.applyFilters(f: HistoryFilters): List<HistoryItem> {
+    private fun List<HistoryItem>.applyFilters(f: HistoryFilters, monthStartDay: Int): List<HistoryItem> {
         val query = f.query.trim()
-        val dateRange = f.date?.toRange()
+        val dateRange = f.date?.toRange(monthStartDay = monthStartDay)
         return filter { item ->
             val txn = item.transaction
             (query.isBlank() || txn.name.contains(query, ignoreCase = true)) &&
@@ -401,9 +405,9 @@ class HistoryViewModel(
 
     /** Receipt-level filtering: a whole receipt shows if it matches (query hits store or any item;
      *  category/price match any item / the receipt total; store + date match the receipt itself). */
-    private fun List<Receipt>.applyReceiptFilters(f: HistoryFilters): List<Receipt> {
+    private fun List<Receipt>.applyReceiptFilters(f: HistoryFilters, monthStartDay: Int): List<Receipt> {
         val query = f.query.trim()
-        val dateRange = f.date?.toRange()
+        val dateRange = f.date?.toRange(monthStartDay = monthStartDay)
         return filter { r ->
             (query.isBlank() || r.store.contains(query, ignoreCase = true) ||
                 r.transactions.any { it.name.contains(query, ignoreCase = true) }) &&
