@@ -15,6 +15,18 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 10.9.0 (versionCode 1090) — 2026-07-26
+
+A feature (MINOR) release: two budgeting additions — carry unspent budget into the next period, and tick recurring bills off as you pay them.
+
+### Added
+- **Carry over unused budget** — a new **Carry over unused budget** switch on the Budget screen. Turn it on and whatever you don't spend this period rolls into the next period's available budget — for both the overall budget and each category. It's opt-in and off by default, and only *unspent* budget carries: going over is never held against you, and nothing negative rolls forward. Wherever your budget appears — the Budget screen, Home, Insights, and the home-screen widget — the limit and progress bar use budget + carried, with a green "+X carried over" line so you can see what came from last period. Weekly budgets don't carry.
+- **Mark recurring bills as paid** — each recurring bill now has a tap-to-tick "paid" check for its current cycle. A paid bill dims, the Payments section shows "N of M paid", and it drops off the Insights "upcoming bills" list until its next occurrence. No transaction is recorded — recurring stays planning-only, so ticking a bill never double-counts a scanned receipt — and the check resets on its own each new cycle.
+
+> Database change: a new `budget_rollover` table (migration 18 → 19) persists each period's carried-over amount, since budget amounts change without history and can't be recomputed. Mark-as-paid needs no schema change (it reuses the existing `lastPosted` timestamp).
+
+> **Play status — release commit cut 2026-07-26; AAB not yet built or uploaded.** Supersedes 10.8.0 (vc1080).
+
 ## 10.8.0 (versionCode 1080) — 2026-07-25
 
 A feature (MINOR) release: budgeting can now follow your pay cycle instead of the calendar, a new "All time" view, and a money-flow correction — all from closed-testing feedback.
