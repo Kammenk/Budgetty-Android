@@ -418,6 +418,9 @@
     <string name="budget_spent_pct">%1$s spent · %2$d%%</string>
     <string name="budget_left">%1$s left</string>
     <string name="budget_over">%1$s over</string>
+    <string name="budget_carried_over">+%1$s carried over</string>
+    <string name="budget_rollover_title">Carry over unused budget</string>
+    <string name="budget_rollover_hint">Unspent budget rolls into next period</string>
     <string name="budget_spent">%1$s spent</string>
     <string name="budget_no_spend">No spend</string>
     <string name="budget_section_category">CATEGORY BUDGET</string>

@@ -106,6 +106,11 @@ data class AppSettings(
      * and the Insights month stepper to run from this day (clamped to a short month's last day).
      */
     val monthStartDay: Int = 1,
+    /**
+     * When true, unspent budget carries into the next period (opt-in, default off). Applies to the
+     * overall monthly budget and each category budget; overspend is forgiven (never rolls negative).
+     */
+    val budgetRolloverEnabled: Boolean = false,
     /** Remembered History sort order (a SortOrder name); defaults to newest-first. */
     val historySort: String = "NEWEST",
     /** Recent History search terms, most-recent first (capped); powers the search quick-find. */

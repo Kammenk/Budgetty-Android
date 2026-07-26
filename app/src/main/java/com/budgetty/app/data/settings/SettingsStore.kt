@@ -30,6 +30,7 @@ class SettingsStore(context: Context) {
         insightsSectionOrder = prefs.getString(KEY_ORDER_INSIGHTS, null).toKeyList(),
         insightsPeriodUnit = prefs.getString(KEY_PERIOD_UNIT_INSIGHTS, "MONTH") ?: "MONTH",
         monthStartDay = prefs.getInt(KEY_MONTH_START_DAY, 1).coerceIn(1, 31),
+        budgetRolloverEnabled = prefs.getBoolean(KEY_BUDGET_ROLLOVER, false),
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
         recentSearches = prefs.getString(KEY_RECENT_SEARCHES, null).toLines(),
         crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, true),
@@ -121,6 +122,10 @@ class SettingsStore(context: Context) {
     /** Remembers the History sort order (a SortOrder name) for the next launch. */
     fun setHistorySort(name: String) =
         saveString(KEY_HISTORY_SORT, name) { it.copy(historySort = name) }
+
+    /** Toggles budget rollover (unspent budget carries into the next period). */
+    fun setBudgetRolloverEnabled(value: Boolean) =
+        save(KEY_BUDGET_ROLLOVER, value) { it.copy(budgetRolloverEnabled = value) }
 
     /** Sets the pay-day the financial month starts on (1–31; 1 = calendar month). */
     fun setMonthStartDay(value: Int) {
@@ -224,6 +229,7 @@ class SettingsStore(context: Context) {
         const val KEY_ORDER_INSIGHTS = "insights_section_order"
         const val KEY_PERIOD_UNIT_INSIGHTS = "insights_period_unit"
         const val KEY_MONTH_START_DAY = "month_start_day"
+        const val KEY_BUDGET_ROLLOVER = "budget_rollover_enabled"
         const val KEY_HISTORY_SORT = "history_sort"
         const val KEY_RECENT_SEARCHES = "recent_searches"
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"
