@@ -391,6 +391,7 @@ private fun BudgetScreenContent(
                         groups = Categories.groups,
                         spendOf = { groupSpend(it) },
                         budgets = budgets,
+                        carriedFor = ::carriedFor,
                         onOpenGroup = { sheetGroup = it },
                     )
                 } else {
@@ -410,6 +411,7 @@ private fun BudgetScreenContent(
                                     name = categoryDisplayName(group.name),
                                     spent = groupSpend(group),
                                     budget = effectiveBudget(groupKey, budgets[groupKey]),
+                                    carried = carriedFor(groupKey),
                                     activeSubCount = children.count {
                                         (budgets[BudgetRepository.categoryKey(it.name)]?.signum() ?: 0) > 0
                                     },
@@ -676,6 +678,7 @@ private fun CategoryGroupBox(
     totalSubCount: Int,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    carried: BigDecimal = BigDecimal.ZERO,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Card(
@@ -739,6 +742,16 @@ private fun CategoryGroupBox(
                         .height(MaterialTheme.dimens.sm)
                         .clip(RoundedCornerShape(50)),
                 )
+                if (carried.signum() > 0) {
+                    Spacer(Modifier.height(MaterialTheme.dimens.xs))
+                    Text(
+                        text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = budgetGoodColor(),
+                        maxLines = 1,
+                    )
+                }
             } else {
                 Spacer(Modifier.height(MaterialTheme.dimens.xs))
                 Text(
@@ -763,6 +776,7 @@ private fun CategoryBudgetList(
     groups: List<Categories.Predefined>,
     spendOf: (Categories.Predefined) -> BigDecimal,
     budgets: Map<String, BigDecimal>,
+    carriedFor: (String) -> BigDecimal,
     onOpenGroup: (Categories.Predefined) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -772,12 +786,15 @@ private fun CategoryBudgetList(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     ) {
         groups.forEachIndexed { index, group ->
+            val groupKey = BudgetRepository.categoryKey(group.name)
+            val carried = carriedFor(groupKey)
             CategoryBudgetRow(
                 emoji = group.emoji,
                 colorArgb = group.colorArgb,
                 name = categoryDisplayName(group.name),
                 spent = spendOf(group),
-                budget = budgets[BudgetRepository.categoryKey(group.name)],
+                budget = budgets[groupKey]?.let { it + carried },
+                carried = carried,
                 onClick = { onOpenGroup(group) },
             )
             if (index < groups.lastIndex) {
@@ -801,6 +818,7 @@ private fun CategoryBudgetRow(
     budget: BigDecimal?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    carried: BigDecimal = BigDecimal.ZERO,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Row(
@@ -839,6 +857,16 @@ private fun CategoryBudgetRow(
                         .height(5.dp)
                         .clip(RoundedCornerShape(50)),
                 )
+                if (carried.signum() > 0) {
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        color = budgetGoodColor(),
+                        maxLines = 1,
+                    )
+                }
             }
         }
         Spacer(Modifier.width(MaterialTheme.dimens.md))

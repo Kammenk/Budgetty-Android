@@ -6,6 +6,7 @@ import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.data.repository.BudgetRepository
+import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TransactionRepository
@@ -38,14 +39,23 @@ class WidgetDataProvider(
     private val scanQuota: ScanQuota,
     private val billingManager: BillingManager,
     private val receiptRepository: ReceiptRepository,
+    private val rolloverRepository: BudgetRolloverRepository,
 ) {
     suspend fun load(today: LocalDate = LocalDate.now()): WidgetData {
         val budgets = budgetRepository.budgets.first()
         val monthlySet = budgets[BudgetRepository.MONTHLY]
         val weeklySet = budgets[BudgetRepository.WEEKLY]
+        // Unspent budget carried into this month rolls only onto a set MONTHLY budget (weekly never
+        // rolls); it's added to the effective monthly figure so the widget matches the Home card. 0
+        // when rollover is off or no monthly budget exists.
+        val monthlyCarried = if (settingsStore.settings.value.budgetRolloverEnabled && monthlySet != null) {
+            rolloverRepository.get(BudgetRepository.MONTHLY)?.carried ?: BigDecimal.ZERO
+        } else {
+            BigDecimal.ZERO
+        }
         // Single-budget model: only one of MONTHLY/WEEKLY is ever set, so derive the other period
         // from it (weekly⇄monthly) — both budget widgets then always show a meaningful number.
-        val monthlyBudget = monthlySet ?: weeklySet?.let { weeklyToMonthly(it) } ?: BigDecimal.ZERO
+        val monthlyBudget = (monthlySet ?: weeklySet?.let { weeklyToMonthly(it) } ?: BigDecimal.ZERO) + monthlyCarried
         val weeklyBudget = weeklySet ?: monthlySet?.let { monthlyToWeekly(it) } ?: BigDecimal.ZERO
 
         // Honor the user's pay-cycle "month starts on" setting so the widgets agree with the app.

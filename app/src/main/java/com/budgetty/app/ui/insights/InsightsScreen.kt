@@ -472,11 +472,18 @@ private fun BudgetSectionCard(
     slices: List<PieSlice>,
     budgets: Map<String, BigDecimal>,
     monthStartDay: Int,
+    carried: Map<String, BigDecimal> = emptyMap(),
 ) {
     val unit = (period as? InsightsPeriod.Stepped)?.unit
     if (unit != PeriodUnit.MONTH && unit != PeriodUnit.WEEK) return
-    val overall = budgetForPeriod(period, budgets)
-    val categoryRows = categoryBudgetRows(slices, budgets, unit)
+    // Carry-over only applies to the current pay-cycle month: the stored balance is "as of now" (so it
+    // can't be projected onto a past period), and a weekly budget never rolls. When it doesn't apply,
+    // fall back to empty so limits stay at their base amounts.
+    val applyCarry = unit == PeriodUnit.MONTH && (period as? InsightsPeriod.Stepped)?.offset == 0
+    val effectiveCarry = if (applyCarry) carried else emptyMap()
+    val overallCarry = effectiveCarry[BudgetRepository.MONTHLY] ?: BigDecimal.ZERO
+    val overall = budgetForPeriod(period, budgets)?.let { it + overallCarry }
+    val categoryRows = categoryBudgetRows(slices, budgets, unit, effectiveCarry)
     if (overall == null && categoryRows.isEmpty()) return
 
     InsightCard {
@@ -488,7 +495,13 @@ private fun BudgetSectionCard(
         )
         if (overall != null) {
             Spacer(Modifier.height(MaterialTheme.dimens.lg))
-            OverallBudgetProgress(period = period, spent = total, budget = overall, monthStartDay = monthStartDay)
+            OverallBudgetProgress(
+                period = period,
+                spent = total,
+                budget = overall,
+                monthStartDay = monthStartDay,
+                carried = overallCarry,
+            )
         }
         if (categoryRows.isNotEmpty()) {
             Spacer(Modifier.height(if (overall != null) MaterialTheme.dimens.xl else MaterialTheme.dimens.lg))
@@ -505,7 +518,13 @@ private fun BudgetSectionCard(
  * bar, and — for the current period only — a "N days left" line.
  */
 @Composable
-private fun OverallBudgetProgress(period: InsightsPeriod, spent: BigDecimal, budget: BigDecimal, monthStartDay: Int) {
+private fun OverallBudgetProgress(
+    period: InsightsPeriod,
+    spent: BigDecimal,
+    budget: BigDecimal,
+    monthStartDay: Int,
+    carried: BigDecimal = BigDecimal.ZERO,
+) {
     val color = budgetColor(spent, budget)
     val remaining = budget.subtract(spent)
     val pct = if (budget.signum() <= 0) 0 else (spent.toDouble() / budget.toDouble() * 100).roundToInt()
@@ -548,6 +567,15 @@ private fun OverallBudgetProgress(period: InsightsPeriod, spent: BigDecimal, bud
             .height(10.dp)
             .clip(RoundedCornerShape(50)),
     )
+    if (carried.signum() > 0) {
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        Text(
+            text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.SemiBold,
+            color = budgetGoodColor(),
+        )
+    }
     if (daysLeft != null) {
         Spacer(Modifier.height(MaterialTheme.dimens.sm))
         Text(
@@ -571,6 +599,7 @@ private fun categoryBudgetRows(
     slices: List<PieSlice>,
     budgets: Map<String, BigDecimal>,
     unit: PeriodUnit,
+    carried: Map<String, BigDecimal> = emptyMap(),
 ): List<CategoryBudgetRowData> {
     val spendByCategory = slices.associate { it.label to it.value }
     fun spendFor(category: String): BigDecimal =
@@ -582,7 +611,13 @@ private fun categoryBudgetRows(
         .mapNotNull { (key, monthly) ->
             if (monthly.signum() <= 0) return@mapNotNull null
             val category = key.removePrefix(BudgetRepository.CATEGORY_PREFIX)
-            val budget = if (unit == PeriodUnit.WEEK) monthlyToWeekly(monthly) else monthly
+            // Category budgets are stored monthly: the Week step scales them down and never carries;
+            // the Month step adds any carried-over balance for the current period on top of the limit.
+            val budget = if (unit == PeriodUnit.WEEK) {
+                monthlyToWeekly(monthly)
+            } else {
+                monthly + (carried[key] ?: BigDecimal.ZERO)
+            }
             CategoryBudgetRowData(category, spendFor(category), budget)
         }
         .sortedByDescending { if (it.budget.signum() > 0) it.spent.toDouble() / it.budget.toDouble() else 0.0 }
@@ -802,7 +837,7 @@ private fun InsightsPhoneBody(
                     InsightsSection.BUDGET -> if (state.isLoaded)
                         BudgetSectionCard(
                             state.period, periodLabel, state.total,
-                            state.slices, state.budgets, state.monthStartDay,
+                            state.slices, state.budgets, state.monthStartDay, state.carried,
                         )
 
                     // Money-flow cards render once any income/bills exist (each shows its own nudge
@@ -978,7 +1013,7 @@ private fun InsightsTabletBody(
         if (shows(InsightsSection.BUDGET)) {
             BudgetSectionCard(
                 state.period, periodLabel, state.total,
-                state.slices, state.budgets, state.monthStartDay,
+                state.slices, state.budgets, state.monthStartDay, state.carried,
             )
         }
         if (state.categoryDeltas.isNotEmpty()) {
@@ -1011,7 +1046,7 @@ private fun InsightsTabletBody(
                         if (shows(InsightsSection.BUDGET)) {
                             BudgetSectionCard(
                                 state.period, periodLabel, state.total,
-                                state.slices, state.budgets, state.monthStartDay,
+                                state.slices, state.budgets, state.monthStartDay, state.carried,
                             )
                         }
                     }
@@ -1072,7 +1107,7 @@ private fun InsightsTabletBody(
                         if (shows(InsightsSection.BUDGET)) {
                             BudgetSectionCard(
                                 state.period, periodLabel, state.total,
-                                state.slices, state.budgets, state.monthStartDay,
+                                state.slices, state.budgets, state.monthStartDay, state.carried,
                             )
                         }
                     }
