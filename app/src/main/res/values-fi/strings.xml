@@ -380,6 +380,9 @@
     <string name="budget_spent_pct">%1$s käytetty · %2$d%%</string>
     <string name="budget_left">%1$s jäljellä</string>
     <string name="budget_over">%1$s yli</string>
+    <string name="budget_carried_over">+%1$s siirretty</string>
+    <string name="budget_rollover_title">Siirrä käyttämätön budjetti</string>
+    <string name="budget_rollover_hint">Käyttämätön budjetti siirtyy seuraavalle jaksolle</string>
     <string name="budget_spent">%1$s käytetty</string>
     <string name="budget_no_spend">Ei kulutusta</string>
     <string name="budget_section_category">KATEGORIABUDJETTI</string>
@@ -393,6 +396,9 @@
     <string name="recurring_add_income">Lisää tulot</string>
     <string name="recurring_add_payment">Lisää toistuva maksu</string>
     <string name="recurring_per_month">%1$s / kk</string>
+    <string name="recurring_paid">Maksettu</string>
+    <string name="recurring_mark_paid">Merkitse maksetuksi</string>
+    <string name="recurring_paid_count">%1$d/%2$d maksettu</string>
     <string name="recurring_upgrade_more">Päivitä lisätäksesi useampia</string>
     <string name="recurring_money_empty_hint">Lisää tulosi ja laskusi nähdäksesi, mitä jää jäljelle joka kuukausi.</string>
     <string name="recurring_this_month">Tässä kuussa</string>

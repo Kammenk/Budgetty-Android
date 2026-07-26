@@ -380,6 +380,9 @@
     <string name="budget_spent_pct">%1$s utraceno · %2$d%%</string>
     <string name="budget_left">Zbývá %1$s</string>
     <string name="budget_over">%1$s nad limit</string>
+    <string name="budget_carried_over">+%1$s převedeno</string>
+    <string name="budget_rollover_title">Převádět nevyužitý rozpočet</string>
+    <string name="budget_rollover_hint">Nevyužitý rozpočet přechází do dalšího období</string>
     <string name="budget_spent">%1$s utraceno</string>
     <string name="budget_no_spend">Žádná útrata</string>
     <string name="budget_section_category">ROZPOČET KATEGORIE</string>
@@ -393,6 +396,9 @@
     <string name="recurring_add_income">Přidat příjem</string>
     <string name="recurring_add_payment">Přidat pravidelnou platbu</string>
     <string name="recurring_per_month">%1$s / měs.</string>
+    <string name="recurring_paid">Zaplaceno</string>
+    <string name="recurring_mark_paid">Označit jako zaplacené</string>
+    <string name="recurring_paid_count">%1$d z %2$d zaplaceno</string>
     <string name="recurring_upgrade_more">Upgradujte pro přidání dalších</string>
     <string name="recurring_money_empty_hint">Přidejte své příjmy a účty a uvidíte, co vám každý měsíc zbývá.</string>
     <string name="recurring_this_month">Tento měsíc</string>

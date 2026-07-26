@@ -118,6 +118,9 @@
     <string name="budget_spent_pct">%1$s spesi · %2$d%%</string>
     <string name="budget_left">%1$s rimasti</string>
     <string name="budget_over">%1$s in più</string>
+    <string name="budget_carried_over">+%1$s riportato</string>
+    <string name="budget_rollover_title">Riporta il budget non utilizzato</string>
+    <string name="budget_rollover_hint">Il budget non speso passa al periodo successivo</string>
     <string name="budget_spent">%1$s spesi</string>
     <string name="budget_no_spend">Nessuna spesa</string>
     <string name="budget_section_category">BUDGET CATEGORIA</string>
@@ -585,6 +588,9 @@
     <string name="recurring_add_income">Aggiungi entrata</string>
     <string name="recurring_add_payment">Aggiungi pagamento ricorrente</string>
     <string name="recurring_per_month">%1$s / mese</string>
+    <string name="recurring_paid">Pagato</string>
+    <string name="recurring_mark_paid">Segna come pagato</string>
+    <string name="recurring_paid_count">%1$d di %2$d pagati</string>
     <string name="recurring_upgrade_more">Esegui l\'upgrade per aggiungerne altri</string>
     <string name="recurring_money_empty_hint">Aggiungi le tue entrate e spese per vedere quanto rimane ogni mese.</string>
     <string name="recurring_this_month">Questo mese</string>

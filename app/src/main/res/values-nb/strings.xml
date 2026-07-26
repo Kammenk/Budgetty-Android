@@ -380,6 +380,9 @@
     <string name="budget_spent_pct">%1$s brukt · %2$d%%</string>
     <string name="budget_left">%1$s igjen</string>
     <string name="budget_over">%1$s over</string>
+    <string name="budget_carried_over">+%1$s overført</string>
+    <string name="budget_rollover_title">Overfør ubrukt budsjett</string>
+    <string name="budget_rollover_hint">Ubrukt budsjett overføres til neste periode</string>
     <string name="budget_spent">%1$s brukt</string>
     <string name="budget_no_spend">Ingen forbruk</string>
     <string name="budget_section_category">KATEGORIBUDSJETT</string>
@@ -393,6 +396,9 @@
     <string name="recurring_add_income">Legg til inntekt</string>
     <string name="recurring_add_payment">Legg til fast betaling</string>
     <string name="recurring_per_month">%1$s / mnd</string>
+    <string name="recurring_paid">Betalt</string>
+    <string name="recurring_mark_paid">Marker som betalt</string>
+    <string name="recurring_paid_count">%1$d av %2$d betalt</string>
     <string name="recurring_upgrade_more">Oppgrader for å legge til flere</string>
     <string name="recurring_money_empty_hint">Legg til inntekt og regninger for å se hva som er igjen hver måned.</string>
     <string name="recurring_this_month">Denne måneden</string>

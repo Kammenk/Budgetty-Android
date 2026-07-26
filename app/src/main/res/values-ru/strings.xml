@@ -118,6 +118,9 @@
     <string name="budget_spent_pct">Потрачено %1$s · %2$d%%</string>
     <string name="budget_left">Осталось %1$s</string>
     <string name="budget_over">Превышение %1$s</string>
+    <string name="budget_carried_over">+%1$s перенесено</string>
+    <string name="budget_rollover_title">Переносить неизрасходованный бюджет</string>
+    <string name="budget_rollover_hint">Неизрасходованный бюджет переходит на следующий период</string>
     <string name="budget_spent">Потрачено %1$s</string>
     <string name="budget_no_spend">Без расходов</string>
     <string name="budget_section_category">БЮДЖЕТ КАТЕГОРИИ</string>
@@ -585,6 +588,9 @@
     <string name="recurring_add_income">Добавить доход</string>
     <string name="recurring_add_payment">Добавить регулярный платёж</string>
     <string name="recurring_per_month">%1$s / мес.</string>
+    <string name="recurring_paid">Оплачено</string>
+    <string name="recurring_mark_paid">Отметить как оплаченное</string>
+    <string name="recurring_paid_count">Оплачено %1$d из %2$d</string>
     <string name="recurring_upgrade_more">Оформите подписку, чтобы добавить больше</string>
     <string name="recurring_money_empty_hint">Добавьте доход и счета, чтобы видеть, сколько остаётся каждый месяц.</string>
     <string name="recurring_this_month">Этот месяц</string>

@@ -118,6 +118,9 @@
     <string name="budget_spent_pct">%1$s uitgegeven · %2$d%%</string>
     <string name="budget_left">%1$s over</string>
     <string name="budget_over">%1$s te veel</string>
+    <string name="budget_carried_over">+%1$s overgedragen</string>
+    <string name="budget_rollover_title">Ongebruikt budget overdragen</string>
+    <string name="budget_rollover_hint">Niet-besteed budget gaat naar de volgende periode</string>
     <string name="budget_spent">%1$s uitgegeven</string>
     <string name="budget_no_spend">Geen uitgaven</string>
     <string name="budget_section_category">CATEGORIEBUDGET</string>
@@ -585,6 +588,9 @@
     <string name="recurring_add_income">Inkomen toevoegen</string>
     <string name="recurring_add_payment">Terugkerende betaling toevoegen</string>
     <string name="recurring_per_month">%1$s / mnd</string>
+    <string name="recurring_paid">Betaald</string>
+    <string name="recurring_mark_paid">Markeren als betaald</string>
+    <string name="recurring_paid_count">%1$d van %2$d betaald</string>
     <string name="recurring_upgrade_more">Upgrade om meer toe te voegen</string>
     <string name="recurring_money_empty_hint">Voeg je inkomen en rekeningen toe om te zien wat er elke maand overblijft.</string>
     <string name="recurring_this_month">Deze maand</string>

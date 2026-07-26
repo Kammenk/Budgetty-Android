@@ -380,6 +380,9 @@
     <string name="budget_spent_pct">%1$s cheltuit · %2$d%%</string>
     <string name="budget_left">%1$s rămas</string>
     <string name="budget_over">%1$s peste</string>
+    <string name="budget_carried_over">+%1$s reportat</string>
+    <string name="budget_rollover_title">Reportează bugetul neutilizat</string>
+    <string name="budget_rollover_hint">Bugetul necheltuit trece în perioada următoare</string>
     <string name="budget_spent">%1$s cheltuit</string>
     <string name="budget_no_spend">Nicio cheltuială</string>
     <string name="budget_section_category">BUGET CATEGORIE</string>
@@ -393,6 +396,9 @@
     <string name="recurring_add_income">Adaugă venit</string>
     <string name="recurring_add_payment">Adaugă plată recurentă</string>
     <string name="recurring_per_month">%1$s / lună</string>
+    <string name="recurring_paid">Plătit</string>
+    <string name="recurring_mark_paid">Marchează ca plătit</string>
+    <string name="recurring_paid_count">%1$d din %2$d plătite</string>
     <string name="recurring_upgrade_more">Fă upgrade pentru a adăuga mai multe</string>
     <string name="recurring_money_empty_hint">Adaugă-ți venitul și facturile pentru a vedea ce rămâne în fiecare lună.</string>
     <string name="recurring_this_month">Luna aceasta</string>

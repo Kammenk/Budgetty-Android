@@ -118,6 +118,9 @@
     <string name="budget_spent_pct">Похарчени %1$s · %2$d%%</string>
     <string name="budget_left">Остават %1$s</string>
     <string name="budget_over">%1$s над лимита</string>
+    <string name="budget_carried_over">+%1$s пренесени</string>
+    <string name="budget_rollover_title">Пренасяне на неизползван бюджет</string>
+    <string name="budget_rollover_hint">Неизразходваният бюджет преминава към следващия период</string>
     <string name="budget_spent">Похарчени %1$s</string>
     <string name="budget_no_spend">Без разходи</string>
     <string name="budget_section_category">БЮДЖЕТ ЗА КАТЕГОРИЯ</string>
@@ -585,6 +588,9 @@
     <string name="recurring_add_income">Добави доход</string>
     <string name="recurring_add_payment">Добави повтарящо се плащане</string>
     <string name="recurring_per_month">%1$s / мес.</string>
+    <string name="recurring_paid">Платено</string>
+    <string name="recurring_mark_paid">Отбележи като платено</string>
+    <string name="recurring_paid_count">%1$d от %2$d платени</string>
     <string name="recurring_upgrade_more">Надгради, за да добавиш още</string>
     <string name="recurring_money_empty_hint">Добави доход и сметки, за да видиш какво остава всеки месец.</string>
     <string name="recurring_this_month">Този месец</string>

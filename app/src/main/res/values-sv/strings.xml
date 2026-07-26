@@ -380,6 +380,9 @@
     <string name="budget_spent_pct">%1$s spenderat · %2$d%%</string>
     <string name="budget_left">%1$s kvar</string>
     <string name="budget_over">%1$s över</string>
+    <string name="budget_carried_over">+%1$s överfört</string>
+    <string name="budget_rollover_title">Överför oanvänd budget</string>
+    <string name="budget_rollover_hint">Oanvänd budget förs över till nästa period</string>
     <string name="budget_spent">%1$s spenderat</string>
     <string name="budget_no_spend">Inga utgifter</string>
     <string name="budget_section_category">KATEGORIBUDGET</string>
@@ -393,6 +396,9 @@
     <string name="recurring_add_income">Lägg till inkomst</string>
     <string name="recurring_add_payment">Lägg till återkommande betalning</string>
     <string name="recurring_per_month">%1$s / mån</string>
+    <string name="recurring_paid">Betald</string>
+    <string name="recurring_mark_paid">Markera som betald</string>
+    <string name="recurring_paid_count">%1$d av %2$d betalda</string>
     <string name="recurring_upgrade_more">Uppgradera för att lägga till fler</string>
     <string name="recurring_money_empty_hint">Lägg till din inkomst och dina räkningar för att se vad som är kvar varje månad.</string>
     <string name="recurring_this_month">Denna månad</string>
