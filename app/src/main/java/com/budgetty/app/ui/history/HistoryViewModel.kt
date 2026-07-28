@@ -208,7 +208,9 @@ class HistoryViewModel(
             HistoryUiState(
                 isLoaded = true,
                 groups = items.applyFilters(activeFilters, monthStartDay).groupIntoMonths(sort),
-                receiptGroups = items.buildReceipts(receipts).applyReceiptFilters(activeFilters, monthStartDay).groupReceiptsIntoMonths(sort),
+                receiptGroups = items.buildReceipts(receipts)
+                    .applyReceiptFilters(activeFilters, monthStartDay)
+                    .groupReceiptsIntoMonths(sort),
                 filters = activeFilters,
                 sort = sort,
                 categories = categories,
