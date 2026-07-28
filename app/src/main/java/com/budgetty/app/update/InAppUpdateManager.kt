@@ -38,6 +38,13 @@ class InAppUpdateManager(activity: ComponentActivity) {
     /** True once a FLEXIBLE update has finished downloading and is waiting for a restart to install. */
     val updateDownloaded: StateFlow<Boolean> = _updateDownloaded.asStateFlow()
 
+    // onCreate and onResume both trigger a check, so on a cold start two appUpdateInfo requests are in
+    // flight at once. This latch makes sure the flow for a freshly-available update is launched only
+    // once per activity instance: without it, both success callbacks reach startUpdateFlowForResult and
+    // Play's update sheet is launched twice, and the second launch swallows the user's first tap on
+    // "Update" — the reported "have to tap it twice" bug.
+    private var updateFlowStarted = false
+
     private val installListener = InstallStateUpdatedListener { state ->
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
             _updateDownloaded.value = true
@@ -61,12 +68,17 @@ class InAppUpdateManager(activity: ComponentActivity) {
         val options = AppUpdateOptions.newBuilder(UPDATE_TYPE).build()
         appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
             val availability = info.updateAvailability()
-            val shouldStart = (availability == UpdateAvailability.UPDATE_AVAILABLE &&
-                info.isUpdateTypeAllowed(options)) ||
-                // Resume an IMMEDIATE update that was interrupted (e.g. the app was backgrounded).
-                (availability == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
-                    UPDATE_TYPE == AppUpdateType.IMMEDIATE)
-            if (shouldStart) {
+            val freshUpdateReady = availability == UpdateAvailability.UPDATE_AVAILABLE &&
+                info.isUpdateTypeAllowed(options)
+            // Resume an IMMEDIATE update that was interrupted (e.g. the app was backgrounded). This is
+            // deliberately not gated by updateFlowStarted: onResume must be able to re-launch it.
+            val resumeInterruptedImmediate =
+                availability == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS &&
+                    UPDATE_TYPE == AppUpdateType.IMMEDIATE
+            if (freshUpdateReady && !updateFlowStarted) {
+                updateFlowStarted = true
+                appUpdateManager.startUpdateFlowForResult(info, updateLauncher, options)
+            } else if (resumeInterruptedImmediate) {
                 appUpdateManager.startUpdateFlowForResult(info, updateLauncher, options)
             }
             // A FLEXIBLE download may have completed while we were away — surface the prompt.
