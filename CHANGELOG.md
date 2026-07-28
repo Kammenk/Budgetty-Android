@@ -15,6 +15,22 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.0.0 (versionCode 1100) — 2026-07-28
+
+A feature release bundling everything since 10.8.0 — 10.9.0 was cut but never uploaded, so its two budgeting additions ship here for the first time, alongside a new Home period filter. (The MAJOR bump is mechanical: the previous version was 10.**9**.x, and MINOR rolls into MAJOR at 9.)
+
+### Added
+- **See any time period on Home** — the Home "Total spent" card now has a period filter with the same presets as Insights: **This month, Last month, Last 3 months, Last 6 months,** and **All time**. Pick a window and your spend total, receipt count, and category breakdown all follow it. For multi-month windows the monthly budget and planned-bills cards step aside for a per-month spending trend and your **average monthly spend**; "All time" shows your lifetime total and monthly average. Works on phones and tablets.
+- **Carry over unused budget** — a new **Carry over unused budget** switch on the Budget screen. Turn it on and whatever you don't spend this period rolls into the next period's available budget — for both the overall budget and each category. It's opt-in and off by default, and only *unspent* budget carries: going over is never held against you, and nothing negative rolls forward. Wherever your budget appears — the Budget screen, Home, Insights, and the home-screen widget — the limit and progress bar use budget + carried, with a green "+X carried over" line so you can see what came from last period. Weekly budgets don't carry.
+- **Mark recurring bills as paid** — each recurring bill now has a tap-to-tick "paid" check for its current cycle. A paid bill dims, the Payments section shows "N of M paid", and it drops off the Insights "upcoming bills" list until its next occurrence. No transaction is recorded — recurring stays planning-only, so ticking a bill never double-counts a scanned receipt — and the check resets on its own each new cycle.
+
+### Fixed
+- **History now follows your pay-cycle month** — with a **Month starts on** day set, History's date filters (This month, Last month, and the multi-month spans) still grouped by the calendar month, so they disagreed with Home, Insights, and the widgets. They now use the same pay-cycle window everywhere.
+
+> Database change: a new `budget_rollover` table (migration 18 → 19) persists each period's carried-over amount, since budget amounts change without history and can't be recomputed. Mark-as-paid needs no schema change (it reuses the existing `lastPosted` timestamp). Upgrading from 10.8.0 (schema v18) runs this migration.
+
+> **Play status — release commit cut 2026-07-28; signed AAB built 2026-07-28 (vc1100), pending Play upload.** Supersedes 10.8.0 (vc1080), the last actually-released build, and the never-uploaded 10.9.0 (vc1090). Release notes must cover the whole span (period filter + rollover + mark-as-paid).
+
 ## 10.9.0 (versionCode 1090) — 2026-07-26
 
 A feature (MINOR) release: two budgeting additions — carry unspent budget into the next period, and tick recurring bills off as you pay them.
@@ -28,7 +44,7 @@ A feature (MINOR) release: two budgeting additions — carry unspent budget into
 
 > Database change: a new `budget_rollover` table (migration 18 → 19) persists each period's carried-over amount, since budget amounts change without history and can't be recomputed. Mark-as-paid needs no schema change (it reuses the existing `lastPosted` timestamp).
 
-> **Play status — release commit cut 2026-07-26; signed AAB built 2026-07-26 (vc1090), pending Play upload.** Supersedes 10.8.0 (vc1080).
+> **Play status — cut 2026-07-26; the vc1090 AAB was built but NEVER uploaded. Superseded by 11.0.0 (vc1100), which ships this content for the first time.**
 
 ## 10.8.0 (versionCode 1080) — 2026-07-25
 
