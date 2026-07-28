@@ -245,6 +245,7 @@ private fun HomeScreenContent(
             else -> PhoneHomeContent(
                 state = state,
                 recentReceipts = recentReceipts,
+                onFilterSelected = onFilterSelected,
                 hiddenSections = hiddenSections,
                 sectionOrder = sectionOrder,
                 onToggleSection = onToggleSection,
@@ -326,7 +327,8 @@ private fun HomeScreenContent(
 @Composable
 private fun PhoneHomeContent(
     state: HomeUiState,
-    recentReceipts: List<Receipt>,
+    recentReceipts: List<Receipt> = emptyList(),
+    onFilterSelected: (DateRangeFilter) -> Unit,
     hiddenSections: Set<String>,
     sectionOrder: List<String>,
     onToggleSection: (HomeSection, Boolean) -> Unit,
@@ -373,7 +375,7 @@ private fun PhoneHomeContent(
             if (section.key !in hiddenSections) {
                 when (section) {
                     HomeSection.TOTAL_SPENT -> item(key = section.key) {
-                        SummaryCard(state = state)
+                        SummaryCard(state = state, onFilterSelected = onFilterSelected)
                         Spacer(Modifier.height(MaterialTheme.dimens.lg))
                     }
 
@@ -385,18 +387,23 @@ private fun PhoneHomeContent(
                             }
                         }
 
-                    HomeSection.BUDGETS -> item(key = section.key) {
-                        BudgetProgressCard(
-                            state = state,
-                            label = stringResource(R.string.home_budgets),
-                            monthlySpent = state.monthlySpent,
-                            monthlyBudget = state.monthlyBudget,
-                            weeklySpent = state.weeklySpent,
-                            weeklyBudget = state.weeklyBudget,
-                            onClick = onNavigateToBudget,
-                        )
-                        Spacer(Modifier.height(MaterialTheme.dimens.lg))
-                    }
+                    // The monthly + weekly budget plan only makes sense for the current month, so it
+                    // drops out when the period pill selects any other window (matching the bills strip).
+                    HomeSection.BUDGETS ->
+                        if (state.filter == DateRangeFilter.CURRENT_MONTH) {
+                            item(key = section.key) {
+                                BudgetProgressCard(
+                                    state = state,
+                                    label = stringResource(R.string.home_budgets),
+                                    monthlySpent = state.monthlySpent,
+                                    monthlyBudget = state.monthlyBudget,
+                                    weeklySpent = state.weeklySpent,
+                                    weeklyBudget = state.weeklyBudget,
+                                    onClick = onNavigateToBudget,
+                                )
+                                Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                            }
+                        }
 
                     HomeSection.RECEIPTS -> {
                         item(key = section.key) {
@@ -1179,6 +1186,7 @@ private fun HomeUiState.showsBills(): Boolean =
 private fun SummaryCard(
     state: HomeUiState,
     modifier: Modifier = Modifier,
+    onFilterSelected: (DateRangeFilter) -> Unit = {},
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -1188,11 +1196,17 @@ private fun SummaryCard(
         ),
     ) {
         Column(modifier = Modifier.padding(MaterialTheme.dimens.xl)) {
-            Text(
-                text = stringResource(R.string.home_total_spent, monthOrFilterLabel(state.filter)),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+            // The period pill carries the selected window, so the label stays a plain "Total spent".
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.home_section_total_spent),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                HomePeriodFilter(selected = state.filter, onSelected = onFilterSelected)
+            }
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
             if (state.isLoaded) {
                 Text(
                     text = state.total.formatMoney(),
@@ -1222,6 +1236,69 @@ private fun SummaryCard(
                     spent = state.total,
                     bills = state.monthlyBills,
                     modifier = Modifier.padding(top = MaterialTheme.dimens.md),
+                )
+            }
+            // Multi-month windows swap the monthly-plan cards for a spend trend + monthly average.
+            if (state.monthlyBreakdown.isNotEmpty()) {
+                MonthlyTrendBars(
+                    months = state.monthlyBreakdown,
+                    modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.lg),
+                )
+            }
+            if (state.monthlyAverage.signum() > 0) {
+                Text(
+                    text = stringResource(R.string.budget_approx_monthly, state.monthlyAverage.formatMoney()),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = MaterialTheme.dimens.md),
+                )
+            }
+        }
+    }
+}
+
+/**
+ * A compact per-month spend trend: one bar per month of the selected multi-month window (heights
+ * relative to the busiest month), with the abbreviated month name beneath. Replaces the monthly
+ * budget + bills cards, which don't apply once the window spans more than one month.
+ */
+@Composable
+private fun MonthlyTrendBars(
+    months: List<MonthlySpend>,
+    modifier: Modifier = Modifier,
+) {
+    val maxAmount = months.maxOfOrNull { it.amount } ?: BigDecimal.ZERO
+    val maxBarHeight = 56.dp
+    val minBarHeight = 4.dp
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+        verticalAlignment = Alignment.Bottom,
+    ) {
+        months.forEach { entry ->
+            val fraction = if (maxAmount.signum() > 0) {
+                (entry.amount.toDouble() / maxAmount.toDouble()).toFloat().coerceIn(0f, 1f)
+            } else {
+                0f
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(minBarHeight + (maxBarHeight - minBarHeight) * fraction)
+                        .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp, bottomStart = 3.dp, bottomEnd = 3.dp))
+                        .background(MaterialTheme.colorScheme.primary),
+                )
+                Spacer(Modifier.height(MaterialTheme.dimens.xs))
+                Text(
+                    text = entry.month.month.getDisplayName(java.time.format.TextStyle.SHORT, Locale.getDefault()),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
                 )
             }
         }
