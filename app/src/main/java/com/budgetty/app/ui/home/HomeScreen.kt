@@ -236,6 +236,7 @@ private fun HomeScreenContent(
             )
             isExpanded -> TabletHomeContent(
                 state = state,
+                onFilterSelected = onFilterSelected,
                 onReceiptClick = { selectedReceiptId = it },
                 onAddReceipt = { showAddSheet = true },
                 onNavigateToBudget = onNavigateToBudget,
@@ -464,6 +465,7 @@ private const val TABLET_RECEIPT_PREVIEW = 6
 @Composable
 private fun TabletHomeContent(
     state: HomeUiState,
+    onFilterSelected: (DateRangeFilter) -> Unit,
     onReceiptClick: (Long) -> Unit,
     onAddReceipt: () -> Unit,
     onNavigateToBudget: () -> Unit,
@@ -478,28 +480,41 @@ private fun TabletHomeContent(
             contentPadding = PaddingValues(start = MaterialTheme.dimens.screenPadding, end = MaterialTheme.dimens.screenPadding, bottom = 110.dp),
         ) {
             item {
-                Text(
-                    text = "Budgetty",
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = MaterialTheme.dimens.xs, top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg),
-                )
+                // Brand + period pill (no avatar here — the portrait tablet has no dashboard header).
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Budgetty",
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.xs),
+                    )
+                    HomePeriodFilter(selected = state.filter, onSelected = onFilterSelected)
+                }
             }
             item {
                 TabletSummaryCard(state = state)
                 Spacer(Modifier.height(MaterialTheme.dimens.lg))
             }
-            item {
-                BudgetProgressCard(
-                    state = state,
-                    label = stringResource(R.string.home_budgets),
-                    monthlySpent = state.monthlySpent,
-                    monthlyBudget = state.monthlyBudget,
-                    weeklySpent = state.weeklySpent,
-                    weeklyBudget = state.weeklyBudget,
-                    onClick = onNavigateToBudget,
-                )
-                Spacer(Modifier.height(MaterialTheme.dimens.lg))
+            // The monthly + weekly budget plan is a current-month concept, so it drops out when the
+            // period pill selects any other window (mirrors the phone Home and the bills strip).
+            if (state.filter == DateRangeFilter.CURRENT_MONTH) {
+                item {
+                    BudgetProgressCard(
+                        state = state,
+                        label = stringResource(R.string.home_budgets),
+                        monthlySpent = state.monthlySpent,
+                        monthlyBudget = state.monthlyBudget,
+                        weeklySpent = state.weeklySpent,
+                        weeklyBudget = state.weeklyBudget,
+                        onClick = onNavigateToBudget,
+                    )
+                    Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                }
             }
             item {
                 TopCategoriesCard(
@@ -577,15 +592,19 @@ private fun WideHomeContent(
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
                 ) {
                     TabletSummaryCard(state = state)
-                    BudgetProgressCard(
-                        state = state,
-                        label = stringResource(R.string.home_budgets),
-                        monthlySpent = state.monthlySpent,
-                        monthlyBudget = state.monthlyBudget,
-                        weeklySpent = state.weeklySpent,
-                        weeklyBudget = state.weeklyBudget,
-                        onClick = onNavigateToBudget,
-                    )
+                    // Hidden for non-month windows so the monthly budget plan isn't shown against a
+                    // multi-month or all-time total (mirrors the phone Home and the portrait tablet).
+                    if (state.filter == DateRangeFilter.CURRENT_MONTH) {
+                        BudgetProgressCard(
+                            state = state,
+                            label = stringResource(R.string.home_budgets),
+                            monthlySpent = state.monthlySpent,
+                            monthlyBudget = state.monthlyBudget,
+                            weeklySpent = state.weeklySpent,
+                            weeklyBudget = state.weeklyBudget,
+                            onClick = onNavigateToBudget,
+                        )
+                    }
                     TopCategoriesCard(
                         slices = state.slices,
                         total = state.total,
