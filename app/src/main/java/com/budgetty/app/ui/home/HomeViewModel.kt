@@ -19,6 +19,7 @@ import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
+import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.monthlyAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,9 +39,13 @@ import java.math.RoundingMode
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
+
+/** One month's spend within a multi-month Home window, for the summary card's mini trend bars. */
+data class MonthlySpend(val month: YearMonth, val amount: BigDecimal)
 
 data class HomeUiState(
     // False only for the initial placeholder the StateFlow emits before the first DB load lands.
@@ -70,6 +75,11 @@ data class HomeUiState(
     // there's nothing to compare against) and the average spend per elapsed day of the period.
     val previousPeriodSpent: BigDecimal? = null,
     val dailyAvg: BigDecimal = BigDecimal.ZERO,
+    // Multi-month period extras (empty/zero for single-month windows): per-pay-cycle-month spend for
+    // the summary card's mini trend bars (Last 3 / Last 6 months), and the average monthly spend across
+    // the window (Last 3 / Last 6 / All time), shown once the monthly budget + bills cards drop out.
+    val monthlyBreakdown: List<MonthlySpend> = emptyList(),
+    val monthlyAverage: BigDecimal = BigDecimal.ZERO,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -184,6 +194,8 @@ class HomeViewModel(
                 topCategoryAmount = topByCategory?.value ?: BigDecimal.ZERO,
                 previousPeriodSpent = previousSpent.takeIf { it.signum() > 0 },
                 dailyAvg = dailyAverage(total, ctx.filter, ctx.monthStartDay, txns),
+                monthlyBreakdown = monthlyBreakdown(txns, receiptsById, ctx.filter, ctx.monthStartDay),
+                monthlyAverage = monthlyAverage(total, ctx.filter, txns),
             )
         }.stateIn(
             scope = viewModelScope,
@@ -306,6 +318,61 @@ class HomeViewModel(
         val lastDay = if (endDate.isAfter(today)) today else endDate
         val days = (ChronoUnit.DAYS.between(startDate, lastDay) + 1).coerceAtLeast(1)
         return total.divide(BigDecimal(days), 2, RoundingMode.HALF_UP)
+    }
+
+    /**
+     * Per-pay-cycle-month spend across a multi-month window (Last 3 / Last 6 months), oldest first, for
+     * the summary card's mini trend bars. Empty for single-month and all-time windows — all-time spans
+     * too many months to bar sensibly, so it shows the monthly average alone.
+     */
+    private fun monthlyBreakdown(
+        txns: List<TransactionEntity>,
+        receiptsById: Map<Long, ReceiptEntity>,
+        filter: DateRangeFilter,
+        monthStartDay: Int,
+    ): List<MonthlySpend> {
+        val offsets = when (filter) {
+            DateRangeFilter.LAST_3_MONTHS -> (-2..0)
+            DateRangeFilter.LAST_6_MONTHS -> (-5..0)
+            else -> return emptyList()
+        }
+        val today = LocalDate.now()
+        return offsets.map { offset ->
+            val (startDate, endDate) = PayCycle.month(today, monthStartDay, offset)
+            val (start, end) = dateRangeToEpochMillis(startDate, endDate)
+            val monthTxns = txns.filter { it.timestamp in start..end }
+            MonthlySpend(
+                month = YearMonth.from(startDate),
+                amount = monthTxns.spend() + paidAdjustmentOf(monthTxns, receiptsById),
+            )
+        }
+    }
+
+    /**
+     * Average spend per month across the selected multi-month window: the window total split over its
+     * month count (3 or 6), or — for All time — over the months since the first recorded transaction.
+     * Zero for single-month windows, where an average would just restate the total.
+     */
+    private fun monthlyAverage(
+        total: BigDecimal,
+        filter: DateRangeFilter,
+        txns: List<TransactionEntity>,
+    ): BigDecimal {
+        val months = when (filter) {
+            DateRangeFilter.LAST_3_MONTHS -> 3
+            DateRangeFilter.LAST_6_MONTHS -> 6
+            DateRangeFilter.ALL_TIME -> monthsTracked(txns)
+            else -> 0
+        }
+        return if (months <= 0) BigDecimal.ZERO
+        else total.divide(BigDecimal(months), 2, RoundingMode.HALF_UP)
+    }
+
+    /** Whole months from the earliest recorded transaction through the current month, inclusive (min 1). */
+    private fun monthsTracked(txns: List<TransactionEntity>): Int {
+        val earliest = txns.minOfOrNull { it.timestamp } ?: return 0
+        val firstMonth = YearMonth.from(Instant.ofEpochMilli(earliest).atZone(ZoneId.systemDefault()))
+        return (ChronoUnit.MONTHS.between(firstMonth, YearMonth.now()) + 1).toInt().coerceAtLeast(1)
     }
 
     /** One slice per category, value = summed price × quantity, colored by the saved category color. */
