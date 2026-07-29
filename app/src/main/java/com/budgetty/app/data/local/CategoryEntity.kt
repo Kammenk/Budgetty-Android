@@ -27,4 +27,14 @@ data class CategoryEntity(
     /** Creation time (epoch millis); orders custom categories by when they were added. 0 when seeded. */
     @ColumnInfo(defaultValue = "0")
     val createdAt: Long = 0L,
+    /**
+     * Optional parent category (a nullable override of the built-in grouping). NULL means "use the
+     * default": a built-in falls back to its code-defined group ([Categories.groupOf]), a custom
+     * category is top-level. A non-null value re-homes this category under that parent — how users
+     * nest categories and move built-ins between groups. Two levels only: a parent is always
+     * top-level, so this never chains. Left NULL by the partial seed insert (built-ins derive their
+     * group from code) and by [MIGRATION_19_20], which only adds the column.
+     */
+    @ColumnInfo(defaultValue = "NULL")
+    val parent: String? = null,
 )

@@ -438,7 +438,7 @@ class UploadViewModel(
      * picker only enables Save when the form is valid. A rename cascades the new name across saved
      * transactions, category rules, and any per-category budget, then drops the old row.
      */
-    fun saveCustomCategory(original: String?, rawName: String, icon: String, colorArgb: Int) {
+    fun saveCustomCategory(original: String?, rawName: String, icon: String, colorArgb: Int, parent: String?) {
         val name = rawName.trim()
         if (name.isEmpty() || icon.isEmpty() || isDuplicateName(name, original)) return
         viewModelScope.launch {
@@ -458,18 +458,21 @@ class UploadViewModel(
                         icon = icon,
                         isCustom = true,
                         createdAt = System.currentTimeMillis(),
+                        parent = parent,
                     ),
                 )
             } else {
                 val createdAt = existing.firstOrNull { it.name == original }?.createdAt
                     ?: System.currentTimeMillis()
                 categoryRepository.upsert(
-                    CategoryEntity(name, colorArgb, icon, isCustom = true, createdAt = createdAt),
+                    CategoryEntity(name, colorArgb, icon, isCustom = true, createdAt = createdAt, parent = parent),
                 )
                 if (!name.equals(original, ignoreCase = true)) {
                     repository.reassignCategory(original, name)
                     categoryRuleRepository.reassignCategory(original, name)
                     budgetRepository.renameCategoryBudget(original, name)
+                    // Keep this category's own children attached across the rename.
+                    categoryRepository.reparentChildren(original, name)
                     categoryRepository.deleteByName(original)
                     _uiState.update { st ->
                         st.copy(
@@ -483,7 +486,21 @@ class UploadViewModel(
                         )
                     }
                 }
+                // Two levels only: a category given a parent can't also keep children — release them.
+                if (parent != null) categoryRepository.promoteChildrenOf(name)
             }
+        }
+    }
+
+    /**
+     * Re-homes any category — built-in or custom — under [parent] (null = top-level). Backs the
+     * picker's "Move to group" and the Parent-category selector. Releasing the moved category's own
+     * children keeps the taxonomy two levels deep.
+     */
+    fun setCategoryParent(name: String, parent: String?) {
+        viewModelScope.launch {
+            categoryRepository.setParent(name, parent)
+            if (parent != null) categoryRepository.promoteChildrenOf(name)
         }
     }
 
@@ -494,6 +511,8 @@ class UploadViewModel(
      */
     fun deleteCustomCategory(name: String) {
         viewModelScope.launch {
+            // Children of a deleted primary are promoted to top-level, keeping their own transactions.
+            categoryRepository.promoteChildrenOf(name)
             repository.reassignCategory(name, Categories.OTHER)
             categoryRuleRepository.removeRulesForCategory(name)
             budgetRepository.clearCategoryBudget(name)

@@ -9,6 +9,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -27,6 +28,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
@@ -35,6 +37,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
@@ -78,6 +81,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.EmojiCatalog
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.util.categoryDisplayName
@@ -90,9 +94,11 @@ import com.budgetty.app.ui.util.categoryDisplayName
 data class CustomCategoryActions(
     val categories: List<CategoryEntity> = emptyList(),
     val isPremium: Boolean = false,
-    val onSave: (original: String?, name: String, icon: String, colorArgb: Int) -> Unit =
-        { _, _, _, _ -> },
+    val onSave: (original: String?, name: String, icon: String, colorArgb: Int, parent: String?) -> Unit =
+        { _, _, _, _, _ -> },
     val onDelete: (name: String) -> Unit = {},
+    /** Re-homes [name] under a parent (null = top-level) — the picker's "Move to group" / re-parent. */
+    val onReparent: (name: String, parent: String?) -> Unit = { _, _ -> },
     val onCountTransactions: suspend (String) -> Int = { 0 },
     val onOpenPaywall: () -> Unit = {},
 )
@@ -216,6 +222,39 @@ private fun CategoryPickerContent(
 
 // ── Pick mode ──────────────────────────────────────────────────────────────────────────────────
 
+/** A category row's effective parent: its stored override, else the code-defined group, else null
+ *  (top-level). Row-accurate, so it doesn't depend on the process cache being in sync. */
+private fun effectiveParentOf(cat: CategoryEntity): String? =
+    cat.parent ?: Categories.defaultParentOf(cat.name)
+
+/** The picker's two-level tree: the user's top-level custom categories, and — per top-level name —
+ *  its effective children (built-ins in code order first, then re-homed-in and custom children). */
+private data class CategoryTree(
+    val customTopLevel: List<CategoryEntity>,
+    val childrenByParent: Map<String, List<CategoryEntity>>,
+)
+
+private fun buildCategoryTree(all: List<CategoryEntity>): CategoryTree {
+    val childrenByParent = all
+        .mapNotNull { cat -> effectiveParentOf(cat)?.let { parent -> parent to cat } }
+        .groupBy({ it.first }, { it.second })
+        .mapValues { (parent, kids) ->
+            val codeOrder = Categories.children(parent).map { it.name }
+            kids.sortedWith(
+                compareBy(
+                    { if (it.isCustom) 1 else 0 },
+                    { codeOrder.indexOf(it.name).let { i -> if (i < 0) Int.MAX_VALUE else i } },
+                    { it.createdAt },
+                    { it.name },
+                ),
+            )
+        }
+    val customTopLevel = all
+        .filter { it.isCustom && effectiveParentOf(it) == null }
+        .sortedBy { it.createdAt }
+    return CategoryTree(customTopLevel, childrenByParent)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ColumnScope.PickContent(
@@ -232,6 +271,9 @@ private fun ColumnScope.PickContent(
         custom.categories.filter { it.isCustom }.sortedBy { it.createdAt }
     }
     val cap = if (custom.isPremium) Categories.MAX_CUSTOM_LIMIT else Categories.FREE_CUSTOM_LIMIT
+    // The two-level tree (primaries + effective children) and the built-in currently being re-homed.
+    val tree = remember(custom.categories) { buildCategoryTree(custom.categories) }
+    var reparenting by remember { mutableStateOf<CategoryEntity?>(null) }
 
     TextField(
         value = query,
@@ -264,49 +306,18 @@ private fun ColumnScope.PickContent(
         contentPadding = PaddingValues(bottom = MaterialTheme.dimens.xxl),
     ) {
         if (q.isBlank()) {
-            // "Your categories": Create tile + the user's custom categories.
-            item(key = "your_header", span = { GridItemSpan(maxLineSpan) }) {
-                YourCategoriesHeader(used = customCats.size, cap = cap, unlimited = custom.isPremium)
-            }
-            item(key = "create_tile") {
-                CreateTile(
-                    canCreate = customCats.size < cap,
-                    isPremium = custom.isPremium,
-                    onCreate = onCreate,
-                    onOpenPaywall = custom.onOpenPaywall,
-                )
-            }
-            items(customCats, key = { "custom_${it.name}" }) { cat ->
-                CategoryCard(
-                    emoji = cat.icon,
-                    name = cat.name,
-                    color = Color(cat.colorArgb),
-                    selected = cat.name.equals(selected, ignoreCase = true),
-                    onClick = { onSelect(cat.name) },
-                    onEdit = { onEdit(cat) },
-                )
-            }
-            // Predefined groups.
-            Categories.groups.forEach { group ->
-                item(key = "g_${group.name}", span = { GridItemSpan(maxLineSpan) }) {
-                    CategoryGroupHeader(
-                        emoji = group.emoji,
-                        name = categoryDisplayName(group.name),
-                        color = Color(group.colorArgb),
-                        selected = group.name.equals(selected, ignoreCase = true),
-                        onClick = { onSelect(group.name) },
-                    )
-                }
-                items(Categories.children(group.name), key = { "c_${it.name}" }) { child ->
-                    CategoryCard(
-                        emoji = child.emoji,
-                        name = categoryDisplayName(child.name),
-                        color = Color(child.colorArgb),
-                        selected = child.name.equals(selected, ignoreCase = true),
-                        onClick = { onSelect(child.name) },
-                    )
-                }
-            }
+            hierarchyItems(
+                tree = tree,
+                customCats = customCats,
+                cap = cap,
+                isPremium = custom.isPremium,
+                selected = selected,
+                onSelect = onSelect,
+                onCreate = onCreate,
+                onEdit = onEdit,
+                onReparent = { reparenting = it },
+                onOpenPaywall = custom.onOpenPaywall,
+            )
         } else {
             val customMatches = customCats.filter { it.name.contains(q, ignoreCase = true) }
             val matches = Categories.predefined.filter {
@@ -333,6 +344,20 @@ private fun ColumnScope.PickContent(
                 )
             }
         }
+    }
+
+    // Re-homing a built-in child (long-press → "Move to group"): pick its new parent.
+    reparenting?.let { target ->
+        ParentPickerDialog(
+            currentParent = effectiveParentOf(target),
+            excludeName = target.name,
+            categories = custom.categories,
+            onPick = { newParent ->
+                custom.onReparent(target.name, newParent)
+                reparenting = null
+            },
+            onDismiss = { reparenting = null },
+        )
     }
 }
 
@@ -487,6 +512,7 @@ private fun TileLabel(text: String, color: Color) {
  * and its name. Tapping it picks the umbrella group, so it carries the same selected treatment
  * (tinted background + trailing check) as the cards.
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CategoryGroupHeader(
     emoji: String,
@@ -494,12 +520,19 @@ private fun CategoryGroupHeader(
     color: Color,
     selected: Boolean,
     onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
-            .clickable(onClick = onClick)
+            .then(
+                if (onLongClick != null) {
+                    Modifier.combinedClickable(onClick = onClick, onLongClick = onLongClick)
+                } else {
+                    Modifier.clickable(onClick = onClick)
+                },
+            )
             .padding(horizontal = 6.dp, vertical = MaterialTheme.dimens.sm),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -549,6 +582,7 @@ private fun CategoryCard(
     selected: Boolean,
     onClick: () -> Unit,
     onEdit: (() -> Unit)? = null,
+    onMove: (() -> Unit)? = null,
 ) {
     Box {
         Column(
@@ -570,10 +604,11 @@ private fun CategoryCard(
                     },
                 )
                 .then(
-                    if (onEdit != null) {
-                        Modifier.combinedClickable(onClick = onClick, onLongClick = onEdit)
-                    } else {
-                        Modifier.clickable(onClick = onClick)
+                    // Long-press edits a custom category, or (for a built-in) re-homes it into a group.
+                    when {
+                        onEdit != null -> Modifier.combinedClickable(onClick = onClick, onLongClick = onEdit)
+                        onMove != null -> Modifier.combinedClickable(onClick = onClick, onLongClick = onMove)
+                        else -> Modifier.clickable(onClick = onClick)
                     },
                 )
                 .padding(horizontal = 6.dp, vertical = 11.dp),
@@ -654,6 +689,9 @@ private fun ColumnScope.CreateEditContent(
     var name by remember(key) { mutableStateOf(original?.name ?: "") }
     var color by remember(key) { mutableStateOf(original?.colorArgb ?: Categories.defaultColor) }
     var icon by remember(key) { mutableStateOf(original?.icon ?: "") }
+    var iconQuery by remember(key) { mutableStateOf("") }
+    var parent by remember(key) { mutableStateOf(original?.parent) }
+    var showParentPicker by remember { mutableStateOf(false) }
     var showDeleteConfirm by remember(key) { mutableStateOf(false) }
 
     val trimmed = name.trim()
@@ -670,6 +708,46 @@ private fun ColumnScope.CreateEditContent(
     }
     val canSave = trimmed.isNotEmpty() && icon.isNotEmpty() && !duplicate
 
+    // Pinned: live preview, name, colour, then the icon search — only the sectioned icon grid below
+    // scrolls, so the search field stays reachable while browsing 200+ icons.
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = MaterialTheme.dimens.lg),
+    ) {
+        PreviewTile(icon = icon, color = Color(color), name = trimmed)
+        NameField(
+            value = name,
+            onValueChange = { name = it },
+            isError = duplicate,
+        )
+        SectionLabel(stringResource(R.string.custom_color_label))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(vertical = 2.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Categories.palette.forEach { swatch ->
+                ColorSwatch(
+                    color = Color(swatch),
+                    selected = swatch == color,
+                    onClick = { color = swatch },
+                )
+            }
+        }
+        SectionLabel(stringResource(R.string.custom_parent_label))
+        ParentField(parentName = parent, onClick = { showParentPicker = true })
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        IconSearchField(value = iconQuery, onValueChange = { iconQuery = it })
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+    }
+
+    // Blank query → the full sectioned pool; otherwise the keyword matches (exact-token first).
+    val iconMatches = remember(iconQuery) {
+        iconQuery.trim().takeIf { it.isNotEmpty() }?.let { EmojiCatalog.search(it) }
+    }
     LazyVerticalGrid(
         columns = GridCells.Fixed(5),
         modifier = Modifier
@@ -680,90 +758,21 @@ private fun ColumnScope.CreateEditContent(
         verticalArrangement = Arrangement.spacedBy(6.dp),
         contentPadding = PaddingValues(top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.sm),
     ) {
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            PreviewTile(icon = icon, color = Color(color), name = trimmed)
-        }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            NameField(
-                value = name,
-                onValueChange = { name = it },
-                isError = duplicate,
-            )
-        }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            SectionLabel(stringResource(R.string.custom_color_label))
-        }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-                    .padding(vertical = 2.dp),
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Categories.palette.forEach { swatch ->
-                    ColorSwatch(
-                        color = Color(swatch),
-                        selected = swatch == color,
-                        onClick = { color = swatch },
-                    )
-                }
-            }
-        }
-        item(span = { GridItemSpan(maxLineSpan) }) {
-            SectionLabel(stringResource(R.string.custom_icon_label))
-        }
-        items(Categories.iconChoices, key = { it }) { choice ->
-            IconTile(
-                emoji = choice,
-                color = Color(color),
-                selected = choice == icon,
-                onClick = { icon = choice },
-            )
-        }
+        iconChoiceGrid(
+            query = iconQuery.trim(),
+            matches = iconMatches,
+            color = color,
+            selectedIcon = icon,
+            onPick = { icon = it },
+        )
     }
 
-    // Footer: Save (+ Delete when editing). Both use the app's full-width 56dp button style.
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 18.dp, end = 18.dp, top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.lg),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Button(
-            onClick = { custom.onSave(original?.name, trimmed, icon, color); onSaved(trimmed) },
-            enabled = canSave,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(MaterialTheme.dimens.buttonHeight),
-        ) {
-            Text(
-                text = stringResource(R.string.action_save),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
-            )
-        }
-        if (original != null) {
-            OutlinedButton(
-                onClick = { showDeleteConfirm = true },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(MaterialTheme.dimens.buttonHeight),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.error,
-                ),
-                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.error),
-            ) {
-                Icon(Icons.Filled.DeleteOutline, contentDescription = null)
-                Spacer(Modifier.width(MaterialTheme.dimens.sm))
-                Text(
-                    text = stringResource(R.string.custom_delete),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-            }
-        }
-    }
+    CreateEditFooter(
+        isEditing = original != null,
+        canSave = canSave,
+        onSave = { custom.onSave(original?.name, trimmed, icon, color, parent); onSaved(trimmed) },
+        onDelete = { showDeleteConfirm = true },
+    )
 
     if (showDeleteConfirm && original != null) {
         DeleteConfirmDialog(
@@ -771,6 +780,16 @@ private fun ColumnScope.CreateEditContent(
             countProvider = custom.onCountTransactions,
             onConfirm = { custom.onDelete(original.name); onDeleted() },
             onDismiss = { showDeleteConfirm = false },
+        )
+    }
+
+    if (showParentPicker) {
+        ParentPickerDialog(
+            currentParent = parent,
+            excludeName = original?.name,
+            categories = custom.categories,
+            onPick = { parent = it; showParentPicker = false },
+            onDismiss = { showParentPicker = false },
         )
     }
 }
@@ -899,6 +918,408 @@ private fun IconTile(emoji: String, color: Color, selected: Boolean, onClick: ()
         ) {
             Text(emoji, fontSize = 24.sp)
         }
+    }
+}
+
+/** The "Pick" grid's hierarchy content: the "Your categories" header + Create tile, the user's custom
+ *  top-level categories (a primary as a header + its children, a childless one as a card), then each
+ *  predefined group with its effective children (re-homes included). */
+private fun LazyGridScope.hierarchyItems(
+    tree: CategoryTree,
+    customCats: List<CategoryEntity>,
+    cap: Int,
+    isPremium: Boolean,
+    selected: String,
+    onSelect: (String) -> Unit,
+    onCreate: () -> Unit,
+    onEdit: (CategoryEntity) -> Unit,
+    onReparent: (CategoryEntity) -> Unit,
+    onOpenPaywall: () -> Unit,
+) {
+    item(key = "your_header", span = { GridItemSpan(maxLineSpan) }) {
+        YourCategoriesHeader(used = customCats.size, cap = cap, unlimited = isPremium)
+    }
+    item(key = "create_tile") {
+        CreateTile(
+            canCreate = customCats.size < cap,
+            isPremium = isPremium,
+            onCreate = onCreate,
+            onOpenPaywall = onOpenPaywall,
+        )
+    }
+    tree.customTopLevel.forEach { primary ->
+        val kids = tree.childrenByParent[primary.name].orEmpty()
+        if (kids.isEmpty()) {
+            item(key = "custom_${primary.name}") {
+                CategoryCard(
+                    emoji = primary.icon,
+                    name = primary.name,
+                    color = Color(primary.colorArgb),
+                    selected = primary.name.equals(selected, ignoreCase = true),
+                    onClick = { onSelect(primary.name) },
+                    onEdit = { onEdit(primary) },
+                )
+            }
+        } else {
+            item(key = "customhdr_${primary.name}", span = { GridItemSpan(maxLineSpan) }) {
+                CategoryGroupHeader(
+                    emoji = primary.icon,
+                    name = primary.name,
+                    color = Color(primary.colorArgb),
+                    selected = primary.name.equals(selected, ignoreCase = true),
+                    onClick = { onSelect(primary.name) },
+                    onLongClick = { onEdit(primary) },
+                )
+            }
+            items(kids, key = { "cc_${it.name}" }) { child ->
+                HierarchyChildCard(child, selected, onSelect, onEdit) { onReparent(child) }
+            }
+        }
+    }
+    Categories.groups.forEach { group ->
+        item(key = "g_${group.name}", span = { GridItemSpan(maxLineSpan) }) {
+            CategoryGroupHeader(
+                emoji = group.emoji,
+                name = categoryDisplayName(group.name),
+                color = Color(group.colorArgb),
+                selected = group.name.equals(selected, ignoreCase = true),
+                onClick = { onSelect(group.name) },
+            )
+        }
+        items(tree.childrenByParent[group.name].orEmpty(), key = { "c_${it.name}" }) { child ->
+            HierarchyChildCard(child, selected, onSelect, onEdit) { onReparent(child) }
+        }
+    }
+}
+
+/** The create/edit icon grid content: the sectioned emoji pool, keyword matches, or a no-results state. */
+private fun LazyGridScope.iconChoiceGrid(
+    query: String,
+    matches: List<String>?,
+    color: Int,
+    selectedIcon: String,
+    onPick: (String) -> Unit,
+) {
+    when {
+        matches == null -> EmojiCatalog.sections.forEach { section ->
+            item(key = "sec_${section.title}", span = { GridItemSpan(maxLineSpan) }) {
+                EmojiSectionHeader(title = section.title, count = section.entries.size)
+            }
+            items(section.entries, key = { it.emoji }) { entry ->
+                IconTile(
+                    emoji = entry.emoji,
+                    color = Color(color),
+                    selected = entry.emoji == selectedIcon,
+                    onClick = { onPick(entry.emoji) },
+                )
+            }
+        }
+
+        matches.isEmpty() -> item(span = { GridItemSpan(maxLineSpan) }) {
+            NoIconMatches(query = query)
+        }
+
+        else -> items(matches, key = { it }) { emoji ->
+            IconTile(
+                emoji = emoji,
+                color = Color(color),
+                selected = emoji == selectedIcon,
+                onClick = { onPick(emoji) },
+            )
+        }
+    }
+}
+
+/** The create/edit footer: a full-width Save, plus a destructive Delete when editing. */
+@Composable
+private fun CreateEditFooter(
+    isEditing: Boolean,
+    canSave: Boolean,
+    onSave: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 18.dp, end = 18.dp, top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.lg),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        Button(
+            onClick = onSave,
+            enabled = canSave,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(MaterialTheme.dimens.buttonHeight),
+        ) {
+            Text(
+                text = stringResource(R.string.action_save),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+        }
+        if (isEditing) {
+            OutlinedButton(
+                onClick = onDelete,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(MaterialTheme.dimens.buttonHeight),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error,
+                ),
+                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.error),
+            ) {
+                Icon(Icons.Filled.DeleteOutline, contentDescription = null)
+                Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                Text(
+                    text = stringResource(R.string.custom_delete),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * One child card in the hierarchy grid. A custom child is editable (long-press opens its form, which
+ * carries the Parent selector); a built-in child is re-homeable (long-press → "Move to group").
+ */
+@Composable
+private fun HierarchyChildCard(
+    child: CategoryEntity,
+    selected: String,
+    onSelect: (String) -> Unit,
+    onEdit: (CategoryEntity) -> Unit,
+    onMove: () -> Unit,
+) {
+    CategoryCard(
+        emoji = child.icon.ifEmpty { Categories.emojiOf(child.name) },
+        name = if (child.isCustom) child.name else categoryDisplayName(child.name),
+        color = Color(child.colorArgb),
+        selected = child.name.equals(selected, ignoreCase = true),
+        onClick = { onSelect(child.name) },
+        onEdit = if (child.isCustom) ({ onEdit(child) }) else null,
+        onMove = if (child.isCustom) null else onMove,
+    )
+}
+
+/** The "Parent category" selector row in create/edit: shows the chosen parent (or "None"), and opens
+ *  the parent picker on tap. */
+@Composable
+private fun ParentField(parentName: String?, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(percent = 50))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 18.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (parentName == null) {
+            Text(
+                text = stringResource(R.string.custom_parent_none),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.weight(1f),
+            )
+        } else {
+            Text(text = Categories.emojiOf(parentName), fontSize = 18.sp)
+            Spacer(Modifier.width(10.dp))
+            Text(
+                text = categoryDisplayName(parentName),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+        }
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/**
+ * Dialog to choose a parent: "None (top-level)" plus every top-level category (built-in groups +
+ * custom primaries) except [excludeName] — a sub-category can't be a parent, and nothing can parent
+ * itself. Used by both the create/edit Parent selector and the built-in "Move to group" flow.
+ */
+@Composable
+private fun ParentPickerDialog(
+    currentParent: String?,
+    excludeName: String?,
+    categories: List<CategoryEntity>,
+    onPick: (String?) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val customPrimaries = remember(categories, excludeName) {
+        categories.filter {
+            it.isCustom && effectiveParentOf(it) == null && !it.name.equals(excludeName, ignoreCase = true)
+        }.sortedBy { it.createdAt }
+    }
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(28.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        ) {
+            Column(modifier = Modifier.padding(vertical = MaterialTheme.dimens.lg)) {
+                Text(
+                    text = stringResource(R.string.custom_parent_label),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 4.dp),
+                )
+                Column(
+                    modifier = Modifier
+                        .weight(1f, fill = false)
+                        .verticalScroll(rememberScrollState()),
+                ) {
+                    ParentOptionRow(
+                        emoji = "",
+                        label = stringResource(R.string.custom_parent_none),
+                        selected = currentParent == null,
+                        onClick = { onPick(null) },
+                    )
+                    Categories.groups
+                        .filter { !it.name.equals(excludeName, ignoreCase = true) }
+                        .forEach { group ->
+                            ParentOptionRow(
+                                emoji = group.emoji,
+                                label = categoryDisplayName(group.name),
+                                selected = group.name.equals(currentParent, ignoreCase = true),
+                                onClick = { onPick(group.name) },
+                            )
+                        }
+                    customPrimaries.forEach { primary ->
+                        ParentOptionRow(
+                            emoji = primary.icon,
+                            label = primary.name,
+                            selected = primary.name.equals(currentParent, ignoreCase = true),
+                            onClick = { onPick(primary.name) },
+                        )
+                    }
+                }
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .padding(horizontal = 12.dp),
+                ) { Text(stringResource(R.string.action_cancel)) }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ParentOptionRow(emoji: String, label: String, selected: Boolean, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 24.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (emoji.isNotEmpty()) {
+            Text(text = emoji, fontSize = 18.sp)
+            Spacer(Modifier.width(12.dp))
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f),
+        )
+        if (selected) {
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(MaterialTheme.dimens.iconSmall),
+            )
+        }
+    }
+}
+
+/** The pinned search field at the top of the icon area: filters the whole emoji pool by keyword. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun IconSearchField(value: String, onValueChange: (String) -> Unit) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = { Text(stringResource(R.string.custom_icon_search)) },
+        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
+        singleLine = true,
+        shape = RoundedCornerShape(percent = 50),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+        ),
+        modifier = Modifier.fillMaxWidth(),
+    )
+}
+
+/** A section divider in the icon grid: the section title, its icon count, and a trailing rule. */
+@Composable
+private fun EmojiSectionHeader(title: String, count: Int) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = MaterialTheme.dimens.sm, bottom = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = title.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.8.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.width(6.dp))
+        Text(
+            text = count.toString(),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+        )
+        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(MaterialTheme.dimens.hairline)
+                .background(MaterialTheme.colorScheme.outlineVariant),
+        )
+    }
+}
+
+/** Empty-search state in the icon grid: a quiet "nothing matched" line plus a recovery hint. */
+@Composable
+private fun NoIconMatches(query: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = MaterialTheme.dimens.xl, start = MaterialTheme.dimens.md, end = MaterialTheme.dimens.md),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Text(
+            text = stringResource(R.string.custom_icon_no_match, query),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            text = stringResource(R.string.custom_icon_no_match_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

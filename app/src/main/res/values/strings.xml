@@ -260,7 +260,12 @@
     <string name="custom_edit_title">Edit category</string>
     <string name="custom_name_hint">Name</string>
     <string name="custom_color_label">Color</string>
+    <string name="custom_parent_label">Parent category</string>
+    <string name="custom_parent_none">None (top-level)</string>
     <string name="custom_icon_label">Icon</string>
+    <string name="custom_icon_search">Search icons</string>
+    <string name="custom_icon_no_match">No icons match “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Try a shorter word — like “card”, “home” or “bill”.</string>
     <string name="custom_name_taken">Name already exists — try something different</string>
     <string name="custom_delete">Delete category</string>
     <string name="custom_delete_confirm_title">Delete %1$s?</string>

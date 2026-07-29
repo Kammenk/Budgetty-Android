@@ -30,8 +30,8 @@ class BudgettyApplication : Application() {
         // everywhere a category renders (rows, charts, history), not only in the picker.
         koin.get<CategoryRepository>().categories
             .onEach { cats ->
-                Categories.setCustomCategories(
-                    cats.filter { it.isCustom }.map { Triple(it.name, it.icon, it.colorArgb) },
+                Categories.setCategories(
+                    cats.map { Categories.CategoryData(it.name, it.icon, it.colorArgb, it.parent, it.isCustom) },
                 )
             }
             .launchIn(koin.get<CoroutineScope>())

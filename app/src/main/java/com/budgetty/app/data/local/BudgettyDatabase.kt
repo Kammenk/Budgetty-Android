@@ -12,7 +12,7 @@ import com.budgetty.app.category.Categories
         TransactionEntity::class, CategoryEntity::class, BudgetEntity::class, ReceiptEntity::class,
         CategoryRuleEntity::class, RecurringEntity::class, BudgetRolloverEntity::class,
     ],
-    version = 19,
+    version = 20,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -276,6 +276,20 @@ val MIGRATION_18_19 = object : Migration(18, 19) {
     }
 }
 
+/**
+ * v20 adds categories.parent — a nullable override of a category's group. NULL keeps the default
+ * (a built-in uses its code-defined group; a custom is top-level); a non-null value re-homes the
+ * category under that parent, so users can nest categories and move built-ins between groups. Only
+ * the column is added: existing rows stay NULL, and their grouping keeps resolving from code, so no
+ * data moves on upgrade. parent is user-editable, so — like icon/color for customs — the onOpen
+ * re-seed never rewrites it.
+ */
+val MIGRATION_19_20 = object : Migration(19, 20) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE categories ADD COLUMN parent TEXT DEFAULT NULL")
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -319,5 +333,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
     MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
-    MIGRATION_18_19,
+    MIGRATION_18_19, MIGRATION_19_20,
 )

@@ -234,6 +234,7 @@ fun UploadScreen(
         isPremium = state.isPremium,
         onSave = viewModel::saveCustomCategory,
         onDelete = viewModel::deleteCustomCategory,
+        onReparent = viewModel::setCategoryParent,
         onCountTransactions = viewModel::transactionCount,
         onOpenPaywall = onNavigateToPaywall,
     )

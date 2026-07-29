@@ -186,12 +186,29 @@ object Categories {
     fun children(group: String): List<Predefined> = predefined.filter { it.parent == group }
 
     /**
-     * The top-level group [name] rolls up into (case-insensitive): a sub-category returns its parent
-     * group, while a group, "Other", a custom, or an unknown category returns [name] unchanged. Used
-     * to collapse the Insights breakdown from every category down to the top-level groups.
+     * The effective parent of [name] (case-insensitive), or null when it is top-level. A stored
+     * parent override wins — a custom sub-category or a re-homed built-in — else the code-defined
+     * group for a predefined sub-category, else null (a group, "Other", a custom top-level, or an
+     * unknown name). Two levels only, so the result is always itself a top-level category.
      */
-    fun groupOf(name: String): String =
-        predefined.firstOrNull { it.name.equals(name, ignoreCase = true) }?.parent ?: name
+    fun parentOf(name: String): String? =
+        overrideParent[name.lowercase()]
+            ?: predefined.firstOrNull { it.name.equals(name, ignoreCase = true) }?.parent
+
+    /**
+     * The code-defined parent of [name] ignoring user overrides — the group a predefined sub-category
+     * sits in by default, else null (a group, "Other", or a name with no built-in). Lets callers that
+     * already hold a category row resolve its effective parent as `row.parent ?: defaultParentOf(name)`.
+     */
+    fun defaultParentOf(name: String): String? =
+        predefined.firstOrNull { it.name.equals(name, ignoreCase = true) }?.parent
+
+    /**
+     * The top-level group [name] rolls up into (case-insensitive): its [parentOf] when it has one,
+     * else itself. Collapses the Insights breakdown from every category down to its top-level group —
+     * now including custom primaries and any built-in a user has re-homed.
+     */
+    fun groupOf(name: String): String = parentOf(name) ?: name
 
     /**
      * The colors offered when a user creates a custom category — the app's own category-color
@@ -207,10 +224,12 @@ object Categories {
     val defaultColor: Int = palette.first()
 
     /**
-     * The emoji offered in the custom-category icon grid: the distinct icons already used by the
-     * predefined categories, so custom categories reuse the app's existing emoji vocabulary.
+     * The emoji offered in the custom-category icon grid — the curated [EmojiCatalog] pool (~220
+     * glyphs across nine searchable sections), so custom categories are no longer limited to the
+     * built-in vocabulary. The picker reads [EmojiCatalog.sections] directly for the sectioned,
+     * searchable grid; this flat list is the same pool for any caller that just needs the choices.
      */
-    val iconChoices: List<String> = predefined.map { it.emoji }.distinct()
+    val iconChoices: List<String> get() = EmojiCatalog.all
 
     /**
      * User-created categories, cached at process scope so [colorOf] and [emojiOf] resolve them
@@ -223,10 +242,35 @@ object Categories {
     @Volatile
     private var customByName: Map<String, Predefined> = emptyMap()
 
-    /** Replaces the custom-category cache. [items] = (name, emoji, colorArgb) for user categories. */
-    fun setCustomCategories(items: List<Triple<String, String, Int>>) {
-        customByName = items.associate { (name, emoji, color) ->
-            name.lowercase() to Predefined(name, emoji, color, parent = null)
+    /**
+     * Parent overrides keyed by lower-cased name — every category whose stored parent is non-null:
+     * custom sub-categories AND built-ins the user has re-homed into another group. [parentOf] /
+     * [groupOf] consult this before the code-defined grouping, so a user's nesting wins app-wide.
+     */
+    @Volatile
+    private var overrideParent: Map<String, String> = emptyMap()
+
+    /** A category row as the caches need it: identity, its emoji/color for rendering, its parent
+     *  override, and whether it is user-created. Android-free so [Categories] stays testable. */
+    data class CategoryData(
+        val name: String,
+        val emoji: String,
+        val colorArgb: Int,
+        val parent: String?,
+        val isCustom: Boolean,
+    )
+
+    /**
+     * Refreshes the process-scoped category caches from the database (see BudgettyApplication).
+     * Custom categories feed [colorOf] / [emojiOf]; every non-null parent (a custom child or a
+     * re-homed built-in) feeds [parentOf] / [groupOf].
+     */
+    fun setCategories(items: List<CategoryData>) {
+        customByName = items.filter { it.isCustom }.associate { item ->
+            item.name.lowercase() to Predefined(item.name, item.emoji, item.colorArgb, item.parent)
+        }
+        overrideParent = items.filter { it.parent != null }.associate { item ->
+            item.name.lowercase() to item.parent!!
         }
     }
 

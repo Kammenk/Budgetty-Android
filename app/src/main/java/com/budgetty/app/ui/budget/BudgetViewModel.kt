@@ -255,7 +255,7 @@ class BudgetViewModel(
     // custom categories identically (rename cascades across transactions, rules, and budgets).
 
     /** Creates a new custom category, or renames/updates an existing one. No-ops on invalid input. */
-    fun saveCustomCategory(original: String?, rawName: String, icon: String, colorArgb: Int) {
+    fun saveCustomCategory(original: String?, rawName: String, icon: String, colorArgb: Int, parent: String?) {
         val name = rawName.trim()
         if (name.isEmpty() || icon.isEmpty() || isDuplicateName(name, original)) return
         viewModelScope.launch {
@@ -270,27 +270,39 @@ class BudgetViewModel(
                         icon = icon,
                         isCustom = true,
                         createdAt = System.currentTimeMillis(),
+                        parent = parent,
                     ),
                 )
             } else {
                 val createdAt = existing.firstOrNull { it.name == original }?.createdAt
                     ?: System.currentTimeMillis()
                 categoryRepository.upsert(
-                    CategoryEntity(name, colorArgb, icon, isCustom = true, createdAt = createdAt),
+                    CategoryEntity(name, colorArgb, icon, isCustom = true, createdAt = createdAt, parent = parent),
                 )
                 if (!name.equals(original, ignoreCase = true)) {
                     transactionRepository.reassignCategory(original, name)
                     categoryRuleRepository.reassignCategory(original, name)
                     repository.renameCategoryBudget(original, name)
+                    categoryRepository.reparentChildren(original, name)
                     categoryRepository.deleteByName(original)
                 }
+                if (parent != null) categoryRepository.promoteChildrenOf(name)
             }
+        }
+    }
+
+    /** Re-homes any category under [parent] (null = top-level); mirrors UploadViewModel. */
+    fun setCategoryParent(name: String, parent: String?) {
+        viewModelScope.launch {
+            categoryRepository.setParent(name, parent)
+            if (parent != null) categoryRepository.promoteChildrenOf(name)
         }
     }
 
     /** Deletes a custom category: its transactions fall back to "Other"; rules and budget are cleared. */
     fun deleteCustomCategory(name: String) {
         viewModelScope.launch {
+            categoryRepository.promoteChildrenOf(name)
             transactionRepository.reassignCategory(name, Categories.OTHER)
             categoryRuleRepository.removeRulesForCategory(name)
             repository.clearCategoryBudget(name)

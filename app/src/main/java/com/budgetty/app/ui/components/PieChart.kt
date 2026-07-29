@@ -2,6 +2,7 @@ package com.budgetty.app.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -385,6 +387,13 @@ fun PieChart(
                 modifier = Modifier.widthIn(max = chartSize * 0.6f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+                // On tap, the tapped category's emoji sits above its name in the hollow center.
+                if (selected != null) {
+                    val centerEmoji = Categories.emojiOf(selected.label)
+                    if (centerEmoji.isNotEmpty()) {
+                        Text(text = centerEmoji, fontSize = 16.sp)
+                    }
+                }
                 Text(
                     text = selected?.label ?: "Total",
                     style = MaterialTheme.typography.labelMedium,
@@ -416,10 +425,14 @@ fun PieChart(
 
         Spacer(Modifier.height(20.dp))
 
-        // Two-column legend of the top categories, each with its spend. Tapping a row opens
-        // that category's transactions.
+        // Two-column legend of the top categories, each with its emoji, share, and spend. Tapping a
+        // row opens that category's transactions; when a slice is tapped its legend row stays lit
+        // while the rest recede, mirroring the ring.
+        val selectedLabel = selectedIndex?.let { donutSlices.getOrNull(it)?.label }
         LegendGrid(
             slices = slices.take(TOP_CATEGORY_LIMIT),
+            basis = sliceTotal,
+            selectedLabel = selectedLabel,
             onCategoryClick = onCategoryClick,
             modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
         )
@@ -640,18 +653,22 @@ private fun PieChartEmptyState(
 @Composable
 private fun LegendGrid(
     slices: List<PieSlice>,
+    basis: BigDecimal,
+    selectedLabel: String?,
     onCategoryClick: (PieSlice) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(9.dp),
     ) {
         slices.chunked(2).forEach { rowSlices ->
-            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 rowSlices.forEach { slice ->
                     SliceRow(
                         slice = slice,
+                        basis = basis,
+                        selectedLabel = selectedLabel,
                         modifier = Modifier
                             .weight(1f)
                             .clickable { onCategoryClick(slice) },
@@ -666,37 +683,73 @@ private fun LegendGrid(
     }
 }
 
-/** A single legend/sheet entry: color dot, product name, and its spend. */
+/**
+ * A single legend entry: a colored emoji tile, the category name, and — stacked beneath it — the
+ * category's percentage over its (muted) spend. [basis] is the period total the percentage is taken
+ * against, kept equal to the ring's own basis so a row's % matches its on-ring label. When another
+ * slice is [selectedLabel]-selected this row dims; when it is the selected one its tile gains a ring.
+ */
 @Composable
 private fun SliceRow(
     slice: PieSlice,
+    basis: BigDecimal,
+    selectedLabel: String?,
     modifier: Modifier = Modifier,
 ) {
+    val isSelected = selectedLabel != null && slice.label == selectedLabel
+    val dimmed = selectedLabel != null && !isSelected
+    val pct = if (basis <= BigDecimal.ZERO) 0
+    else slice.value.multiply(BigDecimal(100))
+        .divide(basis, 0, java.math.RoundingMode.HALF_UP).toInt()
     Row(
-        modifier = modifier,
+        modifier = modifier.alpha(if (dimmed) 0.4f else 1f),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val emoji = Categories.emojiOf(slice.label)
         Box(
             modifier = Modifier
-                .size(10.dp)
-                .clip(CircleShape)
-                .background(slice.color),
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = categoryDisplayName(slice.label),
-            style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.Medium,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f),
-        )
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = slice.value.formatMoney(),
-            style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+                .size(26.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(slice.color)
+                .then(
+                    if (isSelected) {
+                        Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                    } else {
+                        Modifier
+                    },
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (emoji.isNotEmpty()) {
+                Text(text = emoji, fontSize = 13.sp)
+            }
+        }
+        Spacer(Modifier.width(7.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = categoryDisplayName(slice.label),
+                fontSize = 11.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Row {
+                Text(
+                    text = "$pct%",
+                    fontSize = 11.5.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.alignByBaseline(),
+                )
+                Spacer(Modifier.width(5.dp))
+                Text(
+                    text = slice.value.formatMoney(),
+                    fontSize = 10.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.alignByBaseline(),
+                )
+            }
+        }
     }
 }
