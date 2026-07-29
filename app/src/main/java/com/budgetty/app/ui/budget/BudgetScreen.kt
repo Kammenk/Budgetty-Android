@@ -143,6 +143,7 @@ fun BudgetScreen(
             isPremium = isPremium,
             onSave = viewModel::saveCustomCategory,
             onDelete = viewModel::deleteCustomCategory,
+            onReparent = viewModel::setCategoryParent,
             onCountTransactions = viewModel::transactionCount,
             onOpenPaywall = onNavigateToPaywall,
         ),
@@ -238,11 +239,20 @@ private fun BudgetScreenContent(
         if (rolloverEnabled) (carried[key] ?: BigDecimal.ZERO) else BigDecimal.ZERO
     fun effectiveBudget(key: String, base: BigDecimal?): BigDecimal? = base?.let { it + carriedFor(key) }
 
-    // Aggregate spend for a top-level group = its own spend plus all its sub-categories'.
+    // Aggregate spend for a top-level group = its own spend plus all its effective sub-categories'.
     fun groupSpend(group: Categories.Predefined): BigDecimal =
-        Categories.children(group.name).fold(spending[group.name] ?: BigDecimal.ZERO) { acc, child ->
+        effectiveChildren(group.name, categories).fold(spending[group.name] ?: BigDecimal.ZERO) { acc, child ->
             acc + (spending[child.name] ?: BigDecimal.ZERO)
         }
+
+    // Group budget total = the group's own budget plus its children's — the rolled-up limit (View C).
+    fun groupBudget(group: Categories.Predefined): BigDecimal? {
+        val own = budgets[BudgetRepository.categoryKey(group.name)] ?: BigDecimal.ZERO
+        val kids = effectiveChildren(group.name, categories).fold(BigDecimal.ZERO) { acc, child ->
+            acc + (budgets[BudgetRepository.categoryKey(child.name)] ?: BigDecimal.ZERO)
+        }
+        return (own + kids).takeIf { it.signum() > 0 }
+    }
 
     // The top-level group whose sub-budget sheet is open, if any.
     var sheetGroup by remember { mutableStateOf<Categories.Predefined?>(null) }
@@ -269,8 +279,8 @@ private fun BudgetScreenContent(
         val billLimitReached =
             !isPremium && recurring.bills.size >= RecurringRepository.FREE_RECURRING_LIMIT
         // Every sub-category that already has a budget, surfaced for inline editing above the groups.
-        val activeSubs = Categories.groups.flatMap { group ->
-            Categories.children(group.name)
+        val activeSubs = budgetGroups(categories).flatMap { group ->
+            effectiveChildren(group.name, categories)
                 .filter { (budgets[BudgetRepository.categoryKey(it.name)]?.signum() ?: 0) > 0 }
                 .map { ActiveSub(group, it) }
         }
@@ -394,15 +404,15 @@ private fun BudgetScreenContent(
                 if (singleColumn) {
                     // One card, a row per top-level group — matches the TabletPortrait / two-pane design.
                     CategoryBudgetList(
-                        groups = Categories.groups,
+                        groups = budgetGroups(categories),
                         spendOf = { groupSpend(it) },
-                        budgets = budgets,
+                        budgetOf = { groupBudget(it) },
                         carriedFor = ::carriedFor,
                         onOpenGroup = { sheetGroup = it },
                     )
                 } else {
                     // The phone's two-up grid of category boxes; tapping one opens its sub-budget sheet.
-                    Categories.groups.chunked(2).forEach { rowGroups ->
+                    budgetGroups(categories).chunked(2).forEach { rowGroups ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -410,13 +420,13 @@ private fun BudgetScreenContent(
                             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
                         ) {
                             rowGroups.forEach { group ->
-                                val children = Categories.children(group.name)
+                                val children = effectiveChildren(group.name, categories)
                                 val groupKey = BudgetRepository.categoryKey(group.name)
                                 CategoryGroupBox(
                                     emoji = group.emoji,
                                     name = categoryDisplayName(group.name),
                                     spent = groupSpend(group),
-                                    budget = effectiveBudget(groupKey, budgets[groupKey]),
+                                    budget = effectiveBudget(groupKey, groupBudget(group)),
                                     carried = carriedFor(groupKey),
                                     activeSubCount = children.count {
                                         (budgets[BudgetRepository.categoryKey(it.name)]?.signum() ?: 0) > 0
@@ -486,6 +496,7 @@ private fun BudgetScreenContent(
     sheetGroup?.let { group ->
         CategoryBudgetSheet(
             group = group,
+            allChildren = effectiveChildren(group.name, categories),
             valueFor = ::valueFor,
             budgets = budgets,
             spending = spending,
@@ -781,7 +792,7 @@ private fun CategoryGroupBox(
 private fun CategoryBudgetList(
     groups: List<Categories.Predefined>,
     spendOf: (Categories.Predefined) -> BigDecimal,
-    budgets: Map<String, BigDecimal>,
+    budgetOf: (Categories.Predefined) -> BigDecimal?,
     carriedFor: (String) -> BigDecimal,
     onOpenGroup: (Categories.Predefined) -> Unit,
     modifier: Modifier = Modifier,
@@ -799,7 +810,7 @@ private fun CategoryBudgetList(
                 colorArgb = group.colorArgb,
                 name = categoryDisplayName(group.name),
                 spent = spendOf(group),
-                budget = budgets[groupKey]?.let { it + carried },
+                budget = budgetOf(group)?.let { it + carried },
                 carried = carried,
                 onClick = { onOpenGroup(group) },
             )
@@ -906,6 +917,51 @@ private data class ActiveSub(val group: Categories.Predefined, val child: Catego
 
 /** Max active sub-budget rows shown before the "Show N more" expander. */
 private const val ACTIVE_SUBS_CAP = 3
+
+/** A [Categories.Predefined] view of a category row, so custom primaries and re-homed built-ins flow
+ *  through the budget UI (which is written against Predefined). */
+private fun CategoryEntity.asPredefined(parent: String?): Categories.Predefined =
+    Categories.Predefined(name, icon.ifEmpty { Categories.emojiOf(name) }, colorArgb, parent)
+
+/**
+ * Top-level budget groups: the built-in groups plus the user's custom primaries — top-level custom
+ * categories that have at least one (effective) child. A custom primary renders exactly like a
+ * built-in group. Falls back to the built-in groups until the category rows have loaded.
+ */
+private fun budgetGroups(categories: List<CategoryEntity>): List<Categories.Predefined> {
+    if (categories.isEmpty()) return Categories.groups
+    fun eff(c: CategoryEntity) = c.parent ?: Categories.defaultParentOf(c.name)
+    val customPrimaries = categories
+        .filter { cat -> cat.isCustom && eff(cat) == null && categories.any { eff(it) == cat.name } }
+        .sortedBy { it.createdAt }
+        .map { it.asPredefined(null) }
+    return Categories.groups + customPrimaries
+}
+
+/**
+ * The effective children of [groupName]: built-ins in code order first, then re-homed-in and custom
+ * children — the same two-level tree the picker shows, as Predefined for the budget UI. Falls back to
+ * the built-in children until the category rows have loaded.
+ */
+private fun effectiveChildren(
+    groupName: String,
+    categories: List<CategoryEntity>,
+): List<Categories.Predefined> {
+    if (categories.isEmpty()) return Categories.children(groupName)
+    fun eff(c: CategoryEntity) = c.parent ?: Categories.defaultParentOf(c.name)
+    val codeOrder = Categories.children(groupName).map { it.name }
+    return categories
+        .filter { eff(it) == groupName }
+        .sortedWith(
+            compareBy(
+                { if (it.isCustom) 1 else 0 },
+                { codeOrder.indexOf(it.name).let { i -> if (i < 0) Int.MAX_VALUE else i } },
+                { it.createdAt },
+                { it.name },
+            ),
+        )
+        .map { it.asPredefined(groupName) }
+}
 
 /**
  * "Active sub-budgets" block: every sub-category that currently has a budget, pulled out of its
@@ -1087,6 +1143,7 @@ private fun ActiveSubBudgetRow(
 @Composable
 private fun CategoryBudgetSheet(
     group: Categories.Predefined,
+    allChildren: List<Categories.Predefined>,
     valueFor: (String) -> String,
     budgets: Map<String, BigDecimal>,
     spending: Map<String, BigDecimal>,
@@ -1097,8 +1154,8 @@ private fun CategoryBudgetSheet(
     // Sub-categories that already have a budget set appear at the top; snapshotted when the sheet
     // opens (keyed on group) so rows don't reshuffle while the user is typing. This order is derived
     // from the saved budgets, so it persists naturally across reopens.
-    val children = remember(group) {
-        Categories.children(group.name).sortedByDescending { child ->
+    val children = remember(group, allChildren) {
+        allChildren.sortedByDescending { child ->
             val amount = budgets[BudgetRepository.categoryKey(child.name)]
             amount != null && amount.signum() > 0
         }
