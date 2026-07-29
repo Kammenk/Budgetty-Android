@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
@@ -108,6 +109,10 @@ private const val MIN_SLICE_DEGREES = 9f
  */
 private val LABEL_RESERVE_H: Dp = 52.dp
 private val LABEL_RESERVE_V: Dp = 26.dp
+
+/** Tight text style for the legend rows: drops the extra font padding so the category name sits
+ *  directly above its percentage, matching the design's stacked pair. */
+private val LEGEND_TIGHT = TextStyle(platformStyle = PlatformTextStyle(includeFontPadding = false))
 
 /** Percentage-label leader: gap from the rim, the line's own length, then a gap before the text. */
 private val LEADER_GAP: Dp = 2.dp
@@ -708,12 +713,12 @@ private fun SliceRow(
         val emoji = Categories.emojiOf(slice.label)
         Box(
             modifier = Modifier
-                .size(26.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(32.dp)
+                .clip(RoundedCornerShape(9.dp))
                 .background(slice.color)
                 .then(
                     if (isSelected) {
-                        Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                        Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(9.dp))
                     } else {
                         Modifier
                     },
@@ -721,14 +726,16 @@ private fun SliceRow(
             contentAlignment = Alignment.Center,
         ) {
             if (emoji.isNotEmpty()) {
-                Text(text = emoji, fontSize = 13.sp)
+                Text(text = emoji, fontSize = 17.sp)
             }
         }
-        Spacer(Modifier.width(7.dp))
+        Spacer(Modifier.width(8.dp))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = categoryDisplayName(slice.label),
-                fontSize = 11.sp,
+                style = LEGEND_TIGHT,
+                fontSize = 12.sp,
+                lineHeight = 13.sp,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
@@ -737,7 +744,9 @@ private fun SliceRow(
             Row {
                 Text(
                     text = "$pct%",
-                    fontSize = 11.5.sp,
+                    style = LEGEND_TIGHT,
+                    fontSize = 12.sp,
+                    lineHeight = 13.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.alignByBaseline(),
@@ -745,7 +754,9 @@ private fun SliceRow(
                 Spacer(Modifier.width(5.dp))
                 Text(
                     text = slice.value.formatMoney(),
-                    fontSize = 10.sp,
+                    style = LEGEND_TIGHT,
+                    fontSize = 10.5.sp,
+                    lineHeight = 13.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.alignByBaseline(),
                 )
