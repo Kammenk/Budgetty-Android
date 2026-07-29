@@ -713,12 +713,12 @@ private fun SliceRow(
         val emoji = Categories.emojiOf(slice.label)
         Box(
             modifier = Modifier
-                .size(32.dp)
-                .clip(RoundedCornerShape(9.dp))
+                .size(36.dp)
+                .clip(RoundedCornerShape(10.dp))
                 .background(slice.color)
                 .then(
                     if (isSelected) {
-                        Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(9.dp))
+                        Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
                     } else {
                         Modifier
                     },
@@ -726,7 +726,7 @@ private fun SliceRow(
             contentAlignment = Alignment.Center,
         ) {
             if (emoji.isNotEmpty()) {
-                Text(text = emoji, fontSize = 17.sp)
+                Text(text = emoji, fontSize = 19.sp)
             }
         }
         Spacer(Modifier.width(8.dp))
