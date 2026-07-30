@@ -638,4 +638,19 @@
     <string name="cd_collapse_day">Samenvouwen</string>
     <string name="update_downloaded_message">Er is een update gedownload.</string>
     <string name="update_restart_action">Opnieuw starten</string>
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Vrij besteedbaar</string>
+    <string name="safe_to_spend_spent">Uitgegeven · %1$s</string>
+    <string name="safe_to_spend_bills_due">Openstaande rekeningen</string>
+    <string name="safe_to_spend_bills_paid">%1$s al betaald</string>
+    <string name="safe_to_spend_resets">nieuw vanaf %1$s</string>
+    <string name="safe_to_spend_over">%1$s te veel — meer uitgegeven dan er deze cyclus over is.</string>
+    <string name="safe_to_spend_income_foot">Beide komen deze cyclus uit je inkomen van %1$s.</string>
+    <string name="safe_to_spend_setup_message">Voeg je inkomen toe om te zien wat je veilig kunt uitgeven voor je betaaldag.</string>
+    <string name="safe_to_spend_setup_cta">Inkomen instellen</string>
+    <string name="safe_to_spend_setup_foot">Je inkomen staat in het tabblad Budget · ongeveer een minuut om toe te voegen.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/dag voor de komende %2$d dag</item>
+        <item quantity="other">%1$s/dag voor de komende %2$d dagen</item>
+    </plurals>
 </resources>

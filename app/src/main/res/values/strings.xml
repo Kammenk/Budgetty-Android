@@ -181,6 +181,17 @@
     <string name="home_legend_spent">Spent</string>
     <string name="home_legend_bills">Bills · planned</string>
     <string name="home_with_bills">With bills</string>
+    <!-- Safe to spend: current pay-cycle cash-flow card at the top of Home -->
+    <string name="safe_to_spend_title">Safe to spend</string>
+    <string name="safe_to_spend_spent">Spent · %1$s</string>
+    <string name="safe_to_spend_bills_due">Bills still due</string>
+    <string name="safe_to_spend_bills_paid">%1$s already paid</string>
+    <string name="safe_to_spend_resets">resets %1$s</string>
+    <string name="safe_to_spend_over">%1$s over — spent more than you have left this cycle.</string>
+    <string name="safe_to_spend_income_foot">Both come out of %1$s income this cycle.</string>
+    <string name="safe_to_spend_setup_message">Add your income to see what\'s safe to spend before payday.</string>
+    <string name="safe_to_spend_setup_cta">Set up income</string>
+    <string name="safe_to_spend_setup_foot">Income lives in the Budget tab · about a minute to add.</string>
     <string name="snackbar_receipt_deleted">Receipt deleted</string>
     <string name="snackbar_item_deleted">Item deleted</string>
 
@@ -646,6 +657,10 @@
     <plurals name="home_across_receipts">
         <item quantity="one">across %1$d receipt</item>
         <item quantity="other">across %1$d receipts</item>
+    </plurals>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/day for the next %2$d day</item>
+        <item quantity="other">%1$s/day for the next %2$d days</item>
     </plurals>
 
     <!-- Category display names (canonical DB/AI names stay English; these are display-only) -->

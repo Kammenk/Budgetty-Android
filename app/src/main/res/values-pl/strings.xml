@@ -638,4 +638,22 @@
     <string name="cd_collapse_day">Zwiń</string>
     <string name="update_downloaded_message">Pobrano aktualizację.</string>
     <string name="update_restart_action">Uruchom ponownie</string>
+
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Można wydać</string>
+    <string name="safe_to_spend_spent">Wydano · %1$s</string>
+    <string name="safe_to_spend_bills_due">Rachunki do zapłaty</string>
+    <string name="safe_to_spend_bills_paid">%1$s już zapłacono</string>
+    <string name="safe_to_spend_resets">odnawia się %1$s</string>
+    <string name="safe_to_spend_over">%1$s ponad — wydano więcej, niż zostało w tym cyklu.</string>
+    <string name="safe_to_spend_income_foot">Obie kwoty pochodzą z dochodu %1$s w tym cyklu.</string>
+    <string name="safe_to_spend_setup_message">Dodaj dochód, aby zobaczyć, ile możesz bezpiecznie wydać przed wypłatą.</string>
+    <string name="safe_to_spend_setup_cta">Ustaw dochód</string>
+    <string name="safe_to_spend_setup_foot">Dochód znajdziesz w zakładce Budżet · dodanie zajmuje około minuty.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/dzień przez najbliższy %2$d dzień</item>
+        <item quantity="few">%1$s/dzień przez najbliższe %2$d dni</item>
+        <item quantity="many">%1$s/dzień przez najbliższe %2$d dni</item>
+        <item quantity="other">%1$s/dzień przez najbliższe %2$d dnia</item>
+    </plurals>
 </resources>

@@ -638,4 +638,19 @@
     <string name="cd_collapse_day">Comprimi</string>
     <string name="update_downloaded_message">È stato scaricato un aggiornamento.</string>
     <string name="update_restart_action">Riavvia</string>
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Puoi spendere</string>
+    <string name="safe_to_spend_spent">Speso · %1$s</string>
+    <string name="safe_to_spend_bills_due">Spese da pagare</string>
+    <string name="safe_to_spend_bills_paid">%1$s già pagati</string>
+    <string name="safe_to_spend_resets">riparte il %1$s</string>
+    <string name="safe_to_spend_over">%1$s in più — hai speso più di quanto ti resta questo ciclo.</string>
+    <string name="safe_to_spend_income_foot">Entrambi provengono dai tuoi %1$s di entrate di questo ciclo.</string>
+    <string name="safe_to_spend_setup_message">Aggiungi le tue entrate per sapere quanto puoi spendere prima della paga.</string>
+    <string name="safe_to_spend_setup_cta">Imposta le entrate</string>
+    <string name="safe_to_spend_setup_foot">Le entrate si trovano nella scheda Budget · circa un minuto per aggiungerle.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/giorno per %2$d giorno</item>
+        <item quantity="other">%1$s/giorno per %2$d giorni</item>
+    </plurals>
 </resources>

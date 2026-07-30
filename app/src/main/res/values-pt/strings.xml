@@ -638,4 +638,20 @@
     <string name="cd_collapse_day">Recolher</string>
     <string name="update_downloaded_message">Uma atualização foi baixada.</string>
     <string name="update_restart_action">Reiniciar</string>
+
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Livre para gastar</string>
+    <string name="safe_to_spend_spent">Gasto · %1$s</string>
+    <string name="safe_to_spend_bills_due">Contas por pagar</string>
+    <string name="safe_to_spend_bills_paid">%1$s já pagos</string>
+    <string name="safe_to_spend_resets">reinicia %1$s</string>
+    <string name="safe_to_spend_over">%1$s acima — você gastou mais do que resta neste ciclo.</string>
+    <string name="safe_to_spend_income_foot">Ambos saem da renda de %1$s deste ciclo.</string>
+    <string name="safe_to_spend_setup_message">Adicione sua renda para ver o que é livre para gastar antes do pagamento.</string>
+    <string name="safe_to_spend_setup_cta">Configurar renda</string>
+    <string name="safe_to_spend_setup_foot">A renda fica na aba Orçamento · cerca de um minuto para adicionar.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/dia pelo próximo %2$d dia</item>
+        <item quantity="other">%1$s/dia pelos próximos %2$d dias</item>
+    </plurals>
 </resources>
