@@ -41,6 +41,11 @@ fun Long.formatDayMonth(): String =
     DateTimeFormatter.ofPattern(AppFormats.dayMonthPattern, Locale.getDefault())
         .format(Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()))
 
+/** Formats a [LocalDate] as day + month with no year, e.g. "24 Jun" — order follows the user's
+ *  date-format preference ([AppFormats.dayMonthPattern]). */
+fun LocalDate.formatDayMonth(): String =
+    DateTimeFormatter.ofPattern(AppFormats.dayMonthPattern, Locale.getDefault()).format(this)
+
 /** Formats a [YearMonth] as e.g. "June 2026". */
 fun YearMonth.formatMonth(): String = monthFormatter.format(this)
 

@@ -649,4 +649,21 @@
 
     <string name="update_downloaded_message">O actualizare a fost descărcată.</string>
     <string name="update_restart_action">Repornește</string>
+
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Sigur de cheltuit</string>
+    <string name="safe_to_spend_spent">Cheltuit · %1$s</string>
+    <string name="safe_to_spend_bills_due">Facturi de plătit</string>
+    <string name="safe_to_spend_bills_paid">%1$s deja plătit</string>
+    <string name="safe_to_spend_resets">se resetează %1$s</string>
+    <string name="safe_to_spend_over">%1$s peste — ai cheltuit mai mult decât ți-a rămas în acest ciclu.</string>
+    <string name="safe_to_spend_income_foot">Ambele provin din venitul de %1$s al acestui ciclu.</string>
+    <string name="safe_to_spend_setup_message">Adaugă-ți venitul pentru a vedea cât e sigur de cheltuit înainte de ziua de salariu.</string>
+    <string name="safe_to_spend_setup_cta">Configurează venitul</string>
+    <string name="safe_to_spend_setup_foot">Venitul se află în fila Buget · cam un minut de adăugat.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/zi pentru următoarea %2$d zi</item>
+        <item quantity="few">%1$s/zi pentru următoarele %2$d zile</item>
+        <item quantity="other">%1$s/zi pentru următoarele %2$d de zile</item>
+    </plurals>
 </resources>

@@ -46,6 +46,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -115,6 +116,7 @@ import com.budgetty.app.ui.util.monthlyToWeekly
 import com.budgetty.app.ui.util.weeklyToMonthly
 import com.budgetty.app.ui.util.categoryDisplayName
 import com.budgetty.app.ui.util.formatDate
+import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
@@ -123,10 +125,12 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.math.BigDecimal
+import java.math.RoundingMode
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
+import com.budgetty.app.ui.theme.budgetWarnColor
 import kotlin.math.roundToInt
 import java.util.Locale
 
@@ -376,7 +380,17 @@ private fun PhoneHomeContent(
             if (section.key !in hiddenSections) {
                 when (section) {
                     HomeSection.TOTAL_SPENT -> item(key = section.key) {
-                        SummaryCard(state = state, onFilterSelected = onFilterSelected)
+                        // The current pay-cycle shows the Safe-to-spend cash-flow card (income − spent −
+                        // bills still due); other periods keep the plain period-spend summary.
+                        if (state.filter == DateRangeFilter.CURRENT_MONTH) {
+                            SafeToSpendCard(
+                                state = state,
+                                onFilterSelected = onFilterSelected,
+                                onSetupIncome = onNavigateToBudget,
+                            )
+                        } else {
+                            SummaryCard(state = state, onFilterSelected = onFilterSelected)
+                        }
                         Spacer(Modifier.height(MaterialTheme.dimens.lg))
                     }
 
@@ -497,7 +511,17 @@ private fun TabletHomeContent(
                 }
             }
             item {
-                TabletSummaryCard(state = state)
+                // Current pay-cycle shows the Safe-to-spend card (the period pill lives in the header
+                // above); other periods keep the plain total-spent summary.
+                if (state.filter == DateRangeFilter.CURRENT_MONTH) {
+                    SafeToSpendCard(
+                        state = state,
+                        showPeriodPill = false,
+                        onSetupIncome = onNavigateToBudget,
+                    )
+                } else {
+                    TabletSummaryCard(state = state)
+                }
                 Spacer(Modifier.height(MaterialTheme.dimens.lg))
             }
             // The monthly + weekly budget plan is a current-month concept, so it drops out when the
@@ -591,7 +615,17 @@ private fun WideHomeContent(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
                 ) {
-                    TabletSummaryCard(state = state)
+                    // Current pay-cycle shows the Safe-to-spend card (period pill is in the header);
+                    // other periods keep the plain total-spent summary.
+                    if (state.filter == DateRangeFilter.CURRENT_MONTH) {
+                        SafeToSpendCard(
+                            state = state,
+                            showPeriodPill = false,
+                            onSetupIncome = onNavigateToBudget,
+                        )
+                    } else {
+                        TabletSummaryCard(state = state)
+                    }
                     // Hidden for non-month windows so the monthly budget plan isn't shown against a
                     // multi-month or all-time total (mirrors the phone Home and the portrait tablet).
                     if (state.filter == DateRangeFilter.CURRENT_MONTH) {
@@ -1198,6 +1232,270 @@ private fun monthOrFilterLabel(filter: DateRangeFilter): String {
  */
 private fun HomeUiState.showsBills(): Boolean =
     filter == DateRangeFilter.CURRENT_MONTH && monthlyBills.signum() > 0
+
+private enum class SafeToSpendStatus { HEALTHY, LOW, OVER, SETUP }
+
+/**
+ * Card state from the current-cycle cash-flow: setup when there's no income to compute against, over
+ * when the balance is negative, low when what's left is a thin slice of income (≤10%), else healthy.
+ */
+private fun HomeUiState.safeToSpendStatus(): SafeToSpendStatus = when {
+    cycleIncome.signum() <= 0 -> SafeToSpendStatus.SETUP
+    safeToSpend.signum() < 0 -> SafeToSpendStatus.OVER
+    safeToSpend <= cycleIncome.multiply(BigDecimal("0.10")) -> SafeToSpendStatus.LOW
+    else -> SafeToSpendStatus.HEALTHY
+}
+
+/**
+ * The current pay-cycle "safe to spend" card: one headline number — income minus what's already been
+ * spent and the bills still owed before the next payday — over a two-up Spent / Bills-still-due strip.
+ * It's cash-flow, not a budget target, so it deliberately avoids the Budgets card's ratio/goal
+ * language. Shown only for the current-month window; other periods fall back to [SummaryCard].
+ */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+internal fun SafeToSpendCard(
+    state: HomeUiState,
+    modifier: Modifier = Modifier,
+    showPeriodPill: Boolean = true,
+    onFilterSelected: (DateRangeFilter) -> Unit = {},
+    onSetupIncome: () -> Unit = {},
+) {
+    val status = state.safeToSpendStatus()
+    val tone = when (status) {
+        SafeToSpendStatus.OVER -> budgetBadColor()
+        SafeToSpendStatus.LOW -> budgetWarnColor()
+        else -> budgetGoodColor()
+    }
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(MaterialTheme.dimens.radiusXl),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    ) {
+        Column(modifier = Modifier.padding(MaterialTheme.dimens.xl)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.safe_to_spend_title),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+                if (showPeriodPill) {
+                    HomePeriodFilter(selected = state.filter, onSelected = onFilterSelected)
+                }
+            }
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+
+            when {
+                !state.isLoaded ->
+                    SkeletonBar(width = 160.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
+
+                status == SafeToSpendStatus.SETUP -> {
+                    Text(
+                        text = "—",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+                    )
+                    Text(
+                        text = stringResource(R.string.safe_to_spend_setup_message),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = MaterialTheme.dimens.xs),
+                    )
+                }
+
+                else -> {
+                    Text(
+                        text = state.safeToSpend.formatMoney(),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = tone,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.fillMaxWidth().basicMarquee(),
+                    )
+                    val detail = if (status == SafeToSpendStatus.OVER) {
+                        stringResource(R.string.safe_to_spend_over, state.safeToSpend.abs().formatMoney())
+                    } else {
+                        val perDay = state.safeToSpend
+                            .divide(BigDecimal(state.daysUntilPayday), 2, RoundingMode.HALF_UP)
+                        val perDayText = pluralStringResource(
+                            R.plurals.safe_to_spend_per_day,
+                            state.daysUntilPayday,
+                            perDay.formatMoney(),
+                            state.daysUntilPayday,
+                        )
+                        val resets = state.nextPayday?.let {
+                            stringResource(R.string.safe_to_spend_resets, it.formatDayMonth())
+                        }
+                        if (resets != null) "$perDayText · $resets" else perDayText
+                    }
+                    Text(
+                        text = detail,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = MaterialTheme.dimens.xs),
+                    )
+                }
+            }
+
+            SafeToSpendBar(
+                income = state.cycleIncome,
+                spent = state.monthlySpent,
+                billsStillDue = state.billsStillDue,
+                tone = tone,
+                inactive = status == SafeToSpendStatus.SETUP,
+                modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
+            ) {
+                SafeToSpendStat(
+                    hatched = false,
+                    label = stringResource(R.string.safe_to_spend_spent, monthOrFilterLabel(state.filter)),
+                    amount = state.monthlySpent,
+                    sub = if (state.receipts.isNotEmpty()) pluralStringResource(
+                        R.plurals.home_across_receipts, state.receipts.size, state.receipts.size,
+                    ) else null,
+                    modifier = Modifier.weight(1f),
+                )
+                Box(
+                    Modifier.width(1.dp).height(44.dp)
+                        .background(MaterialTheme.colorScheme.outlineVariant),
+                )
+                SafeToSpendStat(
+                    hatched = true,
+                    label = stringResource(R.string.safe_to_spend_bills_due),
+                    amount = state.billsStillDue,
+                    sub = if (state.billsPaid.signum() > 0) stringResource(
+                        R.string.safe_to_spend_bills_paid, state.billsPaid.formatMoney(),
+                    ) else null,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            val foot = when {
+                status == SafeToSpendStatus.SETUP -> stringResource(R.string.safe_to_spend_setup_foot)
+                state.cycleIncome.signum() > 0 ->
+                    stringResource(R.string.safe_to_spend_income_foot, state.cycleIncome.formatMoney())
+                else -> null
+            }
+            if (foot != null) {
+                Text(
+                    text = foot,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = MaterialTheme.dimens.md),
+                )
+            }
+            if (status == SafeToSpendStatus.SETUP) {
+                FilledTonalButton(
+                    onClick = onSetupIncome,
+                    shape = RoundedCornerShape(percent = 50),
+                    modifier = Modifier.padding(top = MaterialTheme.dimens.md),
+                ) {
+                    Text(stringResource(R.string.safe_to_spend_setup_cta))
+                }
+            }
+        }
+    }
+}
+
+/** One stat in the Spent / Bills-still-due strip: a key swatch + label, the amount, an optional sub. */
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SafeToSpendStat(
+    hatched: Boolean,
+    label: String,
+    amount: BigDecimal,
+    sub: String?,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            PlannedSwatch(hatched = hatched)
+            Spacer(Modifier.width(MaterialTheme.dimens.sm))
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+        Text(
+            text = amount.formatMoney(),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Clip,
+            modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.xs).basicMarquee(),
+        )
+        if (sub != null) {
+            Text(
+                text = sub,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        }
+    }
+}
+
+/**
+ * A slim bar showing how the cycle's income splits: a solid accent share for what's been spent, a
+ * tonal share on the right for the bills still due, and the hatched middle for what's safe to spend.
+ * Full-hatched when [inactive] (no income to split).
+ */
+@Composable
+private fun SafeToSpendBar(
+    income: BigDecimal,
+    spent: BigDecimal,
+    billsStillDue: BigDecimal,
+    tone: Color,
+    inactive: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    val outline = MaterialTheme.colorScheme.outlineVariant
+    val shape = RoundedCornerShape(3.dp)
+    val incomeD = income.toDouble()
+    Box(
+        modifier
+            .height(6.dp)
+            .clip(shape)
+            .drawBehind {
+                val radius = CornerRadius(size.height / 2f)
+                drawHatch(outline, spacing = 5.dp, stroke = 1.2.dp)
+                drawRoundRect(color = outline, cornerRadius = radius, style = Stroke(width = 1.dp.toPx()))
+                if (inactive || incomeD <= 0.0) return@drawBehind
+                val spentW = (size.width * (spent.toDouble() / incomeD).coerceIn(0.0, 1.0)).toFloat()
+                if (spentW > 0f) {
+                    drawRoundRect(
+                        color = primary,
+                        size = Size(spentW.coerceAtLeast(size.height), size.height),
+                        cornerRadius = radius,
+                    )
+                }
+                val billsW = (size.width * (billsStillDue.toDouble() / incomeD).coerceIn(0.0, 1.0))
+                    .toFloat().coerceAtMost((size.width - spentW).coerceAtLeast(0f))
+                if (billsW > 0f) {
+                    drawRoundRect(
+                        color = tone,
+                        topLeft = Offset(size.width - billsW, 0f),
+                        size = Size(billsW.coerceAtLeast(size.height), size.height),
+                        cornerRadius = radius,
+                    )
+                }
+            },
+    )
+}
 
 /** Top section: total spent for the selected period, with recurring bills shown as planned when set. */
 @OptIn(ExperimentalFoundationApi::class)
@@ -1942,6 +2240,45 @@ private fun SummaryCardBillsPreview() {
                     isLoaded = true,
                     total = BigDecimal("340.20"),
                     monthlyBills = BigDecimal("1250.00"),
+                    receipts = previewReceipts,
+                ),
+            )
+        }
+    }
+}
+
+@Preview(name = "Safe to spend – healthy", showBackground = true, widthDp = 380)
+@Composable
+private fun SafeToSpendHealthyPreview() {
+    BudgettyTheme {
+        Box(Modifier.padding(MaterialTheme.dimens.lg)) {
+            SafeToSpendCard(
+                state = HomeUiState(
+                    isLoaded = true,
+                    monthlySpent = BigDecimal("712.40"),
+                    cycleIncome = BigDecimal("2400.00"),
+                    billsStillDue = BigDecimal("1067.60"),
+                    billsPaid = BigDecimal("182.40"),
+                    safeToSpend = BigDecimal("620.00"),
+                    daysUntilPayday = 15,
+                    nextPayday = java.time.LocalDate.now().plusDays(15),
+                    receipts = previewReceipts,
+                ),
+            )
+        }
+    }
+}
+
+@Preview(name = "Safe to spend – setup", showBackground = true, widthDp = 380)
+@Composable
+private fun SafeToSpendSetupPreview() {
+    BudgettyTheme {
+        Box(Modifier.padding(MaterialTheme.dimens.lg)) {
+            SafeToSpendCard(
+                state = HomeUiState(
+                    isLoaded = true,
+                    monthlySpent = BigDecimal("712.40"),
+                    billsStillDue = BigDecimal("485.00"),
                     receipts = previewReceipts,
                 ),
             )

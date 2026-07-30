@@ -649,4 +649,22 @@
 
     <string name="update_downloaded_message">Aktualizace byla stažena.</string>
     <string name="update_restart_action">Restartovat</string>
+
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Můžete utratit</string>
+    <string name="safe_to_spend_spent">Utraceno · %1$s</string>
+    <string name="safe_to_spend_bills_due">Účty k zaplacení</string>
+    <string name="safe_to_spend_bills_paid">%1$s již zaplaceno</string>
+    <string name="safe_to_spend_resets">obnoví se %1$s</string>
+    <string name="safe_to_spend_over">%1$s nad limit — utratili jste víc, než v tomto cyklu zbývá.</string>
+    <string name="safe_to_spend_income_foot">Obojí se hradí z příjmu %1$s v tomto cyklu.</string>
+    <string name="safe_to_spend_setup_message">Přidejte svůj příjem a uvidíte, kolik můžete bezpečně utratit do výplaty.</string>
+    <string name="safe_to_spend_setup_cta">Nastavit příjem</string>
+    <string name="safe_to_spend_setup_foot">Příjem najdete na kartě Rozpočet · přidání zabere asi minutu.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/den na příští %2$d den</item>
+        <item quantity="few">%1$s/den na příští %2$d dny</item>
+        <item quantity="many">%1$s/den na příštích %2$d dne</item>
+        <item quantity="other">%1$s/den na příštích %2$d dní</item>
+    </plurals>
 </resources>

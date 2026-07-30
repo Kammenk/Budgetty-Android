@@ -638,4 +638,22 @@
     <string name="cd_collapse_day">Свернуть</string>
     <string name="update_downloaded_message">Обновление загружено.</string>
     <string name="update_restart_action">Перезапустить</string>
+
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Можно потратить</string>
+    <string name="safe_to_spend_spent">Потрачено · %1$s</string>
+    <string name="safe_to_spend_bills_due">Счета к оплате</string>
+    <string name="safe_to_spend_bills_paid">%1$s уже оплачено</string>
+    <string name="safe_to_spend_resets">обновится %1$s</string>
+    <string name="safe_to_spend_over">%1$s сверх лимита — потрачено больше, чем осталось в этом цикле.</string>
+    <string name="safe_to_spend_income_foot">И то, и другое вычитается из дохода %1$s в этом цикле.</string>
+    <string name="safe_to_spend_setup_message">Добавьте доход, чтобы узнать, сколько можно спокойно потратить до зарплаты.</string>
+    <string name="safe_to_spend_setup_cta">Настроить доход</string>
+    <string name="safe_to_spend_setup_foot">Доход находится во вкладке Бюджет · добавить можно примерно за минуту.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/день на следующий %2$d день</item>
+        <item quantity="few">%1$s/день на следующие %2$d дня</item>
+        <item quantity="many">%1$s/день на следующие %2$d дней</item>
+        <item quantity="other">%1$s/день на следующие %2$d дня</item>
+    </plurals>
 </resources>

@@ -638,4 +638,20 @@
     <string name="cd_collapse_day">Свий</string>
     <string name="update_downloaded_message">Изтеглено е обновление.</string>
     <string name="update_restart_action">Рестартирай</string>
+
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Свободни за харчене</string>
+    <string name="safe_to_spend_spent">Похарчено · %1$s</string>
+    <string name="safe_to_spend_bills_due">Неплатени сметки</string>
+    <string name="safe_to_spend_bills_paid">%1$s вече платени</string>
+    <string name="safe_to_spend_resets">нулира се %1$s</string>
+    <string name="safe_to_spend_over">%1$s над лимита — похарчи повече, отколкото ти остава този цикъл.</string>
+    <string name="safe_to_spend_income_foot">И двете излизат от дохода ти от %1$s този цикъл.</string>
+    <string name="safe_to_spend_setup_message">Добави дохода си, за да видиш колко е свободно за харчене преди заплата.</string>
+    <string name="safe_to_spend_setup_cta">Настрой дохода</string>
+    <string name="safe_to_spend_setup_foot">Доходът е в раздел Бюджет · около минута за добавяне.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/ден за следващия %2$d ден</item>
+        <item quantity="other">%1$s/ден за следващите %2$d дни</item>
+    </plurals>
 </resources>

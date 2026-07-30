@@ -649,4 +649,20 @@
 
     <string name="update_downloaded_message">En oppdatering er lastet ned.</string>
     <string name="update_restart_action">Start på nytt</string>
+
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Trygt å bruke</string>
+    <string name="safe_to_spend_spent">Brukt · %1$s</string>
+    <string name="safe_to_spend_bills_due">Gjenstående regninger</string>
+    <string name="safe_to_spend_bills_paid">%1$s allerede betalt</string>
+    <string name="safe_to_spend_resets">nullstilles %1$s</string>
+    <string name="safe_to_spend_over">%1$s over — du har brukt mer enn du har igjen denne perioden.</string>
+    <string name="safe_to_spend_income_foot">Begge tas fra %1$s i inntekt denne perioden.</string>
+    <string name="safe_to_spend_setup_message">Legg til inntekten din for å se hva som er trygt å bruke før lønningsdagen.</string>
+    <string name="safe_to_spend_setup_cta">Sett opp inntekt</string>
+    <string name="safe_to_spend_setup_foot">Inntekt finnes under Budsjett-fanen · omtrent ett minutt å legge til.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/dag den neste %2$d dagen</item>
+        <item quantity="other">%1$s/dag de neste %2$d dagene</item>
+    </plurals>
 </resources>

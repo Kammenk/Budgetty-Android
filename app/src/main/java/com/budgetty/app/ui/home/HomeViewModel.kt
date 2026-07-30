@@ -21,6 +21,7 @@ import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.currentMonthRange
+import com.budgetty.app.ui.util.isPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -60,6 +61,17 @@ data class HomeUiState(
     // Recurring bills (isIncome=false) summed to their current-month equivalent. Planning-only: the
     // summary card shows these alongside the receipt-backed spend as "planned", never merged into it.
     val monthlyBills: BigDecimal = BigDecimal.ZERO,
+    // ── Safe to spend (current pay-cycle cash-flow) ──
+    // Recurring income summed to the pay-cycle month; 0 ⇒ the card shows its "add income" setup state.
+    val cycleIncome: BigDecimal = BigDecimal.ZERO,
+    // Recurring bills split into what's still owed this cycle vs already marked paid (planning-only).
+    val billsStillDue: BigDecimal = BigDecimal.ZERO,
+    val billsPaid: BigDecimal = BigDecimal.ZERO,
+    // Left to spend freely before the next payday: income − spent so far − bills still due.
+    val safeToSpend: BigDecimal = BigDecimal.ZERO,
+    // Whole days from today to the next pay-cycle start (min 1) and that date, for the per-day line.
+    val daysUntilPayday: Int = 1,
+    val nextPayday: LocalDate? = null,
     val monthlyBudget: BigDecimal? = null,
     // Unspent budget carried into this pay-cycle month (0 unless rollover is on); added on top of the
     // overall monthly budget for the budget card's effective limit + a "+X carried over" line.
@@ -123,13 +135,25 @@ class HomeViewModel(
         repository.getBetween(start, end)
     }
 
-    // Recurring bills expressed as a current pay-cycle-month total (weekly ×52/12, yearly ÷12,
-    // one-time only in its own month). Income rows are excluded — only bills count.
-    private val monthlyBills: Flow<BigDecimal> =
+    // Current pay-cycle cash-flow from the recurring plan: income summed to the cycle, and bills split
+    // into still-due vs already-paid (mark-as-paid is planning-only). Drives the Safe-to-spend card;
+    // the two bill parts also sum to the planned-bills total the summary/tablet cards show.
+    private val cashFlow: Flow<CashFlow> =
         combine(recurringRepository.items, monthStartDay) { items, day ->
             val (start, end) = currentMonthRange(monthStartDay = day)
-            items.filterNot { it.isIncome }
-                .fold(BigDecimal.ZERO) { acc, r -> acc + r.monthlyAmount(start, end) }
+            val today = LocalDate.now()
+            var income = BigDecimal.ZERO
+            var billsStillDue = BigDecimal.ZERO
+            var billsPaid = BigDecimal.ZERO
+            items.forEach { r ->
+                val amount = r.monthlyAmount(start, end)
+                when {
+                    r.isIncome -> income += amount
+                    r.isPaidThisCycle(today, day) -> billsPaid += amount
+                    else -> billsStillDue += amount
+                }
+            }
+            CashFlow(income, billsStillDue, billsPaid)
         }
 
     // Current calendar week's spend (Mon–Sun), independent of the filter (for the weekly box).
@@ -153,7 +177,7 @@ class HomeViewModel(
             filterCtx,
             transactions,
             categoryRepository.categories,
-            combine(monthlyTransactions, monthlyBills) { t, b -> MonthlyData(t, b) },
+            combine(monthlyTransactions, cashFlow) { t, cf -> MonthlyData(t, cf) },
             combine(
                 combine(budgetRepository.budgets, monthlyCarried) { b, mc -> b to mc },
                 receiptRepository.getAll(),
@@ -175,6 +199,12 @@ class HomeViewModel(
             val topByCategory = monthlyData.txns.groupBy { it.category }
                 .mapValues { (_, list) -> list.spend() }
                 .maxByOrNull { it.value }
+            val cashFlow = monthlyData.cashFlow
+            // Safe to spend before the next payday = cycle income − spent so far − bills still owed.
+            val safeToSpend = cashFlow.income - monthlySpent - cashFlow.billsStillDue
+            val today = LocalDate.now()
+            val payday = PayCycle.month(today, ctx.monthStartDay, 1).first
+            val daysUntilPayday = ChronoUnit.DAYS.between(today, payday).toInt().coerceAtLeast(1)
             HomeUiState(
                 isLoaded = true,
                 filter = ctx.filter,
@@ -183,7 +213,13 @@ class HomeViewModel(
                 slices = txns.toSlices(colorByCategory),
                 total = total,
                 monthlySpent = monthlySpent,
-                monthlyBills = monthlyData.bills,
+                monthlyBills = cashFlow.billsStillDue + cashFlow.billsPaid,
+                cycleIncome = cashFlow.income,
+                billsStillDue = cashFlow.billsStillDue,
+                billsPaid = cashFlow.billsPaid,
+                safeToSpend = safeToSpend,
+                daysUntilPayday = daysUntilPayday,
+                nextPayday = payday,
                 monthlyBudget = brw.budgets[BudgetRepository.MONTHLY],
                 monthlyCarried = brw.monthlyCarried,
                 weeklySpent = weeklySpent,
@@ -279,11 +315,18 @@ class HomeViewModel(
     /** The selected preset plus the pay-cycle start day, so one combine slot carries both. */
     private data class FilterCtx(val filter: DateRangeFilter, val monthStartDay: Int)
 
-    /** Pairs the current-month transactions with the recurring-bills total so the outer combine keeps
+    /** Pairs the current-month transactions with the pay-cycle cash-flow so the outer combine keeps
      *  one slot for both current-month sources. */
     private data class MonthlyData(
         val txns: List<TransactionEntity>,
-        val bills: BigDecimal,
+        val cashFlow: CashFlow,
+    )
+
+    /** Current pay-cycle cash-flow inputs (income + bills split paid/still-due) for Safe-to-spend. */
+    private data class CashFlow(
+        val income: BigDecimal,
+        val billsStillDue: BigDecimal,
+        val billsPaid: BigDecimal,
     )
 
     /** Bundles the nested-combine sources so the outer combine stays within arity limits. */

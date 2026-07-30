@@ -639,4 +639,19 @@
         <item quantity="one">%1$d Transaktion zu Sonstiges verschieben und diese Kategorie löschen?</item>
         <item quantity="other">%1$d Transaktionen zu Sonstiges verschieben und diese Kategorie löschen?</item>
     </plurals>
+    <!-- Safe to spend (current pay-cycle cash-flow card) -->
+    <string name="safe_to_spend_title">Frei verfügbar</string>
+    <string name="safe_to_spend_spent">Ausgegeben · %1$s</string>
+    <string name="safe_to_spend_bills_due">Noch offene Rechnungen</string>
+    <string name="safe_to_spend_bills_paid">%1$s bereits bezahlt</string>
+    <string name="safe_to_spend_resets">neu ab %1$s</string>
+    <string name="safe_to_spend_over">%1$s drüber — mehr ausgegeben, als dir in diesem Zyklus bleibt.</string>
+    <string name="safe_to_spend_income_foot">Beides kommt aus deinen Einnahmen von %1$s in diesem Zyklus.</string>
+    <string name="safe_to_spend_setup_message">Füge deine Einnahmen hinzu, um zu sehen, was du bis zum Zahltag sicher ausgeben kannst.</string>
+    <string name="safe_to_spend_setup_cta">Einnahmen einrichten</string>
+    <string name="safe_to_spend_setup_foot">Einnahmen findest du im Budget-Tab · etwa eine Minute zum Hinzufügen.</string>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/Tag für %2$d weiteren Tag</item>
+        <item quantity="other">%1$s/Tag für %2$d weitere Tage</item>
+    </plurals>
 </resources>
