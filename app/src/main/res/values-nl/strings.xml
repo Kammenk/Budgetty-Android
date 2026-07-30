@@ -653,4 +653,60 @@
         <item quantity="one">%1$s/dag voor de komende %2$d dag</item>
         <item quantity="other">%1$s/dag voor de komende %2$d dagen</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Spaardoelen</string>
+    <string name="savings_subtitle">Jij noteert wat je opzijzet — Budgetty beheert geen geld.</string>
+    <string name="savings_total_saved">%1$s gespaard</string>
+    <string name="savings_empty_title">Stel een spaardoel in</string>
+    <string name="savings_empty_body">Geef het een naam, kies een doel en volg wat je opzijzet — een nieuwe laptop, een reis, een appeltje voor de dorst.</string>
+    <string name="savings_new_goal">Nieuw doel</string>
+    <string name="savings_free_hint">1 doel gratis · onbeperkt met Premium</string>
+    <string name="savings_saved_of_target">%1$s van %2$s · nog %3$s</string>
+    <string name="savings_reached">Doel bereikt! 🎉</string>
+    <string name="savings_rate">%1$s/mnd tot %2$s</string>
+    <string name="savings_on_track">op schema</string>
+    <string name="savings_behind">achterop</string>
+    <string name="savings_unlock_title">Onbeperkte doelen ontgrendelen</string>
+    <string name="savings_unlock_body">De gratis versie bevat 1 spaardoel. Met Premium heb je er zoveel als je wilt — plus onbeperkt scannen en eigen categorieën.</string>
+    <string name="savings_new_goal_title">Nieuw doel</string>
+    <string name="savings_edit_goal_title">Doel bewerken</string>
+    <string name="savings_field_emoji">Doel-emoji</string>
+    <string name="savings_field_name">Naam</string>
+    <string name="savings_name_hint">Reis naar Japan</string>
+    <string name="savings_field_target">Doelbedrag</string>
+    <string name="savings_target_date">Streefdatum</string>
+    <string name="savings_target_date_hint">Voegt een maandelijks tempo toe aan de kaart</string>
+    <string name="savings_pick_date">Kies een datum</string>
+    <string name="savings_create_free_hint">Gratis versie: 1 doel. Met Premium zoveel als je wilt.</string>
+    <string name="savings_create">Doel maken</string>
+    <string name="savings_add_title">Toevoegen aan spaargeld</string>
+    <string name="savings_withdraw_title">Opnemen</string>
+    <string name="savings_field_amount">Bedrag</string>
+    <string name="savings_field_note">Notitie · optioneel</string>
+    <string name="savings_note_hint">Waarvoor was het?</string>
+    <string name="savings_field_date">Datum</string>
+    <string name="savings_new_total">Nieuw totaal %1$s van %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Opnames verlagen je gespaarde totaal. Het doel blijft ongewijzigd.</string>
+    <string name="savings_confirm_add">%1$s toevoegen</string>
+    <string name="savings_confirm_withdraw">%1$s opnemen</string>
+    <string name="savings_of_amount">van %1$s</string>
+    <string name="savings_saved_label">Gespaard</string>
+    <string name="savings_target_label">Doel</string>
+    <string name="savings_left_label">Over</string>
+    <string name="savings_add">Toevoegen aan spaargeld</string>
+    <string name="savings_withdraw">Opnemen</string>
+    <string name="savings_withdraw_to_spend">Opnemen om uit te geven</string>
+    <string name="savings_edit_target">Doelbedrag bewerken</string>
+    <string name="savings_contributions">Stortingen</string>
+    <string name="savings_reached_by">Bereikt op %1$s</string>
+    <string name="savings_rate_by">%1$s/maand om het tegen %2$s te bereiken</string>
+    <string name="savings_contribution">Storting</string>
+    <string name="savings_withdrawal">Opname</string>
+    <string name="savings_delete_goal">Doel verwijderen</string>
+    <string name="savings_delete_confirm">“%1$s” en de bijbehorende stortingen verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d boeking</item>
+        <item quantity="other">%1$d boekingen</item>
+    </plurals>
 </resources>

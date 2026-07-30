@@ -195,6 +195,58 @@
     <string name="snackbar_receipt_deleted">Receipt deleted</string>
     <string name="snackbar_item_deleted">Item deleted</string>
 
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Savings goals</string>
+    <string name="savings_subtitle">You log what you set aside — Budgetty doesn\'t hold money.</string>
+    <string name="savings_total_saved">%1$s saved</string>
+    <string name="savings_empty_title">Set a savings goal</string>
+    <string name="savings_empty_body">Name it, pick a target, and track what you put aside — a new laptop, a trip, a rainy-day fund.</string>
+    <string name="savings_new_goal">New goal</string>
+    <string name="savings_free_hint">1 goal free · unlimited with Premium</string>
+    <string name="savings_saved_of_target">%1$s of %2$s · %3$s to go</string>
+    <string name="savings_reached">Goal reached! 🎉</string>
+    <string name="savings_rate">%1$s/mo to %2$s</string>
+    <string name="savings_on_track">on track</string>
+    <string name="savings_behind">behind</string>
+    <string name="savings_unlock_title">Unlock unlimited goals</string>
+    <string name="savings_unlock_body">The free plan includes 1 savings goal. Premium adds as many as you like — plus unlimited scans and custom categories.</string>
+    <string name="savings_new_goal_title">New goal</string>
+    <string name="savings_edit_goal_title">Edit goal</string>
+    <string name="savings_field_emoji">Goal emoji</string>
+    <string name="savings_field_name">Name</string>
+    <string name="savings_name_hint">Japan trip</string>
+    <string name="savings_field_target">Target amount</string>
+    <string name="savings_target_date">Target date</string>
+    <string name="savings_target_date_hint">Adds a monthly pace to the card</string>
+    <string name="savings_pick_date">Pick a date</string>
+    <string name="savings_create_free_hint">Free plan: 1 goal. Premium adds as many as you like.</string>
+    <string name="savings_create">Create goal</string>
+    <string name="savings_add_title">Add to savings</string>
+    <string name="savings_withdraw_title">Withdraw</string>
+    <string name="savings_field_amount">Amount</string>
+    <string name="savings_field_note">Note · optional</string>
+    <string name="savings_note_hint">What was it for?</string>
+    <string name="savings_field_date">Date</string>
+    <string name="savings_new_total">New total %1$s of %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Withdrawals lower your saved total. The goal stays where it is.</string>
+    <string name="savings_confirm_add">Add %1$s</string>
+    <string name="savings_confirm_withdraw">Withdraw %1$s</string>
+    <string name="savings_of_amount">of %1$s</string>
+    <string name="savings_saved_label">Saved</string>
+    <string name="savings_target_label">Target</string>
+    <string name="savings_left_label">Left</string>
+    <string name="savings_add">Add to savings</string>
+    <string name="savings_withdraw">Withdraw</string>
+    <string name="savings_withdraw_to_spend">Withdraw to spend</string>
+    <string name="savings_edit_target">Edit target</string>
+    <string name="savings_contributions">Contributions</string>
+    <string name="savings_reached_by">Reached on %1$s</string>
+    <string name="savings_rate_by">%1$s/month to reach by %2$s</string>
+    <string name="savings_contribution">Contribution</string>
+    <string name="savings_withdrawal">Withdrawal</string>
+    <string name="savings_delete_goal">Delete goal</string>
+    <string name="savings_delete_confirm">Delete “%1$s” and its contributions? This can\'t be undone.</string>
+
     <!-- Upload / review -->
     <string name="upload_title">Upload receipt</string>
     <string name="upload_edit_title">Edit receipt</string>
@@ -661,6 +713,10 @@
     <plurals name="safe_to_spend_per_day">
         <item quantity="one">%1$s/day for the next %2$d day</item>
         <item quantity="other">%1$s/day for the next %2$d days</item>
+    </plurals>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d entry</item>
+        <item quantity="other">%1$d entries</item>
     </plurals>
 
     <!-- Category display names (canonical DB/AI names stay English; these are display-only) -->

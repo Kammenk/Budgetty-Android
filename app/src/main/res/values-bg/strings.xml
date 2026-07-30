@@ -654,4 +654,60 @@
         <item quantity="one">%1$s/ден за следващия %2$d ден</item>
         <item quantity="other">%1$s/ден за следващите %2$d дни</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Цели за спестяване</string>
+    <string name="savings_subtitle">Ти записваш какво заделяш — Budgetty не държи пари.</string>
+    <string name="savings_total_saved">%1$s спестени</string>
+    <string name="savings_empty_title">Задай цел за спестяване</string>
+    <string name="savings_empty_body">Дай ѝ име, избери цел и следи какво заделяш — нов лаптоп, пътуване, фонд за черни дни.</string>
+    <string name="savings_new_goal">Нова цел</string>
+    <string name="savings_free_hint">1 цел безплатно · неограничени с Премиум</string>
+    <string name="savings_saved_of_target">%1$s от %2$s · остават %3$s</string>
+    <string name="savings_reached">Целта е постигната! 🎉</string>
+    <string name="savings_rate">%1$s/мес. до %2$s</string>
+    <string name="savings_on_track">по план</string>
+    <string name="savings_behind">изоставаш</string>
+    <string name="savings_unlock_title">Отключи неограничени цели</string>
+    <string name="savings_unlock_body">Безплатният план включва 1 цел за спестяване. Премиум добавя колкото искаш — плюс неограничени сканирания и собствени категории.</string>
+    <string name="savings_new_goal_title">Нова цел</string>
+    <string name="savings_edit_goal_title">Редактирай цел</string>
+    <string name="savings_field_emoji">Емоджи на целта</string>
+    <string name="savings_field_name">Име</string>
+    <string name="savings_name_hint">Пътуване до Япония</string>
+    <string name="savings_field_target">Целева сума</string>
+    <string name="savings_target_date">Целева дата</string>
+    <string name="savings_target_date_hint">Добавя месечно темпо към картата</string>
+    <string name="savings_pick_date">Избери дата</string>
+    <string name="savings_create_free_hint">Безплатен план: 1 цел. Премиум добавя колкото искаш.</string>
+    <string name="savings_create">Създай цел</string>
+    <string name="savings_add_title">Добави към спестяванията</string>
+    <string name="savings_withdraw_title">Изтегли</string>
+    <string name="savings_field_amount">Сума</string>
+    <string name="savings_field_note">Забележка · по желание</string>
+    <string name="savings_note_hint">За какво беше?</string>
+    <string name="savings_field_date">Дата</string>
+    <string name="savings_new_total">Нова обща сума %1$s от %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Тегленията намаляват спестената сума. Целта остава същата.</string>
+    <string name="savings_confirm_add">Добави %1$s</string>
+    <string name="savings_confirm_withdraw">Изтегли %1$s</string>
+    <string name="savings_of_amount">от %1$s</string>
+    <string name="savings_saved_label">Спестено</string>
+    <string name="savings_target_label">Цел</string>
+    <string name="savings_left_label">Остават</string>
+    <string name="savings_add">Добави към спестяванията</string>
+    <string name="savings_withdraw">Изтегли</string>
+    <string name="savings_withdraw_to_spend">Изтегли за харчене</string>
+    <string name="savings_edit_target">Редактирай целевата сума</string>
+    <string name="savings_contributions">Вноски</string>
+    <string name="savings_reached_by">Постигната на %1$s</string>
+    <string name="savings_rate_by">%1$s/месец за постигане до %2$s</string>
+    <string name="savings_contribution">Вноска</string>
+    <string name="savings_withdrawal">Теглене</string>
+    <string name="savings_delete_goal">Изтрий цел</string>
+    <string name="savings_delete_confirm">Да се изтрие ли „%1$s“ и вноските ѝ? Действието е необратимо.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d запис</item>
+        <item quantity="other">%1$d записа</item>
+    </plurals>
 </resources>

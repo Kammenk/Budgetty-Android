@@ -656,4 +656,62 @@
         <item quantity="many">%1$s/день на следующие %2$d дней</item>
         <item quantity="other">%1$s/день на следующие %2$d дня</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Цели накоплений</string>
+    <string name="savings_subtitle">Вы записываете, что откладываете — Budgetty не хранит деньги.</string>
+    <string name="savings_total_saved">Накоплено %1$s</string>
+    <string name="savings_empty_title">Задайте цель накоплений</string>
+    <string name="savings_empty_body">Дайте ей название, выберите цель и отслеживайте, что откладываете — новый ноутбук, поездка или запас на чёрный день.</string>
+    <string name="savings_new_goal">Новая цель</string>
+    <string name="savings_free_hint">1 цель бесплатно · безлимитно с Премиум</string>
+    <string name="savings_saved_of_target">%1$s из %2$s · осталось %3$s</string>
+    <string name="savings_reached">Цель достигнута! 🎉</string>
+    <string name="savings_rate">%1$s/мес. до %2$s</string>
+    <string name="savings_on_track">по плану</string>
+    <string name="savings_behind">отстаёт</string>
+    <string name="savings_unlock_title">Разблокируйте безлимитные цели</string>
+    <string name="savings_unlock_body">Бесплатный план включает 1 цель накоплений. Премиум добавляет их сколько угодно — плюс безлимитные сканирования и пользовательские категории.</string>
+    <string name="savings_new_goal_title">Новая цель</string>
+    <string name="savings_edit_goal_title">Изменить цель</string>
+    <string name="savings_field_emoji">Эмодзи цели</string>
+    <string name="savings_field_name">Название</string>
+    <string name="savings_name_hint">Поездка в Японию</string>
+    <string name="savings_field_target">Целевая сумма</string>
+    <string name="savings_target_date">Целевая дата</string>
+    <string name="savings_target_date_hint">Добавит на карточку месячный темп</string>
+    <string name="savings_pick_date">Выберите дату</string>
+    <string name="savings_create_free_hint">Бесплатный план: 1 цель. Премиум добавляет их сколько угодно.</string>
+    <string name="savings_create">Создать цель</string>
+    <string name="savings_add_title">Добавить к накоплениям</string>
+    <string name="savings_withdraw_title">Снять</string>
+    <string name="savings_field_amount">Сумма</string>
+    <string name="savings_field_note">Заметка · необязательно</string>
+    <string name="savings_note_hint">На что это было?</string>
+    <string name="savings_field_date">Дата</string>
+    <string name="savings_new_total">Новый итог %1$s из %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Снятия уменьшают накопленную сумму. Цель остаётся прежней.</string>
+    <string name="savings_confirm_add">Добавить %1$s</string>
+    <string name="savings_confirm_withdraw">Снять %1$s</string>
+    <string name="savings_of_amount">из %1$s</string>
+    <string name="savings_saved_label">Накоплено</string>
+    <string name="savings_target_label">Цель</string>
+    <string name="savings_left_label">Осталось</string>
+    <string name="savings_add">Добавить к накоплениям</string>
+    <string name="savings_withdraw">Снять</string>
+    <string name="savings_withdraw_to_spend">Снять на расходы</string>
+    <string name="savings_edit_target">Изменить целевую сумму</string>
+    <string name="savings_contributions">Пополнения</string>
+    <string name="savings_reached_by">Достигнута %1$s</string>
+    <string name="savings_rate_by">%1$s/месяц, чтобы достичь к %2$s</string>
+    <string name="savings_contribution">Пополнение</string>
+    <string name="savings_withdrawal">Снятие</string>
+    <string name="savings_delete_goal">Удалить цель</string>
+    <string name="savings_delete_confirm">Удалить «%1$s» и её пополнения? Отменить нельзя.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d запись</item>
+        <item quantity="few">%1$d записи</item>
+        <item quantity="many">%1$d записей</item>
+        <item quantity="other">%1$d записи</item>
+    </plurals>
 </resources>

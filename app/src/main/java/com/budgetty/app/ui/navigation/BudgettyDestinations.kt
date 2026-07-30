@@ -23,12 +23,16 @@ object Routes {
     const val HISTORY = "history"
     const val WIDGETS = "widgets"
     const val CATEGORY_RULES = "category_rules"
+    const val SAVINGS_GOAL = "savings_goal/{goalId}"
+    const val SAVINGS_GOAL_ARG = "goalId"
 
     /** Upload route for a given source: "camera", "file", or "manual". */
     fun upload(source: String) = "upload/$source"
 
     /** Upload route in edit mode, pre-loading an existing receipt by its id. */
     fun editReceipt(receiptId: Long) = "upload/edit?receiptId=$receiptId"
+
+    fun savingsGoal(goalId: Long) = "savings_goal/$goalId"
 }
 
 /** Destinations shown in the phone's bottom navigation bar. */

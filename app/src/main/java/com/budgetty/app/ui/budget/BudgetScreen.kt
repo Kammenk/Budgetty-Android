@@ -65,6 +65,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
 import com.budgetty.app.ui.components.AdaptiveSheet
+import com.budgetty.app.ui.savings.SavingsGoalCardUi
+import com.budgetty.app.ui.savings.SavingsGoalEditSheet
+import com.budgetty.app.ui.savings.SavingsSection
 import com.budgetty.app.ui.components.SegmentedToggle
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.ui.util.AppFormats
@@ -110,6 +113,7 @@ import kotlin.math.roundToInt
 fun BudgetScreen(
     onNavigateBack: () -> Unit,
     onNavigateToPaywall: () -> Unit,
+    onNavigateToGoal: (Long) -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: BudgetViewModel = koinViewModel(),
 ) {
@@ -122,6 +126,7 @@ fun BudgetScreen(
     val isPremium by viewModel.isPremium.collectAsStateWithLifecycle()
     val carried by viewModel.carried.collectAsStateWithLifecycle()
     val rolloverEnabled by viewModel.rolloverEnabled.collectAsStateWithLifecycle()
+    val savingsGoals by viewModel.savingsGoals.collectAsStateWithLifecycle()
     BudgetScreenContent(
         budgets = budgets,
         spending = spending,
@@ -151,6 +156,9 @@ fun BudgetScreen(
         onSaveRecurring = viewModel::saveRecurring,
         onDeleteRecurring = viewModel::deleteRecurring,
         onOpenPaywall = onNavigateToPaywall,
+        savingsGoals = savingsGoals,
+        onGoalClick = onNavigateToGoal,
+        onCreateGoal = viewModel::createSavingsGoal,
         modifier = modifier,
     )
 }
@@ -179,6 +187,10 @@ private fun BudgetScreenContent(
         { _, _, _, _, _, _, _ -> },
     onDeleteRecurring: (Long) -> Unit = {},
     onOpenPaywall: () -> Unit = {},
+    savingsGoals: List<SavingsGoalCardUi> = emptyList(),
+    onGoalClick: (Long) -> Unit = {},
+    onCreateGoal: (name: String, emoji: String, target: BigDecimal, targetDate: Long?) -> Unit =
+        { _, _, _, _ -> },
     modifier: Modifier = Modifier,
 ) {
     // Per-category budgets still save live; this buffer keeps typing from being snapped back by the
@@ -259,6 +271,7 @@ private fun BudgetScreenContent(
 
     // The income/recurring add-or-edit sheet, if open.
     var recurringDraft by remember { mutableStateOf<RecurringDraft?>(null) }
+    var savingsCreateOpen by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -379,6 +392,13 @@ private fun BudgetScreenContent(
                         spent = monthlySpent,
                     )
                 }
+                SavingsSection(
+                    goals = savingsGoals,
+                    isPremium = isPremium,
+                    onGoalClick = onGoalClick,
+                    onNewGoal = { savingsCreateOpen = true },
+                    onUpgrade = onOpenPaywall,
+                )
             }
         }
 
@@ -518,6 +538,18 @@ private fun BudgetScreenContent(
                 recurringDraft = null
             },
             onDismiss = { recurringDraft = null },
+        )
+    }
+
+    if (savingsCreateOpen) {
+        SavingsGoalEditSheet(
+            initial = null,
+            onSave = { name, emoji, target, targetDate ->
+                onCreateGoal(name, emoji, target, targetDate)
+                savingsCreateOpen = false
+            },
+            onDelete = null,
+            onDismiss = { savingsCreateOpen = false },
         )
     }
 }

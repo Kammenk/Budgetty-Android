@@ -11,8 +11,9 @@ import com.budgetty.app.category.Categories
     entities = [
         TransactionEntity::class, CategoryEntity::class, BudgetEntity::class, ReceiptEntity::class,
         CategoryRuleEntity::class, RecurringEntity::class, BudgetRolloverEntity::class,
+        SavingsGoalEntity::class, SavingsContributionEntity::class,
     ],
-    version = 20,
+    version = 21,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -24,6 +25,7 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun categoryRuleDao(): CategoryRuleDao
     abstract fun recurringDao(): RecurringDao
     abstract fun budgetRolloverDao(): BudgetRolloverDao
+    abstract fun savingsDao(): SavingsDao
 }
 
 /** v2 adds the [TransactionEntity.category] column, defaulting existing rows to "Groceries". */
@@ -290,6 +292,35 @@ val MIGRATION_19_20 = object : Migration(19, 20) {
     }
 }
 
+/**
+ * v21 adds the savings-goals tables: `savings_goals` (emoji + name + target + optional date) and
+ * `savings_contributions` (dated signed entries; deposits positive, withdrawals negative). A goal's
+ * saved total is the sum of its contributions — Budgetty holds no balances. Contributions cascade-
+ * delete with their goal.
+ */
+val MIGRATION_20_21 = object : Migration(20, 21) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `savings_goals` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`name` TEXT NOT NULL, `emoji` TEXT NOT NULL, `targetAmount` TEXT NOT NULL, " +
+                "`targetDate` INTEGER, `createdAt` INTEGER NOT NULL DEFAULT 0)",
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `savings_contributions` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`goalId` INTEGER NOT NULL, `amount` TEXT NOT NULL, " +
+                "`note` TEXT NOT NULL DEFAULT '', `date` INTEGER NOT NULL DEFAULT 0, " +
+                "FOREIGN KEY(`goalId`) REFERENCES `savings_goals`(`id`) " +
+                "ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_savings_contributions_goalId` " +
+                "ON `savings_contributions` (`goalId`)",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -333,5 +364,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10,
     MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
-    MIGRATION_18_19, MIGRATION_19_20,
+    MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21,
 )

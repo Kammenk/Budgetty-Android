@@ -664,4 +664,60 @@
         <item quantity="one">%1$s/dag i %2$d dag</item>
         <item quantity="other">%1$s/dag i %2$d dage</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Opsparingsmål</string>
+    <string name="savings_subtitle">Du registrerer, hvad du lægger til side — Budgetty opbevarer ikke penge.</string>
+    <string name="savings_total_saved">%1$s sparet op</string>
+    <string name="savings_empty_title">Sæt et opsparingsmål</string>
+    <string name="savings_empty_body">Giv det et navn, vælg et mål, og følg det, du lægger til side — en ny laptop, en rejse, en nødopsparing.</string>
+    <string name="savings_new_goal">Nyt mål</string>
+    <string name="savings_free_hint">1 mål gratis · ubegrænset med Premium</string>
+    <string name="savings_saved_of_target">%1$s af %2$s · %3$s tilbage</string>
+    <string name="savings_reached">Mål nået! 🎉</string>
+    <string name="savings_rate">%1$s/md. til %2$s</string>
+    <string name="savings_on_track">på sporet</string>
+    <string name="savings_behind">bagud</string>
+    <string name="savings_unlock_title">Lås op for ubegrænsede mål</string>
+    <string name="savings_unlock_body">Gratisplanen indeholder 1 opsparingsmål. Med Premium får du så mange, du vil — plus ubegrænsede scanninger og egne kategorier.</string>
+    <string name="savings_new_goal_title">Nyt mål</string>
+    <string name="savings_edit_goal_title">Rediger mål</string>
+    <string name="savings_field_emoji">Mål-emoji</string>
+    <string name="savings_field_name">Navn</string>
+    <string name="savings_name_hint">Rejse til Japan</string>
+    <string name="savings_field_target">Målbeløb</string>
+    <string name="savings_target_date">Måldato</string>
+    <string name="savings_target_date_hint">Tilføjer et månedligt tempo til kortet</string>
+    <string name="savings_pick_date">Vælg en dato</string>
+    <string name="savings_create_free_hint">Gratisplan: 1 mål. Med Premium så mange, du vil.</string>
+    <string name="savings_create">Opret mål</string>
+    <string name="savings_add_title">Føj til opsparing</string>
+    <string name="savings_withdraw_title">Hæv</string>
+    <string name="savings_field_amount">Beløb</string>
+    <string name="savings_field_note">Note · valgfrit</string>
+    <string name="savings_note_hint">Hvad var det til?</string>
+    <string name="savings_field_date">Dato</string>
+    <string name="savings_new_total">Ny total %1$s af %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Hævninger sænker dit opsparede beløb. Målet forbliver det samme.</string>
+    <string name="savings_confirm_add">Tilføj %1$s</string>
+    <string name="savings_confirm_withdraw">Hæv %1$s</string>
+    <string name="savings_of_amount">af %1$s</string>
+    <string name="savings_saved_label">Sparet op</string>
+    <string name="savings_target_label">Mål</string>
+    <string name="savings_left_label">Tilbage</string>
+    <string name="savings_add">Føj til opsparing</string>
+    <string name="savings_withdraw">Hæv</string>
+    <string name="savings_withdraw_to_spend">Hæv til forbrug</string>
+    <string name="savings_edit_target">Rediger målbeløb</string>
+    <string name="savings_contributions">Indbetalinger</string>
+    <string name="savings_reached_by">Nået den %1$s</string>
+    <string name="savings_rate_by">%1$s/måned for at nå det inden %2$s</string>
+    <string name="savings_contribution">Indbetaling</string>
+    <string name="savings_withdrawal">Hævning</string>
+    <string name="savings_delete_goal">Slet mål</string>
+    <string name="savings_delete_confirm">Slet “%1$s” og dets indbetalinger? Dette kan ikke fortrydes.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d post</item>
+        <item quantity="other">%1$d poster</item>
+    </plurals>
 </resources>
