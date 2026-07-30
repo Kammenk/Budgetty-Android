@@ -666,4 +666,61 @@
         <item quantity="few">%1$s/zi pentru următoarele %2$d zile</item>
         <item quantity="other">%1$s/zi pentru următoarele %2$d de zile</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Obiective de economii</string>
+    <string name="savings_subtitle">Notezi ce pui deoparte — Budgetty nu păstrează bani.</string>
+    <string name="savings_total_saved">%1$s economisit</string>
+    <string name="savings_empty_title">Setează un obiectiv de economii</string>
+    <string name="savings_empty_body">Dă-i un nume, alege o țintă și urmărește ce pui deoparte — un laptop nou, o călătorie, un fond pentru zile negre.</string>
+    <string name="savings_new_goal">Obiectiv nou</string>
+    <string name="savings_free_hint">1 obiectiv gratuit · nelimitate cu Premium</string>
+    <string name="savings_saved_of_target">%1$s din %2$s · %3$s rămas</string>
+    <string name="savings_reached">Obiectiv atins! 🎉</string>
+    <string name="savings_rate">%1$s/lună până în %2$s</string>
+    <string name="savings_on_track">conform planului</string>
+    <string name="savings_behind">în urmă</string>
+    <string name="savings_unlock_title">Deblochează obiective nelimitate</string>
+    <string name="savings_unlock_body">Planul gratuit include 1 obiectiv de economii. Premium adaugă câte vrei — plus scanări și categorii personalizate nelimitate.</string>
+    <string name="savings_new_goal_title">Obiectiv nou</string>
+    <string name="savings_edit_goal_title">Editează obiectivul</string>
+    <string name="savings_field_emoji">Emoji obiectiv</string>
+    <string name="savings_field_name">Nume</string>
+    <string name="savings_name_hint">Călătorie în Japonia</string>
+    <string name="savings_field_target">Suma țintă</string>
+    <string name="savings_target_date">Data țintă</string>
+    <string name="savings_target_date_hint">Adaugă un ritm lunar pe card</string>
+    <string name="savings_pick_date">Alege o dată</string>
+    <string name="savings_create_free_hint">Plan gratuit: 1 obiectiv. Premium adaugă câte vrei.</string>
+    <string name="savings_create">Creează obiectivul</string>
+    <string name="savings_add_title">Adaugă la economii</string>
+    <string name="savings_withdraw_title">Retrage</string>
+    <string name="savings_field_amount">Sumă</string>
+    <string name="savings_field_note">Notă · opțional</string>
+    <string name="savings_note_hint">Pentru ce a fost?</string>
+    <string name="savings_field_date">Dată</string>
+    <string name="savings_new_total">Total nou %1$s din %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Retragerile îți scad totalul economisit. Obiectivul rămâne neschimbat.</string>
+    <string name="savings_confirm_add">Adaugă %1$s</string>
+    <string name="savings_confirm_withdraw">Retrage %1$s</string>
+    <string name="savings_of_amount">din %1$s</string>
+    <string name="savings_saved_label">Economisit</string>
+    <string name="savings_target_label">Țintă</string>
+    <string name="savings_left_label">Rămas</string>
+    <string name="savings_add">Adaugă la economii</string>
+    <string name="savings_withdraw">Retrage</string>
+    <string name="savings_withdraw_to_spend">Retrage pentru cheltuieli</string>
+    <string name="savings_edit_target">Editează ținta</string>
+    <string name="savings_contributions">Contribuții</string>
+    <string name="savings_reached_by">Atins pe %1$s</string>
+    <string name="savings_rate_by">%1$s/lună pentru a atinge până pe %2$s</string>
+    <string name="savings_contribution">Contribuție</string>
+    <string name="savings_withdrawal">Retragere</string>
+    <string name="savings_delete_goal">Șterge obiectivul</string>
+    <string name="savings_delete_confirm">Ștergi “%1$s” și contribuțiile sale? Această acțiune nu poate fi anulată.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d înregistrare</item>
+        <item quantity="few">%1$d înregistrări</item>
+        <item quantity="other">%1$d de înregistrări</item>
+    </plurals>
 </resources>

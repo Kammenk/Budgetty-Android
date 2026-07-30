@@ -654,4 +654,60 @@
         <item quantity="one">%1$s/Tag für %2$d weiteren Tag</item>
         <item quantity="other">%1$s/Tag für %2$d weitere Tage</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Sparziele</string>
+    <string name="savings_subtitle">Du erfasst, was du zurücklegst — Budgetty verwahrt kein Geld.</string>
+    <string name="savings_total_saved">%1$s gespart</string>
+    <string name="savings_empty_title">Sparziel festlegen</string>
+    <string name="savings_empty_body">Benenne es, wähle ein Ziel und verfolge, was du zurücklegst — ein neuer Laptop, eine Reise, ein Notgroschen.</string>
+    <string name="savings_new_goal">Neues Ziel</string>
+    <string name="savings_free_hint">1 Ziel kostenlos · unbegrenzt mit Premium</string>
+    <string name="savings_saved_of_target">%1$s von %2$s · noch %3$s</string>
+    <string name="savings_reached">Ziel erreicht! 🎉</string>
+    <string name="savings_rate">%1$s/Mon. bis %2$s</string>
+    <string name="savings_on_track">auf Kurs</string>
+    <string name="savings_behind">im Rückstand</string>
+    <string name="savings_unlock_title">Unbegrenzte Ziele freischalten</string>
+    <string name="savings_unlock_body">Der Gratis-Tarif enthält 1 Sparziel. Mit Premium hast du so viele, wie du möchtest — plus unbegrenzte Scans und eigene Kategorien.</string>
+    <string name="savings_new_goal_title">Neues Ziel</string>
+    <string name="savings_edit_goal_title">Ziel bearbeiten</string>
+    <string name="savings_field_emoji">Ziel-Emoji</string>
+    <string name="savings_field_name">Name</string>
+    <string name="savings_name_hint">Japan-Reise</string>
+    <string name="savings_field_target">Zielbetrag</string>
+    <string name="savings_target_date">Zieldatum</string>
+    <string name="savings_target_date_hint">Fügt der Karte ein monatliches Tempo hinzu</string>
+    <string name="savings_pick_date">Datum wählen</string>
+    <string name="savings_create_free_hint">Gratis-Tarif: 1 Ziel. Mit Premium so viele, wie du möchtest.</string>
+    <string name="savings_create">Ziel erstellen</string>
+    <string name="savings_add_title">Einzahlen</string>
+    <string name="savings_withdraw_title">Abheben</string>
+    <string name="savings_field_amount">Betrag</string>
+    <string name="savings_field_note">Notiz · optional</string>
+    <string name="savings_note_hint">Wofür war es?</string>
+    <string name="savings_field_date">Datum</string>
+    <string name="savings_new_total">Neuer Gesamtbetrag %1$s von %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Abhebungen verringern deinen gesparten Betrag. Das Ziel bleibt unverändert.</string>
+    <string name="savings_confirm_add">%1$s einzahlen</string>
+    <string name="savings_confirm_withdraw">%1$s abheben</string>
+    <string name="savings_of_amount">von %1$s</string>
+    <string name="savings_saved_label">Gespart</string>
+    <string name="savings_target_label">Ziel</string>
+    <string name="savings_left_label">Übrig</string>
+    <string name="savings_add">Einzahlen</string>
+    <string name="savings_withdraw">Abheben</string>
+    <string name="savings_withdraw_to_spend">Zum Ausgeben abheben</string>
+    <string name="savings_edit_target">Zielbetrag bearbeiten</string>
+    <string name="savings_contributions">Einzahlungen</string>
+    <string name="savings_reached_by">Erreicht am %1$s</string>
+    <string name="savings_rate_by">%1$s/Monat, um bis %2$s zu erreichen</string>
+    <string name="savings_contribution">Einzahlung</string>
+    <string name="savings_withdrawal">Abhebung</string>
+    <string name="savings_delete_goal">Ziel löschen</string>
+    <string name="savings_delete_confirm">„%1$s“ und die zugehörigen Einzahlungen löschen? Das kann nicht rückgängig gemacht werden.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d Eintrag</item>
+        <item quantity="other">%1$d Einträge</item>
+    </plurals>
 </resources>

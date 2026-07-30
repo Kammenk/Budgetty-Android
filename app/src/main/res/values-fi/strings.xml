@@ -665,4 +665,60 @@
         <item quantity="one">%1$s/päivä seuraavan %2$d päivän ajan</item>
         <item quantity="other">%1$s/päivä seuraavien %2$d päivän ajan</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Säästötavoitteet</string>
+    <string name="savings_subtitle">Kirjaat, mitä laitat sivuun — Budgetty ei säilytä rahaa.</string>
+    <string name="savings_total_saved">%1$s säästetty</string>
+    <string name="savings_empty_title">Aseta säästötavoite</string>
+    <string name="savings_empty_body">Anna sille nimi, valitse tavoite ja seuraa, mitä laitat sivuun — uusi kannettava, matka tai vararahasto.</string>
+    <string name="savings_new_goal">Uusi tavoite</string>
+    <string name="savings_free_hint">1 tavoite ilmaiseksi · rajaton Premiumilla</string>
+    <string name="savings_saved_of_target">%1$s %2$s:sta · %3$s jäljellä</string>
+    <string name="savings_reached">Tavoite saavutettu! 🎉</string>
+    <string name="savings_rate">%1$s/kk %2$s mennessä</string>
+    <string name="savings_on_track">aikataulussa</string>
+    <string name="savings_behind">jäljessä</string>
+    <string name="savings_unlock_title">Avaa rajattomat tavoitteet</string>
+    <string name="savings_unlock_body">Ilmaisversiossa on 1 säästötavoite. Premiumilla niitä on niin monta kuin haluat — lisäksi rajattomat skannaukset ja omat kategoriat.</string>
+    <string name="savings_new_goal_title">Uusi tavoite</string>
+    <string name="savings_edit_goal_title">Muokkaa tavoitetta</string>
+    <string name="savings_field_emoji">Tavoitteen emoji</string>
+    <string name="savings_field_name">Nimi</string>
+    <string name="savings_name_hint">Japanin-matka</string>
+    <string name="savings_field_target">Tavoitesumma</string>
+    <string name="savings_target_date">Tavoitepäivä</string>
+    <string name="savings_target_date_hint">Lisää kortille kuukausitahdin</string>
+    <string name="savings_pick_date">Valitse päivämäärä</string>
+    <string name="savings_create_free_hint">Ilmaisversio: 1 tavoite. Premiumilla niitä on niin monta kuin haluat.</string>
+    <string name="savings_create">Luo tavoite</string>
+    <string name="savings_add_title">Lisää säästöihin</string>
+    <string name="savings_withdraw_title">Nosta</string>
+    <string name="savings_field_amount">Summa</string>
+    <string name="savings_field_note">Muistiinpano · valinnainen</string>
+    <string name="savings_note_hint">Mitä varten?</string>
+    <string name="savings_field_date">Päivämäärä</string>
+    <string name="savings_new_total">Uusi summa %1$s %2$s:sta · %3$d%%</string>
+    <string name="savings_withdraw_note">Nostot pienentävät säästösummaasi. Tavoite pysyy ennallaan.</string>
+    <string name="savings_confirm_add">Lisää %1$s</string>
+    <string name="savings_confirm_withdraw">Nosta %1$s</string>
+    <string name="savings_of_amount">%1$s:sta</string>
+    <string name="savings_saved_label">Säästetty</string>
+    <string name="savings_target_label">Tavoite</string>
+    <string name="savings_left_label">Jäljellä</string>
+    <string name="savings_add">Lisää säästöihin</string>
+    <string name="savings_withdraw">Nosta</string>
+    <string name="savings_withdraw_to_spend">Nosta käytettäväksi</string>
+    <string name="savings_edit_target">Muokkaa tavoitetta</string>
+    <string name="savings_contributions">Lisäykset</string>
+    <string name="savings_reached_by">Saavutettu %1$s</string>
+    <string name="savings_rate_by">%1$s/kuukausi tavoitteeseen %2$s mennessä</string>
+    <string name="savings_contribution">Lisäys</string>
+    <string name="savings_withdrawal">Nosto</string>
+    <string name="savings_delete_goal">Poista tavoite</string>
+    <string name="savings_delete_confirm">Poistetaanko “%1$s” ja sen lisäykset? Tätä ei voi kumota.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d merkintä</item>
+        <item quantity="other">%1$d merkintää</item>
+    </plurals>
 </resources>

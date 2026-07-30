@@ -50,6 +50,7 @@ import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
 import com.budgetty.app.ui.budget.BudgetScreen
+import com.budgetty.app.ui.savings.SavingsGoalDetailScreen
 import com.budgetty.app.ui.history.HistoryScreen
 import com.budgetty.app.ui.home.HomeScreen
 import com.budgetty.app.ui.insights.InsightsScreen
@@ -296,6 +297,16 @@ private fun BudgettyNavHost(
             BudgetScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                onNavigateToGoal = { navController.navigate(Routes.savingsGoal(it)) },
+            )
+        }
+        composable(
+            route = Routes.SAVINGS_GOAL,
+            arguments = listOf(navArgument(Routes.SAVINGS_GOAL_ARG) { type = NavType.LongType }),
+        ) { entry ->
+            SavingsGoalDetailScreen(
+                goalId = entry.arguments?.getLong(Routes.SAVINGS_GOAL_ARG) ?: -1L,
+                onNavigateBack = { navController.popBackStack() },
             )
         }
         composable(Routes.PAYWALL) {

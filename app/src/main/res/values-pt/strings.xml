@@ -654,4 +654,60 @@
         <item quantity="one">%1$s/dia pelo próximo %2$d dia</item>
         <item quantity="other">%1$s/dia pelos próximos %2$d dias</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Metas de economia</string>
+    <string name="savings_subtitle">Você registra o que separa — o Budgetty não guarda dinheiro.</string>
+    <string name="savings_total_saved">%1$s economizado</string>
+    <string name="savings_empty_title">Defina uma meta de economia</string>
+    <string name="savings_empty_body">Dê um nome, escolha um alvo e acompanhe o que separa — um notebook novo, uma viagem, um fundo de emergência.</string>
+    <string name="savings_new_goal">Nova meta</string>
+    <string name="savings_free_hint">1 meta grátis · ilimitadas com Premium</string>
+    <string name="savings_saved_of_target">%1$s de %2$s · faltam %3$s</string>
+    <string name="savings_reached">Meta atingida! 🎉</string>
+    <string name="savings_rate">%1$s/mês até %2$s</string>
+    <string name="savings_on_track">em dia</string>
+    <string name="savings_behind">atrasado</string>
+    <string name="savings_unlock_title">Desbloqueie metas ilimitadas</string>
+    <string name="savings_unlock_body">O plano gratuito inclui 1 meta de economia. O Premium adiciona quantas você quiser — além de digitalizações e categorias personalizadas ilimitadas.</string>
+    <string name="savings_new_goal_title">Nova meta</string>
+    <string name="savings_edit_goal_title">Editar meta</string>
+    <string name="savings_field_emoji">Emoji da meta</string>
+    <string name="savings_field_name">Nome</string>
+    <string name="savings_name_hint">Viagem ao Japão</string>
+    <string name="savings_field_target">Valor-alvo</string>
+    <string name="savings_target_date">Data-alvo</string>
+    <string name="savings_target_date_hint">Adiciona um ritmo mensal ao cartão</string>
+    <string name="savings_pick_date">Escolha uma data</string>
+    <string name="savings_create_free_hint">Plano gratuito: 1 meta. O Premium adiciona quantas você quiser.</string>
+    <string name="savings_create">Criar meta</string>
+    <string name="savings_add_title">Adicionar à economia</string>
+    <string name="savings_withdraw_title">Retirar</string>
+    <string name="savings_field_amount">Valor</string>
+    <string name="savings_field_note">Nota · opcional</string>
+    <string name="savings_note_hint">Para que foi?</string>
+    <string name="savings_field_date">Data</string>
+    <string name="savings_new_total">Novo total %1$s de %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">As retiradas reduzem o total economizado. A meta permanece igual.</string>
+    <string name="savings_confirm_add">Adicionar %1$s</string>
+    <string name="savings_confirm_withdraw">Retirar %1$s</string>
+    <string name="savings_of_amount">de %1$s</string>
+    <string name="savings_saved_label">Economizado</string>
+    <string name="savings_target_label">Alvo</string>
+    <string name="savings_left_label">Restante</string>
+    <string name="savings_add">Adicionar à economia</string>
+    <string name="savings_withdraw">Retirar</string>
+    <string name="savings_withdraw_to_spend">Retirar para gastar</string>
+    <string name="savings_edit_target">Editar alvo</string>
+    <string name="savings_contributions">Contribuições</string>
+    <string name="savings_reached_by">Atingida em %1$s</string>
+    <string name="savings_rate_by">%1$s/mês para atingir até %2$s</string>
+    <string name="savings_contribution">Contribuição</string>
+    <string name="savings_withdrawal">Retirada</string>
+    <string name="savings_delete_goal">Excluir meta</string>
+    <string name="savings_delete_confirm">Excluir “%1$s” e suas contribuições? Isso não pode ser desfeito.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d registro</item>
+        <item quantity="other">%1$d registros</item>
+    </plurals>
 </resources>

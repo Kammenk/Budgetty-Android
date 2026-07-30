@@ -665,4 +665,60 @@
         <item quantity="one">%1$s/dag den neste %2$d dagen</item>
         <item quantity="other">%1$s/dag de neste %2$d dagene</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Sparemål</string>
+    <string name="savings_subtitle">Du logger det du setter av — Budgetty oppbevarer ikke penger.</string>
+    <string name="savings_total_saved">%1$s spart</string>
+    <string name="savings_empty_title">Sett et sparemål</string>
+    <string name="savings_empty_body">Gi det et navn, velg et mål, og følg det du setter av — en ny laptop, en reise, en buffer.</string>
+    <string name="savings_new_goal">Nytt mål</string>
+    <string name="savings_free_hint">1 mål gratis · ubegrenset med Premium</string>
+    <string name="savings_saved_of_target">%1$s av %2$s · %3$s igjen</string>
+    <string name="savings_reached">Målet nådd! 🎉</string>
+    <string name="savings_rate">%1$s/mnd til %2$s</string>
+    <string name="savings_on_track">i rute</string>
+    <string name="savings_behind">bak skjema</string>
+    <string name="savings_unlock_title">Lås opp ubegrensede mål</string>
+    <string name="savings_unlock_body">Gratisplanen inkluderer 1 sparemål. Premium legger til så mange du vil — pluss ubegrensede skanninger og egne kategorier.</string>
+    <string name="savings_new_goal_title">Nytt mål</string>
+    <string name="savings_edit_goal_title">Rediger mål</string>
+    <string name="savings_field_emoji">Mål-emoji</string>
+    <string name="savings_field_name">Navn</string>
+    <string name="savings_name_hint">Japan-tur</string>
+    <string name="savings_field_target">Målbeløp</string>
+    <string name="savings_target_date">Måldato</string>
+    <string name="savings_target_date_hint">Legger til et månedlig tempo på kortet</string>
+    <string name="savings_pick_date">Velg en dato</string>
+    <string name="savings_create_free_hint">Gratisplan: 1 mål. Premium legger til så mange du vil.</string>
+    <string name="savings_create">Opprett mål</string>
+    <string name="savings_add_title">Legg til i sparing</string>
+    <string name="savings_withdraw_title">Ta ut</string>
+    <string name="savings_field_amount">Beløp</string>
+    <string name="savings_field_note">Notat · valgfritt</string>
+    <string name="savings_note_hint">Hva var det til?</string>
+    <string name="savings_field_date">Dato</string>
+    <string name="savings_new_total">Ny sum %1$s av %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Uttak reduserer det du har spart. Målet blir stående.</string>
+    <string name="savings_confirm_add">Legg til %1$s</string>
+    <string name="savings_confirm_withdraw">Ta ut %1$s</string>
+    <string name="savings_of_amount">av %1$s</string>
+    <string name="savings_saved_label">Spart</string>
+    <string name="savings_target_label">Mål</string>
+    <string name="savings_left_label">Igjen</string>
+    <string name="savings_add">Legg til i sparing</string>
+    <string name="savings_withdraw">Ta ut</string>
+    <string name="savings_withdraw_to_spend">Ta ut for å bruke</string>
+    <string name="savings_edit_target">Rediger mål</string>
+    <string name="savings_contributions">Innskudd</string>
+    <string name="savings_reached_by">Nådd %1$s</string>
+    <string name="savings_rate_by">%1$s/måned for å nå målet innen %2$s</string>
+    <string name="savings_contribution">Innskudd</string>
+    <string name="savings_withdrawal">Uttak</string>
+    <string name="savings_delete_goal">Slett mål</string>
+    <string name="savings_delete_confirm">Slette “%1$s” og innskuddene? Dette kan ikke angres.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d oppføring</item>
+        <item quantity="other">%1$d oppføringer</item>
+    </plurals>
 </resources>

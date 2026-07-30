@@ -667,4 +667,62 @@
         <item quantity="many">%1$s/den na příštích %2$d dne</item>
         <item quantity="other">%1$s/den na příštích %2$d dní</item>
     </plurals>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Spořicí cíle</string>
+    <string name="savings_subtitle">Zaznamenáváte, co si odkládáte — Budgetty peníze nedrží.</string>
+    <string name="savings_total_saved">Uspořeno %1$s</string>
+    <string name="savings_empty_title">Nastavte spořicí cíl</string>
+    <string name="savings_empty_body">Pojmenujte jej, zvolte cílovou částku a sledujte, co si odkládáte — nový notebook, cesta nebo rezerva na horší časy.</string>
+    <string name="savings_new_goal">Nový cíl</string>
+    <string name="savings_free_hint">1 cíl zdarma · neomezeně s Premium</string>
+    <string name="savings_saved_of_target">%1$s z %2$s · zbývá %3$s</string>
+    <string name="savings_reached">Cíl splněn! 🎉</string>
+    <string name="savings_rate">%1$s/měs. do %2$s</string>
+    <string name="savings_on_track">podle plánu</string>
+    <string name="savings_behind">pozadu</string>
+    <string name="savings_unlock_title">Odemkněte neomezené cíle</string>
+    <string name="savings_unlock_body">Bezplatný plán zahrnuje 1 spořicí cíl. Premium jich přidá, kolik chcete — a k tomu neomezené skenování a vlastní kategorie.</string>
+    <string name="savings_new_goal_title">Nový cíl</string>
+    <string name="savings_edit_goal_title">Upravit cíl</string>
+    <string name="savings_field_emoji">Emoji cíle</string>
+    <string name="savings_field_name">Název</string>
+    <string name="savings_name_hint">Cesta do Japonska</string>
+    <string name="savings_field_target">Cílová částka</string>
+    <string name="savings_target_date">Cílové datum</string>
+    <string name="savings_target_date_hint">Přidá na kartu měsíční tempo</string>
+    <string name="savings_pick_date">Vyberte datum</string>
+    <string name="savings_create_free_hint">Bezplatný plán: 1 cíl. Premium jich přidá, kolik chcete.</string>
+    <string name="savings_create">Vytvořit cíl</string>
+    <string name="savings_add_title">Přidat do úspor</string>
+    <string name="savings_withdraw_title">Vybrat</string>
+    <string name="savings_field_amount">Částka</string>
+    <string name="savings_field_note">Poznámka · nepovinné</string>
+    <string name="savings_note_hint">Na co to bylo?</string>
+    <string name="savings_field_date">Datum</string>
+    <string name="savings_new_total">Nový součet %1$s z %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">Výběry sníží váš uspořený součet. Cíl zůstane beze změny.</string>
+    <string name="savings_confirm_add">Přidat %1$s</string>
+    <string name="savings_confirm_withdraw">Vybrat %1$s</string>
+    <string name="savings_of_amount">z %1$s</string>
+    <string name="savings_saved_label">Uspořeno</string>
+    <string name="savings_target_label">Cíl</string>
+    <string name="savings_left_label">Zbývá</string>
+    <string name="savings_add">Přidat do úspor</string>
+    <string name="savings_withdraw">Vybrat</string>
+    <string name="savings_withdraw_to_spend">Vybrat na útratu</string>
+    <string name="savings_edit_target">Upravit cílovou částku</string>
+    <string name="savings_contributions">Příspěvky</string>
+    <string name="savings_reached_by">Splněno %1$s</string>
+    <string name="savings_rate_by">%1$s/měsíc ke splnění do %2$s</string>
+    <string name="savings_contribution">Příspěvek</string>
+    <string name="savings_withdrawal">Výběr</string>
+    <string name="savings_delete_goal">Smazat cíl</string>
+    <string name="savings_delete_confirm">Smazat “%1$s” a jeho příspěvky? Tuto akci nelze vrátit zpět.</string>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d záznam</item>
+        <item quantity="few">%1$d záznamy</item>
+        <item quantity="many">%1$d záznamu</item>
+        <item quantity="other">%1$d záznamů</item>
+    </plurals>
 </resources>

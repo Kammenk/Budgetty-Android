@@ -7,6 +7,7 @@ import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.local.BudgetRolloverEntity
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.RecurringEntity
+import com.budgetty.app.data.local.SavingsGoalEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.repository.BudgetRepository
@@ -15,6 +16,7 @@ import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
+import com.budgetty.app.data.repository.SavingsRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,10 +29,12 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.budgetty.app.ui.savings.SavingsGoalCardUi
 import com.budgetty.app.ui.util.BudgetRollover
 import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.isPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
+import com.budgetty.app.ui.util.SavingsMath
 import java.math.BigDecimal
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -58,6 +62,7 @@ class BudgetViewModel(
     receiptRepository: ReceiptRepository,
     private val settingsStore: SettingsStore,
     private val rolloverRepository: BudgetRolloverRepository,
+    private val savingsRepository: SavingsRepository,
 ) : ViewModel() {
 
     /** Saved budgets as key -> amount (keys from [BudgetRepository]). */
@@ -129,6 +134,13 @@ class BudgetViewModel(
 
     /** Premium unlocks unlimited recurring payments; the free tier is capped (income stays uncapped). */
     val isPremium: StateFlow<Boolean> = billingManager.isPremium
+
+    /** Savings goals with derived progress; each card sums that goal's contributions. */
+    val savingsGoals: StateFlow<List<SavingsGoalCardUi>> =
+        combine(savingsRepository.goals, savingsRepository.allContributions) { goals, contributions ->
+            val byGoal = contributions.groupBy { it.goalId }
+            goals.map { goal -> SavingsGoalCardUi(goal, SavingsMath.progress(goal, byGoal[goal.id].orEmpty())) }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** Persists the [key] budget from raw input text; blank/invalid clears it. */
     fun setBudget(key: String, text: String) {
@@ -248,6 +260,21 @@ class BudgetViewModel(
 
     fun deleteRecurring(id: Long) {
         viewModelScope.launch { recurringRepository.delete(id) }
+    }
+
+    /** Creates a new savings goal from the Savings section's create sheet. */
+    fun createSavingsGoal(name: String, emoji: String, target: BigDecimal, targetDate: Long?) {
+        viewModelScope.launch {
+            savingsRepository.upsertGoal(
+                SavingsGoalEntity(
+                    name = name.trim(),
+                    emoji = emoji,
+                    targetAmount = target,
+                    targetDate = targetDate,
+                    createdAt = System.currentTimeMillis(),
+                ),
+            )
+        }
     }
 
     // ── Custom categories ────────────────────────────────────────────────────────────────────────
