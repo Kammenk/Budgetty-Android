@@ -15,6 +15,28 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.1.0 (versionCode 1110) — 2026-07-31
+
+A big feature release: five new tools from the competitive-features batch — a "safe to spend" number, savings goals, automatic subscription detection, CSV/PDF export, and an app lock — plus a refreshed categories & Insights experience.
+
+### Added
+- **"Safe to spend" on Home** — the Home card now leads with one number: what's left to spend this pay-cycle after your income, what you've spent so far, and the bills still due. It shows a per-day allowance until payday and a spent-vs-bills split, and it updates as you mark bills paid. Free.
+- **Savings goals** — set money-aside goals on the Budget screen with a name, emoji, target amount, and an optional target date. Each goal has a progress ring, how much is saved and left, and the monthly pace to reach it on time; add or withdraw contributions to move the ring. One goal free, unlimited with Premium.
+- **Automatic subscription detection** — Budgetty scans your receipt history for recurring merchants and surfaces them under Insights: monthly or yearly cadence, what you pay, the next expected charge, and a flag when the price goes up. Track any of them as a recurring bill in one tap, or ignore it. Premium, with a free preview when subscriptions are found.
+- **Export to CSV or PDF** — a new **Export CSV or PDF** option under Account. CSV is a row-per-receipt spreadsheet for Excel, Numbers, or Sheets; PDF is a clean branded statement with totals and a category breakdown. Pick any period and share it anywhere. Premium.
+- **App lock** — an optional PIN, plus biometric unlock where your device supports it, that locks Budgetty on launch and after it's been in the background. Set it under Account → Security, with an auto-lock delay of your choosing. Free — security shouldn't cost extra.
+- **Sub-categories** — categories can now hold sub-categories (say, Groceries → Coffee), with budgets that roll up to the parent. The emoji picker for custom categories is now searchable across ~220 options.
+
+### Changed
+- **Clearer spending pie** — the Insights breakdown now shows a category icon and percentage on each legend row, with tighter spacing that's easier to scan.
+
+### Fixed
+- **App updates start on the first tap** — the "update available" prompt sometimes needed two taps because it was being launched twice; it now opens once.
+
+> Database change: sub-categories, savings goals, and subscription detection each add storage (migrations 19 → 20 → 21 → 22). App lock (stored in preferences) and CSV/PDF export need no schema change. Upgrading from 11.0.0 (schema v19) runs these migrations in order.
+
+> **Play status — release commit cut 2026-07-31; annotated tag `v11.1.0`, pushed to origin. Signed AAB not yet built; pending Play upload.** Supersedes 11.0.0 (vc1100). Device-verified on a Pixel 6 (safe-to-spend, app lock end-to-end, CSV/PDF export, savings goals); subscription detection covered by unit tests + screenshot goldens.
+
 ## 11.0.0 (versionCode 1100) — 2026-07-28
 
 A feature release bundling everything since 10.8.0 — 10.9.0 was cut but never uploaded, so its two budgeting additions ship here for the first time, alongside a new Home period filter. (The MAJOR bump is mechanical: the previous version was 10.**9**.x, and MINOR rolls into MAJOR at 9.)
