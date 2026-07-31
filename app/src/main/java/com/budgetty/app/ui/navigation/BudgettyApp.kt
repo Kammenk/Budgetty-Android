@@ -149,8 +149,11 @@ private fun MainScaffold(
     // on the phone (no bottom bar), but on a tablet it's a primary rail destination, so the rail
     // stays visible there.
     val isImmersive = currentRoute == Routes.UPLOAD || currentRoute == Routes.PAYWALL
-    val showBottomBar = !expanded && !isImmersive &&
-        currentRoute != Routes.BUDGET && currentRoute != Routes.WIDGETS
+    // The bottom bar belongs to the top-level tabs only. Every pushed/detail route — Budget, Widgets,
+    // Category rules, the Savings-goal detail, Subscriptions, Set-PIN — hides it. An allowlist of the
+    // tab routes (rather than a blocklist of pushed ones) keeps new pushed routes correct by default.
+    val isTabRoute = BottomNavDestination.entries.any { it.route == currentRoute }
+    val showBottomBar = !expanded && isTabRoute
     val showRail = expanded && !isImmersive
 
     Scaffold(
