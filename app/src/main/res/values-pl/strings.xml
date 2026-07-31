@@ -800,4 +800,26 @@
         <item quantity="many">%1$d transakcji · %2$s</item>
         <item quantity="other">%1$d transakcji · %2$s</item>
     </plurals>
+    <string name="section_security">Bezpieczeństwo</string>
+    <string name="account_app_lock">Blokada aplikacji</string>
+    <string name="account_app_lock_sub">Wymagaj kodu PIN do otwarcia Budgetty</string>
+    <string name="account_change_pin">Zmień kod PIN</string>
+    <string name="account_biometric">Odblokowanie biometryczne</string>
+    <string name="account_auto_lock">Automatyczna blokada</string>
+    <string name="app_lock_auto_immediately">Natychmiast</string>
+    <string name="app_lock_auto_1min">Po 1 minucie</string>
+    <string name="app_lock_auto_5min">Po 5 minutach</string>
+    <string name="app_lock_title">Budgetty jest zablokowane</string>
+    <string name="app_lock_enter_pin">Wprowadź kod PIN</string>
+    <string name="app_lock_wrong_pin">Nieprawidłowy kod PIN. Spróbuj ponownie.</string>
+    <string name="app_lock_forgot">Nie pamiętasz kodu PIN?</string>
+    <string name="app_lock_set_title">Ustaw kod PIN</string>
+    <string name="app_lock_set_hint">Wybierz 4-cyfrowy kod PIN, aby zablokować aplikację</string>
+    <string name="app_lock_confirm_title">Potwierdź kod PIN</string>
+    <string name="app_lock_confirm_hint">Wprowadź ponownie kod PIN, aby potwierdzić</string>
+    <string name="app_lock_pin_mismatch">Kody PIN nie są zgodne. Spróbuj ponownie.</string>
+    <string name="app_lock_use_biometric">Użyj biometrii</string>
+    <string name="app_lock_backspace">Usuń</string>
+    <string name="app_lock_biometric_subtitle">Potwierdź swoją tożsamość, aby odblokować</string>
+    <string name="app_lock_use_pin">Użyj kodu PIN</string>
 </resources>

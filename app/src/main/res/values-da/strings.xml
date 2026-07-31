@@ -798,4 +798,27 @@
         <item quantity="one">%1$d transaktion · %2$s</item>
         <item quantity="other">%1$d transaktioner · %2$s</item>
     </plurals>
+    <!-- App lock / security -->
+    <string name="section_security">Sikkerhed</string>
+    <string name="account_app_lock">Applås</string>
+    <string name="account_app_lock_sub">Kræv en PIN for at åbne Budgetty</string>
+    <string name="account_change_pin">Skift PIN</string>
+    <string name="account_biometric">Lås op med biometri</string>
+    <string name="account_auto_lock">Automatisk lås</string>
+    <string name="app_lock_auto_immediately">Med det samme</string>
+    <string name="app_lock_auto_1min">Efter 1 minut</string>
+    <string name="app_lock_auto_5min">Efter 5 minutter</string>
+    <string name="app_lock_title">Budgetty er låst</string>
+    <string name="app_lock_enter_pin">Indtast din PIN</string>
+    <string name="app_lock_wrong_pin">Forkert PIN. Prøv igen.</string>
+    <string name="app_lock_forgot">Glemt PIN?</string>
+    <string name="app_lock_set_title">Opret en PIN</string>
+    <string name="app_lock_set_hint">Vælg en firecifret PIN for at låse appen</string>
+    <string name="app_lock_confirm_title">Bekræft din PIN</string>
+    <string name="app_lock_confirm_hint">Indtast din PIN igen for at bekræfte</string>
+    <string name="app_lock_pin_mismatch">PIN stemte ikke. Prøv igen.</string>
+    <string name="app_lock_use_biometric">Brug biometri</string>
+    <string name="app_lock_backspace">Slet</string>
+    <string name="app_lock_biometric_subtitle">Bekræft, at det er dig, for at låse op</string>
+    <string name="app_lock_use_pin">Brug PIN</string>
 </resources>

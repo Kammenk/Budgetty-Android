@@ -58,6 +58,11 @@ class AccountViewModel(
         crashReporting.setEnabled(enabled)
     }
 
+    // ── App lock ── (setPin lives on the set-PIN screen; here are the toggles.)
+    fun disableAppLock() = settingsStore.disableAppLock()
+    fun setBiometricEnabled(value: Boolean) = settingsStore.setBiometricEnabled(value)
+    fun setAutoLockMinutes(value: Int) = settingsStore.setAutoLockMinutes(value)
+
     /** Builds the JSON backup of all local data. */
     suspend fun buildBackupJson(): String = backupManager.exportJson()
 

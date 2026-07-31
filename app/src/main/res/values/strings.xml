@@ -90,6 +90,30 @@
     <string name="month_start_calendar">1 (calendar month)</string>
     <string name="account_language">Language</string>
     <string name="section_support">Support &amp; About</string>
+    <string name="section_security">Security</string>
+
+    <!-- App lock (PIN + biometric) -->
+    <string name="account_app_lock">App lock</string>
+    <string name="account_app_lock_sub">Require a PIN to open Budgetty</string>
+    <string name="account_change_pin">Change PIN</string>
+    <string name="account_biometric">Unlock with biometrics</string>
+    <string name="account_auto_lock">Auto-lock</string>
+    <string name="app_lock_auto_immediately">Immediately</string>
+    <string name="app_lock_auto_1min">After 1 minute</string>
+    <string name="app_lock_auto_5min">After 5 minutes</string>
+    <string name="app_lock_title">Budgetty is locked</string>
+    <string name="app_lock_enter_pin">Enter your PIN</string>
+    <string name="app_lock_wrong_pin">Wrong PIN. Try again.</string>
+    <string name="app_lock_forgot">Forgot PIN?</string>
+    <string name="app_lock_set_title">Set a PIN</string>
+    <string name="app_lock_set_hint">Choose a 4-digit PIN to lock the app</string>
+    <string name="app_lock_confirm_title">Confirm your PIN</string>
+    <string name="app_lock_confirm_hint">Re-enter your PIN to confirm</string>
+    <string name="app_lock_pin_mismatch">PINs didn\'t match. Try again.</string>
+    <string name="app_lock_use_biometric">Use biometrics</string>
+    <string name="app_lock_backspace">Delete</string>
+    <string name="app_lock_biometric_subtitle">Confirm it\'s you to unlock</string>
+    <string name="app_lock_use_pin">Use PIN</string>
     <string name="account_help">Help &amp; FAQ</string>
     <string name="account_contact">Contact us</string>
     <string name="account_contact_subtitle">Report an issue, suggest a feature, or just say hello</string>

@@ -33,6 +33,7 @@ import com.budgetty.app.ui.history.HistoryViewModel
 import com.budgetty.app.ui.home.HomeViewModel
 import com.budgetty.app.ui.insights.InsightsViewModel
 import com.budgetty.app.ui.paywall.PaywallViewModel
+import com.budgetty.app.ui.lock.AppLockViewModel
 import com.budgetty.app.ui.quiz.InsightsQuizViewModel
 import com.budgetty.app.ui.rules.CategoryRulesViewModel
 import com.budgetty.app.ui.upload.UploadViewModel
@@ -131,4 +132,5 @@ val appModule = module {
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get()) }
+    viewModel { AppLockViewModel(get(), get()) }
 }

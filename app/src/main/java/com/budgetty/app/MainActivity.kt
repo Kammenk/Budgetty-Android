@@ -33,6 +33,7 @@ import com.budgetty.app.data.settings.ThemeMode
 import com.budgetty.app.debug.DebugAuth
 import com.budgetty.app.review.ReviewPrompter
 import com.budgetty.app.review.ReviewTracker
+import com.budgetty.app.ui.lock.AppLockGate
 import com.budgetty.app.ui.navigation.BudgettyApp
 import com.budgetty.app.ui.navigation.Routes
 import com.budgetty.app.ui.theme.BudgettyTheme
@@ -138,17 +139,19 @@ class MainActivity : ComponentActivity() {
                             reviewPrompter.request()
                         }
                     }
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        BudgettyApp(
-                            startRoute = startRoute.value,
-                            onStartRouteHandled = { startRoute.value = null },
-                        )
-                        SnackbarHost(
-                            hostState = snackbarHostState,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .safeDrawingPadding(),
-                        )
+                    AppLockGate {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            BudgettyApp(
+                                startRoute = startRoute.value,
+                                onStartRouteHandled = { startRoute.value = null },
+                            )
+                            SnackbarHost(
+                                hostState = snackbarHostState,
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .safeDrawingPadding(),
+                            )
+                        }
                     }
                 }
             }

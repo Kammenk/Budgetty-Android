@@ -34,6 +34,10 @@ class SettingsStore(context: Context) {
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
         recentSearches = prefs.getString(KEY_RECENT_SEARCHES, null).toLines(),
         crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, true),
+        appLockEnabled = prefs.getBoolean(KEY_APP_LOCK, false),
+        pinHash = prefs.getString(KEY_PIN_HASH, "").orEmpty(),
+        biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
+        autoLockMinutes = prefs.getInt(KEY_AUTO_LOCK, 1),
     )
 
     fun setThemeMode(value: ThemeMode) = save(KEY_THEME, value) { it.copy(themeMode = value) }
@@ -138,6 +142,31 @@ class SettingsStore(context: Context) {
     fun setCrashReportingEnabled(value: Boolean) =
         save(KEY_CRASH_REPORTING, value) { it.copy(crashReportingEnabled = value) }
 
+    // ── App lock ──
+
+    /** Sets a new PIN (stored hashed) and turns the lock on. */
+    fun setPin(pin: String) {
+        val hash = PinHash.hash(pin)
+        prefs.edit().putString(KEY_PIN_HASH, hash).putBoolean(KEY_APP_LOCK, true).apply()
+        _settings.update { it.copy(pinHash = hash, appLockEnabled = true) }
+    }
+
+    fun verifyPin(pin: String): Boolean = PinHash.verify(pin, _settings.value.pinHash)
+
+    fun setBiometricEnabled(value: Boolean) =
+        save(KEY_BIOMETRIC, value) { it.copy(biometricEnabled = value) }
+
+    fun setAutoLockMinutes(value: Int) {
+        prefs.edit().putInt(KEY_AUTO_LOCK, value).apply()
+        _settings.update { it.copy(autoLockMinutes = value) }
+    }
+
+    /** Turns the lock off and forgets the PIN + biometric preference. */
+    fun disableAppLock() {
+        prefs.edit().remove(KEY_PIN_HASH).putBoolean(KEY_APP_LOCK, false).putBoolean(KEY_BIOMETRIC, false).apply()
+        _settings.update { it.copy(appLockEnabled = false, pinHash = "", biometricEnabled = false) }
+    }
+
     /** Records [query] as the most-recent History search, de-duplicated and capped. */
     fun addRecentSearch(query: String) {
         val q = query.trim()
@@ -227,6 +256,10 @@ class SettingsStore(context: Context) {
         const val KEY_HIDDEN_INSIGHTS = "hidden_insights_sections"
         const val KEY_ORDER_HOME = "home_section_order"
         const val KEY_ORDER_INSIGHTS = "insights_section_order"
+        const val KEY_APP_LOCK = "app_lock_enabled"
+        const val KEY_PIN_HASH = "app_lock_pin_hash"
+        const val KEY_BIOMETRIC = "app_lock_biometric"
+        const val KEY_AUTO_LOCK = "app_lock_auto_minutes"
         const val KEY_PERIOD_UNIT_INSIGHTS = "insights_period_unit"
         const val KEY_MONTH_START_DAY = "month_start_day"
         const val KEY_BUDGET_ROLLOVER = "budget_rollover_enabled"

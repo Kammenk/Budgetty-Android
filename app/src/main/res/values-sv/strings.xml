@@ -799,4 +799,27 @@
         <item quantity="one">%1$d transaktion · %2$s</item>
         <item quantity="other">%1$d transaktioner · %2$s</item>
     </plurals>
+    <!-- App lock / security -->
+    <string name="section_security">Säkerhet</string>
+    <string name="account_app_lock">Applås</string>
+    <string name="account_app_lock_sub">Kräv en PIN för att öppna Budgetty</string>
+    <string name="account_change_pin">Ändra PIN</string>
+    <string name="account_biometric">Lås upp med biometri</string>
+    <string name="account_auto_lock">Automatiskt lås</string>
+    <string name="app_lock_auto_immediately">Omedelbart</string>
+    <string name="app_lock_auto_1min">Efter 1 minut</string>
+    <string name="app_lock_auto_5min">Efter 5 minuter</string>
+    <string name="app_lock_title">Budgetty är låst</string>
+    <string name="app_lock_enter_pin">Ange din PIN</string>
+    <string name="app_lock_wrong_pin">Fel PIN. Försök igen.</string>
+    <string name="app_lock_forgot">Glömt PIN?</string>
+    <string name="app_lock_set_title">Skapa en PIN</string>
+    <string name="app_lock_set_hint">Välj en fyrsiffrig PIN för att låsa appen</string>
+    <string name="app_lock_confirm_title">Bekräfta din PIN</string>
+    <string name="app_lock_confirm_hint">Ange din PIN igen för att bekräfta</string>
+    <string name="app_lock_pin_mismatch">PIN stämde inte. Försök igen.</string>
+    <string name="app_lock_use_biometric">Använd biometri</string>
+    <string name="app_lock_backspace">Radera</string>
+    <string name="app_lock_biometric_subtitle">Bekräfta att det är du för att låsa upp</string>
+    <string name="app_lock_use_pin">Använd PIN</string>
 </resources>

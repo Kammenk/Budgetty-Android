@@ -788,4 +788,26 @@
         <item quantity="one">%1$d transação · %2$s</item>
         <item quantity="other">%1$d transações · %2$s</item>
     </plurals>
+    <string name="section_security">Segurança</string>
+    <string name="account_app_lock">Bloqueio do app</string>
+    <string name="account_app_lock_sub">Exigir um PIN para abrir o Budgetty</string>
+    <string name="account_change_pin">Alterar PIN</string>
+    <string name="account_biometric">Desbloquear com biometria</string>
+    <string name="account_auto_lock">Bloqueio automático</string>
+    <string name="app_lock_auto_immediately">Imediatamente</string>
+    <string name="app_lock_auto_1min">Após 1 minuto</string>
+    <string name="app_lock_auto_5min">Após 5 minutos</string>
+    <string name="app_lock_title">O Budgetty está bloqueado</string>
+    <string name="app_lock_enter_pin">Digite seu PIN</string>
+    <string name="app_lock_wrong_pin">PIN incorreto. Tente novamente.</string>
+    <string name="app_lock_forgot">Esqueceu o PIN?</string>
+    <string name="app_lock_set_title">Defina um PIN</string>
+    <string name="app_lock_set_hint">Escolha um PIN de 4 dígitos para bloquear o app</string>
+    <string name="app_lock_confirm_title">Confirme seu PIN</string>
+    <string name="app_lock_confirm_hint">Digite seu PIN novamente para confirmar</string>
+    <string name="app_lock_pin_mismatch">Os PINs não coincidem. Tente novamente.</string>
+    <string name="app_lock_use_biometric">Usar biometria</string>
+    <string name="app_lock_backspace">Apagar</string>
+    <string name="app_lock_biometric_subtitle">Confirme sua identidade para desbloquear</string>
+    <string name="app_lock_use_pin">Usar PIN</string>
 </resources>

@@ -788,4 +788,26 @@
         <item quantity="one">%1$d транзакция · %2$s</item>
         <item quantity="other">%1$d транзакции · %2$s</item>
     </plurals>
+    <string name="section_security">Сигурност</string>
+    <string name="account_app_lock">Заключване на приложението</string>
+    <string name="account_app_lock_sub">Изисквай ПИН за отваряне на Budgetty</string>
+    <string name="account_change_pin">Смяна на ПИН</string>
+    <string name="account_biometric">Отключване с биометрия</string>
+    <string name="account_auto_lock">Автоматично заключване</string>
+    <string name="app_lock_auto_immediately">Веднага</string>
+    <string name="app_lock_auto_1min">След 1 минута</string>
+    <string name="app_lock_auto_5min">След 5 минути</string>
+    <string name="app_lock_title">Budgetty е заключено</string>
+    <string name="app_lock_enter_pin">Въведете вашия ПИН</string>
+    <string name="app_lock_wrong_pin">Грешен ПИН. Опитайте отново.</string>
+    <string name="app_lock_forgot">Забравен ПИН?</string>
+    <string name="app_lock_set_title">Задайте ПИН</string>
+    <string name="app_lock_set_hint">Изберете 4-цифрен ПИН за заключване на приложението</string>
+    <string name="app_lock_confirm_title">Потвърдете вашия ПИН</string>
+    <string name="app_lock_confirm_hint">Въведете ПИН отново за потвърждение</string>
+    <string name="app_lock_pin_mismatch">ПИН кодовете не съвпадат. Опитайте отново.</string>
+    <string name="app_lock_use_biometric">Използвай биометрия</string>
+    <string name="app_lock_backspace">Изтрий</string>
+    <string name="app_lock_biometric_subtitle">Потвърдете самоличността си, за да отключите</string>
+    <string name="app_lock_use_pin">Използвай ПИН</string>
 </resources>

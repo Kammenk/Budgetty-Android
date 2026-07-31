@@ -805,4 +805,26 @@
         <item quantity="few">%1$d tranzacții · %2$s</item>
         <item quantity="other">%1$d de tranzacții · %2$s</item>
     </plurals>
+    <string name="section_security">Securitate</string>
+    <string name="account_app_lock">Blocarea aplicației</string>
+    <string name="account_app_lock_sub">Solicită un PIN pentru a deschide Budgetty</string>
+    <string name="account_change_pin">Schimbă PIN-ul</string>
+    <string name="account_biometric">Deblochează cu date biometrice</string>
+    <string name="account_auto_lock">Blocare automată</string>
+    <string name="app_lock_auto_immediately">Imediat</string>
+    <string name="app_lock_auto_1min">După 1 minut</string>
+    <string name="app_lock_auto_5min">După 5 minute</string>
+    <string name="app_lock_title">Budgetty este blocat</string>
+    <string name="app_lock_enter_pin">Introdu PIN-ul</string>
+    <string name="app_lock_wrong_pin">PIN greșit. Încearcă din nou.</string>
+    <string name="app_lock_forgot">Ai uitat PIN-ul?</string>
+    <string name="app_lock_set_title">Setează un PIN</string>
+    <string name="app_lock_set_hint">Alege un PIN din 4 cifre pentru a bloca aplicația</string>
+    <string name="app_lock_confirm_title">Confirmă PIN-ul</string>
+    <string name="app_lock_confirm_hint">Reintrodu PIN-ul pentru a confirma</string>
+    <string name="app_lock_pin_mismatch">PIN-urile nu coincid. Încearcă din nou.</string>
+    <string name="app_lock_use_biometric">Folosește date biometrice</string>
+    <string name="app_lock_backspace">Șterge</string>
+    <string name="app_lock_biometric_subtitle">Confirmă-ți identitatea pentru a debloca</string>
+    <string name="app_lock_use_pin">Folosește PIN-ul</string>
 </resources>

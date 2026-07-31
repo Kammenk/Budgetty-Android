@@ -811,4 +811,26 @@
         <item quantity="many">%1$d transakce · %2$s</item>
         <item quantity="other">%1$d transakcí · %2$s</item>
     </plurals>
+    <string name="section_security">Zabezpečení</string>
+    <string name="account_app_lock">Zámek aplikace</string>
+    <string name="account_app_lock_sub">Vyžadovat PIN k otevření Budgetty</string>
+    <string name="account_change_pin">Změnit PIN</string>
+    <string name="account_biometric">Odemknout biometrikou</string>
+    <string name="account_auto_lock">Automatický zámek</string>
+    <string name="app_lock_auto_immediately">Okamžitě</string>
+    <string name="app_lock_auto_1min">Po 1 minutě</string>
+    <string name="app_lock_auto_5min">Po 5 minutách</string>
+    <string name="app_lock_title">Budgetty je uzamčeno</string>
+    <string name="app_lock_enter_pin">Zadejte PIN</string>
+    <string name="app_lock_wrong_pin">Nesprávný PIN. Zkuste to znovu.</string>
+    <string name="app_lock_forgot">Zapomněli jste PIN?</string>
+    <string name="app_lock_set_title">Nastavte PIN</string>
+    <string name="app_lock_set_hint">Zvolte 4místný PIN pro uzamčení aplikace</string>
+    <string name="app_lock_confirm_title">Potvrďte PIN</string>
+    <string name="app_lock_confirm_hint">Zadejte PIN znovu pro potvrzení</string>
+    <string name="app_lock_pin_mismatch">Kódy PIN se neshodují. Zkuste to znovu.</string>
+    <string name="app_lock_use_biometric">Použít biometriku</string>
+    <string name="app_lock_backspace">Smazat</string>
+    <string name="app_lock_biometric_subtitle">Potvrďte svou totožnost pro odemknutí</string>
+    <string name="app_lock_use_pin">Použít PIN</string>
 </resources>

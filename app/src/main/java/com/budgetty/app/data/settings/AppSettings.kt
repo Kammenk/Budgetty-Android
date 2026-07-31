@@ -117,4 +117,13 @@ data class AppSettings(
     val recentSearches: List<String> = emptyList(),
     /** Whether Crashlytics crash collection is on. Default-on with an opt-out toggle in Account. */
     val crashReportingEnabled: Boolean = true,
+    // ── App lock ──
+    /** Whether the PIN / biometric lock gate is on. */
+    val appLockEnabled: Boolean = false,
+    /** Salted PIN hash ("saltHex:hashHex"); empty = no PIN set. */
+    val pinHash: String = "",
+    /** Whether biometric unlock is on (only meaningful with a PIN + enrolled hardware). */
+    val biometricEnabled: Boolean = false,
+    /** Idle minutes before re-locking on resume; 0 = immediately. Cold start always locks. */
+    val autoLockMinutes: Int = 1,
 )
