@@ -51,6 +51,7 @@ import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
 import com.budgetty.app.ui.budget.BudgetScreen
 import com.budgetty.app.ui.savings.SavingsGoalDetailScreen
+import com.budgetty.app.ui.subscriptions.SubscriptionsScreen
 import com.budgetty.app.ui.history.HistoryScreen
 import com.budgetty.app.ui.home.HomeScreen
 import com.budgetty.app.ui.insights.InsightsScreen
@@ -266,7 +267,14 @@ private fun BudgettyNavHost(
             )
         }
         composable(Routes.INSIGHTS) {
-            InsightsScreen(onNavigateToBudget = { navController.navigate(Routes.BUDGET) })
+            InsightsScreen(
+                onNavigateToBudget = { navController.navigate(Routes.BUDGET) },
+                onNavigateToSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) },
+                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+            )
+        }
+        composable(Routes.SUBSCRIPTIONS) {
+            SubscriptionsScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Routes.ACCOUNT) {
             AccountScreen(

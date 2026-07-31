@@ -721,4 +721,55 @@
         <item quantity="one">%1$d merkintä</item>
         <item quantity="other">%1$d merkintää</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Tilaukset</string>
+    <string name="sub_per_month">Kuukaudessa</string>
+    <string name="sub_per_year">Vuodessa</string>
+    <string name="sub_per_month_suffix">/ kk</string>
+    <string name="sub_see_all">Näytä kaikki %1$d ›</string>
+    <string name="sub_teaser_body">Noin %1$s kuukaudessa, havaittu omista kuiteistasi tässä puhelimessa — ei pankkiyhteyttä.</string>
+    <string name="sub_unlock">Avaa Premiumilla</string>
+    <string name="sub_unlock_note">Avaa koko listan, hinnankorotusilmoitukset ja Seuraa laskuna -toiminnon.</string>
+    <string name="sub_cadence_monthly">Kuukausittain</string>
+    <string name="sub_cadence_yearly">Vuosittain</string>
+    <string name="sub_next">seuraava ~%1$s</string>
+    <string name="sub_detected">Tunnistetut tilaukset</string>
+    <string name="sub_list_note">Tunnistettu tässä puhelimessa etsimällä toistuvia maksuja kuiteistasi. Vuosittaiset kohteet lasketaan yhtenä kahdestoistaosana kuukaudessa.</string>
+    <string name="sub_ignored">Sivuutetut</string>
+    <string name="sub_ignored_note">Piilotettu listalta ja summista</string>
+    <string name="sub_ignored_still">Tunnistus näkee sen yhä — se pysyy vain poissa tieltä.</string>
+    <string name="sub_restore">Palauta</string>
+    <string name="sub_footer_ondevice">Tunnistus tapahtuu laitteellasi. Mikään ei poistu puhelimesta, eikä pankkia ole yhdistetty.</string>
+    <string name="sub_stat_last">Viimeisin</string>
+    <string name="sub_stat_next">Seuraava ~</string>
+    <string name="sub_stat_charges">Maksut</string>
+    <string name="sub_hike_title">%1$s %2$s alkaen</string>
+    <string name="sub_hike_body">%1$s → %2$s kyseisestä maksusta alkaen. Noin %3$s enemmän vuodessa.</string>
+    <string name="sub_price_up_tag">hinta noussut</string>
+    <string name="sub_track_as_bill">Seuraa laskuna</string>
+    <string name="sub_track_note">Luo toistuvan laskun — se lasketaan sitten mukaan Turvallista käyttää -summaan ja tuleviin laskuihin.</string>
+    <string name="sub_ignore_merchant">Sivuuta tämä kauppa</string>
+    <string name="sub_empty_title">Ei mitään toistuvaa vielä</string>
+    <string name="sub_empty_body">Havaitsemme toistuvat maksut, kun lisäät lisää kuitteja. Yleensä siihen tarvitaan noin kolme maksua samasta kaupasta.</string>
+    <string name="sub_receipts_so_far">Kuitteja tähän mennessä</string>
+    <string name="sub_nearest">Lähimpänä tähän mennessä: %1$d maksua kaupasta %2$s — vielä yksi, niin merkitsemme sen.</string>
+    <string name="sub_track_sheet_title">Seuraa toistuvana laskuna</string>
+    <string name="sub_track_sheet_body">Esitäytetty tunnistuksen perusteella. Muuta mitä haluat ennen tallentamista.</string>
+    <string name="sub_track_charge_day">%1$s · seuraava %2$s</string>
+    <string name="sub_track_sheet_note">Tallennetut laskut näkyvät tulevissa laskuissa ja lasketaan mukaan Turvallista käyttää -summaan, kunnes merkitset ne maksetuiksi.</string>
+    <string name="sub_add_bill">Lisää lasku</string>
+    <string name="sub_added_to_bills">Lisätty laskuihisi</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d löytyi kuiteistasi</item>
+        <item quantity="other">%1$d löytyi kuiteistasi</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Löysimme %1$d toistuvan maksun</item>
+        <item quantity="other">Löysimme %1$d toistuvaa maksua</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d tilaus · %2$s vuodessa</item>
+        <item quantity="other">%1$d tilausta · %2$s vuodessa</item>
+    </plurals>
 </resources>

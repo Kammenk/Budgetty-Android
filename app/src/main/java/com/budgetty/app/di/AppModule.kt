@@ -18,6 +18,7 @@ import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
+import com.budgetty.app.data.repository.SubscriptionsRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.widget.WidgetDataProvider
@@ -26,6 +27,7 @@ import com.budgetty.app.ui.account.AccountViewModel
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.budget.BudgetViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
+import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
 import com.budgetty.app.ui.history.HistoryViewModel
 import com.budgetty.app.ui.home.HomeViewModel
 import com.budgetty.app.ui.insights.InsightsViewModel
@@ -60,6 +62,7 @@ val appModule = module {
     single { CategoryRuleRepository(get()) }
     single { RecurringRepository(get()) }
     single { SavingsRepository(get()) }
+    single { SubscriptionsRepository(get()) }
 
     // Backup / restore (import-export)
     single { BackupManager(get()) }
@@ -119,6 +122,7 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (goalId: Long) -> SavingsGoalViewModel(get(), get(), goalId) }
+    viewModel { SubscriptionsViewModel(get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get()) }
     viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }

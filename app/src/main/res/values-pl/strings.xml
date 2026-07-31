@@ -714,4 +714,61 @@
         <item quantity="many">%1$d wpisów</item>
         <item quantity="other">%1$d wpisu</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Subskrypcje</string>
+    <string name="sub_per_month">Miesięcznie</string>
+    <string name="sub_per_year">Rocznie</string>
+    <string name="sub_per_month_suffix">/ miesiąc</string>
+    <string name="sub_see_all">Zobacz wszystkie %1$d ›</string>
+    <string name="sub_teaser_body">Około %1$s miesięcznie, wykryte w Twoich paragonach na tym telefonie — bez łączenia z bankiem.</string>
+    <string name="sub_unlock">Odblokuj z Premium</string>
+    <string name="sub_unlock_note">Odblokowuje pełną listę, alerty o podwyżkach cen i „Śledź jako rachunek".</string>
+    <string name="sub_cadence_monthly">Miesięcznie</string>
+    <string name="sub_cadence_yearly">Rocznie</string>
+    <string name="sub_next">następna ~%1$s</string>
+    <string name="sub_detected">Wykryte subskrypcje</string>
+    <string name="sub_list_note">Znalezione na tym telefonie przez dopasowanie powtarzających się opłat w Twoich paragonach. Pozycje roczne liczą się jako jedna dwunasta miesięcznie.</string>
+    <string name="sub_ignored">Ignorowane</string>
+    <string name="sub_ignored_note">Ukryte z listy i sum</string>
+    <string name="sub_ignored_still">Wykrywanie nadal to widzi — po prostu nie wchodzi Ci w drogę.</string>
+    <string name="sub_restore">Przywróć</string>
+    <string name="sub_footer_ondevice">Wykrywanie działa na Twoim urządzeniu. Nic nie opuszcza telefonu i żaden bank nie jest podłączony.</string>
+    <string name="sub_stat_last">Ostatnia</string>
+    <string name="sub_stat_next">Następna ~</string>
+    <string name="sub_stat_charges">Opłaty</string>
+    <string name="sub_hike_title">%1$s od %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s począwszy od tej opłaty. Około %3$s więcej w ciągu roku.</string>
+    <string name="sub_price_up_tag">wzrost ceny</string>
+    <string name="sub_track_as_bill">Śledź jako rachunek</string>
+    <string name="sub_track_note">Tworzy rachunek cykliczny — od tej pory liczy się w „Można wydać" i nadchodzących rachunkach.</string>
+    <string name="sub_ignore_merchant">Ignoruj tego sprzedawcę</string>
+    <string name="sub_empty_title">Nic się jeszcze nie powtarza</string>
+    <string name="sub_empty_body">Wykryjemy powtarzające się opłaty, gdy dodasz więcej paragonów. Zwykle potrzeba około trzech opłat od tego samego sprzedawcy.</string>
+    <string name="sub_receipts_so_far">Dotychczasowe paragony</string>
+    <string name="sub_nearest">Najbliżej jak dotąd: %1$d opłaty od %2$s — jeszcze jedna i to oznaczymy.</string>
+    <string name="sub_track_sheet_title">Śledź jako rachunek cykliczny</string>
+    <string name="sub_track_sheet_body">Wstępnie wypełnione na podstawie tego, co wykryliśmy. Zmień cokolwiek przed zapisaniem.</string>
+    <string name="sub_track_charge_day">%1$s · następna %2$s</string>
+    <string name="sub_track_sheet_note">Zapisane rachunki pojawiają się w nadchodzących rachunkach i pomniejszają „Można wydać", dopóki nie oznaczysz ich jako zapłacone.</string>
+    <string name="sub_add_bill">Dodaj rachunek</string>
+    <string name="sub_added_to_bills">Dodano do Twoich rachunków</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">Znaleziono %1$d subskrypcję w Twoich paragonach</item>
+        <item quantity="few">Znaleziono %1$d subskrypcje w Twoich paragonach</item>
+        <item quantity="many">Znaleziono %1$d subskrypcji w Twoich paragonach</item>
+        <item quantity="other">Znaleziono %1$d subskrypcji w Twoich paragonach</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Znaleźliśmy %1$d powtarzającą się opłatę</item>
+        <item quantity="few">Znaleźliśmy %1$d powtarzające się opłaty</item>
+        <item quantity="many">Znaleźliśmy %1$d powtarzających się opłat</item>
+        <item quantity="other">Znaleźliśmy %1$d powtarzającej się opłaty</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d subskrypcja · %2$s rocznie</item>
+        <item quantity="few">%1$d subskrypcje · %2$s rocznie</item>
+        <item quantity="many">%1$d subskrypcji · %2$s rocznie</item>
+        <item quantity="other">%1$d subskrypcji · %2$s rocznie</item>
+    </plurals>
 </resources>

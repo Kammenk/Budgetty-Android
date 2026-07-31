@@ -714,4 +714,61 @@
         <item quantity="many">%1$d записей</item>
         <item quantity="other">%1$d записи</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Подписки</string>
+    <string name="sub_per_month">В месяц</string>
+    <string name="sub_per_year">В год</string>
+    <string name="sub_per_month_suffix">/ месяц</string>
+    <string name="sub_see_all">Показать все %1$d ›</string>
+    <string name="sub_teaser_body">Около %1$s в месяц, найдено в ваших чеках на этом телефоне — без подключения к банку.</string>
+    <string name="sub_unlock">Разблокировать с Премиум</string>
+    <string name="sub_unlock_note">Открывает полный список, оповещения о повышении цен и «Отслеживать как счёт».</string>
+    <string name="sub_cadence_monthly">Ежемесячно</string>
+    <string name="sub_cadence_yearly">Ежегодно</string>
+    <string name="sub_next">далее ~%1$s</string>
+    <string name="sub_detected">Обнаруженные подписки</string>
+    <string name="sub_list_note">Найдено на этом телефоне по повторяющимся списаниям в ваших чеках. Годовые позиции считаются как одна двенадцатая в месяц.</string>
+    <string name="sub_ignored">Игнорируется</string>
+    <string name="sub_ignored_note">Скрыто из списка и итогов</string>
+    <string name="sub_ignored_still">Обнаружение всё ещё видит её — она просто не мешает.</string>
+    <string name="sub_restore">Восстановить</string>
+    <string name="sub_footer_ondevice">Обнаружение работает на вашем устройстве. Ничего не покидает телефон, и никакой банк не подключён.</string>
+    <string name="sub_stat_last">Последнее</string>
+    <string name="sub_stat_next">Далее ~</string>
+    <string name="sub_stat_charges">Списания</string>
+    <string name="sub_hike_title">%1$s с %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s начиная с того списания. Примерно на %3$s больше за год.</string>
+    <string name="sub_price_up_tag">рост цены</string>
+    <string name="sub_track_as_bill">Отслеживать как счёт</string>
+    <string name="sub_track_note">Создаёт регулярный счёт — затем он учитывается в «Можно потратить» и предстоящих счетах.</string>
+    <string name="sub_ignore_merchant">Игнорировать этого продавца</string>
+    <string name="sub_empty_title">Пока ничего не повторяется</string>
+    <string name="sub_empty_body">Мы обнаружим повторяющиеся списания, когда вы добавите больше чеков. Обычно нужно около трёх списаний от одного продавца.</string>
+    <string name="sub_receipts_so_far">Чеки на данный момент</string>
+    <string name="sub_nearest">Ближе всего: %1$d списания от %2$s — ещё одно, и мы это отметим.</string>
+    <string name="sub_track_sheet_title">Отслеживать как регулярный счёт</string>
+    <string name="sub_track_sheet_body">Предзаполнено по тому, что мы обнаружили. Измените что угодно перед сохранением.</string>
+    <string name="sub_track_charge_day">%1$s · далее %2$s</string>
+    <string name="sub_track_sheet_note">Сохранённые счета появляются в предстоящих счетах и уменьшают «Можно потратить», пока вы не отметите их оплаченными.</string>
+    <string name="sub_add_bill">Добавить счёт</string>
+    <string name="sub_added_to_bills">Добавлено в ваши счета</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d подписка найдена в ваших чеках</item>
+        <item quantity="few">%1$d подписки найдены в ваших чеках</item>
+        <item quantity="many">%1$d подписок найдено в ваших чеках</item>
+        <item quantity="other">%1$d подписки найдено в ваших чеках</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Мы нашли %1$d повторяющееся списание</item>
+        <item quantity="few">Мы нашли %1$d повторяющихся списания</item>
+        <item quantity="many">Мы нашли %1$d повторяющихся списаний</item>
+        <item quantity="other">Мы нашли %1$d повторяющегося списания</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d подписка · %2$s в год</item>
+        <item quantity="few">%1$d подписки · %2$s в год</item>
+        <item quantity="many">%1$d подписок · %2$s в год</item>
+        <item quantity="other">%1$d подписки · %2$s в год</item>
+    </plurals>
 </resources>

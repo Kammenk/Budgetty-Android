@@ -709,4 +709,55 @@
         <item quantity="one">%1$d boeking</item>
         <item quantity="other">%1$d boekingen</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Abonnementen</string>
+    <string name="sub_per_month">Per maand</string>
+    <string name="sub_per_year">Per jaar</string>
+    <string name="sub_per_month_suffix">/ maand</string>
+    <string name="sub_see_all">Alle %1$d bekijken ›</string>
+    <string name="sub_teaser_body">Ongeveer %1$s per maand, gevonden in je eigen bonnen op deze telefoon — geen bankkoppeling.</string>
+    <string name="sub_unlock">Ontgrendelen met Premium</string>
+    <string name="sub_unlock_note">Ontgrendelt de volledige lijst, waarschuwingen bij prijsstijgingen en “Als rekening bijhouden”.</string>
+    <string name="sub_cadence_monthly">Maandelijks</string>
+    <string name="sub_cadence_yearly">Jaarlijks</string>
+    <string name="sub_next">volgende ~%1$s</string>
+    <string name="sub_detected">Gedetecteerde abonnementen</string>
+    <string name="sub_list_note">Gevonden op deze telefoon door terugkerende betalingen in je bonnen te matchen. Jaarlijkse posten tellen als een twaalfde per maand.</string>
+    <string name="sub_ignored">Genegeerd</string>
+    <string name="sub_ignored_note">Verborgen in de lijst en de totalen</string>
+    <string name="sub_ignored_still">De detectie ziet het nog steeds — het blijft je alleen niet in de weg zitten.</string>
+    <string name="sub_restore">Herstellen</string>
+    <string name="sub_footer_ondevice">De detectie draait op je apparaat. Er verlaat niets de telefoon en er is geen bank gekoppeld.</string>
+    <string name="sub_stat_last">Laatste</string>
+    <string name="sub_stat_next">Volgende ~</string>
+    <string name="sub_stat_charges">Betalingen</string>
+    <string name="sub_hike_title">%1$s sinds %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s vanaf die betaling. Ongeveer %3$s meer per jaar.</string>
+    <string name="sub_price_up_tag">prijs omhoog</string>
+    <string name="sub_track_as_bill">Als rekening bijhouden</string>
+    <string name="sub_track_note">Maakt een terugkerende rekening — die telt daarna mee in “Vrij besteedbaar” en aankomende rekeningen.</string>
+    <string name="sub_ignore_merchant">Deze verkoper negeren</string>
+    <string name="sub_empty_title">Nog niets terugkerends</string>
+    <string name="sub_empty_body">We ontdekken terugkerende betalingen naarmate je meer bonnen toevoegt. Meestal zijn er ongeveer drie betalingen van dezelfde verkoper voor nodig.</string>
+    <string name="sub_receipts_so_far">Bonnen tot nu toe</string>
+    <string name="sub_nearest">Dichtstbij tot nu toe: %1$d betalingen van %2$s — nog eentje en we markeren het.</string>
+    <string name="sub_track_sheet_title">Als terugkerende rekening bijhouden</string>
+    <string name="sub_track_sheet_body">Vooraf ingevuld op basis van wat we detecteerden. Pas alles aan voordat je opslaat.</string>
+    <string name="sub_track_charge_day">%1$s · volgende %2$s</string>
+    <string name="sub_track_sheet_note">Opgeslagen rekeningen verschijnen bij aankomende rekeningen en tellen mee tegen “Vrij besteedbaar” totdat je ze als betaald markeert.</string>
+    <string name="sub_add_bill">Rekening toevoegen</string>
+    <string name="sub_added_to_bills">Toegevoegd aan je rekeningen</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d gevonden in je bonnen</item>
+        <item quantity="other">%1$d gevonden in je bonnen</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">We vonden %1$d terugkerende betaling</item>
+        <item quantity="other">We vonden %1$d terugkerende betalingen</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d abonnement · %2$s per jaar</item>
+        <item quantity="other">%1$d abonnementen · %2$s per jaar</item>
+    </plurals>
 </resources>

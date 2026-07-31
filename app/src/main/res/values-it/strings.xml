@@ -708,4 +708,55 @@
         <item quantity="one">%1$d movimento</item>
         <item quantity="other">%1$d movimenti</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Abbonamenti</string>
+    <string name="sub_per_month">Al mese</string>
+    <string name="sub_per_year">All\'anno</string>
+    <string name="sub_per_month_suffix">/ mese</string>
+    <string name="sub_see_all">Vedi tutti %1$d ›</string>
+    <string name="sub_teaser_body">Circa %1$s al mese, individuati nei tuoi scontrini su questo telefono — senza collegare la banca.</string>
+    <string name="sub_unlock">Sblocca con Premium</string>
+    <string name="sub_unlock_note">Sblocca l\'elenco completo, gli avvisi di aumento prezzo e Monitora come spesa.</string>
+    <string name="sub_cadence_monthly">Mensile</string>
+    <string name="sub_cadence_yearly">Annuale</string>
+    <string name="sub_next">prossimo ~%1$s</string>
+    <string name="sub_detected">Abbonamenti rilevati</string>
+    <string name="sub_list_note">Trovati su questo telefono confrontando gli addebiti ricorrenti nei tuoi scontrini. Le voci annuali contano per un dodicesimo al mese.</string>
+    <string name="sub_ignored">Ignorati</string>
+    <string name="sub_ignored_note">Nascosto dall\'elenco e dai totali</string>
+    <string name="sub_ignored_still">Viene comunque rilevato — resta solo in disparte.</string>
+    <string name="sub_restore">Ripristina</string>
+    <string name="sub_footer_ondevice">Il rilevamento avviene sul tuo dispositivo. Niente lascia il telefono e nessuna banca è collegata.</string>
+    <string name="sub_stat_last">Ultimo</string>
+    <string name="sub_stat_next">Prossimo ~</string>
+    <string name="sub_stat_charges">Addebiti</string>
+    <string name="sub_hike_title">%1$s da %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s da quell\'addebito in poi. Circa %3$s in più in un anno.</string>
+    <string name="sub_price_up_tag">prezzo in aumento</string>
+    <string name="sub_track_as_bill">Monitora come spesa</string>
+    <string name="sub_track_note">Crea una spesa ricorrente — verrà poi conteggiata in Puoi spendere e nelle prossime spese.</string>
+    <string name="sub_ignore_merchant">Ignora questo commerciante</string>
+    <string name="sub_empty_title">Ancora niente di ricorrente</string>
+    <string name="sub_empty_body">Individueremo gli addebiti ricorrenti man mano che aggiungi scontrini. Di solito servono circa tre addebiti dallo stesso commerciante.</string>
+    <string name="sub_receipts_so_far">Scontrini finora</string>
+    <string name="sub_nearest">Il più vicino finora: %1$d addebiti da %2$s — ancora uno e lo segnaleremo.</string>
+    <string name="sub_track_sheet_title">Monitora come spesa ricorrente</string>
+    <string name="sub_track_sheet_body">Precompilato in base a ciò che abbiamo rilevato. Modifica ciò che vuoi prima di salvare.</string>
+    <string name="sub_track_charge_day">%1$s · prossimo %2$s</string>
+    <string name="sub_track_sheet_note">Le spese salvate compaiono nelle prossime spese e vengono sottratte da Puoi spendere finché non le segni come pagate.</string>
+    <string name="sub_add_bill">Aggiungi spesa</string>
+    <string name="sub_added_to_bills">Aggiunta alle tue spese</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d trovato nei tuoi scontrini</item>
+        <item quantity="other">%1$d trovati nei tuoi scontrini</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Abbiamo trovato %1$d addebito ricorrente</item>
+        <item quantity="other">Abbiamo trovato %1$d addebiti ricorrenti</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d abbonamento · %2$s all\'anno</item>
+        <item quantity="other">%1$d abbonamenti · %2$s all\'anno</item>
+    </plurals>
 </resources>

@@ -710,4 +710,55 @@
         <item quantity="one">%1$d запис</item>
         <item quantity="other">%1$d записа</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Абонаменти</string>
+    <string name="sub_per_month">На месец</string>
+    <string name="sub_per_year">На година</string>
+    <string name="sub_per_month_suffix">/ мес.</string>
+    <string name="sub_see_all">Виж всички %1$d ›</string>
+    <string name="sub_teaser_body">Около %1$s на месец, забелязани в бележките ти на този телефон — без банкова връзка.</string>
+    <string name="sub_unlock">Отключи с Премиум</string>
+    <string name="sub_unlock_note">Отключва пълния списък, известия за повишена цена и Проследи като сметка.</string>
+    <string name="sub_cadence_monthly">Месечно</string>
+    <string name="sub_cadence_yearly">Годишно</string>
+    <string name="sub_next">следв. ~%1$s</string>
+    <string name="sub_detected">Разпознати абонаменти</string>
+    <string name="sub_list_note">Открити на този телефон чрез съпоставяне на повтарящи се плащания в бележките ти. Годишните елементи се броят като една дванадесета на месец.</string>
+    <string name="sub_ignored">Игнорирани</string>
+    <string name="sub_ignored_note">Скрити от списъка и от общите суми</string>
+    <string name="sub_ignored_still">Разпознаването все още го вижда — просто стои настрани.</string>
+    <string name="sub_restore">Възстанови</string>
+    <string name="sub_footer_ondevice">Разпознаването се извършва на устройството ти. Нищо не напуска телефона и няма свързана банка.</string>
+    <string name="sub_stat_last">Последно</string>
+    <string name="sub_stat_next">Следващо ~</string>
+    <string name="sub_stat_charges">Плащания</string>
+    <string name="sub_hike_title">%1$s от %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s от това плащане нататък. Около %3$s повече за година.</string>
+    <string name="sub_price_up_tag">по-висока цена</string>
+    <string name="sub_track_as_bill">Проследи като сметка</string>
+    <string name="sub_track_note">Създава повтаряща се сметка — след това се брои в Свободни за харчене и в предстоящите сметки.</string>
+    <string name="sub_ignore_merchant">Игнорирай този търговец</string>
+    <string name="sub_empty_title">Още нищо повтарящо се</string>
+    <string name="sub_empty_body">Ще откриваме повтарящи се плащания, докато добавяш още бележки. Обикновено са нужни около три плащания от един и същ търговец.</string>
+    <string name="sub_receipts_so_far">Бележки досега</string>
+    <string name="sub_nearest">Най-близо досега: %1$d плащания от %2$s — още едно и ще го отбележим.</string>
+    <string name="sub_track_sheet_title">Проследи като повтаряща се сметка</string>
+    <string name="sub_track_sheet_body">Предварително попълнено от разпознатото. Промени каквото искаш преди да запазиш.</string>
+    <string name="sub_track_charge_day">%1$s · следв. %2$s</string>
+    <string name="sub_track_sheet_note">Запазените сметки се показват в предстоящите сметки и се броят срещу Свободни за харчене, докато не ги отбележиш като платени.</string>
+    <string name="sub_add_bill">Добави сметка</string>
+    <string name="sub_added_to_bills">Добавено към сметките ти</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d открит в бележките ти</item>
+        <item quantity="other">%1$d открити в бележките ти</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Открихме %1$d повтарящо се плащане</item>
+        <item quantity="other">Открихме %1$d повтарящи се плащания</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d абонамент · %2$s на година</item>
+        <item quantity="other">%1$d абонамента · %2$s на година</item>
+    </plurals>
 </resources>

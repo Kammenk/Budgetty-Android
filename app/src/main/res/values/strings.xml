@@ -247,6 +247,45 @@
     <string name="savings_delete_goal">Delete goal</string>
     <string name="savings_delete_confirm">Delete “%1$s” and its contributions? This can\'t be undone.</string>
 
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Subscriptions</string>
+    <string name="sub_per_month">Per month</string>
+    <string name="sub_per_year">Per year</string>
+    <string name="sub_per_month_suffix">/ month</string>
+    <string name="sub_see_all">See all %1$d ›</string>
+    <string name="sub_teaser_body">About %1$s a month, spotted in your own receipts on this phone — no bank connection.</string>
+    <string name="sub_unlock">Unlock with Premium</string>
+    <string name="sub_unlock_note">Unlocks the full list, price-hike alerts and Track as bill.</string>
+    <string name="sub_cadence_monthly">Monthly</string>
+    <string name="sub_cadence_yearly">Yearly</string>
+    <string name="sub_next">next ~%1$s</string>
+    <string name="sub_detected">Detected subscriptions</string>
+    <string name="sub_list_note">Found on this phone by matching repeat charges in your receipts. Yearly items count as one twelfth per month.</string>
+    <string name="sub_ignored">Ignored</string>
+    <string name="sub_ignored_note">Hidden from the list and the totals</string>
+    <string name="sub_ignored_still">Detection still sees it — it just stays out of your way.</string>
+    <string name="sub_restore">Restore</string>
+    <string name="sub_footer_ondevice">Detection runs on your device. Nothing leaves the phone, and no bank is connected.</string>
+    <string name="sub_stat_last">Last</string>
+    <string name="sub_stat_next">Next ~</string>
+    <string name="sub_stat_charges">Charges</string>
+    <string name="sub_hike_title">%1$s since %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s from that charge onward. About %3$s more over a year.</string>
+    <string name="sub_price_up_tag">price up</string>
+    <string name="sub_track_as_bill">Track as bill</string>
+    <string name="sub_track_note">Creates a recurring bill — it then counts in Safe to spend and upcoming bills.</string>
+    <string name="sub_ignore_merchant">Ignore this merchant</string>
+    <string name="sub_empty_title">Nothing repeating yet</string>
+    <string name="sub_empty_body">We\'ll spot recurring charges as you add more receipts. It usually takes about three charges from the same merchant.</string>
+    <string name="sub_receipts_so_far">Receipts so far</string>
+    <string name="sub_nearest">Closest so far: %1$d charges from %2$s — one more and we\'ll flag it.</string>
+    <string name="sub_track_sheet_title">Track as recurring bill</string>
+    <string name="sub_track_sheet_body">Prefilled from what we detected. Change anything before you save.</string>
+    <string name="sub_track_charge_day">%1$s · next %2$s</string>
+    <string name="sub_track_sheet_note">Saved bills show up in upcoming bills and count against Safe to spend until you mark them paid.</string>
+    <string name="sub_add_bill">Add bill</string>
+    <string name="sub_added_to_bills">Added to your bills</string>
+
     <!-- Upload / review -->
     <string name="upload_title">Upload receipt</string>
     <string name="upload_edit_title">Edit receipt</string>
@@ -717,6 +756,18 @@
     <plurals name="savings_entries">
         <item quantity="one">%1$d entry</item>
         <item quantity="other">%1$d entries</item>
+    </plurals>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d found in your receipts</item>
+        <item quantity="other">%1$d found in your receipts</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">We found %1$d recurring charge</item>
+        <item quantity="other">We found %1$d recurring charges</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d subscription · %2$s a year</item>
+        <item quantity="other">%1$d subscriptions · %2$s a year</item>
     </plurals>
 
     <!-- Category display names (canonical DB/AI names stay English; these are display-only) -->

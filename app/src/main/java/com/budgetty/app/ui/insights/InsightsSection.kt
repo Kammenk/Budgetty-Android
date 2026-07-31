@@ -14,6 +14,8 @@ import com.budgetty.app.R
  */
 enum class InsightsSection(val key: String, @param:StringRes val labelRes: Int) {
     BREAKDOWN("breakdown", R.string.insights_breakdown),
+    // On-device recurring-merchant detection (Premium; a locked teaser for free).
+    SUBSCRIPTIONS("subscriptions", R.string.sub_title),
     SUMMARY("summary", R.string.insights_summary),
     // Rule-based narrative callouts (biggest movers, new / dominant categories).
     HIGHLIGHTS("highlights", R.string.insights_highlights),
