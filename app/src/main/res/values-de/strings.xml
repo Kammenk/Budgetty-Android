@@ -761,4 +761,31 @@
         <item quantity="one">%1$d Abonnement · %2$s pro Jahr</item>
         <item quantity="other">%1$d Abonnements · %2$s pro Jahr</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">JSON-Backup · für den Umzug auf ein neues Telefon</string>
+    <string name="account_import_sub">Aus einem JSON-Backup wiederherstellen</string>
+    <string name="account_export_file">CSV oder PDF exportieren</string>
+    <string name="account_export_file_sub">Tabelle oder Auszug, für Menschen</string>
+    <string name="account_export_file_locked">Export mit Premium freischalten</string>
+    <string name="export_title">Export</string>
+    <string name="export_subtitle">Eine Tabelle zum Arbeiten oder ein Auszug zum Senden.</string>
+    <string name="export_format">Format</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Eine Zeile pro Beleg — Datum, Geschäft, Kategorie, Betrag. Öffnet sich in Excel, Numbers oder Sheets.</string>
+    <string name="export_pdf_help">Ein einseitiger Auszug: Summen, eine Kategorieübersicht und die Transaktionstabelle.</string>
+    <string name="export_period">Zeitraum</string>
+    <string name="export_empty_title">Nichts zum Exportieren in diesem Zeitraum</string>
+    <string name="export_empty_body">Keine Belege in diesem Zeitraum. Wähle einen anderen Zeitraum oder füge zuerst einen Beleg hinzu.</string>
+    <string name="export_do_csv">CSV exportieren</string>
+    <string name="export_do_pdf">PDF exportieren</string>
+    <string name="export_footer">Auf deinem Telefon erstellt und dann an das Teilen-Menü übergeben.</string>
+    <string name="export_generated">Erstellt am %1$s · %2$s · %3$d Belege</string>
+    <string name="export_total_row">Gesamt · %1$s</string>
+    <string name="export_share_title">Export</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d Transaktion · %2$s</item>
+        <item quantity="other">%1$d Transaktionen · %2$s</item>
+    </plurals>
 </resources>

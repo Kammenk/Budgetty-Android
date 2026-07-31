@@ -772,4 +772,31 @@
         <item quantity="one">%1$d abonnement · %2$s per år</item>
         <item quantity="other">%1$d abonnementer · %2$s per år</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">JSON-sikkerhetskopi · for å flytte til en ny telefon</string>
+    <string name="account_import_sub">Gjenopprett fra en JSON-sikkerhetskopi</string>
+    <string name="account_export_file">Eksporter CSV eller PDF</string>
+    <string name="account_export_file_sub">Regneark eller sammenstilling, for mennesker</string>
+    <string name="account_export_file_locked">Lås opp eksport med Premium</string>
+    <string name="export_title">Eksport</string>
+    <string name="export_subtitle">Et regneark å jobbe med, eller en sammenstilling å sende.</string>
+    <string name="export_format">Format</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">En rad per kvittering — dato, butikk, kategori, beløp. Åpnes i Excel, Numbers eller Sheets.</string>
+    <string name="export_pdf_help">En sammenstilling på én side: totaler, et kategorisammendrag og transaksjonstabellen.</string>
+    <string name="export_period">Periode</string>
+    <string name="export_empty_title">Ingenting å eksportere for denne perioden</string>
+    <string name="export_empty_body">Ingen kvitteringer i dette intervallet. Velg en annen periode, eller legg til en kvittering først.</string>
+    <string name="export_do_csv">Eksporter CSV</string>
+    <string name="export_do_pdf">Eksporter PDF</string>
+    <string name="export_footer">Opprettes på telefonen din, og sendes deretter til delingsmenyen.</string>
+    <string name="export_generated">Generert %1$s · %2$s · %3$d kvitteringer</string>
+    <string name="export_total_row">Totalt · %1$s</string>
+    <string name="export_share_title">Eksport</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transaksjon · %2$s</item>
+        <item quantity="other">%1$d transaksjoner · %2$s</item>
+    </plurals>
 </resources>

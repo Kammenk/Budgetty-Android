@@ -771,4 +771,33 @@
         <item quantity="many">%1$d subskrypcji · %2$s rocznie</item>
         <item quantity="other">%1$d subskrypcji · %2$s rocznie</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Kopia JSON · do przeniesienia na nowy telefon</string>
+    <string name="account_import_sub">Przywróć z kopii JSON</string>
+    <string name="account_export_file">Eksportuj CSV lub PDF</string>
+    <string name="account_export_file_sub">Arkusz lub zestawienie, dla ludzi</string>
+    <string name="account_export_file_locked">Odblokuj eksport z Premium</string>
+    <string name="export_title">Eksport</string>
+    <string name="export_subtitle">Arkusz do pracy lub zestawienie do wysłania.</string>
+    <string name="export_format">Format</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Wiersz na każdy paragon — data, sklep, kategoria, kwota. Otwiera się w Excelu, Numbers lub Sheets.</string>
+    <string name="export_pdf_help">Jednostronicowe zestawienie: sumy, podsumowanie kategorii i tabela transakcji.</string>
+    <string name="export_period">Okres</string>
+    <string name="export_empty_title">Nie ma nic do wyeksportowania w tym okresie</string>
+    <string name="export_empty_body">Brak paragonów w tym zakresie. Wybierz inny okres lub najpierw dodaj paragon.</string>
+    <string name="export_do_csv">Eksportuj CSV</string>
+    <string name="export_do_pdf">Eksportuj PDF</string>
+    <string name="export_footer">Tworzone na telefonie, a następnie przekazywane do panelu udostępniania.</string>
+    <string name="export_generated">Wygenerowano %1$s · %2$s · %3$d paragonów</string>
+    <string name="export_total_row">Suma · %1$s</string>
+    <string name="export_share_title">Eksport</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transakcja · %2$s</item>
+        <item quantity="few">%1$d transakcje · %2$s</item>
+        <item quantity="many">%1$d transakcji · %2$s</item>
+        <item quantity="other">%1$d transakcji · %2$s</item>
+    </plurals>
 </resources>

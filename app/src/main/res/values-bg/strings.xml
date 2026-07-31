@@ -761,4 +761,31 @@
         <item quantity="one">%1$d абонамент · %2$s на година</item>
         <item quantity="other">%1$d абонамента · %2$s на година</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Резервно копие JSON · за преминаване към нов телефон</string>
+    <string name="account_import_sub">Възстанови от резервно копие JSON</string>
+    <string name="account_export_file">Експорт на CSV или PDF</string>
+    <string name="account_export_file_sub">Електронна таблица или извлечение, за хора</string>
+    <string name="account_export_file_locked">Отключи експорта с Премиум</string>
+    <string name="export_title">Експорт</string>
+    <string name="export_subtitle">Електронна таблица за работа или извлечение за изпращане.</string>
+    <string name="export_format">Формат</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">По един ред на бележка — дата, магазин, категория, сума. Отваря се в Excel, Numbers или Sheets.</string>
+    <string name="export_pdf_help">Извлечение на една страница: общи суми, обобщение по категории и таблица с транзакциите.</string>
+    <string name="export_period">Период</string>
+    <string name="export_empty_title">Няма какво да се експортира за този период</string>
+    <string name="export_empty_body">Няма бележки в този диапазон. Избери друг период или първо добави бележка.</string>
+    <string name="export_do_csv">Експортирай CSV</string>
+    <string name="export_do_pdf">Експортирай PDF</string>
+    <string name="export_footer">Създадено на твоя телефон и подадено към менюто за споделяне.</string>
+    <string name="export_generated">Генерирано на %1$s · %2$s · %3$d бележки</string>
+    <string name="export_total_row">Общо · %1$s</string>
+    <string name="export_share_title">Експорт</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d транзакция · %2$s</item>
+        <item quantity="other">%1$d транзакции · %2$s</item>
+    </plurals>
 </resources>

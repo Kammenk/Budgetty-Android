@@ -759,4 +759,31 @@
         <item quantity="one">%1$d abbonamento · %2$s all\'anno</item>
         <item quantity="other">%1$d abbonamenti · %2$s all\'anno</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Backup JSON · per passare a un nuovo telefono</string>
+    <string name="account_import_sub">Ripristina da un backup JSON</string>
+    <string name="account_export_file">Esporta CSV o PDF</string>
+    <string name="account_export_file_sub">Foglio di calcolo o rendiconto, per le persone</string>
+    <string name="account_export_file_locked">Sblocca l\'esportazione con Premium</string>
+    <string name="export_title">Esporta</string>
+    <string name="export_subtitle">Un foglio di calcolo con cui lavorare o un rendiconto da inviare.</string>
+    <string name="export_format">Formato</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Una riga per scontrino — data, negozio, categoria, importo. Si apre in Excel, Numbers o Sheets.</string>
+    <string name="export_pdf_help">Un rendiconto di una pagina: totali, un riepilogo per categoria e la tabella delle transazioni.</string>
+    <string name="export_period">Periodo</string>
+    <string name="export_empty_title">Niente da esportare per questo periodo</string>
+    <string name="export_empty_body">Nessuno scontrino in questo intervallo. Scegli un altro periodo o aggiungi prima uno scontrino.</string>
+    <string name="export_do_csv">Esporta CSV</string>
+    <string name="export_do_pdf">Esporta PDF</string>
+    <string name="export_footer">Creato sul tuo telefono, poi passato al menu di condivisione.</string>
+    <string name="export_generated">Generato il %1$s · %2$s · %3$d scontrini</string>
+    <string name="export_total_row">Totale · %1$s</string>
+    <string name="export_share_title">Esporta</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transazione · %2$s</item>
+        <item quantity="other">%1$d transazioni · %2$s</item>
+    </plurals>
 </resources>

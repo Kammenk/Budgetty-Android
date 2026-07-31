@@ -772,4 +772,31 @@
         <item quantity="one">%1$d prenumeration · %2$s per år</item>
         <item quantity="other">%1$d prenumerationer · %2$s per år</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">JSON-säkerhetskopia · för att byta till en ny telefon</string>
+    <string name="account_import_sub">Återställ från en JSON-säkerhetskopia</string>
+    <string name="account_export_file">Exportera CSV eller PDF</string>
+    <string name="account_export_file_sub">Kalkylark eller sammanställning, för människor</string>
+    <string name="account_export_file_locked">Lås upp export med Premium</string>
+    <string name="export_title">Export</string>
+    <string name="export_subtitle">Ett kalkylark att arbeta med, eller en sammanställning att skicka.</string>
+    <string name="export_format">Format</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">En rad per kvitto — datum, butik, kategori, belopp. Öppnas i Excel, Numbers eller Sheets.</string>
+    <string name="export_pdf_help">En sammanställning på en sida: totalsummor, en kategorisammanfattning och transaktionstabellen.</string>
+    <string name="export_period">Period</string>
+    <string name="export_empty_title">Inget att exportera för den här perioden</string>
+    <string name="export_empty_body">Inga kvitton i det här intervallet. Välj en annan period eller lägg till ett kvitto först.</string>
+    <string name="export_do_csv">Exportera CSV</string>
+    <string name="export_do_pdf">Exportera PDF</string>
+    <string name="export_footer">Skapas på din telefon och skickas sedan till delningsmenyn.</string>
+    <string name="export_generated">Skapad %1$s · %2$s · %3$d kvitton</string>
+    <string name="export_total_row">Totalt · %1$s</string>
+    <string name="export_share_title">Export</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transaktion · %2$s</item>
+        <item quantity="other">%1$d transaktioner · %2$s</item>
+    </plurals>
 </resources>

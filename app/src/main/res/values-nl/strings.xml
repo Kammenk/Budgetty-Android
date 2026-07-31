@@ -760,4 +760,31 @@
         <item quantity="one">%1$d abonnement · %2$s per jaar</item>
         <item quantity="other">%1$d abonnementen · %2$s per jaar</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">JSON-back-up · voor de overstap naar een nieuwe telefoon</string>
+    <string name="account_import_sub">Herstellen vanuit een JSON-back-up</string>
+    <string name="account_export_file">CSV of PDF exporteren</string>
+    <string name="account_export_file_sub">Spreadsheet of overzicht, voor mensen</string>
+    <string name="account_export_file_locked">Export ontgrendelen met Premium</string>
+    <string name="export_title">Export</string>
+    <string name="export_subtitle">Een spreadsheet om mee te werken of een overzicht om te versturen.</string>
+    <string name="export_format">Formaat</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Eén rij per bon — datum, winkel, categorie, bedrag. Opent in Excel, Numbers of Sheets.</string>
+    <string name="export_pdf_help">Een overzicht van één pagina: totalen, een samenvatting per categorie en de transactietabel.</string>
+    <string name="export_period">Periode</string>
+    <string name="export_empty_title">Niets te exporteren voor deze periode</string>
+    <string name="export_empty_body">Geen bonnen in dit bereik. Kies een andere periode of voeg eerst een bon toe.</string>
+    <string name="export_do_csv">CSV exporteren</string>
+    <string name="export_do_pdf">PDF exporteren</string>
+    <string name="export_footer">Gemaakt op je telefoon en daarna doorgegeven aan het deelmenu.</string>
+    <string name="export_generated">Gegenereerd op %1$s · %2$s · %3$d bonnen</string>
+    <string name="export_total_row">Totaal · %1$s</string>
+    <string name="export_share_title">Export</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transactie · %2$s</item>
+        <item quantity="other">%1$d transacties · %2$s</item>
+    </plurals>
 </resources>

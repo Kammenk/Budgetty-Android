@@ -761,4 +761,31 @@
         <item quantity="one">%1$d assinatura · %2$s por ano</item>
         <item quantity="other">%1$d assinaturas · %2$s por ano</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Backup JSON · para mudar para um novo telefone</string>
+    <string name="account_import_sub">Restaurar de um backup JSON</string>
+    <string name="account_export_file">Exportar CSV ou PDF</string>
+    <string name="account_export_file_sub">Planilha ou extrato, para pessoas</string>
+    <string name="account_export_file_locked">Desbloquear a exportação com Premium</string>
+    <string name="export_title">Exportar</string>
+    <string name="export_subtitle">Uma planilha para trabalhar ou um extrato para enviar.</string>
+    <string name="export_format">Formato</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Uma linha por recibo — data, loja, categoria, valor. Abre no Excel, Numbers ou Sheets.</string>
+    <string name="export_pdf_help">Um extrato de uma página: totais, um resumo por categoria e a tabela de transações.</string>
+    <string name="export_period">Período</string>
+    <string name="export_empty_title">Nada para exportar neste período</string>
+    <string name="export_empty_body">Nenhum recibo neste intervalo. Escolha outro período ou adicione um recibo primeiro.</string>
+    <string name="export_do_csv">Exportar CSV</string>
+    <string name="export_do_pdf">Exportar PDF</string>
+    <string name="export_footer">Criado no seu telefone e entregue ao menu de compartilhamento.</string>
+    <string name="export_generated">Gerado em %1$s · %2$s · %3$d recibos</string>
+    <string name="export_total_row">Total · %1$s</string>
+    <string name="export_share_title">Exportar</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transação · %2$s</item>
+        <item quantity="other">%1$d transações · %2$s</item>
+    </plurals>
 </resources>

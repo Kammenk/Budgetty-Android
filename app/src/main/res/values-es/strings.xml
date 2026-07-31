@@ -759,4 +759,31 @@
         <item quantity="one">%1$d suscripción · %2$s al año</item>
         <item quantity="other">%1$d suscripciones · %2$s al año</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Copia de seguridad JSON · para pasar a un teléfono nuevo</string>
+    <string name="account_import_sub">Restaura desde una copia de seguridad JSON</string>
+    <string name="account_export_file">Exportar CSV o PDF</string>
+    <string name="account_export_file_sub">Hoja de cálculo o extracto, para personas</string>
+    <string name="account_export_file_locked">Desbloquear la exportación con Premium</string>
+    <string name="export_title">Exportar</string>
+    <string name="export_subtitle">Una hoja de cálculo para trabajar o un extracto para enviar.</string>
+    <string name="export_format">Formato</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Una fila por recibo — fecha, tienda, categoría, importe. Se abre en Excel, Numbers o Sheets.</string>
+    <string name="export_pdf_help">Un extracto de una página: totales, un resumen por categoría y la tabla de transacciones.</string>
+    <string name="export_period">Período</string>
+    <string name="export_empty_title">Nada que exportar para este período</string>
+    <string name="export_empty_body">No hay recibos en este rango. Elige otro período o añade primero un recibo.</string>
+    <string name="export_do_csv">Exportar CSV</string>
+    <string name="export_do_pdf">Exportar PDF</string>
+    <string name="export_footer">Creado en tu teléfono, luego pasado al menú para compartir.</string>
+    <string name="export_generated">Generado el %1$s · %2$s · %3$d recibos</string>
+    <string name="export_total_row">Total · %1$s</string>
+    <string name="export_share_title">Exportar</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transacción · %2$s</item>
+        <item quantity="other">%1$d transacciones · %2$s</item>
+    </plurals>
 </resources>

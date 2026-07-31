@@ -782,4 +782,33 @@
         <item quantity="many">%1$d předplatného · %2$s ročně</item>
         <item quantity="other">%1$d předplatných · %2$s ročně</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Záloha JSON · pro přechod na nový telefon</string>
+    <string name="account_import_sub">Obnovit ze zálohy JSON</string>
+    <string name="account_export_file">Exportovat CSV nebo PDF</string>
+    <string name="account_export_file_sub">Tabulka nebo výpis, pro lidi</string>
+    <string name="account_export_file_locked">Odemknout export s Premium</string>
+    <string name="export_title">Export</string>
+    <string name="export_subtitle">Tabulka pro práci nebo výpis k odeslání.</string>
+    <string name="export_format">Formát</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Jeden řádek na účtenku — datum, obchod, kategorie, částka. Otevře se v Excelu, Numbers nebo Sheets.</string>
+    <string name="export_pdf_help">Jednostránkový výpis: součty, souhrn kategorií a tabulka transakcí.</string>
+    <string name="export_period">Období</string>
+    <string name="export_empty_title">Za toto období není co exportovat</string>
+    <string name="export_empty_body">V tomto rozsahu nejsou žádné účtenky. Vyberte jiné období nebo nejprve přidejte účtenku.</string>
+    <string name="export_do_csv">Exportovat CSV</string>
+    <string name="export_do_pdf">Exportovat PDF</string>
+    <string name="export_footer">Vytvořeno ve vašem telefonu, poté předáno do nabídky sdílení.</string>
+    <string name="export_generated">Vytvořeno %1$s · %2$s · %3$d účtenek</string>
+    <string name="export_total_row">Celkem · %1$s</string>
+    <string name="export_share_title">Export</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transakce · %2$s</item>
+        <item quantity="few">%1$d transakce · %2$s</item>
+        <item quantity="many">%1$d transakce · %2$s</item>
+        <item quantity="other">%1$d transakcí · %2$s</item>
+    </plurals>
 </resources>
