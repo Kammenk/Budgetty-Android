@@ -286,6 +286,29 @@
     <string name="sub_add_bill">Add bill</string>
     <string name="sub_added_to_bills">Added to your bills</string>
 
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">JSON backup · for moving to a new phone</string>
+    <string name="account_import_sub">Restore from a JSON backup</string>
+    <string name="account_export_file">Export CSV or PDF</string>
+    <string name="account_export_file_sub">Spreadsheet or statement, for people</string>
+    <string name="account_export_file_locked">Unlock export with Premium</string>
+    <string name="export_title">Export</string>
+    <string name="export_subtitle">A spreadsheet to work with, or a statement to send.</string>
+    <string name="export_format">Format</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">A row per receipt — date, store, category, amount. Opens in Excel, Numbers or Sheets.</string>
+    <string name="export_pdf_help">A one-page statement: totals, a category summary and the transaction table.</string>
+    <string name="export_period">Period</string>
+    <string name="export_empty_title">Nothing to export for this period</string>
+    <string name="export_empty_body">No receipts in this range. Pick another period, or add a receipt first.</string>
+    <string name="export_do_csv">Export CSV</string>
+    <string name="export_do_pdf">Export PDF</string>
+    <string name="export_footer">Created on your phone, then handed to the share sheet.</string>
+    <string name="export_generated">Generated %1$s · %2$s · %3$d receipts</string>
+    <string name="export_total_row">Total · %1$s</string>
+    <string name="export_share_title">Export</string>
+
     <!-- Upload / review -->
     <string name="upload_title">Upload receipt</string>
     <string name="upload_edit_title">Edit receipt</string>
@@ -768,6 +791,10 @@
     <plurals name="sub_count_year">
         <item quantity="one">%1$d subscription · %2$s a year</item>
         <item quantity="other">%1$d subscriptions · %2$s a year</item>
+    </plurals>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transaction · %2$s</item>
+        <item quantity="other">%1$d transactions · %2$s</item>
     </plurals>
 
     <!-- Category display names (canonical DB/AI names stay English; these are display-only) -->

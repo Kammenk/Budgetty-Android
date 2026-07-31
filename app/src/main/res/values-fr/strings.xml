@@ -759,4 +759,31 @@
         <item quantity="one">%1$d abonnement · %2$s par an</item>
         <item quantity="other">%1$d abonnements · %2$s par an</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Sauvegarde JSON · pour passer à un nouveau téléphone</string>
+    <string name="account_import_sub">Restaurer depuis une sauvegarde JSON</string>
+    <string name="account_export_file">Exporter en CSV ou PDF</string>
+    <string name="account_export_file_sub">Feuille de calcul ou relevé, pour les humains</string>
+    <string name="account_export_file_locked">Débloquer l\'export avec Premium</string>
+    <string name="export_title">Exporter</string>
+    <string name="export_subtitle">Une feuille de calcul à exploiter, ou un relevé à envoyer.</string>
+    <string name="export_format">Format</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Une ligne par reçu — date, magasin, catégorie, montant. S\'ouvre dans Excel, Numbers ou Sheets.</string>
+    <string name="export_pdf_help">Un relevé d\'une page : totaux, un résumé par catégorie et le tableau des transactions.</string>
+    <string name="export_period">Période</string>
+    <string name="export_empty_title">Rien à exporter pour cette période</string>
+    <string name="export_empty_body">Aucun reçu dans cette plage. Choisissez une autre période ou ajoutez d\'abord un reçu.</string>
+    <string name="export_do_csv">Exporter en CSV</string>
+    <string name="export_do_pdf">Exporter en PDF</string>
+    <string name="export_footer">Créé sur votre téléphone, puis transmis au menu de partage.</string>
+    <string name="export_generated">Généré le %1$s · %2$s · %3$d reçus</string>
+    <string name="export_total_row">Total · %1$s</string>
+    <string name="export_share_title">Exporter</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d transaction · %2$s</item>
+        <item quantity="other">%1$d transactions · %2$s</item>
+    </plurals>
 </resources>

@@ -777,4 +777,32 @@
         <item quantity="few">%1$d abonamente · %2$s pe an</item>
         <item quantity="other">%1$d de abonamente · %2$s pe an</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">Backup JSON · pentru mutarea pe un telefon nou</string>
+    <string name="account_import_sub">Restaurează dintr-un backup JSON</string>
+    <string name="account_export_file">Exportă CSV sau PDF</string>
+    <string name="account_export_file_sub">Foaie de calcul sau extras, pentru oameni</string>
+    <string name="account_export_file_locked">Deblochează exportul cu Premium</string>
+    <string name="export_title">Export</string>
+    <string name="export_subtitle">O foaie de calcul cu care să lucrezi sau un extras de trimis.</string>
+    <string name="export_format">Format</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Un rând per bon — dată, magazin, categorie, sumă. Se deschide în Excel, Numbers sau Sheets.</string>
+    <string name="export_pdf_help">Un extras de o pagină: totaluri, un rezumat pe categorii și tabelul tranzacțiilor.</string>
+    <string name="export_period">Perioadă</string>
+    <string name="export_empty_title">Nimic de exportat pentru această perioadă</string>
+    <string name="export_empty_body">Niciun bon în acest interval. Alege altă perioadă sau adaugă mai întâi un bon.</string>
+    <string name="export_do_csv">Exportă CSV</string>
+    <string name="export_do_pdf">Exportă PDF</string>
+    <string name="export_footer">Creat pe telefonul tău, apoi trimis către meniul de partajare.</string>
+    <string name="export_generated">Generat %1$s · %2$s · %3$d bonuri</string>
+    <string name="export_total_row">Total · %1$s</string>
+    <string name="export_share_title">Export</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d tranzacție · %2$s</item>
+        <item quantity="few">%1$d tranzacții · %2$s</item>
+        <item quantity="other">%1$d de tranzacții · %2$s</item>
+    </plurals>
 </resources>

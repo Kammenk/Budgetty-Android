@@ -772,4 +772,31 @@
         <item quantity="one">%1$d tilaus · %2$s vuodessa</item>
         <item quantity="other">%1$d tilausta · %2$s vuodessa</item>
     </plurals>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">JSON-varmuuskopio · uuteen puhelimeen siirtymistä varten</string>
+    <string name="account_import_sub">Palauta JSON-varmuuskopiosta</string>
+    <string name="account_export_file">Vie CSV tai PDF</string>
+    <string name="account_export_file_sub">Laskentataulukko tai yhteenveto, ihmisille</string>
+    <string name="account_export_file_locked">Avaa vienti Premiumilla</string>
+    <string name="export_title">Vienti</string>
+    <string name="export_subtitle">Laskentataulukko työstettäväksi tai yhteenveto lähetettäväksi.</string>
+    <string name="export_format">Muoto</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Rivi per kuitti — päivämäärä, kauppa, kategoria, summa. Avautuu Excelissä, Numbersissa tai Sheetsissä.</string>
+    <string name="export_pdf_help">Yhden sivun yhteenveto: loppusummat, kategoriaerittely ja tapahtumataulukko.</string>
+    <string name="export_period">Jakso</string>
+    <string name="export_empty_title">Ei mitään vietävää tältä jaksolta</string>
+    <string name="export_empty_body">Ei kuitteja tällä aikavälillä. Valitse toinen jakso tai lisää ensin kuitti.</string>
+    <string name="export_do_csv">Vie CSV</string>
+    <string name="export_do_pdf">Vie PDF</string>
+    <string name="export_footer">Luodaan puhelimessasi ja siirretään sitten jakovalikkoon.</string>
+    <string name="export_generated">Luotu %1$s · %2$s · %3$d kuittia</string>
+    <string name="export_total_row">Yhteensä · %1$s</string>
+    <string name="export_share_title">Vienti</string>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d tapahtuma · %2$s</item>
+        <item quantity="other">%1$d tapahtumaa · %2$s</item>
+    </plurals>
 </resources>

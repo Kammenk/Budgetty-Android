@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PrivacyTip
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarRate
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.AlertDialog
@@ -102,6 +103,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import com.budgetty.app.R
+import com.budgetty.app.ui.export.ExportSheet
 import com.budgetty.app.ui.util.displayNameFromEmail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -186,6 +188,7 @@ private fun AccountScreenContent(
     // Hidden tester unlock: tapping the version label VERSION_TAPS_TO_UNLOCK times in a row flips
     // this install to Premium. The count lives in screen state, so leaving the screen resets it.
     var versionTapCount by remember { mutableStateOf(0) }
+    var exportOpen by remember { mutableStateOf(false) }
 
     val exportLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/json"),
@@ -241,6 +244,7 @@ private fun AccountScreenContent(
                 onImport = {
                     importLauncher.launch(arrayOf("application/json", "text/plain", "application/octet-stream"))
                 },
+                onExportData = { if (isPremium) exportOpen = true else onOpenPaywall() },
                 onOpenWidgets = onOpenWidgets,
                 onOpenCategoryRules = onOpenCategoryRules,
             )
@@ -399,6 +403,10 @@ private fun AccountScreenContent(
         }
     }
 
+    if (exportOpen) {
+        ExportSheet(onDismiss = { exportOpen = false })
+    }
+
     pendingImportJson?.let { json ->
         AlertDialog(
             onDismissRequest = { pendingImportJson = null },
@@ -544,6 +552,7 @@ private fun AccountSectionRows(
     onOpenBudget: () -> Unit,
     onExport: () -> Unit,
     onImport: () -> Unit,
+    onExportData: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
 ) {
@@ -558,9 +567,31 @@ private fun AccountSectionRows(
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
     RowDivider()
-    SettingRow(Icons.Filled.Upload, stringResource(R.string.account_export)) { onExport() }
+    SettingRow(
+        icon = Icons.Filled.Upload,
+        title = stringResource(R.string.account_export),
+        subtitle = stringResource(R.string.account_export_sub),
+        onClick = onExport,
+    )
     RowDivider()
-    SettingRow(Icons.Filled.Download, stringResource(R.string.account_import)) { onImport() }
+    SettingRow(
+        icon = Icons.Filled.Download,
+        title = stringResource(R.string.account_import),
+        subtitle = stringResource(R.string.account_import_sub),
+        onClick = onImport,
+    )
+    RowDivider()
+    SettingRow(
+        icon = Icons.Filled.Share,
+        title = stringResource(R.string.account_export_file),
+        subtitle = stringResource(if (isPremium) R.string.account_export_file_sub else R.string.account_export_file_locked),
+        trailing = if (!isPremium) {
+            { StatusBadge(stringResource(R.string.tier_premium)) }
+        } else {
+            null
+        },
+        onClick = onExportData,
+    )
     RowDivider()
     SettingRow(Icons.Filled.Widgets, stringResource(R.string.account_widgets)) { onOpenWidgets() }
 }
