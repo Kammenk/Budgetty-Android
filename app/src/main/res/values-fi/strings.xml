@@ -799,4 +799,27 @@
         <item quantity="one">%1$d tapahtuma · %2$s</item>
         <item quantity="other">%1$d tapahtumaa · %2$s</item>
     </plurals>
+    <!-- App lock / security -->
+    <string name="section_security">Suojaus</string>
+    <string name="account_app_lock">Sovelluslukko</string>
+    <string name="account_app_lock_sub">Vaadi PIN Budgettyn avaamiseen</string>
+    <string name="account_change_pin">Vaihda PIN</string>
+    <string name="account_biometric">Avaa biometrisellä tunnistuksella</string>
+    <string name="account_auto_lock">Automaattinen lukitus</string>
+    <string name="app_lock_auto_immediately">Heti</string>
+    <string name="app_lock_auto_1min">1 minuutin kuluttua</string>
+    <string name="app_lock_auto_5min">5 minuutin kuluttua</string>
+    <string name="app_lock_title">Budgetty on lukittu</string>
+    <string name="app_lock_enter_pin">Anna PIN</string>
+    <string name="app_lock_wrong_pin">Väärä PIN. Yritä uudelleen.</string>
+    <string name="app_lock_forgot">Unohtuiko PIN?</string>
+    <string name="app_lock_set_title">Aseta PIN</string>
+    <string name="app_lock_set_hint">Valitse nelinumeroinen PIN lukitaksesi sovelluksen</string>
+    <string name="app_lock_confirm_title">Vahvista PIN</string>
+    <string name="app_lock_confirm_hint">Anna PIN uudelleen vahvistaaksesi</string>
+    <string name="app_lock_pin_mismatch">PIN ei täsmää. Yritä uudelleen.</string>
+    <string name="app_lock_use_biometric">Käytä biometriaa</string>
+    <string name="app_lock_backspace">Poista</string>
+    <string name="app_lock_biometric_subtitle">Vahvista henkilöllisyytesi avataksesi lukituksen</string>
+    <string name="app_lock_use_pin">Käytä PIN-koodia</string>
 </resources>

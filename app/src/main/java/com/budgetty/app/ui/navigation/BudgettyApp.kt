@@ -51,6 +51,7 @@ import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
 import com.budgetty.app.ui.budget.BudgetScreen
 import com.budgetty.app.ui.savings.SavingsGoalDetailScreen
+import com.budgetty.app.ui.lock.SetPinScreen
 import com.budgetty.app.ui.subscriptions.SubscriptionsScreen
 import com.budgetty.app.ui.history.HistoryScreen
 import com.budgetty.app.ui.home.HomeScreen
@@ -282,6 +283,13 @@ private fun BudgettyNavHost(
                 onOpenBudget = { navController.navigate(Routes.BUDGET) },
                 onOpenWidgets = { navController.navigate(Routes.WIDGETS) },
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
+                onSetupPin = { navController.navigate(Routes.SET_PIN) },
+            )
+        }
+        composable(Routes.SET_PIN) {
+            SetPinScreen(
+                onBack = { navController.popBackStack() },
+                onDone = { navController.popBackStack() },
             )
         }
         composable(

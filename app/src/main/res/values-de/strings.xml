@@ -788,4 +788,26 @@
         <item quantity="one">%1$d Transaktion · %2$s</item>
         <item quantity="other">%1$d Transaktionen · %2$s</item>
     </plurals>
+    <string name="section_security">Sicherheit</string>
+    <string name="account_app_lock">App-Sperre</string>
+    <string name="account_app_lock_sub">PIN zum Öffnen von Budgetty verlangen</string>
+    <string name="account_change_pin">PIN ändern</string>
+    <string name="account_biometric">Mit Biometrie entsperren</string>
+    <string name="account_auto_lock">Automatische Sperre</string>
+    <string name="app_lock_auto_immediately">Sofort</string>
+    <string name="app_lock_auto_1min">Nach 1 Minute</string>
+    <string name="app_lock_auto_5min">Nach 5 Minuten</string>
+    <string name="app_lock_title">Budgetty ist gesperrt</string>
+    <string name="app_lock_enter_pin">Gib deine PIN ein</string>
+    <string name="app_lock_wrong_pin">Falsche PIN. Versuch es erneut.</string>
+    <string name="app_lock_forgot">PIN vergessen?</string>
+    <string name="app_lock_set_title">PIN festlegen</string>
+    <string name="app_lock_set_hint">Wähle eine 4-stellige PIN, um die App zu sperren</string>
+    <string name="app_lock_confirm_title">PIN bestätigen</string>
+    <string name="app_lock_confirm_hint">Gib deine PIN zur Bestätigung erneut ein</string>
+    <string name="app_lock_pin_mismatch">PINs stimmen nicht überein. Versuch es erneut.</string>
+    <string name="app_lock_use_biometric">Biometrie verwenden</string>
+    <string name="app_lock_backspace">Löschen</string>
+    <string name="app_lock_biometric_subtitle">Bestätige deine Identität zum Entsperren</string>
+    <string name="app_lock_use_pin">PIN verwenden</string>
 </resources>

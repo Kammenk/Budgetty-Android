@@ -787,4 +787,26 @@
         <item quantity="one">%1$d transactie · %2$s</item>
         <item quantity="other">%1$d transacties · %2$s</item>
     </plurals>
+    <string name="section_security">Beveiliging</string>
+    <string name="account_app_lock">App-vergrendeling</string>
+    <string name="account_app_lock_sub">Een PIN vereisen om Budgetty te openen</string>
+    <string name="account_change_pin">PIN wijzigen</string>
+    <string name="account_biometric">Ontgrendelen met biometrie</string>
+    <string name="account_auto_lock">Automatisch vergrendelen</string>
+    <string name="app_lock_auto_immediately">Direct</string>
+    <string name="app_lock_auto_1min">Na 1 minuut</string>
+    <string name="app_lock_auto_5min">Na 5 minuten</string>
+    <string name="app_lock_title">Budgetty is vergrendeld</string>
+    <string name="app_lock_enter_pin">Voer je PIN in</string>
+    <string name="app_lock_wrong_pin">Onjuiste PIN. Probeer opnieuw.</string>
+    <string name="app_lock_forgot">PIN vergeten?</string>
+    <string name="app_lock_set_title">PIN instellen</string>
+    <string name="app_lock_set_hint">Kies een 4-cijferige PIN om de app te vergrendelen</string>
+    <string name="app_lock_confirm_title">Bevestig je PIN</string>
+    <string name="app_lock_confirm_hint">Voer je PIN opnieuw in ter bevestiging</string>
+    <string name="app_lock_pin_mismatch">PINs komen niet overeen. Probeer opnieuw.</string>
+    <string name="app_lock_use_biometric">Biometrie gebruiken</string>
+    <string name="app_lock_backspace">Verwijderen</string>
+    <string name="app_lock_biometric_subtitle">Bevestig dat jij het bent om te ontgrendelen</string>
+    <string name="app_lock_use_pin">PIN gebruiken</string>
 </resources>

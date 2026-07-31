@@ -40,6 +40,10 @@ import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockClock
+import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PrivacyTip
@@ -49,6 +53,8 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -104,6 +110,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
 import com.budgetty.app.R
 import com.budgetty.app.ui.export.ExportSheet
+import com.budgetty.app.ui.lock.BiometricAuth
 import com.budgetty.app.ui.util.displayNameFromEmail
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -116,6 +123,7 @@ fun AccountScreen(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
     accountViewModel: AccountViewModel = koinViewModel(),
@@ -134,6 +142,10 @@ fun AccountScreen(
         onOpenBudget = onOpenBudget,
         onOpenWidgets = onOpenWidgets,
         onOpenCategoryRules = onOpenCategoryRules,
+        onSetupPin = onSetupPin,
+        onDisableAppLock = accountViewModel::disableAppLock,
+        onSetBiometric = accountViewModel::setBiometricEnabled,
+        onSetAutoLock = accountViewModel::setAutoLockMinutes,
         onSetDisplayName = accountViewModel::setDisplayName,
         onSetThemeMode = { accountViewModel.setThemeMode(it) },
         onSetAccent = { accountViewModel.setAccent(it) },
@@ -162,6 +174,10 @@ private fun AccountScreenContent(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onSetupPin: () -> Unit,
+    onDisableAppLock: () -> Unit,
+    onSetBiometric: (Boolean) -> Unit,
+    onSetAutoLock: (Int) -> Unit,
     onSetDisplayName: (String) -> Unit,
     onSetThemeMode: (ThemeMode) -> Unit,
     onSetAccent: (AccentTheme) -> Unit,
@@ -257,6 +273,21 @@ private fun AccountScreenContent(
                 isPremium = isPremium,
                 onOpenPicker = { openPicker = it },
                 onOpenPaywall = onOpenPaywall,
+            )
+        }
+    }
+    val biometricAvailable = remember(context) { BiometricAuth.isAvailable(context) }
+    val securitySection: @Composable () -> Unit = {
+        AccountCard {
+            SecuritySectionRows(
+                appLockEnabled = settings.appLockEnabled,
+                biometricEnabled = settings.biometricEnabled,
+                biometricAvailable = biometricAvailable,
+                autoLockMinutes = settings.autoLockMinutes,
+                onSetupPin = onSetupPin,
+                onDisableAppLock = onDisableAppLock,
+                onSetBiometric = onSetBiometric,
+                onSetAutoLock = onSetAutoLock,
             )
         }
     }
@@ -373,6 +404,7 @@ private fun AccountScreenContent(
                         when (selectedSection) {
                             AccountSection.ACCOUNT -> accountSection()
                             AccountSection.PREFERENCES -> preferencesSection()
+                            AccountSection.SECURITY -> securitySection()
                             AccountSection.SUPPORT -> supportSection()
                         }
                     }
@@ -394,6 +426,9 @@ private fun AccountScreenContent(
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_preferences))
                 preferencesSection()
+                Spacer(Modifier.height(MaterialTheme.dimens.xxl))
+                SectionHeader(stringResource(R.string.section_security))
+                securitySection()
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_support))
                 supportSection()
@@ -684,6 +719,73 @@ private fun SupportSectionRows(
 }
 
 /**
+ * Rows of the "Security" group. The master toggle turns app lock on (routing to set-PIN) or off; the
+ * PIN / biometric / auto-lock sub-rows appear only while it's on. Biometric shows only where the
+ * device actually has enrolled hardware. Free feature — security isn't paywalled.
+ */
+@Composable
+private fun SecuritySectionRows(
+    appLockEnabled: Boolean,
+    biometricEnabled: Boolean,
+    biometricAvailable: Boolean,
+    autoLockMinutes: Int,
+    onSetupPin: () -> Unit,
+    onDisableAppLock: () -> Unit,
+    onSetBiometric: (Boolean) -> Unit,
+    onSetAutoLock: (Int) -> Unit,
+) {
+    SettingRow(
+        icon = Icons.Filled.Lock,
+        title = stringResource(R.string.account_app_lock),
+        subtitle = stringResource(R.string.account_app_lock_sub),
+        trailing = { Switch(checked = appLockEnabled, onCheckedChange = null) },
+        // Off → set a PIN (which turns it on); On → clear it.
+        onClick = { if (appLockEnabled) onDisableAppLock() else onSetupPin() },
+    )
+    if (appLockEnabled) {
+        RowDivider()
+        SettingRow(Icons.Filled.Password, stringResource(R.string.account_change_pin)) { onSetupPin() }
+        if (biometricAvailable) {
+            RowDivider()
+            SettingRow(
+                icon = Icons.Filled.Fingerprint,
+                title = stringResource(R.string.account_biometric),
+                trailing = { Switch(checked = biometricEnabled, onCheckedChange = null) },
+                onClick = { onSetBiometric(!biometricEnabled) },
+            )
+        }
+        RowDivider()
+        Box {
+            var menuOpen by remember { mutableStateOf(false) }
+            SettingRow(
+                icon = Icons.Filled.LockClock,
+                title = stringResource(R.string.account_auto_lock),
+                value = stringResource(autoLockLabel(autoLockMinutes)),
+            ) { menuOpen = true }
+            DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                AUTO_LOCK_OPTIONS.forEach { minutes ->
+                    DropdownMenuItem(
+                        text = { Text(stringResource(autoLockLabel(minutes))) },
+                        onClick = {
+                            onSetAutoLock(minutes)
+                            menuOpen = false
+                        },
+                    )
+                }
+            }
+        }
+    }
+}
+
+private val AUTO_LOCK_OPTIONS = listOf(0, 1, 5)
+
+private fun autoLockLabel(minutes: Int): Int = when (minutes) {
+    0 -> R.string.app_lock_auto_immediately
+    5 -> R.string.app_lock_auto_5min
+    else -> R.string.app_lock_auto_1min
+}
+
+/**
  * Profile card: avatar, display name, signed-in email. The pencil turns the name into an inline
  * editable field (no separate screen) with X (discard) / ✓ (save) actions.
  */
@@ -811,6 +913,7 @@ private fun RowDivider() {
 private enum class AccountSection(val titleRes: Int, val icon: ImageVector) {
     ACCOUNT(R.string.nav_account, Icons.Filled.AccountBalanceWallet),
     PREFERENCES(R.string.section_preferences, Icons.Filled.Palette),
+    SECURITY(R.string.section_security, Icons.Filled.Lock),
     SUPPORT(R.string.section_support, Icons.AutoMirrored.Filled.HelpOutline),
 }
 
@@ -1085,6 +1188,10 @@ private fun AccountScreenPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onSetupPin = {},
+            onDisableAppLock = {},
+            onSetBiometric = {},
+            onSetAutoLock = {},
             onSetDisplayName = {},
             onSetThemeMode = {},
             onSetAccent = {},
@@ -1116,6 +1223,10 @@ private fun AccountScreenTabletPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onSetupPin = {},
+            onDisableAppLock = {},
+            onSetBiometric = {},
+            onSetAutoLock = {},
             onSetDisplayName = {},
             onSetThemeMode = {},
             onSetAccent = {},

@@ -800,4 +800,26 @@
         <item quantity="many">%1$d транзакций · %2$s</item>
         <item quantity="other">%1$d транзакции · %2$s</item>
     </plurals>
+    <string name="section_security">Безопасность</string>
+    <string name="account_app_lock">Блокировка приложения</string>
+    <string name="account_app_lock_sub">Требовать PIN для открытия Budgetty</string>
+    <string name="account_change_pin">Изменить PIN</string>
+    <string name="account_biometric">Разблокировка по биометрии</string>
+    <string name="account_auto_lock">Автоблокировка</string>
+    <string name="app_lock_auto_immediately">Сразу</string>
+    <string name="app_lock_auto_1min">Через 1 минуту</string>
+    <string name="app_lock_auto_5min">Через 5 минут</string>
+    <string name="app_lock_title">Budgetty заблокирован</string>
+    <string name="app_lock_enter_pin">Введите PIN</string>
+    <string name="app_lock_wrong_pin">Неверный PIN. Попробуйте снова.</string>
+    <string name="app_lock_forgot">Забыли PIN?</string>
+    <string name="app_lock_set_title">Установите PIN</string>
+    <string name="app_lock_set_hint">Выберите 4-значный PIN для блокировки приложения</string>
+    <string name="app_lock_confirm_title">Подтвердите PIN</string>
+    <string name="app_lock_confirm_hint">Введите PIN ещё раз для подтверждения</string>
+    <string name="app_lock_pin_mismatch">Введённые PIN не совпадают. Попробуйте снова.</string>
+    <string name="app_lock_use_biometric">Использовать биометрию</string>
+    <string name="app_lock_backspace">Удалить</string>
+    <string name="app_lock_biometric_subtitle">Подтвердите, что это вы, для разблокировки</string>
+    <string name="app_lock_use_pin">Использовать PIN</string>
 </resources>
