@@ -54,7 +54,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,28 +75,20 @@ import com.budgetty.app.R
 import com.budgetty.app.ui.subscriptions.SubscriptionsInsightsCard
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.TransactionEntity
-import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetWarnColor
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
-import com.budgetty.app.ui.util.AppFormats
-import com.budgetty.app.ui.util.budgetColor
-import com.budgetty.app.ui.util.budgetRatio
 import com.budgetty.app.ui.util.categoryDisplayName
-import com.budgetty.app.ui.util.monthlyToWeekly
 import com.budgetty.app.ui.util.recurringSubtitle
-import com.budgetty.app.ui.util.weeklyToMonthly
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.math.BigDecimal
-import java.math.RoundingMode
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
 @Composable
@@ -454,224 +445,6 @@ private fun PeriodEmptyState(periodLabel: String, hasAnyData: Boolean) {
     }
 }
 
-/**
- * The overall budget for [period] expressed at the period's cadence, or null when there's none to
- * show: only Month and Week steps map to the Monthly/Weekly budget (converting between the two via
- * the budget helpers), so Quarter / Half-year / Custom ranges return null and hide the card.
- */
-private fun budgetForPeriod(period: InsightsPeriod, budgets: Map<String, BigDecimal>): BigDecimal? =
-    when ((period as? InsightsPeriod.Stepped)?.unit) {
-        PeriodUnit.MONTH -> budgets[BudgetRepository.MONTHLY]
-            ?: budgets[BudgetRepository.WEEKLY]?.let { weeklyToMonthly(it) }
-        PeriodUnit.WEEK -> budgets[BudgetRepository.WEEKLY]
-            ?: budgets[BudgetRepository.MONTHLY]?.let { monthlyToWeekly(it) }
-        else -> null
-    }
-
-/**
- * Budget card for the selected period: the overall budget progress (when an overall budget is set)
- * plus a row per budgeted category. Only Month and Week steps map to the Monthly/Weekly budget, so
- * other units — and the no-budget case — render nothing, letting callers place it unconditionally.
- */
-@Composable
-private fun BudgetSectionCard(
-    period: InsightsPeriod,
-    periodLabel: String,
-    total: BigDecimal,
-    slices: List<PieSlice>,
-    budgets: Map<String, BigDecimal>,
-    monthStartDay: Int,
-    carried: Map<String, BigDecimal> = emptyMap(),
-) {
-    val unit = (period as? InsightsPeriod.Stepped)?.unit
-    if (unit != PeriodUnit.MONTH && unit != PeriodUnit.WEEK) return
-    // Carry-over only applies to the current pay-cycle month: the stored balance is "as of now" (so it
-    // can't be projected onto a past period), and a weekly budget never rolls. When it doesn't apply,
-    // fall back to empty so limits stay at their base amounts.
-    val applyCarry = unit == PeriodUnit.MONTH && (period as? InsightsPeriod.Stepped)?.offset == 0
-    val effectiveCarry = if (applyCarry) carried else emptyMap()
-    val overallCarry = effectiveCarry[BudgetRepository.MONTHLY] ?: BigDecimal.ZERO
-    val overall = budgetForPeriod(period, budgets)?.let { it + overallCarry }
-    val categoryRows = categoryBudgetRows(slices, budgets, unit, effectiveCarry)
-    if (overall == null && categoryRows.isEmpty()) return
-
-    InsightCard {
-        Text(stringResource(R.string.insights_budget), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        Text(
-            text = periodLabel,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        if (overall != null) {
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
-            OverallBudgetProgress(
-                period = period,
-                spent = total,
-                budget = overall,
-                monthStartDay = monthStartDay,
-                carried = overallCarry,
-            )
-        }
-        if (categoryRows.isNotEmpty()) {
-            Spacer(Modifier.height(if (overall != null) MaterialTheme.dimens.xl else MaterialTheme.dimens.lg))
-            categoryRows.forEachIndexed { index, row ->
-                if (index > 0) Spacer(Modifier.height(MaterialTheme.dimens.md))
-                CategoryBudgetRow(row)
-            }
-        }
-    }
-}
-
-/**
- * The overall budget progress block: "spent · %" beside the remaining/over amount, a status-colored
- * bar, and — for the current period only — a "N days left" line.
- */
-@Composable
-private fun OverallBudgetProgress(
-    period: InsightsPeriod,
-    spent: BigDecimal,
-    budget: BigDecimal,
-    monthStartDay: Int,
-    carried: BigDecimal = BigDecimal.ZERO,
-) {
-    val color = budgetColor(spent, budget)
-    val remaining = budget.subtract(spent)
-    val pct = if (budget.signum() <= 0) 0 else (spent.toDouble() / budget.toDouble() * 100).roundToInt()
-    val daysLeft = (period as? InsightsPeriod.Stepped)
-        ?.takeIf { it.offset == 0 }
-        ?.let {
-            ChronoUnit.DAYS
-                .between(LocalDate.now(), it.bounds(monthStartDay = monthStartDay).second)
-                .coerceAtLeast(0)
-        }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = stringResource(R.string.budget_spent_pct, spent.formatMoney(), pct),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Text(
-            text = if (remaining.signum() >= 0) {
-                stringResource(R.string.budget_left, remaining.formatMoney())
-            } else {
-                stringResource(R.string.budget_over, remaining.negate().formatMoney())
-            },
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            color = color,
-        )
-    }
-    Spacer(Modifier.height(10.dp))
-    LinearProgressIndicator(
-        progress = { budgetRatio(spent, budget) },
-        color = color,
-        trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(10.dp)
-            .clip(RoundedCornerShape(50)),
-    )
-    if (carried.signum() > 0) {
-        Spacer(Modifier.height(MaterialTheme.dimens.sm))
-        Text(
-            text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
-            style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.SemiBold,
-            color = budgetGoodColor(),
-        )
-    }
-    if (daysLeft != null) {
-        Spacer(Modifier.height(MaterialTheme.dimens.sm))
-        Text(
-            text = pluralStringResource(R.plurals.insights_budget_days_left, daysLeft.toInt(), daysLeft.toInt()),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-    }
-}
-
-/** One budgeted category's progress for the selected period. */
-private data class CategoryBudgetRowData(val category: String, val spent: BigDecimal, val budget: BigDecimal)
-
-/**
- * A progress row for every budgeted category, sorted by how much of its (period-scaled) budget is
- * used — most-consumed first, so over-budget categories surface. A group's spend rolls up its
- * sub-categories' (mirroring the Budget screen); category budgets are stored monthly, so the Week
- * step scales them down via [monthlyToWeekly].
- */
-private fun categoryBudgetRows(
-    slices: List<PieSlice>,
-    budgets: Map<String, BigDecimal>,
-    unit: PeriodUnit,
-    carried: Map<String, BigDecimal> = emptyMap(),
-): List<CategoryBudgetRowData> {
-    val spendByCategory = slices.associate { it.label to it.value }
-    fun spendFor(category: String): BigDecimal =
-        Categories.children(category).fold(spendByCategory[category] ?: BigDecimal.ZERO) { acc, child ->
-            acc + (spendByCategory[child.name] ?: BigDecimal.ZERO)
-        }
-    return budgets
-        .filterKeys { it.startsWith(BudgetRepository.CATEGORY_PREFIX) }
-        .mapNotNull { (key, monthly) ->
-            if (monthly.signum() <= 0) return@mapNotNull null
-            val category = key.removePrefix(BudgetRepository.CATEGORY_PREFIX)
-            // Category budgets are stored monthly: the Week step scales them down and never carries;
-            // the Month step adds any carried-over balance for the current period on top of the limit.
-            val budget = if (unit == PeriodUnit.WEEK) {
-                monthlyToWeekly(monthly)
-            } else {
-                monthly + (carried[key] ?: BigDecimal.ZERO)
-            }
-            CategoryBudgetRowData(category, spendFor(category), budget)
-        }
-        .sortedByDescending { if (it.budget.signum() > 0) it.spent.toDouble() / it.budget.toDouble() else 0.0 }
-}
-
-/** One budgeted-category row: name, a compact "spent / limit", and a status-colored bar. */
-@Composable
-private fun CategoryBudgetRow(row: CategoryBudgetRowData) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = categoryDisplayName(row.category),
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f),
-            )
-            Spacer(Modifier.width(MaterialTheme.dimens.sm))
-            Text(
-                text = categoryBudgetSummary(row.spent, row.budget),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-            )
-        }
-        Spacer(Modifier.height(6.dp))
-        LinearProgressIndicator(
-            progress = { budgetRatio(row.spent, row.budget) },
-            color = budgetColor(row.spent, row.budget),
-            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(50)),
-        )
-    }
-}
-
-/** Compact whole-number "spent / limit" summary for a budget row, e.g. "180 / 400 лв". */
-private fun categoryBudgetSummary(spent: BigDecimal, budget: BigDecimal): String {
-    val s = spent.setScale(0, RoundingMode.HALF_UP).toPlainString()
-    val b = budget.setScale(0, RoundingMode.HALF_UP).toPlainString()
-    return "$s / $b ${AppFormats.currencySymbol}"
-}
-
 /** Per-category movers card body: the biggest per-category changes vs the previous period. */
 @Composable
 private fun ByCategoryContent(deltas: List<CategoryDelta>, period: InsightsPeriod) {
@@ -851,12 +624,6 @@ private fun InsightsPhoneBody(
                         }
                     }
 
-                    InsightsSection.BUDGET -> if (state.isLoaded)
-                        BudgetSectionCard(
-                            state.period, periodLabel, state.total,
-                            state.slices, state.budgets, state.monthStartDay, state.carried,
-                        )
-
                     // Money-flow cards render once any income/bills exist (each shows its own nudge
                     // for the partial cases); a user with no plan at all sees none of them.
                     InsightsSection.INCOME_SPENDING ->
@@ -872,11 +639,6 @@ private fun InsightsPhoneBody(
                     InsightsSection.FIXED_FLEXIBLE ->
                         if (state.isLoaded && (state.hasIncome || state.hasBills)) InsightCard {
                             FixedVsFlexibleContent(state, periodLabel, onNavigateToBudget)
-                        }
-
-                    InsightsSection.UPCOMING_BILLS ->
-                        if (state.isLoaded && (state.hasIncome || state.hasBills)) InsightCard {
-                            UpcomingBillsContent(state, onNavigateToBudget)
                         }
 
                     InsightsSection.INCOME_BY_SOURCE ->
@@ -1027,12 +789,6 @@ private fun InsightsTabletBody(
         if (shows(InsightsSection.BIGGEST_PURCHASES) && state.biggestPurchases.isNotEmpty()) {
             InsightCard { BiggestPurchasesContent(state.biggestPurchases, state.storeByReceiptId) }
         }
-        if (shows(InsightsSection.BUDGET)) {
-            BudgetSectionCard(
-                state.period, periodLabel, state.total,
-                state.slices, state.budgets, state.monthStartDay, state.carried,
-            )
-        }
         if (state.categoryDeltas.isNotEmpty()) {
             InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
         }
@@ -1049,9 +805,7 @@ private fun InsightsTabletBody(
             header()
             Spacer(Modifier.height(MaterialTheme.dimens.md))
             if (!hasData) {
-                // No spend yet, but still surface the budget card so a freshly-set budget shows its
-                // limits (zero spent) instead of the screen looking empty. Renders nothing when no
-                // budget is set. Phone already does this via the always-on BUDGET section.
+                // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
                 if (state.isLoaded) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -1059,12 +813,6 @@ private fun InsightsTabletBody(
                     ) {
                         if (shows(InsightsSection.BREAKDOWN)) {
                             InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
-                        }
-                        if (shows(InsightsSection.BUDGET)) {
-                            BudgetSectionCard(
-                                state.period, periodLabel, state.total,
-                                state.slices, state.budgets, state.monthStartDay, state.carried,
-                            )
                         }
                     }
                 }
@@ -1110,9 +858,7 @@ private fun InsightsTabletBody(
         ) {
             header()
             if (!hasData) {
-                // No spend yet, but still surface the budget card so a freshly-set budget shows its
-                // limits (zero spent) instead of the screen looking empty. Renders nothing when no
-                // budget is set. Phone already does this via the always-on BUDGET section.
+                // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
                 if (state.isLoaded) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -1120,12 +866,6 @@ private fun InsightsTabletBody(
                     ) {
                         if (shows(InsightsSection.BREAKDOWN)) {
                             InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
-                        }
-                        if (shows(InsightsSection.BUDGET)) {
-                            BudgetSectionCard(
-                                state.period, periodLabel, state.total,
-                                state.slices, state.budgets, state.monthStartDay, state.carried,
-                            )
                         }
                     }
                 }
@@ -1480,107 +1220,6 @@ private fun FixedVsFlexibleContent(state: InsightsUiState, periodLabel: String, 
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-        }
-    }
-}
-
-@Composable
-private fun WindowChip(label: String, selected: Boolean, onClick: () -> Unit) {
-    Text(
-        text = label,
-        style = MaterialTheme.typography.labelSmall,
-        fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-        color = if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier
-            .clip(RoundedCornerShape(50))
-            .background(if (selected) MaterialTheme.colorScheme.surface else Color.Transparent)
-            .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 4.dp),
-    )
-}
-
-@Composable
-private fun UpcomingBillRow(bill: UpcomingBill) {
-    val entity = bill.entity
-    val whenLabel = when (bill.daysUntil) {
-        0 -> stringResource(R.string.insights_upcoming_today)
-        1 -> stringResource(R.string.insights_upcoming_tomorrow)
-        else -> stringResource(R.string.insights_upcoming_in_days, bill.daysUntil)
-    }
-    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 9.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .size(38.dp)
-                .clip(RoundedCornerShape(11.dp))
-                .background(Color(Categories.colorOf(entity.category)).copy(alpha = 0.16f)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(Categories.emojiOf(entity.category), fontSize = 20.sp)
-        }
-        Column(Modifier.weight(1f)) {
-            Text(entity.label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(whenLabel, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
-        }
-        Text(entity.amount.formatMoney(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, maxLines = 1)
-    }
-}
-
-/** "Upcoming bills": total + next few recurring payments due within a 7- or 30-day window. */
-@Composable
-private fun UpcomingBillsContent(state: InsightsUiState, onGoToBudget: () -> Unit) {
-    Column(Modifier.fillMaxWidth()) {
-        var window by remember { mutableStateOf(7) }
-        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(R.string.insights_upcoming_bills),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-            )
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .background(MaterialTheme.colorScheme.surfaceContainerHigh)
-                    .padding(2.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                WindowChip(stringResource(R.string.insights_upcoming_7days), window == 7) { window = 7 }
-                WindowChip(stringResource(R.string.insights_upcoming_30days), window == 30) { window = 30 }
-            }
-        }
-        val visible = state.upcomingBills.filter { it.daysUntil <= window }
-        if (visible.isEmpty()) {
-            CardNudge(
-                "🗓️",
-                stringResource(R.string.insights_upcoming_empty_title),
-                stringResource(R.string.insights_upcoming_empty_sub),
-                onGoToBudget,
-            )
-        } else {
-            val total = visible.fold(BigDecimal.ZERO) { acc, b -> acc + b.entity.amount }
-            Spacer(Modifier.height(MaterialTheme.dimens.md))
-            Text(total.formatMoney(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-            Text(
-                text = stringResource(R.string.insights_upcoming_due, window),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(MaterialTheme.dimens.sm))
-            visible.take(3).forEach { UpcomingBillRow(it) }
-            if (visible.size > 3) {
-                Text(
-                    text = stringResource(R.string.insights_upcoming_more, visible.size - 3),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.sm),
-                )
-            }
         }
     }
 }

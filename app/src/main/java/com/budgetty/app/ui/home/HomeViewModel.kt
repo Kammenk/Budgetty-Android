@@ -20,9 +20,11 @@ import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.PayCycle
+import com.budgetty.app.ui.util.UpcomingBill
 import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.isPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
+import com.budgetty.app.ui.util.upcomingBills
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -67,6 +69,10 @@ data class HomeUiState(
     // Recurring bills split into what's still owed this cycle vs already marked paid (planning-only).
     val billsStillDue: BigDecimal = BigDecimal.ZERO,
     val billsPaid: BigDecimal = BigDecimal.ZERO,
+    // Recurring bills (monthly/weekly) due soon, soonest first — the Home "Upcoming bills" card
+    // (date-based, independent of the period filter). [hasBills] gates the card on any bill existing.
+    val upcomingBills: List<UpcomingBill> = emptyList(),
+    val hasBills: Boolean = false,
     // Left to spend freely before the next payday: income − spent so far − bills still due.
     val safeToSpend: BigDecimal = BigDecimal.ZERO,
     // Whole days from today to the next pay-cycle start (min 1) and that date, for the per-day line.
@@ -79,10 +85,6 @@ data class HomeUiState(
     val weeklySpent: BigDecimal = BigDecimal.ZERO,
     val weeklyBudget: BigDecimal? = null,
     val hasCategoryBudgets: Boolean = false,
-    // Quick-stats strip: this week vs last week, and the top category this month.
-    val lastWeekSpent: BigDecimal = BigDecimal.ZERO,
-    val topCategory: String? = null,
-    val topCategoryAmount: BigDecimal = BigDecimal.ZERO,
     // Tablet summary header: spend in the equal-length period before the selected one (null when
     // there's nothing to compare against) and the average spend per elapsed day of the period.
     val previousPeriodSpent: BigDecimal? = null,
@@ -153,16 +155,18 @@ class HomeViewModel(
                     else -> billsStillDue += amount
                 }
             }
-            CashFlow(income, billsStillDue, billsPaid)
+            CashFlow(
+                income = income,
+                billsStillDue = billsStillDue,
+                billsPaid = billsPaid,
+                upcomingBills = items.upcomingBills(today, day),
+                hasBills = items.any { !it.isIncome },
+            )
         }
 
     // Current calendar week's spend (Mon–Sun), independent of the filter (for the weekly box).
     private val weekRange = currentWeekRange()
     private val weeklyTransactions = repository.getBetween(weekRange.first, weekRange.second)
-
-    // Previous Mon–Sun week, for the "vs last week" quick stat.
-    private val lastWeekRange = currentWeekRange(LocalDate.now().minusWeeks(1))
-    private val lastWeeklyTransactions = repository.getBetween(lastWeekRange.first, lastWeekRange.second)
 
     // Unspent budget carried into the current pay-cycle month for the overall monthly budget; 0 when
     // rollover is off (the stored rows only accrue while it's enabled). Weekly budgets never roll.
@@ -182,9 +186,8 @@ class HomeViewModel(
                 combine(budgetRepository.budgets, monthlyCarried) { b, mc -> b to mc },
                 receiptRepository.getAll(),
                 weeklyTransactions,
-                lastWeeklyTransactions,
                 previousTransactions,
-            ) { (b, mc), r, w, lw, pt -> BudgetsReceiptsWeeks(b, mc, r, w, lw, pt) },
+            ) { (b, mc), r, w, pt -> BudgetsReceiptsWeeks(b, mc, r, w, pt) },
         ) { ctx, txns, categories, monthlyData, brw ->
             val receiptsById = brw.receipts.associateBy { it.timestamp }
             // Adjust each period's summed line prices to what was actually paid: add on-top tax
@@ -193,12 +196,8 @@ class HomeViewModel(
             val total = txns.spend() + paidAdjustmentOf(txns, receiptsById)
             val monthlySpent = monthlyData.txns.spend() + paidAdjustmentOf(monthlyData.txns, receiptsById)
             val weeklySpent = brw.weekly.spend() + paidAdjustmentOf(brw.weekly, receiptsById)
-            val lastWeekSpent = brw.lastWeekly.spend() + paidAdjustmentOf(brw.lastWeekly, receiptsById)
             val previousSpent = brw.previous.spend() + paidAdjustmentOf(brw.previous, receiptsById)
             val colorByCategory = categories.associate { it.name to it.colorArgb }
-            val topByCategory = monthlyData.txns.groupBy { it.category }
-                .mapValues { (_, list) -> list.spend() }
-                .maxByOrNull { it.value }
             val cashFlow = monthlyData.cashFlow
             // Safe to spend before the next payday = cycle income − spent so far − bills still owed.
             val safeToSpend = cashFlow.income - monthlySpent - cashFlow.billsStillDue
@@ -217,6 +216,8 @@ class HomeViewModel(
                 cycleIncome = cashFlow.income,
                 billsStillDue = cashFlow.billsStillDue,
                 billsPaid = cashFlow.billsPaid,
+                upcomingBills = cashFlow.upcomingBills,
+                hasBills = cashFlow.hasBills,
                 safeToSpend = safeToSpend,
                 daysUntilPayday = daysUntilPayday,
                 nextPayday = payday,
@@ -225,9 +226,6 @@ class HomeViewModel(
                 weeklySpent = weeklySpent,
                 weeklyBudget = brw.budgets[BudgetRepository.WEEKLY],
                 hasCategoryBudgets = brw.budgets.keys.any { it.startsWith(BudgetRepository.CATEGORY_PREFIX) },
-                lastWeekSpent = lastWeekSpent,
-                topCategory = topByCategory?.key,
-                topCategoryAmount = topByCategory?.value ?: BigDecimal.ZERO,
                 previousPeriodSpent = previousSpent.takeIf { it.signum() > 0 },
                 dailyAvg = dailyAverage(total, ctx.filter, ctx.monthStartDay, txns),
                 monthlyBreakdown = monthlyBreakdown(txns, receiptsById, ctx.filter, ctx.monthStartDay),
@@ -322,11 +320,14 @@ class HomeViewModel(
         val cashFlow: CashFlow,
     )
 
-    /** Current pay-cycle cash-flow inputs (income + bills split paid/still-due) for Safe-to-spend. */
+    /** Current pay-cycle cash-flow inputs (income + bills split paid/still-due) for Safe-to-spend,
+     *  plus the date-based upcoming-bills list + a "has any bill" flag for the Upcoming bills card. */
     private data class CashFlow(
         val income: BigDecimal,
         val billsStillDue: BigDecimal,
         val billsPaid: BigDecimal,
+        val upcomingBills: List<UpcomingBill>,
+        val hasBills: Boolean,
     )
 
     /** Bundles the nested-combine sources so the outer combine stays within arity limits. */
@@ -335,7 +336,6 @@ class HomeViewModel(
         val monthlyCarried: BigDecimal,
         val receipts: List<ReceiptEntity>,
         val weekly: List<TransactionEntity>,
-        val lastWeekly: List<TransactionEntity>,
         val previous: List<TransactionEntity>,
     )
 

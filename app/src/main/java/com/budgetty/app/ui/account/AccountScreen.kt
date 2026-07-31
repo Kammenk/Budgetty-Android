@@ -1036,11 +1036,15 @@ private fun SettingRow(
                 Spacer(Modifier.width(MaterialTheme.dimens.sm))
             }
         }
-        Icon(
-            Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-        )
+        // A row with a switch toggle ([trailing]) carries no navigation, so it shows no chevron; the
+        // arrow is only for rows that open another screen or a picker.
+        if (trailing == null) {
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+            )
+        }
     }
 }
 

@@ -17,7 +17,6 @@ import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.AppFormats
-import com.budgetty.app.ui.util.isPaidThisCycle
 import com.budgetty.app.ui.util.windowAmount
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -48,13 +47,6 @@ data class IncomeSourceUi(
     val amount: BigDecimal,
     /** Share of total income, 0–100. */
     val percent: Int,
-)
-
-/** A recurring bill with its next occurrence, for the "Upcoming bills" card. */
-data class UpcomingBill(
-    val entity: RecurringEntity,
-    /** Whole days from today until the next occurrence (0 = today). */
-    val daysUntil: Int,
 )
 
 /**
@@ -188,11 +180,9 @@ data class InsightsUiState(
     val periodBills: BigDecimal = BigDecimal.ZERO,
     /** Per-source income breakdown (share of total), largest first. */
     val incomeSources: List<IncomeSourceUi> = emptyList(),
-    /** Monthly/weekly bills with their next occurrence, soonest first (date-based, not period-scaled). */
-    val upcomingBills: List<UpcomingBill> = emptyList(),
     /** Whether any income source exists (gates the income cards). */
     val hasIncome: Boolean = false,
-    /** Whether any recurring bill exists (gates the upcoming-bills card). */
+    /** Whether any recurring bill exists (gates the money-flow cards alongside [hasIncome]). */
     val hasBills: Boolean = false,
 )
 
@@ -319,7 +309,6 @@ class InsightsViewModel(
                     periodIncome = ri.periodIncome,
                     periodBills = ri.periodBills,
                     incomeSources = ri.incomeSources,
-                    upcomingBills = ri.upcomingBills,
                     hasIncome = ri.hasIncome,
                     hasBills = ri.hasBills,
                 )
@@ -561,7 +550,6 @@ class InsightsViewModel(
         val periodIncome: BigDecimal,
         val periodBills: BigDecimal,
         val incomeSources: List<IncomeSourceUi>,
-        val upcomingBills: List<UpcomingBill>,
         val hasIncome: Boolean,
         val hasBills: Boolean,
     )
@@ -571,7 +559,7 @@ class InsightsViewModel(
      * amount is scoped to the selected window and, for recurring cadences, counted only from the month
      * it was added ([windowAmount]) — so a past period never shows income/bills for months before the
      * entry existed, rather than back-projecting the current plan onto "what he earned before". Also
-     * builds the per-source income split and the next-occurrence list for upcoming bills.
+     * builds the per-source income split.
      */
     private fun recurringInsights(
         period: InsightsPeriod,
@@ -598,43 +586,14 @@ class InsightsViewModel(
                 IncomeSourceUi(entity, a.setScale(2, RoundingMode.HALF_UP), percent)
             }
 
-        val today = LocalDate.now()
-        val upcomingBills = billEntities
-            // A bill marked paid for this cycle drops off "upcoming" until its next occurrence.
-            .filterNot { it.isPaidThisCycle(today, monthStartDay) }
-            .mapNotNull { bill -> nextOccurrenceDays(bill, today)?.let { UpcomingBill(bill, it) } }
-            .sortedBy { it.daysUntil }
-
         return RecurringInsights(
             periodIncome = periodIncome.setScale(2, RoundingMode.HALF_UP),
             periodBills = periodBills.setScale(2, RoundingMode.HALF_UP),
             incomeSources = incomeSources,
-            upcomingBills = upcomingBills,
             hasIncome = incomeEntities.isNotEmpty(),
             hasBills = billEntities.isNotEmpty(),
         )
     }
-
-    /** Days from [today] to the bill's next occurrence, or null when it has no monthly/weekly schedule
-     *  (yearly bills store no month, one-offs don't recur). */
-    private fun nextOccurrenceDays(bill: RecurringEntity, today: LocalDate): Int? = when (bill.cadence) {
-        RecurringEntity.Cadence.MONTHLY -> {
-            val day = bill.dueDay.coerceIn(1, 31)
-            var date = clampDay(YearMonth.from(today), day)
-            if (date.isBefore(today)) date = clampDay(YearMonth.from(today).plusMonths(1), day)
-            ChronoUnit.DAYS.between(today, date).toInt()
-        }
-        RecurringEntity.Cadence.WEEKLY -> {
-            val target = bill.dueDay.coerceIn(1, 7) // 1=Mon … 7=Sun
-            var date = today
-            while (date.dayOfWeek.value != target) date = date.plusDays(1)
-            ChronoUnit.DAYS.between(today, date).toInt()
-        }
-        else -> null
-    }
-
-    private fun clampDay(month: YearMonth, day: Int): LocalDate =
-        month.atDay(day.coerceAtMost(month.lengthOfMonth()))
 
     private fun List<TransactionEntity>.sumOfSpend(): BigDecimal =
         fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }

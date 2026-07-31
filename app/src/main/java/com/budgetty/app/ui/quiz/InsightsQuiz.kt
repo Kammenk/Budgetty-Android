@@ -150,10 +150,8 @@ object InsightsQuiz {
             add(InsightsSection.INCOME_BY_SOURCE.key)
         }
         if (answers[BILLS] == "no") {
-            add(InsightsSection.UPCOMING_BILLS.key)
             add(InsightsSection.FIXED_FLEXIBLE.key)
         }
-        if (answers[BUDGET] == "no") add(InsightsSection.BUDGET.key)
         if (answers[DETAIL] == "big") {
             add(InsightsSection.TOP_STORES.key)
             add(InsightsSection.BIGGEST_PURCHASES.key)
@@ -169,8 +167,10 @@ object InsightsQuiz {
      */
     fun sectionOrder(answers: Map<String, String>): List<String> {
         val boosted = when (answers[GOAL]) {
-            "budget" -> listOf(InsightsSection.BUDGET, InsightsSection.PERIOD_COMPARISON)
-            "bills" -> listOf(InsightsSection.UPCOMING_BILLS, InsightsSection.FIXED_FLEXIBLE)
+            // Budget and upcoming bills are no longer Insights sections (budget lives on the Budget
+            // screen, bills on Home); boost the remaining goal-adjacent insight instead.
+            "budget" -> listOf(InsightsSection.PERIOD_COMPARISON)
+            "bills" -> listOf(InsightsSection.FIXED_FLEXIBLE)
             "savings" -> listOf(InsightsSection.SAVINGS_RATE, InsightsSection.INCOME_SPENDING)
             else -> return emptyList()
         }.map { it.key }

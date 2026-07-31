@@ -115,3 +115,46 @@ fun RecurringEntity.windowAmount(
         rate.multiply(BigDecimal(activeDays)).divide(BigDecimal("30.4375"), 2, RoundingMode.HALF_UP)
     }
 }
+
+/** A recurring bill paired with the whole days until its next occurrence (0 = today), for the Home
+ *  "Upcoming bills" card. */
+data class UpcomingBill(
+    val entity: RecurringEntity,
+    val daysUntil: Int,
+)
+
+/**
+ * The recurring bills (non-income) due soon, soonest first: each bill not already marked paid for
+ * this cycle, paired with the whole days until its next occurrence. Only monthly and weekly bills
+ * have a computable next date; yearly bills (which store no month) and one-offs are omitted.
+ */
+fun List<RecurringEntity>.upcomingBills(
+    today: LocalDate = LocalDate.now(),
+    monthStartDay: Int = 1,
+): List<UpcomingBill> =
+    filterNot { it.isIncome }
+        // A bill marked paid for this cycle drops off "upcoming" until its next occurrence.
+        .filterNot { it.isPaidThisCycle(today, monthStartDay) }
+        .mapNotNull { bill -> bill.nextOccurrenceDays(today)?.let { UpcomingBill(bill, it) } }
+        .sortedBy { it.daysUntil }
+
+/** Days from [today] to this bill's next occurrence, or null when it has no monthly/weekly schedule
+ *  (yearly bills store no month, one-offs don't recur). */
+fun RecurringEntity.nextOccurrenceDays(today: LocalDate = LocalDate.now()): Int? = when (cadence) {
+    RecurringEntity.Cadence.MONTHLY -> {
+        val day = dueDay.coerceIn(1, 31)
+        var date = clampDay(YearMonth.from(today), day)
+        if (date.isBefore(today)) date = clampDay(YearMonth.from(today).plusMonths(1), day)
+        ChronoUnit.DAYS.between(today, date).toInt()
+    }
+    RecurringEntity.Cadence.WEEKLY -> {
+        val target = dueDay.coerceIn(1, 7) // 1=Mon … 7=Sun
+        var date = today
+        while (date.dayOfWeek.value != target) date = date.plusDays(1)
+        ChronoUnit.DAYS.between(today, date).toInt()
+    }
+    else -> null
+}
+
+private fun clampDay(month: YearMonth, day: Int): LocalDate =
+    month.atDay(day.coerceAtMost(month.lengthOfMonth()))

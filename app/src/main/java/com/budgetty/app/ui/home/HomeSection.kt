@@ -10,7 +10,8 @@ import com.budgetty.app.R
  */
 enum class HomeSection(val key: String, @param:StringRes val labelRes: Int) {
     TOTAL_SPENT("total_spent", R.string.home_section_total_spent),
-    WEEK_COMPARISON("week_comparison", R.string.home_section_week),
     BUDGETS("budgets", R.string.home_budgets),
+    // Recurring bills due soon, sitting under the budget plan (moved here from Insights).
+    UPCOMING_BILLS("upcoming_bills", R.string.insights_upcoming_bills),
     RECEIPTS("receipts", R.string.home_receipts),
 }
