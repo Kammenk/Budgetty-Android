@@ -710,4 +710,55 @@
         <item quantity="one">%1$d registro</item>
         <item quantity="other">%1$d registros</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Assinaturas</string>
+    <string name="sub_per_month">Por mês</string>
+    <string name="sub_per_year">Por ano</string>
+    <string name="sub_per_month_suffix">/ mês</string>
+    <string name="sub_see_all">Ver todas %1$d ›</string>
+    <string name="sub_teaser_body">Cerca de %1$s por mês, identificado nos seus próprios recibos neste telefone — sem conexão bancária.</string>
+    <string name="sub_unlock">Desbloquear com Premium</string>
+    <string name="sub_unlock_note">Desbloqueia a lista completa, alertas de aumento de preço e Acompanhar como conta.</string>
+    <string name="sub_cadence_monthly">Mensal</string>
+    <string name="sub_cadence_yearly">Anual</string>
+    <string name="sub_next">próx. ~%1$s</string>
+    <string name="sub_detected">Assinaturas detectadas</string>
+    <string name="sub_list_note">Encontradas neste telefone ao cruzar cobranças repetidas nos seus recibos. Os itens anuais contam como um doze avos por mês.</string>
+    <string name="sub_ignored">Ignoradas</string>
+    <string name="sub_ignored_note">Ocultas da lista e dos totais</string>
+    <string name="sub_ignored_still">A detecção ainda a vê — apenas fica fora do seu caminho.</string>
+    <string name="sub_restore">Restaurar</string>
+    <string name="sub_footer_ondevice">A detecção é feita no seu dispositivo. Nada sai do telefone e nenhum banco é conectado.</string>
+    <string name="sub_stat_last">Última</string>
+    <string name="sub_stat_next">Próxima ~</string>
+    <string name="sub_stat_charges">Cobranças</string>
+    <string name="sub_hike_title">%1$s desde %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s a partir dessa cobrança. Cerca de %3$s a mais por ano.</string>
+    <string name="sub_price_up_tag">preço subiu</string>
+    <string name="sub_track_as_bill">Acompanhar como conta</string>
+    <string name="sub_track_note">Cria uma conta recorrente — passa a contar em Livre para gastar e nas próximas contas.</string>
+    <string name="sub_ignore_merchant">Ignorar este comerciante</string>
+    <string name="sub_empty_title">Nada recorrente ainda</string>
+    <string name="sub_empty_body">Vamos identificar cobranças recorrentes à medida que você adiciona mais recibos. Normalmente são necessárias cerca de três cobranças do mesmo comerciante.</string>
+    <string name="sub_receipts_so_far">Recibos até agora</string>
+    <string name="sub_nearest">Mais próximo até agora: %1$d cobranças de %2$s — mais uma e vamos sinalizá-la.</string>
+    <string name="sub_track_sheet_title">Acompanhar como conta recorrente</string>
+    <string name="sub_track_sheet_body">Preenchido com o que detectamos. Altere o que quiser antes de salvar.</string>
+    <string name="sub_track_charge_day">%1$s · próx. %2$s</string>
+    <string name="sub_track_sheet_note">As contas salvas aparecem nas próximas contas e contam em Livre para gastar até você marcá-las como pagas.</string>
+    <string name="sub_add_bill">Adicionar conta</string>
+    <string name="sub_added_to_bills">Adicionado às suas contas</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d encontrada nos seus recibos</item>
+        <item quantity="other">%1$d encontradas nos seus recibos</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Encontramos %1$d cobrança recorrente</item>
+        <item quantity="other">Encontramos %1$d cobranças recorrentes</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d assinatura · %2$s por ano</item>
+        <item quantity="other">%1$d assinaturas · %2$s por ano</item>
+    </plurals>
 </resources>

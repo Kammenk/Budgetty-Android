@@ -720,4 +720,55 @@
         <item quantity="one">%1$d post</item>
         <item quantity="other">%1$d poster</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Abonnementer</string>
+    <string name="sub_per_month">Pr. måned</string>
+    <string name="sub_per_year">Pr. år</string>
+    <string name="sub_per_month_suffix">/ måned</string>
+    <string name="sub_see_all">Se alle %1$d ›</string>
+    <string name="sub_teaser_body">Omkring %1$s om måneden, fundet i dine egne kvitteringer på denne telefon — ingen bankforbindelse.</string>
+    <string name="sub_unlock">Lås op med Premium</string>
+    <string name="sub_unlock_note">Låser op for hele listen, prisstigningsvarsler og “Følg som regning”.</string>
+    <string name="sub_cadence_monthly">Månedligt</string>
+    <string name="sub_cadence_yearly">Årligt</string>
+    <string name="sub_next">næste ~%1$s</string>
+    <string name="sub_detected">Registrerede abonnementer</string>
+    <string name="sub_list_note">Fundet på denne telefon ved at matche gentagne opkrævninger i dine kvitteringer. Årlige poster tæller som en tolvtedel om måneden.</string>
+    <string name="sub_ignored">Ignoreret</string>
+    <string name="sub_ignored_note">Skjult fra listen og totalerne</string>
+    <string name="sub_ignored_still">Registreringen ser det stadig — det holder sig bare ude af vejen.</string>
+    <string name="sub_restore">Gendan</string>
+    <string name="sub_footer_ondevice">Registreringen kører på din enhed. Intet forlader telefonen, og der er ingen bank tilsluttet.</string>
+    <string name="sub_stat_last">Sidste</string>
+    <string name="sub_stat_next">Næste ~</string>
+    <string name="sub_stat_charges">Opkrævninger</string>
+    <string name="sub_hike_title">%1$s siden %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s fra den opkrævning og frem. Omkring %3$s mere over et år.</string>
+    <string name="sub_price_up_tag">pris op</string>
+    <string name="sub_track_as_bill">Følg som regning</string>
+    <string name="sub_track_note">Opretter en fast regning — den tæller derefter med i “Til rådighed” og kommende regninger.</string>
+    <string name="sub_ignore_merchant">Ignorér denne forhandler</string>
+    <string name="sub_empty_title">Intet gentagende endnu</string>
+    <string name="sub_empty_body">Vi registrerer gentagne opkrævninger, efterhånden som du tilføjer flere kvitteringer. Det kræver som regel omkring tre opkrævninger fra samme forhandler.</string>
+    <string name="sub_receipts_so_far">Kvitteringer indtil videre</string>
+    <string name="sub_nearest">Tættest indtil videre: %1$d opkrævninger fra %2$s — én mere, så markerer vi det.</string>
+    <string name="sub_track_sheet_title">Følg som fast regning</string>
+    <string name="sub_track_sheet_body">Forudfyldt ud fra det, vi registrerede. Ret hvad som helst, før du gemmer.</string>
+    <string name="sub_track_charge_day">%1$s · næste %2$s</string>
+    <string name="sub_track_sheet_note">Gemte regninger vises under kommende regninger og tæller mod “Til rådighed”, indtil du markerer dem som betalt.</string>
+    <string name="sub_add_bill">Tilføj regning</string>
+    <string name="sub_added_to_bills">Tilføjet til dine regninger</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d fundet i dine kvitteringer</item>
+        <item quantity="other">%1$d fundet i dine kvitteringer</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Vi fandt %1$d gentagen opkrævning</item>
+        <item quantity="other">Vi fandt %1$d gentagne opkrævninger</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d abonnement · %2$s om året</item>
+        <item quantity="other">%1$d abonnementer · %2$s om året</item>
+    </plurals>
 </resources>

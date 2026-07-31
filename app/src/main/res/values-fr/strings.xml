@@ -708,4 +708,55 @@
         <item quantity="one">%1$d mouvement</item>
         <item quantity="other">%1$d mouvements</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Abonnements</string>
+    <string name="sub_per_month">Par mois</string>
+    <string name="sub_per_year">Par an</string>
+    <string name="sub_per_month_suffix">/ mois</string>
+    <string name="sub_see_all">Voir les %1$d ›</string>
+    <string name="sub_teaser_body">Environ %1$s par mois, repérés dans vos propres reçus sur ce téléphone — sans connexion bancaire.</string>
+    <string name="sub_unlock">Débloquer avec Premium</string>
+    <string name="sub_unlock_note">Débloque la liste complète, les alertes de hausse de prix et Suivre comme facture.</string>
+    <string name="sub_cadence_monthly">Mensuel</string>
+    <string name="sub_cadence_yearly">Annuel</string>
+    <string name="sub_next">prochain ~%1$s</string>
+    <string name="sub_detected">Abonnements détectés</string>
+    <string name="sub_list_note">Trouvés sur ce téléphone en repérant les prélèvements récurrents dans vos reçus. Les éléments annuels comptent pour un douzième par mois.</string>
+    <string name="sub_ignored">Ignorés</string>
+    <string name="sub_ignored_note">Masqué de la liste et des totaux</string>
+    <string name="sub_ignored_still">La détection le voit toujours — il reste simplement à l\'écart.</string>
+    <string name="sub_restore">Restaurer</string>
+    <string name="sub_footer_ondevice">La détection s\'exécute sur votre appareil. Rien ne quitte le téléphone et aucune banque n\'est connectée.</string>
+    <string name="sub_stat_last">Dernier</string>
+    <string name="sub_stat_next">Prochain ~</string>
+    <string name="sub_stat_charges">Prélèvements</string>
+    <string name="sub_hike_title">%1$s depuis %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s à partir de ce prélèvement. Environ %3$s de plus sur un an.</string>
+    <string name="sub_price_up_tag">prix en hausse</string>
+    <string name="sub_track_as_bill">Suivre comme facture</string>
+    <string name="sub_track_note">Crée une facture récurrente — elle compte alors dans Reste à dépenser et les prochaines factures.</string>
+    <string name="sub_ignore_merchant">Ignorer ce commerçant</string>
+    <string name="sub_empty_title">Rien de récurrent pour le moment</string>
+    <string name="sub_empty_body">Nous repérerons les prélèvements récurrents à mesure que vous ajoutez des reçus. Il faut généralement environ trois prélèvements du même commerçant.</string>
+    <string name="sub_receipts_so_far">Reçus jusqu\'ici</string>
+    <string name="sub_nearest">Le plus proche jusqu\'ici : %1$d prélèvements de %2$s — un de plus et nous le signalerons.</string>
+    <string name="sub_track_sheet_title">Suivre comme facture récurrente</string>
+    <string name="sub_track_sheet_body">Prérempli à partir de ce que nous avons détecté. Modifiez ce que vous voulez avant d\'enregistrer.</string>
+    <string name="sub_track_charge_day">%1$s · prochain %2$s</string>
+    <string name="sub_track_sheet_note">Les factures enregistrées apparaissent dans les prochaines factures et sont déduites du Reste à dépenser jusqu\'à ce que vous les marquiez comme payées.</string>
+    <string name="sub_add_bill">Ajouter une facture</string>
+    <string name="sub_added_to_bills">Ajoutée à vos factures</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d trouvé dans vos reçus</item>
+        <item quantity="other">%1$d trouvés dans vos reçus</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Nous avons trouvé %1$d prélèvement récurrent</item>
+        <item quantity="other">Nous avons trouvé %1$d prélèvements récurrents</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d abonnement · %2$s par an</item>
+        <item quantity="other">%1$d abonnements · %2$s par an</item>
+    </plurals>
 </resources>

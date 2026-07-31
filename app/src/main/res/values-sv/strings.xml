@@ -721,4 +721,55 @@
         <item quantity="one">%1$d post</item>
         <item quantity="other">%1$d poster</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Prenumerationer</string>
+    <string name="sub_per_month">Per månad</string>
+    <string name="sub_per_year">Per år</string>
+    <string name="sub_per_month_suffix">/ mån</string>
+    <string name="sub_see_all">Visa alla %1$d ›</string>
+    <string name="sub_teaser_body">Ungefär %1$s i månaden, upptäckt i dina egna kvitton på den här telefonen — ingen bankanslutning.</string>
+    <string name="sub_unlock">Lås upp med Premium</string>
+    <string name="sub_unlock_note">Låser upp hela listan, prishöjningsvarningar och Spåra som räkning.</string>
+    <string name="sub_cadence_monthly">Månadsvis</string>
+    <string name="sub_cadence_yearly">Årsvis</string>
+    <string name="sub_next">nästa ~%1$s</string>
+    <string name="sub_detected">Upptäckta prenumerationer</string>
+    <string name="sub_list_note">Hittade på den här telefonen genom att matcha upprepade betalningar i dina kvitton. Årliga poster räknas som en tolftedel per månad.</string>
+    <string name="sub_ignored">Ignorerade</string>
+    <string name="sub_ignored_note">Dolda från listan och summorna</string>
+    <string name="sub_ignored_still">Den upptäcks fortfarande — den håller sig bara ur vägen.</string>
+    <string name="sub_restore">Återställ</string>
+    <string name="sub_footer_ondevice">Allt upptäcks på din enhet. Inget lämnar telefonen och ingen bank är ansluten.</string>
+    <string name="sub_stat_last">Senaste</string>
+    <string name="sub_stat_next">Nästa ~</string>
+    <string name="sub_stat_charges">Betalningar</string>
+    <string name="sub_hike_title">%1$s sedan %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s från och med den betalningen. Ungefär %3$s mer på ett år.</string>
+    <string name="sub_price_up_tag">prishöjning</string>
+    <string name="sub_track_as_bill">Spåra som räkning</string>
+    <string name="sub_track_note">Skapar en återkommande räkning — den räknas sedan i Tryggt att spendera och kommande räkningar.</string>
+    <string name="sub_ignore_merchant">Ignorera den här butiken</string>
+    <string name="sub_empty_title">Inget återkommande ännu</string>
+    <string name="sub_empty_body">Vi upptäcker återkommande betalningar när du lägger till fler kvitton. Det brukar krävas ungefär tre betalningar från samma butik.</string>
+    <string name="sub_receipts_so_far">Kvitton hittills</string>
+    <string name="sub_nearest">Närmast hittills: %1$d betalningar från %2$s — en till så flaggar vi den.</string>
+    <string name="sub_track_sheet_title">Spåra som återkommande räkning</string>
+    <string name="sub_track_sheet_body">Förifyllt från det vi upptäckte. Ändra vad du vill innan du sparar.</string>
+    <string name="sub_track_charge_day">%1$s · nästa %2$s</string>
+    <string name="sub_track_sheet_note">Sparade räkningar visas i kommande räkningar och räknas mot Tryggt att spendera tills du markerar dem som betalda.</string>
+    <string name="sub_add_bill">Lägg till räkning</string>
+    <string name="sub_added_to_bills">Tillagd i dina räkningar</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d hittad i dina kvitton</item>
+        <item quantity="other">%1$d hittade i dina kvitton</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Vi hittade %1$d återkommande betalning</item>
+        <item quantity="other">Vi hittade %1$d återkommande betalningar</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d prenumeration · %2$s per år</item>
+        <item quantity="other">%1$d prenumerationer · %2$s per år</item>
+    </plurals>
 </resources>

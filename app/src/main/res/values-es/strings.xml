@@ -708,4 +708,55 @@
         <item quantity="one">%1$d movimiento</item>
         <item quantity="other">%1$d movimientos</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Suscripciones</string>
+    <string name="sub_per_month">Al mes</string>
+    <string name="sub_per_year">Al año</string>
+    <string name="sub_per_month_suffix">/ mes</string>
+    <string name="sub_see_all">Ver las %1$d ›</string>
+    <string name="sub_teaser_body">Unos %1$s al mes, detectados en tus propios recibos en este teléfono — sin conexión bancaria.</string>
+    <string name="sub_unlock">Desbloquear con Premium</string>
+    <string name="sub_unlock_note">Desbloquea la lista completa, las alertas de subida de precio y Seguir como pago.</string>
+    <string name="sub_cadence_monthly">Mensual</string>
+    <string name="sub_cadence_yearly">Anual</string>
+    <string name="sub_next">próximo ~%1$s</string>
+    <string name="sub_detected">Suscripciones detectadas</string>
+    <string name="sub_list_note">Encontradas en este teléfono al detectar cargos repetidos en tus recibos. Los elementos anuales cuentan como un doceavo al mes.</string>
+    <string name="sub_ignored">Ignoradas</string>
+    <string name="sub_ignored_note">Oculta de la lista y los totales</string>
+    <string name="sub_ignored_still">La detección lo sigue viendo — solo se queda al margen.</string>
+    <string name="sub_restore">Restaurar</string>
+    <string name="sub_footer_ondevice">La detección se ejecuta en tu dispositivo. Nada sale del teléfono y no se conecta ningún banco.</string>
+    <string name="sub_stat_last">Último</string>
+    <string name="sub_stat_next">Próximo ~</string>
+    <string name="sub_stat_charges">Cargos</string>
+    <string name="sub_hike_title">%1$s desde %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s a partir de ese cargo. Unos %3$s más al año.</string>
+    <string name="sub_price_up_tag">precio al alza</string>
+    <string name="sub_track_as_bill">Seguir como pago</string>
+    <string name="sub_track_note">Crea un pago recurrente — luego cuenta en Puedes gastar y en los próximos pagos.</string>
+    <string name="sub_ignore_merchant">Ignorar este comercio</string>
+    <string name="sub_empty_title">Aún no hay nada recurrente</string>
+    <string name="sub_empty_body">Detectaremos los cargos recurrentes a medida que añadas más recibos. Normalmente hacen falta unos tres cargos del mismo comercio.</string>
+    <string name="sub_receipts_so_far">Recibos hasta ahora</string>
+    <string name="sub_nearest">Lo más cerca hasta ahora: %1$d cargos de %2$s — uno más y lo marcaremos.</string>
+    <string name="sub_track_sheet_title">Seguir como pago recurrente</string>
+    <string name="sub_track_sheet_body">Rellenado con lo que detectamos. Cambia lo que quieras antes de guardar.</string>
+    <string name="sub_track_charge_day">%1$s · próximo %2$s</string>
+    <string name="sub_track_sheet_note">Los pagos guardados aparecen en los próximos pagos y se descuentan de Puedes gastar hasta que los marques como pagados.</string>
+    <string name="sub_add_bill">Añadir pago</string>
+    <string name="sub_added_to_bills">Añadido a tus pagos</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d encontrado en tus recibos</item>
+        <item quantity="other">%1$d encontrados en tus recibos</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Encontramos %1$d cargo recurrente</item>
+        <item quantity="other">Encontramos %1$d cargos recurrentes</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d suscripción · %2$s al año</item>
+        <item quantity="other">%1$d suscripciones · %2$s al año</item>
+    </plurals>
 </resources>

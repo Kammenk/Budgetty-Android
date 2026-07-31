@@ -710,4 +710,55 @@
         <item quantity="one">%1$d Eintrag</item>
         <item quantity="other">%1$d Einträge</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Abonnements</string>
+    <string name="sub_per_month">Pro Monat</string>
+    <string name="sub_per_year">Pro Jahr</string>
+    <string name="sub_per_month_suffix">/ Monat</string>
+    <string name="sub_see_all">Alle %1$d ansehen ›</string>
+    <string name="sub_teaser_body">Etwa %1$s im Monat, in deinen eigenen Belegen auf diesem Telefon erkannt — keine Bankverbindung.</string>
+    <string name="sub_unlock">Mit Premium freischalten</string>
+    <string name="sub_unlock_note">Schaltet die vollständige Liste, Preiserhöhungs-Warnungen und „Als Rechnung erfassen“ frei.</string>
+    <string name="sub_cadence_monthly">Monatlich</string>
+    <string name="sub_cadence_yearly">Jährlich</string>
+    <string name="sub_next">nächste ~%1$s</string>
+    <string name="sub_detected">Erkannte Abonnements</string>
+    <string name="sub_list_note">Auf diesem Telefon gefunden durch Abgleich wiederkehrender Zahlungen in deinen Belegen. Jährliche Posten zählen als ein Zwölftel pro Monat.</string>
+    <string name="sub_ignored">Ignoriert</string>
+    <string name="sub_ignored_note">Aus der Liste und den Summen ausgeblendet</string>
+    <string name="sub_ignored_still">Die Erkennung sieht es weiterhin — es bleibt dir nur aus dem Weg.</string>
+    <string name="sub_restore">Wiederherstellen</string>
+    <string name="sub_footer_ondevice">Die Erkennung läuft auf deinem Gerät. Nichts verlässt das Telefon, und es ist keine Bank verbunden.</string>
+    <string name="sub_stat_last">Zuletzt</string>
+    <string name="sub_stat_next">Nächste ~</string>
+    <string name="sub_stat_charges">Zahlungen</string>
+    <string name="sub_hike_title">%1$s seit %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s ab dieser Zahlung. Etwa %3$s mehr pro Jahr.</string>
+    <string name="sub_price_up_tag">Preis gestiegen</string>
+    <string name="sub_track_as_bill">Als Rechnung erfassen</string>
+    <string name="sub_track_note">Erstellt eine wiederkehrende Rechnung — sie zählt dann bei „Frei verfügbar“ und anstehenden Rechnungen.</string>
+    <string name="sub_ignore_merchant">Diesen Händler ignorieren</string>
+    <string name="sub_empty_title">Noch nichts Wiederkehrendes</string>
+    <string name="sub_empty_body">Wir erkennen wiederkehrende Zahlungen, sobald du mehr Belege hinzufügst. Meist braucht es etwa drei Zahlungen desselben Händlers.</string>
+    <string name="sub_receipts_so_far">Belege bisher</string>
+    <string name="sub_nearest">Am nächsten bisher: %1$d Zahlungen von %2$s — eine mehr und wir markieren es.</string>
+    <string name="sub_track_sheet_title">Als wiederkehrende Rechnung erfassen</string>
+    <string name="sub_track_sheet_body">Vorausgefüllt aus dem, was wir erkannt haben. Ändere alles, bevor du speicherst.</string>
+    <string name="sub_track_charge_day">%1$s · nächste %2$s</string>
+    <string name="sub_track_sheet_note">Gespeicherte Rechnungen erscheinen bei anstehenden Rechnungen und zählen gegen „Frei verfügbar“, bis du sie als bezahlt markierst.</string>
+    <string name="sub_add_bill">Rechnung hinzufügen</string>
+    <string name="sub_added_to_bills">Zu deinen Rechnungen hinzugefügt</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d in deinen Belegen gefunden</item>
+        <item quantity="other">%1$d in deinen Belegen gefunden</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Wir haben %1$d wiederkehrende Zahlung gefunden</item>
+        <item quantity="other">Wir haben %1$d wiederkehrende Zahlungen gefunden</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d Abonnement · %2$s pro Jahr</item>
+        <item quantity="other">%1$d Abonnements · %2$s pro Jahr</item>
+    </plurals>
 </resources>

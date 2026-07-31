@@ -73,6 +73,7 @@ import com.budgetty.app.ui.components.resolveSectionOrder
 import com.budgetty.app.ui.util.formatMoney
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.R
+import com.budgetty.app.ui.subscriptions.SubscriptionsInsightsCard
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.repository.BudgetRepository
@@ -103,6 +104,8 @@ import kotlin.math.roundToInt
 fun InsightsScreen(
     modifier: Modifier = Modifier,
     onNavigateToBudget: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToPaywall: () -> Unit = {},
     viewModel: InsightsViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
@@ -113,6 +116,8 @@ fun InsightsScreen(
         isExpanded = isExpandedWidth(),
         isWide = isWideWidth(),
         onNavigateToBudget = onNavigateToBudget,
+        onNavigateToSubscriptions = onNavigateToSubscriptions,
+        onNavigateToPaywall = onNavigateToPaywall,
         hiddenSections = settings.hiddenInsightsSections,
         sectionOrder = settings.insightsSectionOrder,
         onToggleSection = { section, hidden -> settingsStore.setInsightsSectionHidden(section.key, hidden) },
@@ -132,6 +137,8 @@ private fun InsightsScreenContent(
     isExpanded: Boolean,
     isWide: Boolean,
     onNavigateToBudget: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToPaywall: () -> Unit = {},
     hiddenSections: Set<String>,
     sectionOrder: List<String>,
     onToggleSection: (InsightsSection, Boolean) -> Unit,
@@ -213,6 +220,8 @@ private fun InsightsScreenContent(
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
                 onNavigateToBudget = onNavigateToBudget,
+                onNavigateToSubscriptions = onNavigateToSubscriptions,
+                onNavigateToPaywall = onNavigateToPaywall,
             )
         }
     }
@@ -748,6 +757,8 @@ private fun InsightsPhoneBody(
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
     onNavigateToBudget: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToPaywall: () -> Unit = {},
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -806,6 +817,12 @@ private fun InsightsPhoneBody(
                             InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
                         }
                     }
+
+                    InsightsSection.SUBSCRIPTIONS -> SubscriptionsInsightsCard(
+                        onSeeAll = onNavigateToSubscriptions,
+                        onUnlock = onNavigateToPaywall,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
 
                     InsightsSection.SUMMARY -> if (hasData) {
                         InsightCard {

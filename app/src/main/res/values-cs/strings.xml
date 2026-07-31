@@ -725,4 +725,61 @@
         <item quantity="many">%1$d záznamu</item>
         <item quantity="other">%1$d záznamů</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Předplatná</string>
+    <string name="sub_per_month">Za měsíc</string>
+    <string name="sub_per_year">Za rok</string>
+    <string name="sub_per_month_suffix">/ měsíc</string>
+    <string name="sub_see_all">Zobrazit všech %1$d ›</string>
+    <string name="sub_teaser_body">Přibližně %1$s měsíčně, zjištěno z vašich účtenek v tomto telefonu — bez připojení k bance.</string>
+    <string name="sub_unlock">Odemknout s Premium</string>
+    <string name="sub_unlock_note">Odemyká celý seznam, upozornění na zdražení a “Sledovat jako účet”.</string>
+    <string name="sub_cadence_monthly">Měsíčně</string>
+    <string name="sub_cadence_yearly">Ročně</string>
+    <string name="sub_next">další ~%1$s</string>
+    <string name="sub_detected">Zjištěná předplatná</string>
+    <string name="sub_list_note">Nalezeno v tomto telefonu porovnáním opakovaných plateb ve vašich účtenkách. Roční položky se počítají jako jedna dvanáctina za měsíc.</string>
+    <string name="sub_ignored">Ignorováno</string>
+    <string name="sub_ignored_note">Skryto ze seznamu a součtů</string>
+    <string name="sub_ignored_still">Detekce to stále vidí — jen vám nepřekáží.</string>
+    <string name="sub_restore">Obnovit</string>
+    <string name="sub_footer_ondevice">Detekce probíhá ve vašem zařízení. Nic neopouští telefon a není připojena žádná banka.</string>
+    <string name="sub_stat_last">Poslední</string>
+    <string name="sub_stat_next">Další ~</string>
+    <string name="sub_stat_charges">Platby</string>
+    <string name="sub_hike_title">%1$s od %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s od té platby dále. Přibližně o %3$s více za rok.</string>
+    <string name="sub_price_up_tag">zdražení</string>
+    <string name="sub_track_as_bill">Sledovat jako účet</string>
+    <string name="sub_track_note">Vytvoří pravidelný účet — poté se počítá do “Můžete utratit” a nadcházejících účtů.</string>
+    <string name="sub_ignore_merchant">Ignorovat tohoto obchodníka</string>
+    <string name="sub_empty_title">Zatím se nic neopakuje</string>
+    <string name="sub_empty_body">Opakované platby odhalíme, jakmile přidáte více účtenek. Obvykle jsou k tomu potřeba asi tři platby od stejného obchodníka.</string>
+    <string name="sub_receipts_so_far">Účtenky dosud</string>
+    <string name="sub_nearest">Nejblíže zatím: %1$d platby od %2$s — ještě jedna a označíme to.</string>
+    <string name="sub_track_sheet_title">Sledovat jako pravidelný účet</string>
+    <string name="sub_track_sheet_body">Předvyplněno podle toho, co jsme zjistili. Před uložením cokoli změňte.</string>
+    <string name="sub_track_charge_day">%1$s · další %2$s</string>
+    <string name="sub_track_sheet_note">Uložené účty se zobrazí v nadcházejících účtech a odečítají se od “Můžete utratit”, dokud je neoznačíte jako zaplacené.</string>
+    <string name="sub_add_bill">Přidat účet</string>
+    <string name="sub_added_to_bills">Přidáno k vašim účtům</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d předplatné ve vašich účtenkách</item>
+        <item quantity="few">%1$d předplatná ve vašich účtenkách</item>
+        <item quantity="many">%1$d předplatného ve vašich účtenkách</item>
+        <item quantity="other">%1$d předplatných ve vašich účtenkách</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Našli jsme %1$d opakovanou platbu</item>
+        <item quantity="few">Našli jsme %1$d opakované platby</item>
+        <item quantity="many">Našli jsme %1$d opakované platby</item>
+        <item quantity="other">Našli jsme %1$d opakovaných plateb</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d předplatné · %2$s ročně</item>
+        <item quantity="few">%1$d předplatná · %2$s ročně</item>
+        <item quantity="many">%1$d předplatného · %2$s ročně</item>
+        <item quantity="other">%1$d předplatných · %2$s ročně</item>
+    </plurals>
 </resources>

@@ -723,4 +723,58 @@
         <item quantity="few">%1$d înregistrări</item>
         <item quantity="other">%1$d de înregistrări</item>
     </plurals>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Abonamente</string>
+    <string name="sub_per_month">Pe lună</string>
+    <string name="sub_per_year">Pe an</string>
+    <string name="sub_per_month_suffix">/ lună</string>
+    <string name="sub_see_all">Vezi toate %1$d ›</string>
+    <string name="sub_teaser_body">Aproximativ %1$s pe lună, identificat în propriile tale bonuri de pe acest telefon — fără conexiune bancară.</string>
+    <string name="sub_unlock">Deblochează cu Premium</string>
+    <string name="sub_unlock_note">Deblochează lista completă, alertele de creștere a prețului și Urmărește ca factură.</string>
+    <string name="sub_cadence_monthly">Lunar</string>
+    <string name="sub_cadence_yearly">Anual</string>
+    <string name="sub_next">urm. ~%1$s</string>
+    <string name="sub_detected">Abonamente detectate</string>
+    <string name="sub_list_note">Găsite pe acest telefon prin potrivirea plăților repetate din bonurile tale. Elementele anuale contează ca a douăsprezecea parte pe lună.</string>
+    <string name="sub_ignored">Ignorate</string>
+    <string name="sub_ignored_note">Ascunse din listă și din totaluri</string>
+    <string name="sub_ignored_still">Detectarea încă îl vede — doar că nu îți mai stă în cale.</string>
+    <string name="sub_restore">Restaurează</string>
+    <string name="sub_footer_ondevice">Detectarea rulează pe dispozitivul tău. Nimic nu părăsește telefonul și nicio bancă nu este conectată.</string>
+    <string name="sub_stat_last">Ultima</string>
+    <string name="sub_stat_next">Următoarea ~</string>
+    <string name="sub_stat_charges">Plăți</string>
+    <string name="sub_hike_title">%1$s din %2$s</string>
+    <string name="sub_hike_body">%1$s → %2$s de la acea plată încolo. Cu aproximativ %3$s mai mult pe an.</string>
+    <string name="sub_price_up_tag">preț mărit</string>
+    <string name="sub_track_as_bill">Urmărește ca factură</string>
+    <string name="sub_track_note">Creează o factură recurentă — apoi contează în Sigur de cheltuit și în facturile viitoare.</string>
+    <string name="sub_ignore_merchant">Ignoră acest comerciant</string>
+    <string name="sub_empty_title">Nimic recurent încă</string>
+    <string name="sub_empty_body">Vom depista plățile recurente pe măsură ce adaugi mai multe bonuri. De obicei sunt necesare cam trei plăți de la același comerciant.</string>
+    <string name="sub_receipts_so_far">Bonuri până acum</string>
+    <string name="sub_nearest">Cel mai aproape până acum: %1$d plăți de la %2$s — încă una și o vom semnala.</string>
+    <string name="sub_track_sheet_title">Urmărește ca factură recurentă</string>
+    <string name="sub_track_sheet_body">Precompletat din ce am detectat. Modifică orice înainte de a salva.</string>
+    <string name="sub_track_charge_day">%1$s · urm. %2$s</string>
+    <string name="sub_track_sheet_note">Facturile salvate apar în facturile viitoare și contează în Sigur de cheltuit până le marchezi ca plătite.</string>
+    <string name="sub_add_bill">Adaugă factură</string>
+    <string name="sub_added_to_bills">Adăugată la facturile tale</string>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d abonament găsit în bonurile tale</item>
+        <item quantity="few">%1$d abonamente găsite în bonurile tale</item>
+        <item quantity="other">%1$d de abonamente găsite în bonurile tale</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">Am găsit %1$d plată recurentă</item>
+        <item quantity="few">Am găsit %1$d plăți recurente</item>
+        <item quantity="other">Am găsit %1$d de plăți recurente</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d abonament · %2$s pe an</item>
+        <item quantity="few">%1$d abonamente · %2$s pe an</item>
+        <item quantity="other">%1$d de abonamente · %2$s pe an</item>
+    </plurals>
 </resources>

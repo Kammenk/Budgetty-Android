@@ -25,6 +25,7 @@ object Routes {
     const val CATEGORY_RULES = "category_rules"
     const val SAVINGS_GOAL = "savings_goal/{goalId}"
     const val SAVINGS_GOAL_ARG = "goalId"
+    const val SUBSCRIPTIONS = "subscriptions"
 
     /** Upload route for a given source: "camera", "file", or "manual". */
     fun upload(source: String) = "upload/$source"
