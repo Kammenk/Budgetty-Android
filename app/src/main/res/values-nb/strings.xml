@@ -822,4 +822,13 @@
     <string name="app_lock_backspace">Slett</string>
     <string name="app_lock_biometric_subtitle">Bekreft at det er deg for å låse opp</string>
     <string name="app_lock_use_pin">Bruk PIN</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Månedsstart</string>
+    <string name="month_start_calendar">1 (kalendermåned)</string>
+    <string name="custom_parent_label">Overordnet kategori</string>
+    <string name="custom_parent_none">Ingen (øverste nivå)</string>
+    <string name="custom_icon_search">Søk etter ikoner</string>
+    <string name="custom_icon_no_match">Ingen ikoner samsvarer med “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Prøv et kortere ord – som «kort», «hjem» eller «regning».</string>
+    <string name="period_all_time">hele tiden</string>
 </resources>

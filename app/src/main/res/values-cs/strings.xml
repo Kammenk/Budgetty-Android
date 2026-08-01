@@ -833,4 +833,13 @@
     <string name="app_lock_backspace">Smazat</string>
     <string name="app_lock_biometric_subtitle">Potvrďte svou totožnost pro odemknutí</string>
     <string name="app_lock_use_pin">Použít PIN</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Začátek měsíce</string>
+    <string name="month_start_calendar">1 (kalendářní měsíc)</string>
+    <string name="custom_parent_label">Nadřazená kategorie</string>
+    <string name="custom_parent_none">Žádná (nejvyšší úroveň)</string>
+    <string name="custom_icon_search">Hledat ikony</string>
+    <string name="custom_icon_no_match">Žádné ikony neodpovídají “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Zkuste kratší slovo — třeba „karta“, „domů“ nebo „účet“.</string>
+    <string name="period_all_time">celá doba</string>
 </resources>

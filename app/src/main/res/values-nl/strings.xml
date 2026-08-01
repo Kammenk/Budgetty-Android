@@ -809,4 +809,13 @@
     <string name="app_lock_backspace">Verwijderen</string>
     <string name="app_lock_biometric_subtitle">Bevestig dat jij het bent om te ontgrendelen</string>
     <string name="app_lock_use_pin">PIN gebruiken</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Begin van de maand</string>
+    <string name="month_start_calendar">1 (kalendermaand)</string>
+    <string name="custom_parent_label">Bovenliggende categorie</string>
+    <string name="custom_parent_none">Geen (hoofdniveau)</string>
+    <string name="custom_icon_search">Pictogrammen zoeken</string>
+    <string name="custom_icon_no_match">Geen pictogrammen komen overeen met “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Probeer een korter woord — zoals “kaart”, “huis” of “rekening”.</string>
+    <string name="period_all_time">alle tijd</string>
 </resources>

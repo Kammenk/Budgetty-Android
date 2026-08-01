@@ -827,4 +827,13 @@
     <string name="app_lock_backspace">Șterge</string>
     <string name="app_lock_biometric_subtitle">Confirmă-ți identitatea pentru a debloca</string>
     <string name="app_lock_use_pin">Folosește PIN-ul</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Începutul lunii</string>
+    <string name="month_start_calendar">1 (lună calendaristică)</string>
+    <string name="custom_parent_label">Categorie părinte</string>
+    <string name="custom_parent_none">Niciuna (nivel superior)</string>
+    <string name="custom_icon_search">Caută pictograme</string>
+    <string name="custom_icon_no_match">Nicio pictogramă nu se potrivește cu “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Încearcă un cuvânt mai scurt — de exemplu „card”, „casă” sau „factură”.</string>
+    <string name="period_all_time">tot timpul</string>
 </resources>

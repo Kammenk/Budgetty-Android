@@ -808,4 +808,13 @@
     <string name="app_lock_backspace">Borrar</string>
     <string name="app_lock_biometric_subtitle">Confirma que eres tú para desbloquear</string>
     <string name="app_lock_use_pin">Usar PIN</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Inicio del mes</string>
+    <string name="month_start_calendar">1 (mes natural)</string>
+    <string name="custom_parent_label">Categoría principal</string>
+    <string name="custom_parent_none">Ninguna (nivel superior)</string>
+    <string name="custom_icon_search">Buscar iconos</string>
+    <string name="custom_icon_no_match">Ningún icono coincide con “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Prueba una palabra más corta, como «tarjeta», «casa» o «factura».</string>
+    <string name="period_all_time">todo el tiempo</string>
 </resources>

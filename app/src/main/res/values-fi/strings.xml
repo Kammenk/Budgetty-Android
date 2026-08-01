@@ -822,4 +822,13 @@
     <string name="app_lock_backspace">Poista</string>
     <string name="app_lock_biometric_subtitle">Vahvista henkilöllisyytesi avataksesi lukituksen</string>
     <string name="app_lock_use_pin">Käytä PIN-koodia</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Kuukauden alku</string>
+    <string name="month_start_calendar">1 (kalenterikuukausi)</string>
+    <string name="custom_parent_label">Yläkategoria</string>
+    <string name="custom_parent_none">Ei mitään (ylin taso)</string>
+    <string name="custom_icon_search">Hae kuvakkeita</string>
+    <string name="custom_icon_no_match">Ei kuvakkeita haulle “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Kokeile lyhyempää sanaa – kuten “kortti”, “koti” tai “lasku”.</string>
+    <string name="period_all_time">koko aika</string>
 </resources>

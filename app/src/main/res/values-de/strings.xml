@@ -810,4 +810,13 @@
     <string name="app_lock_backspace">Löschen</string>
     <string name="app_lock_biometric_subtitle">Bestätige deine Identität zum Entsperren</string>
     <string name="app_lock_use_pin">PIN verwenden</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Monatsbeginn</string>
+    <string name="month_start_calendar">1 (Kalendermonat)</string>
+    <string name="custom_parent_label">Übergeordnete Kategorie</string>
+    <string name="custom_parent_none">Keine (oberste Ebene)</string>
+    <string name="custom_icon_search">Symbole suchen</string>
+    <string name="custom_icon_no_match">Keine Symbole für “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Versuche ein kürzeres Wort – etwa „Karte“, „Haus“ oder „Rechnung“.</string>
+    <string name="period_all_time">gesamter Zeitraum</string>
 </resources>

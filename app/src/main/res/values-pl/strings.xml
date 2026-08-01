@@ -822,4 +822,13 @@
     <string name="app_lock_backspace">Usuń</string>
     <string name="app_lock_biometric_subtitle">Potwierdź swoją tożsamość, aby odblokować</string>
     <string name="app_lock_use_pin">Użyj kodu PIN</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Początek miesiąca</string>
+    <string name="month_start_calendar">1 (miesiąc kalendarzowy)</string>
+    <string name="custom_parent_label">Kategoria nadrzędna</string>
+    <string name="custom_parent_none">Brak (najwyższy poziom)</string>
+    <string name="custom_icon_search">Szukaj ikon</string>
+    <string name="custom_icon_no_match">Brak ikon pasujących do “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Spróbuj krótszego słowa — np. „karta”, „dom” lub „rachunek”.</string>
+    <string name="period_all_time">cały czas</string>
 </resources>

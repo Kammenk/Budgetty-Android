@@ -808,4 +808,13 @@
     <string name="app_lock_backspace">Supprimer</string>
     <string name="app_lock_biometric_subtitle">Confirmez votre identité pour déverrouiller</string>
     <string name="app_lock_use_pin">Utiliser le PIN</string>
+    <!-- 11.1.1: backfilled translations (machine-assisted; reused from iOS where available) -->
+    <string name="account_month_start">Début du mois</string>
+    <string name="month_start_calendar">1 (mois civil)</string>
+    <string name="custom_parent_label">Catégorie parente</string>
+    <string name="custom_parent_none">Aucune (niveau supérieur)</string>
+    <string name="custom_icon_search">Rechercher des icônes</string>
+    <string name="custom_icon_no_match">Aucune icône ne correspond à “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Essayez un mot plus court — comme « carte », « maison » ou « facture ».</string>
+    <string name="period_all_time">depuis le début</string>
 </resources>
