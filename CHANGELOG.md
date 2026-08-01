@@ -15,6 +15,23 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.1.1 (versionCode 1111) — 2026-08-01
+
+A small polish release: a tidier Home and Insights, plus two layout fixes.
+
+### Changed
+- **Upcoming bills moved to Home** — your recurring bills due soon now appear on the Home screen, directly below your budget, so what's coming up sits next to what's left to spend. They're no longer shown under Insights.
+- **Simpler Insights and Home** — the Budget card has been removed from Insights (your budget already lives on the Budget screen and on Home), and the "this week vs last week" strip has been removed from Home.
+- **Cleaner Account screen** — settings rows that are just an on/off switch (App lock, Crash reporting) no longer show a stray arrow next to the toggle.
+
+### Fixed
+- **No more doubled gap at the top** — some full-screen pages showed an extra status-bar-sized gap at the very top; the spacing is now correct.
+- **Bottom bar stays hidden on detail pages** — the bottom navigation bar now stays out of the way on every pushed detail screen, not just some of them.
+
+> No database change — schema stays v22, so upgrading from 11.1.0 is layout-only.
+
+> **Play status — not yet built or uploaded.** Supersedes 11.1.0 (vc1110), which was tagged but never uploaded, so a Play release from here should cover the 11.1.0 feature batch (safe-to-spend, savings goals, subscription detection, CSV/PDF export, app lock, Category & Insights v2) as well as these changes. Android verified on a Pixel 6.
+
 ## 11.1.0 (versionCode 1110) — 2026-07-31
 
 A big feature release: five new tools from the competitive-features batch — a "safe to spend" number, savings goals, automatic subscription detection, CSV/PDF export, and an app lock — plus a refreshed categories & Insights experience.
