@@ -12,8 +12,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -131,7 +129,6 @@ import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetWarnColor
-import kotlin.math.roundToInt
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -394,14 +391,6 @@ private fun PhoneHomeContent(
                         Spacer(Modifier.height(MaterialTheme.dimens.lg))
                     }
 
-                    HomeSection.WEEK_COMPARISON ->
-                        if (state.lastWeekSpent.signum() > 0 || state.topCategory != null) {
-                            item(key = section.key) {
-                                QuickStatsStrip(state = state)
-                                Spacer(Modifier.height(MaterialTheme.dimens.lg))
-                            }
-                        }
-
                     // The monthly + weekly budget plan only makes sense for the current month, so it
                     // drops out when the period pill selects any other window (matching the bills strip).
                     HomeSection.BUDGETS ->
@@ -415,6 +404,19 @@ private fun PhoneHomeContent(
                                     weeklySpent = state.weeklySpent,
                                     weeklyBudget = state.weeklyBudget,
                                     onClick = onNavigateToBudget,
+                                )
+                                Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                            }
+                        }
+
+                    // Recurring bills due soon (date-based, so it stays regardless of the period pill);
+                    // shown once any bill exists, sitting directly under the budget plan.
+                    HomeSection.UPCOMING_BILLS ->
+                        if (state.isLoaded && state.hasBills) {
+                            item(key = section.key) {
+                                UpcomingBillsCard(
+                                    bills = state.upcomingBills,
+                                    onGoToBudget = onNavigateToBudget,
                                 )
                                 Spacer(Modifier.height(MaterialTheme.dimens.lg))
                             }
@@ -536,6 +538,17 @@ private fun TabletHomeContent(
                         weeklySpent = state.weeklySpent,
                         weeklyBudget = state.weeklyBudget,
                         onClick = onNavigateToBudget,
+                    )
+                    Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                }
+            }
+            // Recurring bills due soon, directly under the budget plan (date-based, so it stays for
+            // any period); shown once any bill exists — mirrors the phone Home's Upcoming bills section.
+            if (state.isLoaded && state.hasBills) {
+                item {
+                    UpcomingBillsCard(
+                        bills = state.upcomingBills,
+                        onGoToBudget = onNavigateToBudget,
                     )
                     Spacer(Modifier.height(MaterialTheme.dimens.lg))
                 }
@@ -2014,85 +2027,6 @@ private fun ViewAllBudgetsLink(onClick: () -> Unit, modifier: Modifier = Modifie
             color = MaterialTheme.colorScheme.secondary
         )
     }
-}
-
-/**
- * Compact stats strip. The "This week" card (spend vs last week) only appears when there's
- * previous-week data to compare against; the "Top category" card shows the month's top category.
- * When only one card is present it spans the full width.
- */
-@Composable
-private fun QuickStatsStrip(state: HomeUiState, modifier: Modifier = Modifier) {
-    val showThisWeek = state.lastWeekSpent.signum() > 0
-    val topCategory = state.topCategory
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
-    ) {
-        if (showThisWeek) {
-            QuickStatCard(
-                label = stringResource(R.string.home_this_week),
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-            ) {
-                Text(
-                    text = state.weeklySpent.formatMoney(),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(Modifier.height(2.dp))
-                WeekDeltaLabel(state.weeklySpent, state.lastWeekSpent)
-            }
-        }
-    }
-}
-
-@Composable
-private fun QuickStatCard(
-    label: String,
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(MaterialTheme.dimens.radiusXl),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-    ) {
-        Column(modifier = Modifier.padding(MaterialTheme.dimens.lg)) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(6.dp))
-            content()
-        }
-    }
-}
-
-/** "↓ 12% vs last week" — green when spending fell, red when it rose. */
-@Composable
-private fun WeekDeltaLabel(thisWeek: BigDecimal, lastWeek: BigDecimal) {
-    if (lastWeek.signum() <= 0) {
-        Text(
-            text = "vs last week",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        return
-    }
-    val pct = ((thisWeek.toDouble() - lastWeek.toDouble()) / lastWeek.toDouble() * 100).roundToInt()
-    val (text, color) = when {
-        pct < 0 -> "↓ ${-pct}% vs last week" to budgetGoodColor()
-        pct > 0 -> "↑ $pct% vs last week" to budgetBadColor()
-        else -> "Same as last week" to MaterialTheme.colorScheme.onSurfaceVariant
-    }
-    Text(text = text, style = MaterialTheme.typography.labelMedium, color = color)
 }
 
 /** First-run placeholder for the receipt list: a dashed, tinted card inviting the first scan. */

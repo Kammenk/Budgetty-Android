@@ -22,12 +22,11 @@ enum class InsightsSection(val key: String, @param:StringRes val labelRes: Int) 
     TREND("trend", R.string.insights_trend),
     // Period-over-period spend comparison, sitting under the trend it summarizes.
     PERIOD_COMPARISON("period_comparison", R.string.insights_period_comparison),
-    BUDGET("budget", R.string.insights_budget),
-    // Income & recurring-payment cards (money-flow), grouped after the budget section.
+    // Income & recurring-payment cards (money-flow). (Budget lives on the Budget screen; upcoming
+    // bills moved to Home — neither is an Insights section any more.)
     INCOME_SPENDING("income_spending", R.string.insights_income_spending),
     SAVINGS_RATE("savings_rate", R.string.insights_savings_rate),
     FIXED_FLEXIBLE("fixed_flexible", R.string.insights_fixed_flexible),
-    UPCOMING_BILLS("upcoming_bills", R.string.insights_upcoming_bills),
     INCOME_BY_SOURCE("income_by_source", R.string.insights_income_by_source),
     TOP_CATEGORIES("top_categories", R.string.insights_top_categories),
     TOP_STORES("top_stores", R.string.insights_top_stores),
