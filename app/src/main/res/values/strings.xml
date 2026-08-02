@@ -530,6 +530,9 @@
     <string name="history_budgets_empty_title">No budget set up yet</string>
     <string name="history_budgets_empty_subtitle">Add your income and bills in Budget to see your plan here.</string>
     <string name="history_budgets_go_to_budget">Go to Budget</string>
+    <string name="history_open_receipt">Open receipt</string>
+    <string name="history_price_avg">avg %1$s</string>
+    <string name="history_cheapest_at">Cheapest at %1$s · %2$s on %3$s</string>
     <string name="filter_all">All</string>
     <string name="filter_category">Category</string>
     <string name="filter_store">Store</string>
@@ -791,6 +794,14 @@
     <plurals name="item_count">
         <item quantity="one">%1$d item</item>
         <item quantity="other">%1$d items</item>
+    </plurals>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d receipt</item>
+        <item quantity="other">%1$d receipts</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Bought this %1$d×</item>
+        <item quantity="other">Bought this %1$d×</item>
     </plurals>
     <plurals name="home_across_receipts">
         <item quantity="one">across %1$d receipt</item>

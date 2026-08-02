@@ -842,4 +842,15 @@
     <string name="custom_icon_no_match">Žádné ikony neodpovídají “%1$s”</string>
     <string name="custom_icon_no_match_hint">Zkuste kratší slovo — třeba „karta“, „domů“ nebo „účet“.</string>
     <string name="period_all_time">celá doba</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d účtenka</item>
+        <item quantity="other">%1$d účtenek</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Koupeno %1$d×</item>
+        <item quantity="other">Koupeno %1$d×</item>
+    </plurals>
+    <string name="history_open_receipt">Otevřít účtenku</string>
+    <string name="history_price_avg">prům. %1$s</string>
+    <string name="history_cheapest_at">Nejlevněji v %1$s · %2$s dne %3$s</string>
 </resources>

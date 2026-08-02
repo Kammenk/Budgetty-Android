@@ -29,7 +29,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import kotlin.math.abs
+import kotlin.math.roundToInt
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -106,6 +107,8 @@ import org.koin.androidx.compose.koinViewModel
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.TextStyle
+import java.util.Locale
 import java.time.ZoneId
 
 @Composable
@@ -300,9 +303,34 @@ private fun HistoryScreenContent(
                     // Day headers group receipts by date exactly like the Items tab; each day can be
                     // collapsed to just its header (keyed by date, unique across the whole list).
                     var collapsedDays by remember { mutableStateOf(emptySet<LocalDate>()) }
+                    // Receipts tapped open to reveal their top items inline (keyed by receipt id).
+                    var expandedReceipts by remember { mutableStateOf(emptySet<Long>()) }
+                    // Per-month totals feed the summary strip's trend; the biggest receipt in each
+                    // month sets the scale for every row's magnitude bar.
+                    val totalsByMonth = remember(state.receiptGroups) {
+                        state.receiptGroups.associate { it.month to it.total }
+                    }
+                    val monthMax = remember(state.receiptGroups) {
+                        state.receiptGroups.associate { g ->
+                            g.month to (g.days.flatMap { it.receipts }.maxOfOrNull { it.paid } ?: BigDecimal.ONE)
+                        }
+                    }
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        state.receiptGroups.forEach { group ->
-                            item(key = "rmonth-${group.month}") { ReceiptMonthHeader(group) }
+                        state.receiptGroups.forEachIndexed { groupIndex, group ->
+                            item(key = "rmonth-${group.month}") {
+                                if (groupIndex == 0) {
+                                    val count = group.days.sumOf { it.receipts.size }
+                                    HistorySummaryStrip(
+                                        month = group.month,
+                                        total = group.total,
+                                        countText = pluralStringResource(R.plurals.receipt_count, count, count),
+                                        prevTotal = totalsByMonth[group.month.minusMonths(1)],
+                                        spark = sparkFor(group.month, totalsByMonth),
+                                    )
+                                } else {
+                                    ReceiptMonthHeader(group)
+                                }
+                            }
                             group.days.forEach { day ->
                                 val expanded = day.day !in collapsedDays
                                 item(key = "rday-${day.day}") {
@@ -321,11 +349,33 @@ private fun HistoryScreenContent(
                                 }
                                 // Collapsed: render only the header, skipping this day's receipts.
                                 if (!expanded) return@forEach
+                                val peak = monthMax[group.month] ?: BigDecimal.ONE
                                 items(day.receipts, key = { it.id }) { receipt ->
+                                    // Landscape already shows a detail pane, so a tap selects into it;
+                                    // on phone/portrait the same tap expands the top items inline.
+                                    val open = !isWide && receipt.id in expandedReceipts
                                     ReceiptHistoryRow(
                                         receipt = receipt,
-                                        onClick = { selectedReceiptId = receipt.id },
+                                        expanded = open,
+                                        fraction = fractionOf(receipt.paid, peak),
+                                        onClick = {
+                                            if (isWide) {
+                                                selectedReceiptId = receipt.id
+                                            } else {
+                                                expandedReceipts = if (receipt.id in expandedReceipts) {
+                                                    expandedReceipts - receipt.id
+                                                } else {
+                                                    expandedReceipts + receipt.id
+                                                }
+                                            }
+                                        },
                                     )
+                                    if (open) {
+                                        ReceiptExpandedPanel(
+                                            receipt = receipt,
+                                            onOpenReceipt = { selectedReceiptId = receipt.id },
+                                        )
+                                    }
                                     HorizontalDivider(
                                         modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xl),
                                         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
@@ -337,15 +387,35 @@ private fun HistoryScreenContent(
                 }
 
                 else -> {
-                    // Single column on phones/portrait; a multi-column card grid in landscape, matching
-                    // the TabletLs History design's 3-column item grid.
-                    val columns = 1
                     // Days the user has collapsed (keyed by date, which is unique across the whole list).
                     // Empty by default, so every day starts expanded; collapsing hides only its items.
                     var collapsedDays by remember { mutableStateOf(emptySet<LocalDate>()) }
+                    // Item rows tapped open to reveal that product's price history (keyed by txn id).
+                    var expandedItems by remember { mutableStateOf(emptySet<Long>()) }
+                    val totalsByMonth = remember(state.groups) {
+                        state.groups.associate { it.month to it.total }
+                    }
+                    val monthMax = remember(state.groups) {
+                        state.groups.associate { g ->
+                            g.month to (g.days.flatMap { it.items }.maxOfOrNull { it.lineTotal } ?: BigDecimal.ONE)
+                        }
+                    }
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        state.groups.forEach { group ->
-                            item(key = "month-${group.month}") { MonthHeader(group) }
+                        state.groups.forEachIndexed { groupIndex, group ->
+                            item(key = "month-${group.month}") {
+                                if (groupIndex == 0) {
+                                    val count = group.days.sumOf { it.items.size }
+                                    HistorySummaryStrip(
+                                        month = group.month,
+                                        total = group.total,
+                                        countText = pluralStringResource(R.plurals.item_count, count, count),
+                                        prevTotal = totalsByMonth[group.month.minusMonths(1)],
+                                        spark = sparkFor(group.month, totalsByMonth),
+                                    )
+                                } else {
+                                    MonthHeader(group)
+                                }
+                            }
                             group.days.forEach { day ->
                                 val expanded = day.day !in collapsedDays
                                 item(key = "day-${day.day}") {
@@ -364,39 +434,36 @@ private fun HistoryScreenContent(
                                 }
                                 // Collapsed: render only the header, skipping this day's items.
                                 if (!expanded) return@forEach
-                                if (columns == 1) {
-                                    items(day.items, key = { it.transaction.id }) { item ->
-                                        HistoryRow(item)
-                                        HorizontalDivider(
-                                            modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xl),
-                                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                        )
-                                    }
-                                } else {
-                                    items(
-                                        day.items.chunked(columns),
-                                        key = { it.first().transaction.id },
-                                    ) { rowItems ->
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(horizontal = MaterialTheme.dimens.lg, vertical = MaterialTheme.dimens.xs),
-                                            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
-                                        ) {
-                                            rowItems.forEach { historyItem ->
-                                                Surface(
-                                                    modifier = Modifier.weight(1f),
-                                                    color = MaterialTheme.colorScheme.surfaceContainer,
-                                                    shape = RoundedCornerShape(14.dp),
-                                                ) {
-                                                    HistoryRow(historyItem)
+                                val peak = monthMax[group.month] ?: BigDecimal.ONE
+                                items(day.items, key = { it.transaction.id }) { item ->
+                                    val stat = state.productStats[productKey(item.transaction.name)]
+                                    // Only worth expanding once a product has history to compare against.
+                                    val expandable = (stat?.count ?: 0) >= 2
+                                    val open = expandable && item.transaction.id in expandedItems
+                                    HistoryRow(
+                                        item = item,
+                                        fraction = fractionOf(item.lineTotal, peak),
+                                        expandable = expandable,
+                                        expanded = open,
+                                        onClick = if (expandable) {
+                                            {
+                                                expandedItems = if (item.transaction.id in expandedItems) {
+                                                    expandedItems - item.transaction.id
+                                                } else {
+                                                    expandedItems + item.transaction.id
                                                 }
                                             }
-                                            repeat(columns - rowItems.size) {
-                                                Spacer(Modifier.weight(1f))
-                                            }
-                                        }
+                                        } else {
+                                            null
+                                        },
+                                    )
+                                    if (open && stat != null) {
+                                        ItemPriceHistoryPanel(stat)
                                     }
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xl),
+                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                    )
                                 }
                             }
                         }
@@ -1051,7 +1118,13 @@ private fun dayHeaderLabel(date: LocalDate): String {
 // marquees when long, with an inline dimmed "· Category · Store" sitting right after it.
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HistoryRow(item: HistoryItem) {
+private fun HistoryRow(
+    item: HistoryItem,
+    fraction: Float = -1f,
+    expandable: Boolean = false,
+    expanded: Boolean = false,
+    onClick: (() -> Unit)? = null,
+) {
     val txn = item.transaction
     // The day header already states the date, so the inline meta is just category · store.
     val meta = buildList {
@@ -1059,40 +1132,55 @@ private fun HistoryRow(item: HistoryItem) {
         if (item.store.isNotBlank()) add(item.store)
     }.joinToString(" · ")
 
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = MaterialTheme.dimens.xl, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+            .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
     ) {
-        CategoryTile(category = txn.category)
-        // The item name keeps its space; the dimmed "· Category · Store" meta marquees when too long.
-        Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = txn.name,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            if (meta.isNotBlank()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.dimens.xl, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            CategoryTile(category = txn.category)
+            // The item name keeps its space; the dimmed "· Category · Store" meta marquees when too long.
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = " · $meta",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = txn.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Clip,
-                    modifier = Modifier.weight(1f, fill = false).basicMarquee(),
+                    overflow = TextOverflow.Ellipsis,
+                )
+                if (meta.isNotBlank()) {
+                    Text(
+                        text = " · $meta",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.weight(1f, fill = false).basicMarquee(),
+                    )
+                }
+            }
+            Text(
+                text = item.lineTotal.formatMoney(),
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            if (expandable) {
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(MaterialTheme.dimens.iconSmall),
                 )
             }
         }
-        Text(
-            text = item.lineTotal.formatMoney(),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-        )
+        if (fraction >= 0f) MagnitudeBar(fraction)
     }
 }
 
@@ -1118,47 +1206,58 @@ private fun ReceiptMonthHeader(group: ReceiptMonthGroup) {
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ReceiptHistoryRow(receipt: Receipt, onClick: () -> Unit) {
-    Row(
+private fun ReceiptHistoryRow(
+    receipt: Receipt,
+    expanded: Boolean,
+    fraction: Float,
+    onClick: () -> Unit,
+) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = MaterialTheme.dimens.xl, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+            .clickable(onClick = onClick),
     ) {
-        ReceiptStoreLogo(store = receipt.store)
-        // Store name marquees in the space left after the fixed "· N items" count sitting next to it.
-        Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = MaterialTheme.dimens.xl, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            ReceiptStoreLogo(store = receipt.store)
+            // Store name marquees in the space left after the fixed "· N items" count sitting next to it.
+            Row(modifier = Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = receipt.store.ifBlank { "Receipt" },
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Clip,
+                    modifier = Modifier.weight(1f, fill = false).basicMarquee(),
+                )
+                Text(
+                    text = " · ${pluralStringResource(R.plurals.item_count, receipt.transactions.size, receipt.transactions.size)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    softWrap = false,
+                )
+            }
+            if (receipt.discount.signum() > 0) DiscountBadge(receipt.discount)
             Text(
-                text = receipt.store.ifBlank { "Receipt" },
+                text = receipt.paid.formatMoney(),
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.SemiBold,
-                maxLines = 1,
-                softWrap = false,
-                overflow = TextOverflow.Clip,
-                modifier = Modifier.weight(1f, fill = false).basicMarquee(),
+                fontWeight = FontWeight.Bold,
             )
-            Text(
-                text = " · ${pluralStringResource(R.plurals.item_count, receipt.transactions.size, receipt.transactions.size)}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                softWrap = false,
+            Icon(
+                imageVector = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(MaterialTheme.dimens.iconSmall),
             )
         }
-        if (receipt.discount.signum() > 0) DiscountBadge(receipt.discount)
-        Text(
-            text = receipt.paid.formatMoney(),
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold,
-        )
-        Icon(
-            Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(MaterialTheme.dimens.iconSmall),
-        )
+        MagnitudeBar(fraction)
     }
 }
 
@@ -1180,6 +1279,295 @@ private fun DiscountBadge(discount: BigDecimal) {
         )
     }
 }
+
+/**
+ * A hairline under a History row showing its amount as a share of the month's biggest row — 1c's
+ * "the list is also a chart" idea, kept to a 3px violet accent so the ledger still reads calm.
+ * Indented past the tile so it sits under the row's text, not its icon.
+ */
+@Composable
+private fun MagnitudeBar(fraction: Float) {
+    val f = fraction.coerceIn(0f, 1f)
+    Box(
+        modifier = Modifier
+            .padding(start = MaterialTheme.dimens.xl + 40.dp, end = MaterialTheme.dimens.xl, top = 6.dp, bottom = 2.dp)
+            .fillMaxWidth()
+            .height(3.dp)
+            .clip(RoundedCornerShape(percent = 50))
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+    ) {
+        if (f > 0f) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(f)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(percent = 50))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)),
+            )
+        }
+    }
+}
+
+/** [amount] as a fraction of [max], floored so a tiny non-zero row still shows a visible sliver. */
+private fun fractionOf(amount: BigDecimal, max: BigDecimal): Float {
+    if (max.signum() <= 0 || amount.signum() <= 0) return 0f
+    return (amount.toFloat() / max.toFloat()).coerceIn(0.04f, 1f)
+}
+
+/** Six months of totals ending at [hero] (zero where a month has no spend), for the sparkline. */
+private fun sparkFor(hero: YearMonth, totals: Map<YearMonth, BigDecimal>): List<BigDecimal> =
+    (5 downTo 0).map { totals[hero.minusMonths(it.toLong())] ?: BigDecimal.ZERO }
+
+/**
+ * The tab's focal point, replacing the plain first month header: the top month's total, its
+ * receipt/item count, the change vs last month, and a six-month sparkline (last bar = this month).
+ * Gives the list something to open onto instead of a cold row.
+ */
+@Composable
+private fun HistorySummaryStrip(
+    month: YearMonth,
+    total: BigDecimal,
+    countText: String,
+    prevTotal: BigDecimal?,
+    spark: List<BigDecimal>,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = MaterialTheme.dimens.lg, end = MaterialTheme.dimens.lg, top = MaterialTheme.dimens.md, bottom = MaterialTheme.dimens.sm),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(16.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = MaterialTheme.dimens.lg, vertical = MaterialTheme.dimens.md),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = month.formatMonth(),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = total.formatMoney(),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = summaryCaption(total, prevTotal, countText),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            if (spark.any { it.signum() > 0 }) {
+                Spacer(Modifier.width(MaterialTheme.dimens.md))
+                Sparkline(spark)
+            }
+        }
+    }
+}
+
+/** "18 receipts · ▲ 6% vs last month" — drops the delta when there's no comparable prior month. */
+@Composable
+private fun summaryCaption(total: BigDecimal, prevTotal: BigDecimal?, countText: String): String {
+    if (prevTotal == null || prevTotal.signum() <= 0) return countText
+    val ratio = total.toFloat() / prevTotal.toFloat()
+    // A near-empty previous month makes a plain percentage explode (e.g. +1602%); past 5× show a
+    // "×N" multiplier instead so the caption stays readable.
+    val magnitude = if (ratio >= 5f) {
+        "${ratio.roundToInt()}×"
+    } else {
+        val pct = ((ratio - 1f) * 100f).roundToInt()
+        if (pct == 0) return countText
+        "${abs(pct)}%"
+    }
+    val arrow = if (ratio >= 1f) "▲" else "▼"
+    return "$countText · $arrow $magnitude ${stringResource(R.string.home_vs_last_month)}"
+}
+
+/** Six thin bars, heights normalized to the tallest; the last bar (this month) is accented. */
+@Composable
+private fun Sparkline(values: List<BigDecimal>) {
+    val peak = values.maxOfOrNull { it }?.takeIf { it.signum() > 0 } ?: BigDecimal.ONE
+    Row(
+        modifier = Modifier.height(40.dp),
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        values.forEachIndexed { i, v ->
+            val h = (v.toFloat() / peak.toFloat()).coerceIn(0.1f, 1f)
+            Box(
+                modifier = Modifier
+                    .width(6.dp)
+                    .fillMaxHeight(h)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(
+                        if (i == values.lastIndex) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.surfaceContainerHighest
+                        },
+                    ),
+            )
+        }
+    }
+}
+
+/** Tap-to-open payload under a receipt row: its top items inline, with a shortcut to the full sheet. */
+@Composable
+private fun ReceiptExpandedPanel(receipt: Receipt, onOpenReceipt: () -> Unit) {
+    val top = receipt.transactions.take(3)
+    val more = receipt.transactions.size - top.size
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = MaterialTheme.dimens.xl + 40.dp, end = MaterialTheme.dimens.xl, top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.xs),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(14.dp),
+    ) {
+        Column(modifier = Modifier.padding(horizontal = MaterialTheme.dimens.md, vertical = MaterialTheme.dimens.sm)) {
+            top.forEach { txn ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "${Categories.emojiOf(txn.category)} ${txn.name}".trim(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text = txn.price.multiply(BigDecimal(txn.quantity)).formatMoney(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
+            }
+            HorizontalDivider(
+                modifier = Modifier.padding(top = 6.dp, bottom = 4.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onOpenReceipt)
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = if (more > 0) stringResource(R.string.insights_upcoming_more, more) else "",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = "${stringResource(R.string.history_open_receipt)} ›",
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
+    }
+}
+
+/**
+ * Tap-to-open payload under an item row: how often the product was bought, its average, a mini price
+ * chart of recent buys, and where it was cheapest — the question a flat item list can never answer.
+ */
+@Composable
+private fun ItemPriceHistoryPanel(stat: ProductStat) {
+    val peak = stat.recent.maxOfOrNull { it.unitPrice }?.takeIf { it.signum() > 0 } ?: BigDecimal.ONE
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = MaterialTheme.dimens.xl + 40.dp, end = MaterialTheme.dimens.xl, top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.xs),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = RoundedCornerShape(14.dp),
+    ) {
+        Column(modifier = Modifier.padding(horizontal = MaterialTheme.dimens.md, vertical = MaterialTheme.dimens.md)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = pluralStringResource(R.plurals.history_bought_count, stat.count, stat.count),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = stringResource(R.string.history_price_avg, stat.avgUnit.formatMoney()),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(44.dp),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                stat.recent.forEach { point ->
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Bottom,
+                    ) {
+                        val barHeight = ((point.unitPrice.toFloat() / peak.toFloat()).coerceIn(0.12f, 1f) * 30).dp
+                        Box(
+                            modifier = Modifier
+                                .width(10.dp)
+                                .height(barHeight)
+                                .clip(RoundedCornerShape(3.dp))
+                                .background(
+                                    if (point.isCheapest) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.surfaceContainerHighest
+                                    },
+                                ),
+                        )
+                        Spacer(Modifier.height(3.dp))
+                        Text(
+                            text = shortMonth(point.month),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                        )
+                    }
+                }
+            }
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+            Text(
+                text = stringResource(
+                    R.string.history_cheapest_at,
+                    stat.minStore.ifBlank { "—" },
+                    stat.minUnit.formatMoney(),
+                    "${stat.minDate.dayOfMonth} ${shortMonth(YearMonth.from(stat.minDate))}",
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/** Localized short month label (e.g. "Jun") for the price-history chart. */
+private fun shortMonth(month: YearMonth): String =
+    month.month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
 
 /** A rounded square avatar for a receipt's store: first letter on a name-derived color tile. */
 @Composable

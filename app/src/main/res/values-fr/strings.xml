@@ -817,4 +817,15 @@
     <string name="custom_icon_no_match">Aucune icône ne correspond à “%1$s”</string>
     <string name="custom_icon_no_match_hint">Essayez un mot plus court — comme « carte », « maison » ou « facture ».</string>
     <string name="period_all_time">depuis le début</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d reçu</item>
+        <item quantity="other">%1$d reçus</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Acheté %1$d×</item>
+        <item quantity="other">Acheté %1$d×</item>
+    </plurals>
+    <string name="history_open_receipt">Ouvrir le reçu</string>
+    <string name="history_price_avg">moy. %1$s</string>
+    <string name="history_cheapest_at">Le moins cher chez %1$s · %2$s le %3$s</string>
 </resources>

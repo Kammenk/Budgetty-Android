@@ -818,4 +818,15 @@
     <string name="custom_icon_no_match">Geen pictogrammen komen overeen met “%1$s”</string>
     <string name="custom_icon_no_match_hint">Probeer een korter woord — zoals “kaart”, “huis” of “rekening”.</string>
     <string name="period_all_time">alle tijd</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d bon</item>
+        <item quantity="other">%1$d bonnen</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">%1$d× gekocht</item>
+        <item quantity="other">%1$d× gekocht</item>
+    </plurals>
+    <string name="history_open_receipt">Bon openen</string>
+    <string name="history_price_avg">gem. %1$s</string>
+    <string name="history_cheapest_at">Goedkoopst bij %1$s · %2$s op %3$s</string>
 </resources>

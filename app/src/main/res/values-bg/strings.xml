@@ -819,4 +819,15 @@
     <string name="custom_icon_no_match">Няма икони, съвпадащи с “%1$s”</string>
     <string name="custom_icon_no_match_hint">Опитайте по-къса дума — като „карта“, „дом“ или „сметка“.</string>
     <string name="period_all_time">цялото време</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d бележка</item>
+        <item quantity="other">%1$d бележки</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Купено %1$d×</item>
+        <item quantity="other">Купено %1$d×</item>
+    </plurals>
+    <string name="history_open_receipt">Отвори бележката</string>
+    <string name="history_price_avg">ср. %1$s</string>
+    <string name="history_cheapest_at">Най-евтино в %1$s · %2$s на %3$s</string>
 </resources>

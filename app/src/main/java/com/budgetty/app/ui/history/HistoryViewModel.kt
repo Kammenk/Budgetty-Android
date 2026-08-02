@@ -41,6 +41,27 @@ data class HistoryItem(
         get() = transaction.price.multiply(BigDecimal(transaction.quantity))
 }
 
+/** One past purchase of a product, for the Items tab's price-history sparkline. */
+data class PurchasePoint(
+    val month: YearMonth,
+    val unitPrice: BigDecimal,
+    val isCheapest: Boolean,
+)
+
+/** Aggregated price history for a single product (all purchases sharing a [productKey]). */
+data class ProductStat(
+    val count: Int,
+    val avgUnit: BigDecimal,
+    val minUnit: BigDecimal,
+    val minStore: String,
+    val minDate: LocalDate,
+    /** Up to the last six purchases, oldest-first, for the mini chart. */
+    val recent: List<PurchasePoint>,
+)
+
+/** Normalized key that groups the same product across receipts (case- and space-insensitive). */
+fun productKey(name: String): String = name.trim().lowercase()
+
 /** A single calendar day's line items, ordered newest-first, with that day's total spend. */
 data class DayGroup(
     val day: LocalDate,
@@ -101,6 +122,8 @@ data class HistoryUiState(
     val groups: List<MonthGroup> = emptyList(),
     /** The same data grouped by whole receipt (for the "Receipts" tab). */
     val receiptGroups: List<ReceiptMonthGroup> = emptyList(),
+    /** Global price history per product (keyed by [productKey]); powers the Items tab's expand. */
+    val productStats: Map<String, ProductStat> = emptyMap(),
     val filters: HistoryFilters = HistoryFilters(),
     /** Current sort order applied to the list. */
     val sort: SortOrder = SortOrder.NEWEST,
@@ -211,6 +234,8 @@ class HistoryViewModel(
                 receiptGroups = items.buildReceipts(receipts)
                     .applyReceiptFilters(activeFilters, monthStartDay)
                     .groupReceiptsIntoMonths(sort),
+                // Price history spans the whole ledger, so it's built from the unfiltered items.
+                productStats = items.buildProductStats(),
                 filters = activeFilters,
                 sort = sort,
                 categories = categories,
@@ -380,6 +405,34 @@ class HistoryViewModel(
 
     private fun List<HistoryItem>.sumOfSpend(): BigDecimal =
         fold(BigDecimal.ZERO) { acc, item -> acc + item.lineTotal }
+
+    /** Groups every purchase by product name and reduces each group to its price-history summary. */
+    private fun List<HistoryItem>.buildProductStats(): Map<String, ProductStat> {
+        val zone = ZoneId.systemDefault()
+        return groupBy { productKey(it.transaction.name) }
+            .filterKeys { it.isNotBlank() }
+            .mapValues { (_, purchases) ->
+                val sorted = purchases.sortedBy { it.transaction.timestamp }
+                val cheapest = sorted.minByOrNull { it.transaction.price } ?: sorted.first()
+                val minUnit = cheapest.transaction.price
+                val total = sorted.fold(BigDecimal.ZERO) { acc, p -> acc + p.transaction.price }
+                val avg = total.divide(BigDecimal(sorted.size), 2, RoundingMode.HALF_UP)
+                ProductStat(
+                    count = sorted.size,
+                    avgUnit = avg,
+                    minUnit = minUnit,
+                    minStore = cheapest.store,
+                    minDate = Instant.ofEpochMilli(cheapest.transaction.timestamp).atZone(zone).toLocalDate(),
+                    recent = sorted.takeLast(6).map { p ->
+                        PurchasePoint(
+                            month = YearMonth.from(Instant.ofEpochMilli(p.transaction.timestamp).atZone(zone)),
+                            unitPrice = p.transaction.price,
+                            isCheapest = p.transaction.price.compareTo(minUnit) == 0,
+                        )
+                    },
+                )
+            }
+    }
 
     /** Re-assembles whole [Receipt]s from the line items (grouped by upload id), with each receipt's
      *  store (already normalized on the items), total, item list and saved discount. */

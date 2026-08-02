@@ -817,4 +817,15 @@
     <string name="custom_icon_no_match">Nessuna icona corrisponde a “%1$s”</string>
     <string name="custom_icon_no_match_hint">Prova una parola più corta, come “carta”, “casa” o “bolletta”.</string>
     <string name="period_all_time">sempre</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d scontrino</item>
+        <item quantity="other">%1$d scontrini</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Comprato %1$d×</item>
+        <item quantity="other">Comprato %1$d×</item>
+    </plurals>
+    <string name="history_open_receipt">Apri scontrino</string>
+    <string name="history_price_avg">media %1$s</string>
+    <string name="history_cheapest_at">Più economico da %1$s · %2$s il %3$s</string>
 </resources>
