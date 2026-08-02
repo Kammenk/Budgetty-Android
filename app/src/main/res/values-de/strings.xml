@@ -819,4 +819,15 @@
     <string name="custom_icon_no_match">Keine Symbole für “%1$s”</string>
     <string name="custom_icon_no_match_hint">Versuche ein kürzeres Wort – etwa „Karte“, „Haus“ oder „Rechnung“.</string>
     <string name="period_all_time">gesamter Zeitraum</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d Beleg</item>
+        <item quantity="other">%1$d Belege</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">%1$d× gekauft</item>
+        <item quantity="other">%1$d× gekauft</item>
+    </plurals>
+    <string name="history_open_receipt">Beleg öffnen</string>
+    <string name="history_price_avg">Ø %1$s</string>
+    <string name="history_cheapest_at">Am günstigsten bei %1$s · %2$s am %3$s</string>
 </resources>

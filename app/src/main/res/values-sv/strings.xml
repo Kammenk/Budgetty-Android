@@ -831,4 +831,15 @@
     <string name="custom_icon_no_match">Inga ikoner matchar “%1$s”</string>
     <string name="custom_icon_no_match_hint">Prova ett kortare ord – som “kort”, “hem” eller “räkning”.</string>
     <string name="period_all_time">all tid</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d kvitto</item>
+        <item quantity="other">%1$d kvitton</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Köpt %1$d×</item>
+        <item quantity="other">Köpt %1$d×</item>
+    </plurals>
+    <string name="history_open_receipt">Öppna kvitto</string>
+    <string name="history_price_avg">snitt %1$s</string>
+    <string name="history_cheapest_at">Billigast hos %1$s · %2$s den %3$s</string>
 </resources>

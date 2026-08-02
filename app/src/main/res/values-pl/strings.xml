@@ -831,4 +831,15 @@
     <string name="custom_icon_no_match">Brak ikon pasujących do “%1$s”</string>
     <string name="custom_icon_no_match_hint">Spróbuj krótszego słowa — np. „karta”, „dom” lub „rachunek”.</string>
     <string name="period_all_time">cały czas</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d paragon</item>
+        <item quantity="other">%1$d paragony</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Kupione %1$d×</item>
+        <item quantity="other">Kupione %1$d×</item>
+    </plurals>
+    <string name="history_open_receipt">Otwórz paragon</string>
+    <string name="history_price_avg">śr. %1$s</string>
+    <string name="history_cheapest_at">Najtaniej w %1$s · %2$s dnia %3$s</string>
 </resources>

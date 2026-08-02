@@ -831,4 +831,15 @@
     <string name="custom_icon_no_match">Ei kuvakkeita haulle “%1$s”</string>
     <string name="custom_icon_no_match_hint">Kokeile lyhyempää sanaa – kuten “kortti”, “koti” tai “lasku”.</string>
     <string name="period_all_time">koko aika</string>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d kuitti</item>
+        <item quantity="other">%1$d kuittia</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">Ostettu %1$d×</item>
+        <item quantity="other">Ostettu %1$d×</item>
+    </plurals>
+    <string name="history_open_receipt">Avaa kuitti</string>
+    <string name="history_price_avg">ka. %1$s</string>
+    <string name="history_cheapest_at">Halvin %1$s · %2$s %3$s</string>
 </resources>
