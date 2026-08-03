@@ -29,6 +29,8 @@ import com.budgetty.app.ui.budget.BudgetViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
 import com.budgetty.app.ui.export.ExportViewModel
 import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
+import com.budgetty.app.ui.wellbeing.WellbeingProvider
+import com.budgetty.app.ui.wellbeing.WellbeingViewModel
 import com.budgetty.app.ui.history.HistoryViewModel
 import com.budgetty.app.ui.home.HomeViewModel
 import com.budgetty.app.ui.insights.InsightsViewModel
@@ -65,6 +67,9 @@ val appModule = module {
     single { RecurringRepository(get()) }
     single { SavingsRepository(get()) }
     single { SubscriptionsRepository(get()) }
+
+    // Wellbeing score + tips — shared by the Wellbeing screen, the Home banner and the Insights row.
+    single { WellbeingProvider(get(), get(), get(), get(), get(), get(), get()) }
 
     // Backup / restore (import-export)
     single { BackupManager(get()) }
@@ -121,13 +126,14 @@ val appModule = module {
     // ViewModels
     viewModel { AuthViewModel(get(), get()) }
     viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (goalId: Long) -> SavingsGoalViewModel(get(), get(), goalId) }
     viewModel { SubscriptionsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ExportViewModel(get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
-    viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { WellbeingViewModel(get(), get()) }
     viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }

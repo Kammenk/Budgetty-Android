@@ -37,6 +37,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.budgetty.app.ui.wellbeing.WellbeingProvider
+import com.budgetty.app.ui.wellbeing.WellbeingSummary
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.DayOfWeek
@@ -94,6 +96,8 @@ data class HomeUiState(
     // the window (Last 3 / Last 6 / All time), shown once the monthly budget + bills cards drop out.
     val monthlyBreakdown: List<MonthlySpend> = emptyList(),
     val monthlyAverage: BigDecimal = BigDecimal.ZERO,
+    // Wellbeing score + top tip for the Home banner (null until the first summary lands).
+    val wellbeing: WellbeingSummary? = null,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -107,6 +111,7 @@ class HomeViewModel(
     recurringRepository: RecurringRepository,
     settingsStore: SettingsStore,
     rolloverRepository: BudgetRolloverRepository,
+    wellbeingProvider: WellbeingProvider,
 ) : ViewModel() {
 
     private val selectedFilter = MutableStateFlow(DateRangeFilter.CURRENT_MONTH)
@@ -231,11 +236,13 @@ class HomeViewModel(
                 monthlyBreakdown = monthlyBreakdown(txns, receiptsById, ctx.filter, ctx.monthStartDay),
                 monthlyAverage = monthlyAverage(total, ctx.filter, txns),
             )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = HomeUiState(),
-        )
+        }
+            .let { base -> combine(base, wellbeingProvider.summary()) { s, wb -> s.copy(wellbeing = wb) } }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = HomeUiState(),
+            )
 
     /** The 5 most recent receipts across all time (independent of the period filter), for the Home
      *  "Recent receipts" section — so it isn't empty just because a new month started. */

@@ -13,5 +13,7 @@ enum class HomeSection(val key: String, @param:StringRes val labelRes: Int) {
     BUDGETS("budgets", R.string.home_budgets),
     // Recurring bills due soon, sitting under the budget plan (moved here from Insights).
     UPCOMING_BILLS("upcoming_bills", R.string.insights_upcoming_bills),
+    // Compact live-teaser banner into the Wellbeing score screen; sits under the budget/bills cluster.
+    WELLBEING("wellbeing", R.string.wellbeing_entry_label),
     RECEIPTS("receipts", R.string.home_receipts),
 }

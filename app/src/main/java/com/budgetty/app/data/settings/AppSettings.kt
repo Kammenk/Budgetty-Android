@@ -126,4 +126,10 @@ data class AppSettings(
     val biometricEnabled: Boolean = false,
     /** Idle minutes before re-locking on resume; 0 = immediately. Cold start always locks. */
     val autoLockMinutes: Int = 1,
+    /**
+     * Wellbeing tips the user has dismissed, each stored as "periodId|tipId" so a dismissal is scoped
+     * to its pay-cycle month — the tip resurfaces next month if it still qualifies. The only new
+     * persistence the Wellbeing feature adds.
+     */
+    val dismissedWellbeingTips: Set<String> = emptySet(),
 )

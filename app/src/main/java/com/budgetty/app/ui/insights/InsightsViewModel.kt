@@ -11,6 +11,8 @@ import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
+import com.budgetty.app.ui.wellbeing.WellbeingProvider
+import com.budgetty.app.ui.wellbeing.WellbeingSummary
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
@@ -184,6 +186,8 @@ data class InsightsUiState(
     val hasIncome: Boolean = false,
     /** Whether any recurring bill exists (gates the money-flow cards alongside [hasIncome]). */
     val hasBills: Boolean = false,
+    /** Wellbeing score + top tip for the Insights entry row (null until the first summary lands). */
+    val wellbeing: WellbeingSummary? = null,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -195,6 +199,7 @@ class InsightsViewModel(
     recurringRepository: RecurringRepository,
     private val settingsStore: SettingsStore,
     rolloverRepository: BudgetRolloverRepository,
+    wellbeingProvider: WellbeingProvider,
 ) : ViewModel() {
 
     private val selectedPeriod = MutableStateFlow<InsightsPeriod>(
@@ -320,6 +325,7 @@ class InsightsViewModel(
                     },
                 )
             }
+            .combine(wellbeingProvider.summary()) { state, wb -> state.copy(wellbeing = wb) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),

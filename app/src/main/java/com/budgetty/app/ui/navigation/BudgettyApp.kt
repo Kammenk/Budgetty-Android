@@ -53,6 +53,8 @@ import com.budgetty.app.ui.budget.BudgetScreen
 import com.budgetty.app.ui.savings.SavingsGoalDetailScreen
 import com.budgetty.app.ui.lock.SetPinScreen
 import com.budgetty.app.ui.subscriptions.SubscriptionsScreen
+import com.budgetty.app.ui.wellbeing.WellbeingNav
+import com.budgetty.app.ui.wellbeing.WellbeingScreen
 import com.budgetty.app.ui.history.HistoryScreen
 import com.budgetty.app.ui.home.HomeScreen
 import com.budgetty.app.ui.insights.InsightsScreen
@@ -268,6 +270,7 @@ private fun BudgettyNavHost(
                 onNavigateToHistory = { navController.navigateToTab(Routes.HISTORY) },
                 onNavigateToInsights = { navController.navigateToTab(Routes.INSIGHTS) },
                 onNavigateToAccount = { navController.navigateToTab(Routes.ACCOUNT) },
+                onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
             )
         }
         composable(Routes.INSIGHTS) {
@@ -275,10 +278,24 @@ private fun BudgettyNavHost(
                 onNavigateToBudget = { navController.navigate(Routes.BUDGET) },
                 onNavigateToSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) },
                 onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
             )
         }
         composable(Routes.SUBSCRIPTIONS) {
             SubscriptionsScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.WELLBEING) {
+            WellbeingScreen(
+                onNavigateBack = { navController.popBackStack() },
+                nav = WellbeingNav(
+                    toBudget = { navController.navigate(Routes.BUDGET) },
+                    toSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) },
+                    toGoals = { navController.navigate(Routes.BUDGET) },
+                    toInsights = { navController.navigateToTab(Routes.INSIGHTS) },
+                    toHistory = { navController.navigateToTab(Routes.HISTORY) },
+                    addReceipt = { navController.navigate(Routes.upload("camera")) },
+                ),
+            )
         }
         composable(Routes.ACCOUNT) {
             AccountScreen(

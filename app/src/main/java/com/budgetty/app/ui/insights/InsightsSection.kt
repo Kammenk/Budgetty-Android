@@ -13,6 +13,9 @@ import com.budgetty.app.R
  * show changes nothing there.)
  */
 enum class InsightsSection(val key: String, @param:StringRes val labelRes: Int) {
+    // Slim one-row entry into the Wellbeing score screen; rendered pinned above Breakdown (not in the
+    // section loop), but listed here so it hides/reorders via the same Customize-sections machinery.
+    WELLBEING("wellbeing", R.string.wellbeing_entry_label),
     BREAKDOWN("breakdown", R.string.insights_breakdown),
     // On-device recurring-merchant detection (Premium; a locked teaser for free).
     SUBSCRIPTIONS("subscriptions", R.string.sub_title),
