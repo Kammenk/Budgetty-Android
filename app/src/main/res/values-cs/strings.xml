@@ -853,4 +853,124 @@
     <string name="history_open_receipt">Otevřít účtenku</string>
     <string name="history_price_avg">prům. %1$s</string>
     <string name="history_cheapest_at">Nejlevněji v %1$s · %2$s dne %3$s</string>
+    <!-- Home · Budgets card empty state -->
+    <string name="home_no_budgets">Zatím žádné rozpočty</string>
+    <string name="home_no_budgets_sub">Nastavte si nějaký a Budgetty vám řekne, jak si vedete.</string>
+    <string name="home_set_budget_cta">Nastavit rozpočet</string>
+
+    <!-- Wellbeing (score + weekly/monthly coaching) -->
+    <string name="action_dismiss">Skrýt</string>
+    <string name="wellbeing_title">Pohoda</string>
+    <string name="wellbeing_weekly">Týden</string>
+    <string name="wellbeing_monthly">Měsíc</string>
+    <string name="wellbeing_out_of_100">ze 100</string>
+    <string name="wellbeing_built_from">Z ČEHO SE SKLÁDÁ</string>
+    <string name="wellbeing_renormalise_note">Složka, která zatím nemá data, se nepočítá — vaše skóre se rozloží mezi ostatní.</string>
+    <string name="wellbeing_not_counted">Nepočítá se</string>
+    <string name="wellbeing_vs_last_month">oproti minulému měsíci</string>
+    <string name="wellbeing_vs_last_week">oproti minulému týdnu</string>
+    <string name="wellbeing_this_week">Tento týden</string>
+    <string name="wellbeing_of_weekly_budget">z vašeho týdenního rozpočtu %1$s</string>
+    <string name="wellbeing_left_days">Zbývá %1$s · ještě %2$d dní</string>
+    <string name="wellbeing_updates_monthly">Skóre pohody · aktualizuje se měsíčně</string>
+    <string name="wellbeing_not_scored_yet">Zatím bez skóre</string>
+    <string name="wellbeing_first_run_body">Zaznamenávejte pár týdnů útrat a nastavte rozpočet, abyste odemkli své skóre pohody.</string>
+    <string name="wellbeing_setup_receipts">%1$d účtenek zaznamenáno</string>
+    <string name="wellbeing_setup_budget">Nastavte první rozpočet</string>
+    <string name="wellbeing_setup_history">Měsíc historie</string>
+    <string name="wellbeing_focus_week">Zaměření na tento týden</string>
+    <string name="wellbeing_focus_month">Zaměření na tento měsíc</string>
+    <string name="wellbeing_tip_count">%1$d tipů</string>
+    <string name="wellbeing_got_it">Rozumím</string>
+    <string name="wellbeing_wins">Úspěchy tento měsíc</string>
+    <string name="wellbeing_focus_label">ZAMĚŘENÍ NA PŘÍŠTÍ MĚSÍC</string>
+    <string name="wellbeing_privacy_footer">Spočítáno v tomto telefonu z vašich vlastních účtenek a rozpočtů. Nic neopustí zařízení.</string>
+
+    <!-- Wellbeing · band words -->
+    <string name="wellbeing_band_needs_work">Chce to práci</string>
+    <string name="wellbeing_band_getting_there">Na dobré cestě</string>
+    <string name="wellbeing_band_healthy">Zdravé finance</string>
+    <string name="wellbeing_band_thriving">Vzkvétá</string>
+
+    <!-- Wellbeing · component names -->
+    <string name="wellbeing_comp_savings">Míra úspor</string>
+    <string name="wellbeing_comp_budget">Dodržování rozpočtu</string>
+    <string name="wellbeing_comp_trend">Trend útrat</string>
+    <string name="wellbeing_comp_subs">Předplatná</string>
+    <string name="wellbeing_comp_goals">Cíle</string>
+
+    <!-- Wellbeing · component explanations -->
+    <string name="wellbeing_why_savings">Ušetřili jste %1$d%% příjmu — %2$s z %3$s. Nad 20%% je plný počet bodů.</string>
+    <string name="wellbeing_why_budget_ok">Všech %1$d rozpočtů v rámci plánu.</string>
+    <string name="wellbeing_why_budget_over">%1$d z %2$d rozpočtů překročeno, %3$s nad plán. Každá kategorie v rámci rozpočtu je plný počet bodů.</string>
+    <string name="wellbeing_why_trend_up">Útrata je o %1$d%% nad vaším průměrem %2$s. Beze změny nebo pokles je plný počet bodů.</string>
+    <string name="wellbeing_why_trend_down">Útrata je o %1$d%% pod vaším průměrem %2$s. Beze změny nebo pokles je plný počet bodů.</string>
+    <string name="wellbeing_why_trend_none">Zatím není dost historie k posouzení trendu.</string>
+    <string name="wellbeing_why_subs">%1$s měsíčně na předplatná — %2$d%% vašich výdajů. Pod 5%% je plný počet bodů.</string>
+    <string name="wellbeing_why_goals">%1$d z %2$d cílů podle plánu.</string>
+
+    <!-- Wellbeing · component links -->
+    <string name="wellbeing_link_savings">Zobrazit míru úspor</string>
+    <string name="wellbeing_link_budget">Zobrazit rozpočty</string>
+    <string name="wellbeing_link_trend">Zobrazit trend</string>
+    <string name="wellbeing_link_subs">Zkontrolovat předplatná</string>
+    <string name="wellbeing_link_goals">Zobrazit cíle</string>
+
+    <!-- Wellbeing · tip titles -->
+    <string name="wellbeing_tip_cashflow_title">Tento měsíc jste utratili o %1$s více, než jste vydělali</string>
+    <string name="wellbeing_tip_overbudget_title">Nad rozpočet v %1$d kategoriích — %2$s nad plán</string>
+    <string name="wellbeing_tip_spike_title">%1$s je o %2$d%% výš — %3$s oproti vašemu průměru %4$s</string>
+    <string name="wellbeing_tip_subs_title">%1$d předplatných — %2$s měsíčně</string>
+    <string name="wellbeing_tip_missingbudget_title">Utrácíte asi %1$s měsíčně za %2$s, ale nemáte rozpočet</string>
+    <string name="wellbeing_tip_nogoal_title">Zatím žádný spořicí cíl — i málo měsíčně vytvoří rezervu</string>
+    <string name="wellbeing_tip_goaloff_title">%1$s je pozadu</string>
+    <string name="wellbeing_tip_savingswin_title">Skvělé — tento měsíc jste ušetřili %1$d%% příjmu</string>
+    <string name="wellbeing_tip_improved_title">%1$s je tento měsíc o %2$d%% níž</string>
+    <string name="wellbeing_tip_pace_title">Jste na %1$d%% týdenního rozpočtu</string>
+    <string name="wellbeing_tip_leak_title">%1$d malých nákupů v %2$s tento týden</string>
+    <string name="wellbeing_tip_underpace_title">Tento týden utrácíte pod plán</string>
+
+    <!-- Wellbeing · tip details -->
+    <string name="wellbeing_tip_savingswin_detail">%1$s odloženo tento měsíc.</string>
+    <string name="wellbeing_tip_subs_detail">%1$d%% vašich výdajů jde na předplatná.</string>
+    <string name="wellbeing_tip_pace_detail">%1$s zbývá do konce týdne.</string>
+    <string name="wellbeing_tip_leak_detail">%1$s celkem — maličkost, ale nasčítá se.</string>
+    <string name="wellbeing_tip_missingbudget_detail">S rozpočtem půjde tato kategorie ohodnotit.</string>
+    <string name="wellbeing_tip_nogoal_detail">I malá měsíční částka dá vašim volným penězům smysl.</string>
+
+    <!-- Wellbeing · tip CTAs -->
+    <string name="wellbeing_cta_where">Kam to šlo</string>
+    <string name="wellbeing_cta_view_budgets">Zobrazit rozpočty</string>
+    <string name="wellbeing_cta_review_subs">Zkontrolovat předplatná</string>
+    <string name="wellbeing_cta_create_goal">Vytvořit cíl</string>
+    <string name="wellbeing_cta_see_txns">Zobrazit transakce</string>
+    <string name="wellbeing_cta_set_budget">Nastavit rozpočet</string>
+    <string name="wellbeing_cta_add_receipt">Přidat účtenku</string>
+
+    <!-- Wellbeing · wins -->
+    <string name="wellbeing_win_savings">Ušetřeno %1$d%% příjmu</string>
+    <string name="wellbeing_win_improved">%1$s dolů o %2$d%%</string>
+    <string name="wellbeing_win_underpace">Pod plánem tento týden</string>
+    <string name="wellbeing_win_generic">Dobrá práce</string>
+
+    <!-- Wellbeing · focus for next month -->
+    <string name="wellbeing_focus_savings">Odložte si příští měsíc o něco víc, ať si zvednete skóre.</string>
+    <string name="wellbeing_focus_budget">Vraťte překročené kategorie do plánu, ať si zvednete skóre.</string>
+    <string name="wellbeing_focus_trend">Snižte útratu zpět k průměru, ať si zvednete skóre.</string>
+    <string name="wellbeing_focus_subs">Zrušte předplatné, které nevyužíváte, ať si zvednete skóre.</string>
+    <string name="wellbeing_focus_goals">Vraťte cíle zpět do plánu, ať si zvednete skóre.</string>
+
+    <!-- Wellbeing · entry points (Home banner + Insights row) -->
+    <string name="wellbeing_entry_label">Pohoda</string>
+    <string name="wellbeing_entry_score">Skóre pohody</string>
+    <string name="wellbeing_entry_setup">Nastavit</string>
+    <string name="wellbeing_banner_firstrun">Nastavte rozpočet a odemkněte to</string>
+    <string name="wellbeing_banner_cashflow">Výdaje o %1$s nad příjmy</string>
+    <string name="wellbeing_banner_overbudget">Tento měsíc nad rozpočet</string>
+    <string name="wellbeing_banner_spike">%1$s je o %2$d%% výš</string>
+    <string name="wellbeing_banner_subs">%1$s měsíčně na předplatná</string>
+    <string name="wellbeing_banner_missingbudget">Bez rozpočtu na %1$s</string>
+    <string name="wellbeing_banner_nogoal">Založte spořicí cíl</string>
+    <string name="wellbeing_banner_savingswin">Tento měsíc ušetřeno %1$d%%</string>
+    <string name="wellbeing_banner_generic">Podívejte se, jak si vedete</string>
 </resources>

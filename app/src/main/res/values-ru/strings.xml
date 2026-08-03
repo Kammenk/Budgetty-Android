@@ -842,4 +842,124 @@
     <string name="history_open_receipt">Открыть чек</string>
     <string name="history_price_avg">сред. %1$s</string>
     <string name="history_cheapest_at">Дешевле всего в %1$s · %2$s, %3$s</string>
+    <!-- Home · Budgets card empty state -->
+    <string name="home_no_budgets">Пока нет бюджетов</string>
+    <string name="home_no_budgets_sub">Задайте бюджет — и Budgetty подскажет, как вы укладываетесь.</string>
+    <string name="home_set_budget_cta">Задать бюджет</string>
+
+    <!-- Wellbeing (score + weekly/monthly coaching) -->
+    <string name="action_dismiss">Скрыть</string>
+    <string name="wellbeing_title">Благополучие</string>
+    <string name="wellbeing_weekly">Неделя</string>
+    <string name="wellbeing_monthly">Месяц</string>
+    <string name="wellbeing_out_of_100">из 100</string>
+    <string name="wellbeing_built_from">ИЗ ЧЕГО СКЛАДЫВАЕТСЯ</string>
+    <string name="wellbeing_renormalise_note">Компонент без данных пока не учитывается — оценка распределяется по остальным.</string>
+    <string name="wellbeing_not_counted">Не учитывается</string>
+    <string name="wellbeing_vs_last_month">к прошлому месяцу</string>
+    <string name="wellbeing_vs_last_week">к прошлой неделе</string>
+    <string name="wellbeing_this_week">На этой неделе</string>
+    <string name="wellbeing_of_weekly_budget">из вашего недельного бюджета %1$s</string>
+    <string name="wellbeing_left_days">Осталось %1$s · ещё %2$d дн.</string>
+    <string name="wellbeing_updates_monthly">Оценка благополучия · обновляется ежемесячно</string>
+    <string name="wellbeing_not_scored_yet">Оценки пока нет</string>
+    <string name="wellbeing_first_run_body">Записывайте расходы пару недель и задайте бюджет, чтобы открыть оценку благополучия.</string>
+    <string name="wellbeing_setup_receipts">%1$d чеков записано</string>
+    <string name="wellbeing_setup_budget">Задайте первый бюджет</string>
+    <string name="wellbeing_setup_history">Месяц истории</string>
+    <string name="wellbeing_focus_week">Фокус на этой неделе</string>
+    <string name="wellbeing_focus_month">Фокус в этом месяце</string>
+    <string name="wellbeing_tip_count">%1$d советов</string>
+    <string name="wellbeing_got_it">Понятно</string>
+    <string name="wellbeing_wins">Успехи за месяц</string>
+    <string name="wellbeing_focus_label">ФОКУС НА СЛЕДУЮЩИЙ МЕСЯЦ</string>
+    <string name="wellbeing_privacy_footer">Рассчитано на этом телефоне по вашим чекам и бюджетам. Ничего не покидает устройство.</string>
+
+    <!-- Wellbeing · band words -->
+    <string name="wellbeing_band_needs_work">Нужно поработать</string>
+    <string name="wellbeing_band_getting_there">Налаживается</string>
+    <string name="wellbeing_band_healthy">Здоровые финансы</string>
+    <string name="wellbeing_band_thriving">Процветание</string>
+
+    <!-- Wellbeing · component names -->
+    <string name="wellbeing_comp_savings">Норма сбережений</string>
+    <string name="wellbeing_comp_budget">Соблюдение бюджета</string>
+    <string name="wellbeing_comp_trend">Динамика расходов</string>
+    <string name="wellbeing_comp_subs">Подписки</string>
+    <string name="wellbeing_comp_goals">Цели</string>
+
+    <!-- Wellbeing · component explanations -->
+    <string name="wellbeing_why_savings">Вы сохранили %1$d%% дохода — %2$s из %3$s. Выше 20%% — максимальный балл.</string>
+    <string name="wellbeing_why_budget_ok">Все %1$d бюджетов в рамках плана.</string>
+    <string name="wellbeing_why_budget_over">%1$d из %2$d бюджетов превышены, %3$s сверх плана. Каждая категория в рамках бюджета — максимальный балл.</string>
+    <string name="wellbeing_why_trend_up">Расходы на %1$d%% выше вашего среднего %2$s. Без роста или со снижением — максимальный балл.</string>
+    <string name="wellbeing_why_trend_down">Расходы на %1$d%% ниже вашего среднего %2$s. Без роста или со снижением — максимальный балл.</string>
+    <string name="wellbeing_why_trend_none">Пока недостаточно истории, чтобы оценить динамику.</string>
+    <string name="wellbeing_why_subs">%1$s в месяц на подписки — %2$d%% ваших расходов. Меньше 5%% — максимальный балл.</string>
+    <string name="wellbeing_why_goals">%1$d из %2$d целей по плану.</string>
+
+    <!-- Wellbeing · component links -->
+    <string name="wellbeing_link_savings">Смотреть норму сбережений</string>
+    <string name="wellbeing_link_budget">Открыть бюджеты</string>
+    <string name="wellbeing_link_trend">Смотреть динамику</string>
+    <string name="wellbeing_link_subs">Проверить подписки</string>
+    <string name="wellbeing_link_goals">Открыть цели</string>
+
+    <!-- Wellbeing · tip titles -->
+    <string name="wellbeing_tip_cashflow_title">В этом месяце вы потратили на %1$s больше, чем заработали</string>
+    <string name="wellbeing_tip_overbudget_title">Превышение в %1$d категориях — %2$s сверх плана</string>
+    <string name="wellbeing_tip_spike_title">%1$s выше на %2$d%% — %3$s против вашего среднего %4$s</string>
+    <string name="wellbeing_tip_subs_title">%1$d подписок — %2$s в месяц</string>
+    <string name="wellbeing_tip_missingbudget_title">Вы тратите около %1$s в месяц на %2$s, но без бюджета</string>
+    <string name="wellbeing_tip_nogoal_title">Пока нет цели накоплений — даже немного в месяц создаёт подушку</string>
+    <string name="wellbeing_tip_goaloff_title">%1$s отстаёт от плана</string>
+    <string name="wellbeing_tip_savingswin_title">Отлично — в этом месяце вы отложили %1$d%% дохода</string>
+    <string name="wellbeing_tip_improved_title">%1$s ниже на %2$d%% в этом месяце</string>
+    <string name="wellbeing_tip_pace_title">Вы на %1$d%% недельного бюджета</string>
+    <string name="wellbeing_tip_leak_title">%1$d мелких покупок в %2$s на этой неделе</string>
+    <string name="wellbeing_tip_underpace_title">На этой неделе вы тратите меньше плана</string>
+
+    <!-- Wellbeing · tip details -->
+    <string name="wellbeing_tip_savingswin_detail">%1$s отложено в этом месяце.</string>
+    <string name="wellbeing_tip_subs_detail">%1$d%% ваших расходов уходит на подписки.</string>
+    <string name="wellbeing_tip_pace_detail">%1$s осталось до конца недели.</string>
+    <string name="wellbeing_tip_leak_detail">%1$s в сумме — мелочь, но набегает.</string>
+    <string name="wellbeing_tip_missingbudget_detail">С бюджетом эту категорию можно оценить.</string>
+    <string name="wellbeing_tip_nogoal_detail">Даже небольшая сумма в месяц даёт свободным деньгам дело.</string>
+
+    <!-- Wellbeing · tip CTAs -->
+    <string name="wellbeing_cta_where">Куда ушли деньги</string>
+    <string name="wellbeing_cta_view_budgets">Открыть бюджеты</string>
+    <string name="wellbeing_cta_review_subs">Проверить подписки</string>
+    <string name="wellbeing_cta_create_goal">Создать цель</string>
+    <string name="wellbeing_cta_see_txns">Смотреть транзакции</string>
+    <string name="wellbeing_cta_set_budget">Задать бюджет</string>
+    <string name="wellbeing_cta_add_receipt">Добавить чек</string>
+
+    <!-- Wellbeing · wins -->
+    <string name="wellbeing_win_savings">Отложено %1$d%% дохода</string>
+    <string name="wellbeing_win_improved">%1$s ниже на %2$d%%</string>
+    <string name="wellbeing_win_underpace">Меньше плана на этой неделе</string>
+    <string name="wellbeing_win_generic">Отличная работа</string>
+
+    <!-- Wellbeing · focus for next month -->
+    <string name="wellbeing_focus_savings">Отложите чуть больше в следующем месяце, чтобы поднять оценку.</string>
+    <string name="wellbeing_focus_budget">Верните категории с превышением в рамки, чтобы поднять оценку.</string>
+    <string name="wellbeing_focus_trend">Верните расходы ближе к среднему, чтобы поднять оценку.</string>
+    <string name="wellbeing_focus_subs">Откажитесь от ненужной подписки, чтобы поднять оценку.</string>
+    <string name="wellbeing_focus_goals">Верните цели в график, чтобы поднять оценку.</string>
+
+    <!-- Wellbeing · entry points (Home banner + Insights row) -->
+    <string name="wellbeing_entry_label">Благополучие</string>
+    <string name="wellbeing_entry_score">Оценка благополучия</string>
+    <string name="wellbeing_entry_setup">Настроить</string>
+    <string name="wellbeing_banner_firstrun">Задайте бюджет, чтобы открыть</string>
+    <string name="wellbeing_banner_cashflow">Расход больше прихода на %1$s</string>
+    <string name="wellbeing_banner_overbudget">Превышение бюджета в этом месяце</string>
+    <string name="wellbeing_banner_spike">%1$s выше на %2$d%%</string>
+    <string name="wellbeing_banner_subs">%1$s в месяц на подписки</string>
+    <string name="wellbeing_banner_missingbudget">Нет бюджета на %1$s</string>
+    <string name="wellbeing_banner_nogoal">Создайте цель накоплений</string>
+    <string name="wellbeing_banner_savingswin">Отложено %1$d%% в этом месяце</string>
+    <string name="wellbeing_banner_generic">Посмотрите, как ваши дела</string>
 </resources>
