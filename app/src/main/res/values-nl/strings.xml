@@ -829,4 +829,125 @@
     <string name="history_open_receipt">Bon openen</string>
     <string name="history_price_avg">gem. %1$s</string>
     <string name="history_cheapest_at">Goedkoopst bij %1$s · %2$s op %3$s</string>
+
+    <!-- Home · Budgets card empty state -->
+    <string name="home_no_budgets">Nog geen budgetten</string>
+    <string name="home_no_budgets_sub">Stel er een in en Budgetty laat zien hoe je ervoor staat.</string>
+    <string name="home_set_budget_cta">Budget instellen</string>
+
+    <!-- Wellbeing (score + weekly/monthly coaching) -->
+    <string name="action_dismiss">Sluiten</string>
+    <string name="wellbeing_title">Welzijn</string>
+    <string name="wellbeing_weekly">Wekelijks</string>
+    <string name="wellbeing_monthly">Maandelijks</string>
+    <string name="wellbeing_out_of_100">van de 100</string>
+    <string name="wellbeing_built_from">WAAR HET UIT IS OPGEBOUWD</string>
+    <string name="wellbeing_renormalise_note">Een onderdeel zonder gegevens telt nog niet mee — je score wordt verdeeld over de rest.</string>
+    <string name="wellbeing_not_counted">Telt niet mee</string>
+    <string name="wellbeing_vs_last_month">t.o.v. vorige maand</string>
+    <string name="wellbeing_vs_last_week">t.o.v. vorige week</string>
+    <string name="wellbeing_this_week">Deze week</string>
+    <string name="wellbeing_of_weekly_budget">van je weekbudget van %1$s</string>
+    <string name="wellbeing_left_days">%1$s over · nog %2$d dagen</string>
+    <string name="wellbeing_updates_monthly">Welzijnsscore · maandelijks bijgewerkt</string>
+    <string name="wellbeing_not_scored_yet">Nog geen score</string>
+    <string name="wellbeing_first_run_body">Leg een paar weken uitgaven vast en stel een budget in om je welzijnsscore te ontgrendelen.</string>
+    <string name="wellbeing_setup_receipts">%1$d bonnen vastgelegd</string>
+    <string name="wellbeing_setup_budget">Stel je eerste budget in</string>
+    <string name="wellbeing_setup_history">Een maand geschiedenis</string>
+    <string name="wellbeing_focus_week">Focus deze week</string>
+    <string name="wellbeing_focus_month">Focus deze maand</string>
+    <string name="wellbeing_tip_count">%1$d tips</string>
+    <string name="wellbeing_got_it">Begrepen</string>
+    <string name="wellbeing_wins">Successen deze maand</string>
+    <string name="wellbeing_focus_label">FOCUS VOOR VOLGENDE MAAND</string>
+    <string name="wellbeing_privacy_footer">Berekend op deze telefoon op basis van je eigen bonnen en budgetten. Niets verlaat je toestel.</string>
+
+    <!-- Wellbeing · band words -->
+    <string name="wellbeing_band_needs_work">Kan beter</string>
+    <string name="wellbeing_band_getting_there">Op de goede weg</string>
+    <string name="wellbeing_band_healthy">Gezond</string>
+    <string name="wellbeing_band_thriving">Uitstekend</string>
+
+    <!-- Wellbeing · component names -->
+    <string name="wellbeing_comp_savings">Spaarquote</string>
+    <string name="wellbeing_comp_budget">Budgetdiscipline</string>
+    <string name="wellbeing_comp_trend">Uitgaventrend</string>
+    <string name="wellbeing_comp_subs">Abonnementen</string>
+    <string name="wellbeing_comp_goals">Doelen</string>
+
+    <!-- Wellbeing · component explanations -->
+    <string name="wellbeing_why_savings">Je hield %1$d%% van je inkomen over — %2$s van %3$s. Boven 20%% is de volle score.</string>
+    <string name="wellbeing_why_budget_ok">Alle %1$d budgetten binnen plan.</string>
+    <string name="wellbeing_why_budget_over">%1$d van %2$d budgetten overschreden, %3$s boven plan. Elke categorie binnen budget geeft de volle score.</string>
+    <string name="wellbeing_why_trend_up">Uitgaven liggen %1$d%% boven je gemiddelde van %2$s. Gelijk of dalend geeft de volle score.</string>
+    <string name="wellbeing_why_trend_down">Uitgaven liggen %1$d%% onder je gemiddelde van %2$s. Gelijk of dalend geeft de volle score.</string>
+    <string name="wellbeing_why_trend_none">Nog te weinig geschiedenis om je trend te beoordelen.</string>
+    <string name="wellbeing_why_subs">%1$s per maand aan abonnementen — %2$d%% van wat je uitgeeft. Onder 5%% is de volle score.</string>
+    <string name="wellbeing_why_goals">%1$d van %2$d doelen op schema.</string>
+
+    <!-- Wellbeing · component links -->
+    <string name="wellbeing_link_savings">Bekijk spaarquote</string>
+    <string name="wellbeing_link_budget">Bekijk budgetten</string>
+    <string name="wellbeing_link_trend">Bekijk trend</string>
+    <string name="wellbeing_link_subs">Bekijk abonnementen</string>
+    <string name="wellbeing_link_goals">Bekijk doelen</string>
+
+    <!-- Wellbeing · tip titles -->
+    <string name="wellbeing_tip_cashflow_title">Je gaf deze maand %1$s meer uit dan je verdiende</string>
+    <string name="wellbeing_tip_overbudget_title">Budget overschreden in %1$d categorieën — %2$s boven plan</string>
+    <string name="wellbeing_tip_spike_title">%1$s is %2$d%% gestegen — %3$s tegenover je gemiddelde van %4$s</string>
+    <string name="wellbeing_tip_subs_title">%1$d abonnementen — %2$s per maand</string>
+    <string name="wellbeing_tip_missingbudget_title">Je geeft zo\'n %1$s per maand uit aan %2$s, maar hebt geen budget</string>
+    <string name="wellbeing_tip_nogoal_title">Nog geen spaardoel — zelfs een beetje per maand bouwt een buffer op</string>
+    <string name="wellbeing_tip_goaloff_title">%1$s loopt achter</string>
+    <string name="wellbeing_tip_savingswin_title">Mooi — je spaarde deze maand %1$d%% van je inkomen</string>
+    <string name="wellbeing_tip_improved_title">%1$s is deze maand %2$d%% gedaald</string>
+    <string name="wellbeing_tip_pace_title">Je zit op %1$d%% van je weekbudget</string>
+    <string name="wellbeing_tip_leak_title">%1$d kleine aankopen in %2$s deze week</string>
+    <string name="wellbeing_tip_underpace_title">Je zit deze week onder je tempo</string>
+
+    <!-- Wellbeing · tip details -->
+    <string name="wellbeing_tip_savingswin_detail">%1$s opzijgezet deze maand.</string>
+    <string name="wellbeing_tip_subs_detail">%1$d%% van wat je uitgeeft gaat naar abonnementen.</string>
+    <string name="wellbeing_tip_pace_detail">%1$s over voor de rest van de week.</string>
+    <string name="wellbeing_tip_leak_detail">%1$s in totaal — klein, maar het telt op.</string>
+    <string name="wellbeing_tip_missingbudget_detail">Met een budget telt dit mee in je score.</string>
+    <string name="wellbeing_tip_nogoal_detail">Zelfs een klein maandbedrag geeft je overgebleven geld een bestemming.</string>
+
+    <!-- Wellbeing · tip CTAs -->
+    <string name="wellbeing_cta_where">Bekijk waar het naartoe ging</string>
+    <string name="wellbeing_cta_view_budgets">Bekijk budgetten</string>
+    <string name="wellbeing_cta_review_subs">Bekijk abonnementen</string>
+    <string name="wellbeing_cta_create_goal">Doel aanmaken</string>
+    <string name="wellbeing_cta_see_txns">Bekijk transacties</string>
+    <string name="wellbeing_cta_set_budget">Budget instellen</string>
+    <string name="wellbeing_cta_add_receipt">Bon toevoegen</string>
+
+    <!-- Wellbeing · wins -->
+    <string name="wellbeing_win_savings">%1$d%% van inkomen gespaard</string>
+    <string name="wellbeing_win_improved">%1$s %2$d%% omlaag</string>
+    <string name="wellbeing_win_underpace">Onder tempo deze week</string>
+    <string name="wellbeing_win_generic">Goed bezig</string>
+
+    <!-- Wellbeing · focus for next month -->
+    <string name="wellbeing_focus_savings">Zet volgende maand wat meer opzij om je score te verhogen.</string>
+    <string name="wellbeing_focus_budget">Breng je overschreden categorieën weer in lijn om je score te verhogen.</string>
+    <string name="wellbeing_focus_trend">Breng je uitgaven weer richting je gemiddelde om je score te verhogen.</string>
+    <string name="wellbeing_focus_subs">Zeg een ongebruikt abonnement op om je score te verhogen.</string>
+    <string name="wellbeing_focus_goals">Breng je doelen weer op schema om je score te verhogen.</string>
+
+    <!-- Wellbeing · entry points (Home banner + Insights row) -->
+    <string name="wellbeing_entry_label">Welzijn</string>
+    <string name="wellbeing_entry_score">Welzijnsscore</string>
+    <string name="wellbeing_entry_setup">Instellen</string>
+    <string name="wellbeing_banner_firstrun">Stel een budget in om het te ontgrendelen</string>
+    <string name="wellbeing_banner_cashflow">%1$s meer uit dan in</string>
+    <string name="wellbeing_banner_overbudget">Boven budget deze maand</string>
+    <string name="wellbeing_banner_spike">%1$s is %2$d%% gestegen</string>
+    <string name="wellbeing_banner_subs">%1$s per maand aan abonnementen</string>
+    <string name="wellbeing_banner_missingbudget">Geen budget voor %1$s</string>
+    <string name="wellbeing_banner_nogoal">Begin een spaardoel</string>
+    <string name="wellbeing_banner_savingswin">%1$d%% gespaard deze maand</string>
+    <string name="wellbeing_banner_generic">Bekijk hoe je ervoor staat</string>
 </resources>

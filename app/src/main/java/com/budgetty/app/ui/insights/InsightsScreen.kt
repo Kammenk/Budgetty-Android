@@ -72,6 +72,7 @@ import com.budgetty.app.ui.components.resolveSectionOrder
 import com.budgetty.app.ui.util.formatMoney
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.R
+import com.budgetty.app.ui.wellbeing.WellbeingInsightsRow
 import com.budgetty.app.ui.subscriptions.SubscriptionsInsightsCard
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.TransactionEntity
@@ -97,6 +98,7 @@ fun InsightsScreen(
     onNavigateToBudget: () -> Unit = {},
     onNavigateToSubscriptions: () -> Unit = {},
     onNavigateToPaywall: () -> Unit = {},
+    onNavigateToWellbeing: () -> Unit = {},
     viewModel: InsightsViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
@@ -109,6 +111,7 @@ fun InsightsScreen(
         onNavigateToBudget = onNavigateToBudget,
         onNavigateToSubscriptions = onNavigateToSubscriptions,
         onNavigateToPaywall = onNavigateToPaywall,
+        onNavigateToWellbeing = onNavigateToWellbeing,
         hiddenSections = settings.hiddenInsightsSections,
         sectionOrder = settings.insightsSectionOrder,
         onToggleSection = { section, hidden -> settingsStore.setInsightsSectionHidden(section.key, hidden) },
@@ -130,6 +133,7 @@ private fun InsightsScreenContent(
     onNavigateToBudget: () -> Unit = {},
     onNavigateToSubscriptions: () -> Unit = {},
     onNavigateToPaywall: () -> Unit = {},
+    onNavigateToWellbeing: () -> Unit = {},
     hiddenSections: Set<String>,
     sectionOrder: List<String>,
     onToggleSection: (InsightsSection, Boolean) -> Unit,
@@ -197,6 +201,7 @@ private fun InsightsScreenContent(
                 onRevertSections = onRevertSections,
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
+                onNavigateToWellbeing = onNavigateToWellbeing,
             )
         } else {
             InsightsPhoneBody(
@@ -211,6 +216,7 @@ private fun InsightsScreenContent(
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
                 onNavigateToBudget = onNavigateToBudget,
+                onNavigateToWellbeing = onNavigateToWellbeing,
                 onNavigateToSubscriptions = onNavigateToSubscriptions,
                 onNavigateToPaywall = onNavigateToPaywall,
             )
@@ -532,6 +538,7 @@ private fun InsightsPhoneBody(
     onNavigateToBudget: () -> Unit = {},
     onNavigateToSubscriptions: () -> Unit = {},
     onNavigateToPaywall: () -> Unit = {},
+    onNavigateToWellbeing: () -> Unit = {},
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -570,6 +577,10 @@ private fun InsightsPhoneBody(
             )
         }
         stepper(Modifier.fillMaxWidth(), true)
+        // Pinned above Breakdown: a one-line door into the Wellbeing screen. Hidden via Customize sections.
+        if (shows(InsightsSection.WELLBEING)) {
+            state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
+        }
         ordered.forEach { section ->
             if (shows(section)) {
                 when (section) {
@@ -672,6 +683,9 @@ private fun InsightsPhoneBody(
                     InsightsSection.BIGGEST_PURCHASES -> if (hasData && state.biggestPurchases.isNotEmpty()) {
                         InsightCard { BiggestPurchasesContent(state.biggestPurchases, state.storeByReceiptId) }
                     }
+
+                    // Rendered as a pinned row above Breakdown (outside this loop), so nothing here.
+                    InsightsSection.WELLBEING -> Unit
                 }
             }
         }
@@ -704,6 +718,7 @@ private fun InsightsTabletBody(
     onRevertSections: () -> Unit,
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
+    onNavigateToWellbeing: () -> Unit = {},
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -804,6 +819,10 @@ private fun InsightsTabletBody(
         ) {
             header()
             Spacer(Modifier.height(MaterialTheme.dimens.md))
+            if (shows(InsightsSection.WELLBEING)) {
+                state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
+                Spacer(Modifier.height(MaterialTheme.dimens.md))
+            }
             if (!hasData) {
                 // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
                 if (state.isLoaded) {
@@ -857,6 +876,9 @@ private fun InsightsTabletBody(
             verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
         ) {
             header()
+            if (shows(InsightsSection.WELLBEING)) {
+                state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
+            }
             if (!hasData) {
                 // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
                 if (state.isLoaded) {

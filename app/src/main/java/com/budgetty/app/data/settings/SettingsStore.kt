@@ -38,6 +38,7 @@ class SettingsStore(context: Context) {
         pinHash = prefs.getString(KEY_PIN_HASH, "").orEmpty(),
         biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
         autoLockMinutes = prefs.getInt(KEY_AUTO_LOCK, 1),
+        dismissedWellbeingTips = prefs.getStringSet(KEY_DISMISSED_TIPS, emptySet()).orEmpty().toSet(),
     )
 
     fun setThemeMode(value: ThemeMode) = save(KEY_THEME, value) { it.copy(themeMode = value) }
@@ -190,6 +191,13 @@ class SettingsStore(context: Context) {
         _settings.update { it.copy(recentSearches = emptyList()) }
     }
 
+    /** Records a Wellbeing tip as dismissed for its period ([scopedId] = "periodId|tipId"). */
+    fun dismissWellbeingTip(scopedId: String) {
+        val updated = _settings.value.dismissedWellbeingTips + scopedId
+        prefs.edit().putStringSet(KEY_DISMISSED_TIPS, updated).apply()
+        _settings.update { it.copy(dismissedWellbeingTips = updated) }
+    }
+
     private fun Set<String>.toggled(key: String, present: Boolean): Set<String> =
         if (present) this + key else this - key
 
@@ -266,6 +274,7 @@ class SettingsStore(context: Context) {
         const val KEY_HISTORY_SORT = "history_sort"
         const val KEY_RECENT_SEARCHES = "recent_searches"
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"
+        const val KEY_DISMISSED_TIPS = "dismissed_wellbeing_tips"
         const val MAX_RECENT_SEARCHES = 6
     }
 }

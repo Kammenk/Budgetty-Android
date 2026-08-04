@@ -81,6 +81,16 @@ val md_inversePrimary_dark = Color(0xFF6650A4)
 val BudgetGood = Color(0xFF2E7D32);  val BudgetGoodDark = Color(0xFF7DD487)
 val BudgetWarn = Color(0xFFF9A825);  val BudgetWarnDark = Color(0xFFFBC02D)
 val BudgetBad  = Color(0xFFD32F2F);  val BudgetBadDark  = Color(0xFFEF5350)
+// "Thriving" — the top Wellbeing band, a deeper green than the healthy Good.
+val BudgetGreat = Color(0xFF1B5E20); val BudgetGreatDark = Color(0xFFA5D6A7)
+
+// ── Wellbeing tonal containers (icon tiles, win pills, the Thriving band). Same tonal family as the
+// M3 *Container roles; used by the Wellbeing score + tips. ──
+val WellbeingGoodContainer  = Color(0xFFDCEFDC); val WellbeingGoodContainerDark  = Color(0xFF1E3B22)
+val WellbeingWarnContainer  = Color(0xFFFAEFD3); val WellbeingWarnContainerDark  = Color(0xFF3A3116)
+val WellbeingWarnOn         = Color(0xFF8A6100); val WellbeingWarnOnDark         = Color(0xFFFBC02D)
+val WellbeingBadContainer   = Color(0xFFFADCDA); val WellbeingBadContainerDark   = Color(0xFF452220)
+val WellbeingGreatContainer = Color(0xFFCFE7D2); val WellbeingGreatContainerDark = Color(0xFF20422A)
 
 // ── Premium accent seeds (light / dark primary). Build alternate ColorSchemes from these. ──
 // Sage   #3E5E41 / #A8C6AA
@@ -107,3 +117,23 @@ fun budgetWarnColor(): Color = if (isDarkTheme()) BudgetWarnDark else BudgetWarn
 @Composable
 @ReadOnlyComposable
 fun budgetBadColor(): Color = if (isDarkTheme()) BudgetBadDark else BudgetBad
+
+@Composable
+@ReadOnlyComposable
+fun budgetGreatColor(): Color = if (isDarkTheme()) BudgetGreatDark else BudgetGreat
+
+// ── Wellbeing tonal-container accessors ───────────────────────────────────────
+@Composable @ReadOnlyComposable
+fun wellbeingGoodContainer(): Color = if (isDarkTheme()) WellbeingGoodContainerDark else WellbeingGoodContainer
+
+@Composable @ReadOnlyComposable
+fun wellbeingWarnContainer(): Color = if (isDarkTheme()) WellbeingWarnContainerDark else WellbeingWarnContainer
+
+@Composable @ReadOnlyComposable
+fun wellbeingWarnOn(): Color = if (isDarkTheme()) WellbeingWarnOnDark else WellbeingWarnOn
+
+@Composable @ReadOnlyComposable
+fun wellbeingBadContainer(): Color = if (isDarkTheme()) WellbeingBadContainerDark else WellbeingBadContainer
+
+@Composable @ReadOnlyComposable
+fun wellbeingGreatContainer(): Color = if (isDarkTheme()) WellbeingGreatContainerDark else WellbeingGreatContainer

@@ -842,4 +842,125 @@
     <string name="history_open_receipt">Otwórz paragon</string>
     <string name="history_price_avg">śr. %1$s</string>
     <string name="history_cheapest_at">Najtaniej w %1$s · %2$s dnia %3$s</string>
+
+    <!-- Home · Budgets card empty state -->
+    <string name="home_no_budgets">Nie masz jeszcze budżetów</string>
+    <string name="home_no_budgets_sub">Ustaw jeden, a Budgetty powie Ci, jak sobie radzisz.</string>
+    <string name="home_set_budget_cta">Ustaw budżet</string>
+
+    <!-- Wellbeing (score + weekly/monthly coaching) -->
+    <string name="action_dismiss">Odrzuć</string>
+    <string name="wellbeing_title">Dobrostan</string>
+    <string name="wellbeing_weekly">Tygodniowo</string>
+    <string name="wellbeing_monthly">Miesięcznie</string>
+    <string name="wellbeing_out_of_100">na 100</string>
+    <string name="wellbeing_built_from">Z CZEGO SIĘ SKŁADA</string>
+    <string name="wellbeing_renormalise_note">Składnik bez danych nie jest liczony — Twój wynik jest ważony wśród pozostałych.</string>
+    <string name="wellbeing_not_counted">Nieuwzględniane</string>
+    <string name="wellbeing_vs_last_month">vs. poprzedni miesiąc</string>
+    <string name="wellbeing_vs_last_week">vs. poprzedni tydzień</string>
+    <string name="wellbeing_this_week">W tym tygodniu</string>
+    <string name="wellbeing_of_weekly_budget">z Twojego tygodniowego budżetu %1$s</string>
+    <string name="wellbeing_left_days">%1$s pozostało · jeszcze %2$d dni</string>
+    <string name="wellbeing_updates_monthly">Wynik dobrostanu · aktualizowany co miesiąc</string>
+    <string name="wellbeing_not_scored_yet">Jeszcze nie oceniono</string>
+    <string name="wellbeing_first_run_body">Zapisuj wydatki przez kilka tygodni i ustaw budżet, aby odblokować swój wynik dobrostanu.</string>
+    <string name="wellbeing_setup_receipts">Zapisane paragony: %1$d</string>
+    <string name="wellbeing_setup_budget">Ustaw swój pierwszy budżet</string>
+    <string name="wellbeing_setup_history">Miesiąc historii</string>
+    <string name="wellbeing_focus_week">Fokus w tym tygodniu</string>
+    <string name="wellbeing_focus_month">Fokus w tym miesiącu</string>
+    <string name="wellbeing_tip_count">Wskazówki: %1$d</string>
+    <string name="wellbeing_got_it">Rozumiem</string>
+    <string name="wellbeing_wins">Sukcesy w tym miesiącu</string>
+    <string name="wellbeing_focus_label">FOKUS NA PRZYSZŁY MIESIĄC</string>
+    <string name="wellbeing_privacy_footer">Obliczono na tym telefonie na podstawie Twoich paragonów i budżetów. Nic nie opuszcza urządzenia.</string>
+
+    <!-- Wellbeing · band words -->
+    <string name="wellbeing_band_needs_work">Wymaga pracy</string>
+    <string name="wellbeing_band_getting_there">Coraz lepiej</string>
+    <string name="wellbeing_band_healthy">Zdrowy</string>
+    <string name="wellbeing_band_thriving">Kwitnący</string>
+
+    <!-- Wellbeing · component names -->
+    <string name="wellbeing_comp_savings">Stopa oszczędności</string>
+    <string name="wellbeing_comp_budget">Trzymanie się budżetu</string>
+    <string name="wellbeing_comp_trend">Trend wydatków</string>
+    <string name="wellbeing_comp_subs">Subskrypcje</string>
+    <string name="wellbeing_comp_goals">Cele</string>
+
+    <!-- Wellbeing · component explanations -->
+    <string name="wellbeing_why_savings">Oszczędzasz %1$d%% dochodu — %2$s z %3$s. Powyżej 20%% daje maksimum punktów.</string>
+    <string name="wellbeing_why_budget_ok">Wszystkie %1$d budżetów zgodne z planem.</string>
+    <string name="wellbeing_why_budget_over">%1$d z %2$d budżetów przekroczonych, %3$s ponad plan. Każda kategoria w budżecie daje maksimum punktów.</string>
+    <string name="wellbeing_why_trend_up">Wydatki są %1$d%% powyżej Twojej średniej %2$s. Płaski lub spadkowy trend daje maksimum punktów.</string>
+    <string name="wellbeing_why_trend_down">Wydatki są %1$d%% poniżej Twojej średniej %2$s. Płaski lub spadkowy trend daje maksimum punktów.</string>
+    <string name="wellbeing_why_trend_none">Za mało historii, aby ocenić Twój trend.</string>
+    <string name="wellbeing_why_subs">%1$s miesięcznie na subskrypcje — %2$d%% Twoich wydatków. Poniżej 5%% daje maksimum punktów.</string>
+    <string name="wellbeing_why_goals">%1$d z %2$d celów zgodnie z planem.</string>
+
+    <!-- Wellbeing · component links -->
+    <string name="wellbeing_link_savings">Zobacz stopę oszczędności</string>
+    <string name="wellbeing_link_budget">Zobacz budżety</string>
+    <string name="wellbeing_link_trend">Zobacz trend</string>
+    <string name="wellbeing_link_subs">Przejrzyj subskrypcje</string>
+    <string name="wellbeing_link_goals">Zobacz cele</string>
+
+    <!-- Wellbeing · tip titles -->
+    <string name="wellbeing_tip_cashflow_title">W tym miesiącu wydajesz o %1$s więcej, niż zarabiasz</string>
+    <string name="wellbeing_tip_overbudget_title">Przekroczono budżet w %1$d kategoriach — %2$s ponad plan</string>
+    <string name="wellbeing_tip_spike_title">%1$s w górę o %2$d%% — %3$s vs. średnia %4$s</string>
+    <string name="wellbeing_tip_subs_title">%1$d subskrypcji — %2$s miesięcznie</string>
+    <string name="wellbeing_tip_missingbudget_title">Wydajesz około %1$s miesięcznie na %2$s, ale nie masz budżetu</string>
+    <string name="wellbeing_tip_nogoal_title">Brak celu oszczędnościowego — nawet niewielka kwota miesięcznie buduje poduszkę</string>
+    <string name="wellbeing_tip_goaloff_title">%1$s ma opóźnienie</string>
+    <string name="wellbeing_tip_savingswin_title">Świetnie — w tym miesiącu oszczędzasz %1$d%% dochodu</string>
+    <string name="wellbeing_tip_improved_title">%1$s w dół o %2$d%% w tym miesiącu</string>
+    <string name="wellbeing_tip_pace_title">Jesteś na %1$d%% swojego tygodniowego budżetu</string>
+    <string name="wellbeing_tip_leak_title">%1$d małych zakupów w %2$s w tym tygodniu</string>
+    <string name="wellbeing_tip_underpace_title">W tym tygodniu jesteś poniżej tempa</string>
+
+    <!-- Wellbeing · tip details -->
+    <string name="wellbeing_tip_savingswin_detail">%1$s odłożone w tym miesiącu.</string>
+    <string name="wellbeing_tip_subs_detail">%1$d%% Twoich wydatków idzie na subskrypcje.</string>
+    <string name="wellbeing_tip_pace_detail">%1$s pozostało do końca tygodnia.</string>
+    <string name="wellbeing_tip_leak_detail">%1$s łącznie — drobne, ale się sumuje.</string>
+    <string name="wellbeing_tip_missingbudget_detail">Budżet sprawia, że można to ocenić.</string>
+    <string name="wellbeing_tip_nogoal_detail">Nawet mała miesięczna kwota daje wolnym środkom zadanie.</string>
+
+    <!-- Wellbeing · tip CTAs -->
+    <string name="wellbeing_cta_where">Zobacz, na co poszło</string>
+    <string name="wellbeing_cta_view_budgets">Zobacz budżety</string>
+    <string name="wellbeing_cta_review_subs">Przejrzyj subskrypcje</string>
+    <string name="wellbeing_cta_create_goal">Utwórz cel</string>
+    <string name="wellbeing_cta_see_txns">Zobacz transakcje</string>
+    <string name="wellbeing_cta_set_budget">Ustaw budżet</string>
+    <string name="wellbeing_cta_add_receipt">Dodaj paragon</string>
+
+    <!-- Wellbeing · wins -->
+    <string name="wellbeing_win_savings">Oszczędzono %1$d%% dochodu</string>
+    <string name="wellbeing_win_improved">%1$s w dół o %2$d%%</string>
+    <string name="wellbeing_win_underpace">Poniżej tempa w tym tygodniu</string>
+    <string name="wellbeing_win_generic">Dobra robota</string>
+
+    <!-- Wellbeing · focus for next month -->
+    <string name="wellbeing_focus_savings">Odłóż trochę więcej w przyszłym miesiącu, aby podnieść swój wynik.</string>
+    <string name="wellbeing_focus_budget">Przywróć przekroczone kategorie do normy, aby podnieść swój wynik.</string>
+    <string name="wellbeing_focus_trend">Zbliż wydatki do swojej średniej, aby podnieść swój wynik.</string>
+    <string name="wellbeing_focus_subs">Zrezygnuj z nieużywanej subskrypcji, aby podnieść swój wynik.</string>
+    <string name="wellbeing_focus_goals">Przywróć swoje cele na właściwy tor, aby podnieść swój wynik.</string>
+
+    <!-- Wellbeing · entry points (Home banner + Insights row) -->
+    <string name="wellbeing_entry_label">Dobrostan</string>
+    <string name="wellbeing_entry_score">Wynik dobrostanu</string>
+    <string name="wellbeing_entry_setup">Skonfiguruj</string>
+    <string name="wellbeing_banner_firstrun">Ustaw budżet, aby go odblokować</string>
+    <string name="wellbeing_banner_cashflow">%1$s więcej wychodzi, niż wpływa</string>
+    <string name="wellbeing_banner_overbudget">Przekroczony budżet w tym miesiącu</string>
+    <string name="wellbeing_banner_spike">%1$s w górę o %2$d%%</string>
+    <string name="wellbeing_banner_subs">%1$s miesięcznie na subskrypcje</string>
+    <string name="wellbeing_banner_missingbudget">Brak budżetu dla %1$s</string>
+    <string name="wellbeing_banner_nogoal">Ustaw cel oszczędnościowy</string>
+    <string name="wellbeing_banner_savingswin">Oszczędzono %1$d%% w tym miesiącu</string>
+    <string name="wellbeing_banner_generic">Zobacz, jak sobie radzisz</string>
 </resources>

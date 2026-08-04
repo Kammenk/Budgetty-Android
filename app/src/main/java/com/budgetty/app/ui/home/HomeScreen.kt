@@ -142,6 +142,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigateToInsights: () -> Unit = {},
     onNavigateToAccount: () -> Unit = {},
+    onNavigateToWellbeing: () -> Unit = {},
     viewModel: HomeViewModel = koinViewModel(),
     authViewModel: AuthViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
@@ -176,6 +177,7 @@ fun HomeScreen(
         onNavigateToHistory = onNavigateToHistory,
         onNavigateToInsights = onNavigateToInsights,
         onNavigateToAccount = onNavigateToAccount,
+        onNavigateToWellbeing = onNavigateToWellbeing,
         modifier = modifier,
     )
 }
@@ -207,6 +209,7 @@ private fun HomeScreenContent(
     onNavigateToHistory: () -> Unit,
     onNavigateToInsights: () -> Unit,
     onNavigateToAccount: () -> Unit,
+    onNavigateToWellbeing: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var showAddSheet by remember { mutableStateOf(false) }
@@ -234,6 +237,7 @@ private fun HomeScreenContent(
                 onNavigateToHistory = onNavigateToHistory,
                 onNavigateToInsights = onNavigateToInsights,
                 onNavigateToAccount = onNavigateToAccount,
+                onNavigateToWellbeing = onNavigateToWellbeing,
             )
             isExpanded -> TabletHomeContent(
                 state = state,
@@ -243,6 +247,7 @@ private fun HomeScreenContent(
                 onNavigateToBudget = onNavigateToBudget,
                 onNavigateToHistory = onNavigateToHistory,
                 onNavigateToInsights = onNavigateToInsights,
+                onNavigateToWellbeing = onNavigateToWellbeing,
             )
             else -> PhoneHomeContent(
                 state = state,
@@ -257,6 +262,7 @@ private fun HomeScreenContent(
                 onAddReceipt = { showAddSheet = true },
                 onNavigateToBudget = onNavigateToBudget,
                 onNavigateToHistory = onNavigateToHistory,
+                onNavigateToWellbeing = onNavigateToWellbeing,
             )
         }
 
@@ -340,6 +346,7 @@ private fun PhoneHomeContent(
     onAddReceipt: () -> Unit,
     onNavigateToBudget: () -> Unit,
     onNavigateToHistory: () -> Unit,
+    onNavigateToWellbeing: () -> Unit = {},
 ) {
     val ordered = resolveSectionOrder(sectionOrder, HomeSection.entries, HomeSection::key)
     LazyColumn(
@@ -422,6 +429,14 @@ private fun PhoneHomeContent(
                             }
                         }
 
+                    HomeSection.WELLBEING ->
+                        state.wellbeing?.let { wb ->
+                            item(key = section.key) {
+                                WellbeingBanner(summary = wb, onClick = onNavigateToWellbeing)
+                                Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                            }
+                        }
+
                     HomeSection.RECEIPTS -> {
                         item(key = section.key) {
                             Row(
@@ -487,6 +502,7 @@ private fun TabletHomeContent(
     onNavigateToBudget: () -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToInsights: () -> Unit,
+    onNavigateToWellbeing: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyColumn(
@@ -553,6 +569,12 @@ private fun TabletHomeContent(
                     Spacer(Modifier.height(MaterialTheme.dimens.lg))
                 }
             }
+            state.wellbeing?.let { wb ->
+                item {
+                    WellbeingBanner(summary = wb, onClick = onNavigateToWellbeing)
+                    Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                }
+            }
             item {
                 TopCategoriesCard(
                     slices = state.slices,
@@ -599,6 +621,7 @@ private fun WideHomeContent(
     onNavigateToHistory: () -> Unit,
     onNavigateToInsights: () -> Unit,
     onNavigateToAccount: () -> Unit,
+    onNavigateToWellbeing: () -> Unit = {},
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -652,6 +675,7 @@ private fun WideHomeContent(
                             onClick = onNavigateToBudget,
                         )
                     }
+                    state.wellbeing?.let { wb -> WellbeingBanner(summary = wb, onClick = onNavigateToWellbeing) }
                     TopCategoriesCard(
                         slices = state.slices,
                         total = state.total,
@@ -1930,6 +1954,9 @@ private fun BudgetProgressCard(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         ),
     ) {
+        if (state.isLoaded && !hasBudget) {
+            BudgetEmptyContent(label = label)
+        } else {
         Column(modifier = Modifier.padding(MaterialTheme.dimens.xl)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -2005,6 +2032,46 @@ private fun BudgetProgressCard(
                 ViewAllBudgetsLink(onClick = onClick)
             }
         }
+        }
+    }
+}
+
+/** First-run Budgets card content: names the empty state and invites setting the first budget. */
+@Composable
+private fun BudgetEmptyContent(label: String, modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth().padding(MaterialTheme.dimens.xl)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        Text(
+            text = stringResource(R.string.home_no_budgets),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = stringResource(R.string.home_no_budgets_sub),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(6.dp)
+                .clip(RoundedCornerShape(50))
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        Text(
+            text = stringResource(R.string.home_set_budget_cta),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.secondary,
+        )
     }
 }
 

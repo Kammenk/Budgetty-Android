@@ -26,6 +26,7 @@ object Routes {
     const val SAVINGS_GOAL = "savings_goal/{goalId}"
     const val SAVINGS_GOAL_ARG = "goalId"
     const val SUBSCRIPTIONS = "subscriptions"
+    const val WELLBEING = "wellbeing"
     const val SET_PIN = "set_pin"
 
     /** Upload route for a given source: "camera", "file", or "manual". */
