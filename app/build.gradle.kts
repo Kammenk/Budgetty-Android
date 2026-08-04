@@ -105,6 +105,18 @@ android {
             isIncludeAndroidResources = true
         }
     }
+    bundle {
+        language {
+            // Ship every translated language in the base install instead of as per-language
+            // Play delivery splits. We offer an in-app language picker (Account → Language) that
+            // applies a per-app locale independent of the device language; with the default split
+            // ON, a Play (App Bundle) install only downloads the strings for the *device* locale,
+            // so switching to any other language finds no resources and silently falls back to the
+            // default (English). A debug/universal APK from Android Studio bundles all languages, so
+            // the bug only shows on Play builds. Keeping all languages in the base costs ~1 MB.
+            enableSplit = false
+        }
+    }
 }
 
 // BuildConfig.TEST_HOOKS_ENABLED gates debug/profiling-only hooks (the SKIP_AUTH auth bypass). True
