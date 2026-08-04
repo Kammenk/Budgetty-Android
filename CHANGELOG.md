@@ -15,6 +15,17 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.2.0 (versionCode 1120) — 2026-08-04
+
+A new feature: a Wellbeing score with personalised coaching.
+
+### Added
+- **Financial Wellbeing score** — a 0–100 score reflecting how your spending, budgeting, savings and bills are tracking, on a dedicated screen you reach from a card on Home (and a row in Insights). It comes with plain-language weekly and monthly tips tailored to your own numbers, and you can dismiss tips you don't want to see. Works on phone and tablet, in every supported language. Free, and computed entirely on your device.
+
+> No database change — schema stays v22.
+
+> **Play status — not yet uploaded.** Builds on 11.1.2 (the Play language-split fix) and, like it, supersedes 11.1.1 / 11.1.0, which were never uploaded — the last release actually on Play is 11.0.0 (vc1100). A Play release from here should cover the 11.1.0 feature batch, the 11.1.1 Home/Insights polish, the 11.1.2 language fix, and this Wellbeing feature.
+
 ## 11.1.2 (versionCode 1112) — 2026-08-04
 
 A bug-fix release.
