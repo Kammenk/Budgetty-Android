@@ -15,6 +15,17 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.1.2 (versionCode 1112) — 2026-08-04
+
+A bug-fix release.
+
+### Fixed
+- **In-app language switching now works on Play installs** — changing the language under Account → Language did nothing on builds installed from Google Play: the choice was saved but no text translated (it worked only when the app was installed straight from Android Studio). Google Play delivers the app as an App Bundle and, by default, installs only the strings for your device's language, so switching to any other language had nothing to show and fell back to English. Every supported language now ships in the base install, so the picker works for all users.
+
+> No database change — schema stays v22.
+
+> **Play status — not yet uploaded.** Supersedes 11.1.1 (vc1111) and 11.1.0 (vc1110), which were prepared but never uploaded. The last release actually on Play is 11.0.0 (vc1100), so a Play release from here should also cover the 11.1.0 feature batch (safe-to-spend, savings goals, subscription detection, CSV/PDF export, app lock, Category & Insights v2) and the 11.1.1 Home/Insights polish.
+
 ## 11.1.1 (versionCode 1111) — 2026-08-01
 
 A small polish release: a tidier Home and Insights, plus two layout fixes.
