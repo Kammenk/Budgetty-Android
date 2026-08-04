@@ -45,9 +45,9 @@ android {
         // code stays monotonic; roll over to the next place at 9 (10.0.9 -> 10.1.0).
         val verMajor = 11
         val verMinor = 1
-        val verPatch = 1
-        versionCode = verMajor * 100 + verMinor * 10 + verPatch  // 1111
-        versionName = "$verMajor.$verMinor.$verPatch"            // 11.1.1
+        val verPatch = 2
+        versionCode = verMajor * 100 + verMinor * 10 + verPatch  // 1112
+        versionName = "$verMajor.$verMinor.$verPatch"            // 11.1.2
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -103,6 +103,18 @@ android {
             // src/test/resources/robolectric.properties — compileSdk 36 is newer than any image
             // Robolectric ships, so tests run against SDK 34.
             isIncludeAndroidResources = true
+        }
+    }
+    bundle {
+        language {
+            // Ship every translated language in the base install instead of as per-language
+            // Play delivery splits. We offer an in-app language picker (Account → Language) that
+            // applies a per-app locale independent of the device language; with the default split
+            // ON, a Play (App Bundle) install only downloads the strings for the *device* locale,
+            // so switching to any other language finds no resources and silently falls back to the
+            // default (English). A debug/universal APK from Android Studio bundles all languages, so
+            // the bug only shows on Play builds. Keeping all languages in the base costs ~1 MB.
+            enableSplit = false
         }
     }
 }
