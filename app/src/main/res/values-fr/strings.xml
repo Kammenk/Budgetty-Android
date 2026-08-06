@@ -628,8 +628,6 @@
     <string name="login_feature_2">Classement automatique par catégorie</string>
     <string name="login_feature_3">Budgets, factures et analyses de dépenses</string>
     <string name="login_premium_note">Premium débloque scans, catégories et factures en illimité</string>
-    <string name="toast_tester_premium_unlocked">Premium débloqué 🎉</string>
-    <string name="toast_tester_premium_countdown">Encore %1$d pour débloquer Premium</string>
     <string name="cd_edit_date">Modifier la date du reçu</string>
     <string name="cd_customize_sections">Personnaliser les sections</string>
     <string name="cd_move_section_up">Monter</string>

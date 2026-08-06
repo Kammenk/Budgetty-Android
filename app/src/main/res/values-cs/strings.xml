@@ -559,8 +559,6 @@
     <string name="toast_account_deleted">Účet smazán</string>
     <string name="toast_no_link_app">Tento odkaz nemůže otevřít žádná aplikace</string>
     <string name="toast_no_email_app">Nebyla nalezena žádná e-mailová aplikace</string>
-    <string name="toast_tester_premium_unlocked">Premium odemčeno 🎉</string>
-    <string name="toast_tester_premium_countdown">Ještě %1$d k odemčení Premium</string>
     <string name="delete_error_message">Při mazání účtu se něco pokazilo. Zkuste to znovu.</string>
 
     <string name="go_premium">Přejít na Premium</string>

@@ -559,8 +559,6 @@
     <string name="toast_account_deleted">Tili poistettu</string>
     <string name="toast_no_link_app">Mikään sovellus ei voi avata tätä linkkiä</string>
     <string name="toast_no_email_app">Sähköpostisovellusta ei löytynyt</string>
-    <string name="toast_tester_premium_unlocked">Premium avattu 🎉</string>
-    <string name="toast_tester_premium_countdown">%1$d lisää Premiumin avaamiseen</string>
     <string name="delete_error_message">Jokin meni pieleen tiliäsi poistettaessa. Yritä uudelleen.</string>
 
     <string name="go_premium">Hanki Premium</string>

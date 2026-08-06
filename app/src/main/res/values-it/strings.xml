@@ -628,8 +628,6 @@
     <string name="login_feature_2">Ordinamento automatico per categoria</string>
     <string name="login_feature_3">Budget, spese e analisi dei consumi</string>
     <string name="login_premium_note">Premium sblocca scansioni, categorie e spese illimitate</string>
-    <string name="toast_tester_premium_unlocked">Premium sbloccato 🎉</string>
-    <string name="toast_tester_premium_countdown">Ancora %1$d per sbloccare Premium</string>
     <string name="cd_edit_date">Modifica la data dello scontrino</string>
     <string name="cd_customize_sections">Personalizza sezioni</string>
     <string name="cd_move_section_up">Sposta su</string>

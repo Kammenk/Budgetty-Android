@@ -9,9 +9,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickableimport androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -157,9 +155,7 @@ fun AccountScreen(
         onBuildBackupJson = { accountViewModel.buildBackupJson() },
         onImportBackup = { json, replace, onResult -> accountViewModel.importBackup(json, replace, onResult) },
         onDeleteAccount = { onResult -> accountViewModel.deleteAccount(onResult) },
-        onSignOut = { authViewModel.signOut() },
-        onUnlockTesterPremium = accountViewModel::unlockTesterPremium,
-        modifier = modifier,
+        onSignOut = { authViewModel.signOut() },        modifier = modifier,
     )
 }
 
@@ -190,7 +186,6 @@ private fun AccountScreenContent(
     onImportBackup: (String, Boolean, (Boolean) -> Unit) -> Unit,
     onDeleteAccount: ((DeleteAccountResult) -> Unit) -> Unit,
     onSignOut: () -> Unit,
-    onUnlockTesterPremium: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -201,9 +196,6 @@ private fun AccountScreenContent(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var deleting by remember { mutableStateOf(false) }
     var deleteNotice by remember { mutableStateOf<String?>(null) }
-    // Hidden tester unlock: tapping the version label VERSION_TAPS_TO_UNLOCK times in a row flips
-    // this install to Premium. The count lives in screen state, so leaving the screen resets it.
-    var versionTapCount by remember { mutableStateOf(0) }
     var exportOpen by remember { mutableStateOf(false) }
 
     val exportLauncher = rememberLauncherForActivityResult(
@@ -314,32 +306,6 @@ private fun AccountScreenContent(
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(
-                    // Invisible (no ripple): the gesture is meant to be discovered, not advertised.
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                ) {
-                    if (!isPremium) {
-                        versionTapCount++
-                        val remaining = VERSION_TAPS_TO_UNLOCK - versionTapCount
-                        when {
-                            remaining <= 0 -> {
-                                versionTapCount = 0
-                                onUnlockTesterPremium()
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.toast_tester_premium_unlocked),
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            }
-                            remaining <= 3 -> Toast.makeText(
-                                context,
-                                context.getString(R.string.toast_tester_premium_countdown, remaining),
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                        }
-                    }
-                }
                 .padding(top = MaterialTheme.dimens.sm),
         )
     }
@@ -1091,9 +1057,6 @@ private fun DeleteAccountButton(enabled: Boolean, onClick: () -> Unit) {
 
 // Support & About destinations. Point HELP at a dedicated FAQ page once one is published;
 // for now it lands on the public site (which also hosts the privacy policy).
-// Taps on the version label that unlock tester Premium (hidden gesture; see footerSection).
-private const val VERSION_TAPS_TO_UNLOCK = 11
-
 private const val URL_PRIVACY = "https://budgetty-96a3d.web.app/"
 private const val SUPPORT_EMAIL = "kamskstudio@gmail.com"
 
@@ -1207,9 +1170,7 @@ private fun AccountScreenPreview() {
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},
-            onSignOut = {},
-            onUnlockTesterPremium = {},
-        )
+            onSignOut = {},        )
     }
 }
 
@@ -1242,8 +1203,6 @@ private fun AccountScreenTabletPreview() {
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},
-            onSignOut = {},
-            onUnlockTesterPremium = {},
-        )
+            onSignOut = {},        )
     }
 }

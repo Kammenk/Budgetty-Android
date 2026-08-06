@@ -762,8 +762,6 @@
     <string name="toast_account_deleted">Account deleted</string>
     <string name="toast_no_link_app">No app can open this link</string>
     <string name="toast_no_email_app">No email app found</string>
-    <string name="toast_tester_premium_unlocked">Premium unlocked 🎉</string>
-    <string name="toast_tester_premium_countdown">%1$d more to unlock Premium</string>
     <string name="delete_error_message">Something went wrong deleting your account. Please try again.</string>
 
     <!-- Add-receipt sheet quota + premium -->

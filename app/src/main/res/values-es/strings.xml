@@ -628,8 +628,6 @@
     <string name="login_feature_2">Clasificación automática por categorías</string>
     <string name="login_feature_3">Presupuestos, pagos y análisis de gastos</string>
     <string name="login_premium_note">Premium desbloquea escaneos, categorías y pagos ilimitados</string>
-    <string name="toast_tester_premium_unlocked">Premium desbloqueado 🎉</string>
-    <string name="toast_tester_premium_countdown">%1$d más para desbloquear Premium</string>
     <string name="cd_edit_date">Editar fecha del recibo</string>
     <string name="cd_customize_sections">Personalizar secciones</string>
     <string name="cd_move_section_up">Subir</string>

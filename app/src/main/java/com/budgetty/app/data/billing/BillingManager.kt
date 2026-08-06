@@ -36,22 +36,10 @@ class BillingManager(context: Context) {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val prefs = context.getSharedPreferences("billing", Context.MODE_PRIVATE)
-
     /** Debug-only Premium unlock (see [FORCE_PREMIUM]); always false in release builds. */
     private val forcePremium = BuildConfig.DEBUG && FORCE_PREMIUM
 
-    /**
-     * Tester backdoor: set by the hidden 11-tap gesture on the Account version label (see
-     * [unlockTesterPremium]). Unlike [forcePremium] this is persisted and works in release builds,
-     * so it can be handed to testers on the internal track. Reads false — and any prior unlock is
-     * ignored — when [TESTER_PREMIUM_ENABLED] is off, so flipping that flag in a future release
-     * fully revokes the backdoor.
-     */
-    private val testerPremium: Boolean
-        get() = TESTER_PREMIUM_ENABLED && prefs.getBoolean(KEY_TESTER_PREMIUM, false)
-
-    private val _isPremium = MutableStateFlow(forcePremium || testerPremium)
+    private val _isPremium = MutableStateFlow(forcePremium)
     val isPremium: StateFlow<Boolean> = _isPremium.asStateFlow()
 
     private val _products = MutableStateFlow<List<ProductDetails>>(emptyList())
@@ -119,7 +107,7 @@ class BillingManager(context: Context) {
             .setProductType(BillingClient.ProductType.SUBS)
             .build()
         val purchases = queryPurchases(params)
-        _isPremium.value = forcePremium || testerPremium || purchases.any {
+        _isPremium.value = forcePremium || purchases.any {
             it.purchaseState == Purchase.PurchaseState.PURCHASED
         }
         purchases.forEach { acknowledge(it) }
@@ -178,17 +166,6 @@ class BillingManager(context: Context) {
         client.launchBillingFlow(activity, params)
     }
 
-    /**
-     * Marks this install as Premium for testing, without a subscription — invoked by the hidden
-     * 11-tap gesture on the Account screen's version label. Persisted so it sticks across restarts.
-     * No-op when [TESTER_PREMIUM_ENABLED] is off.
-     */
-    fun unlockTesterPremium() {
-        if (!TESTER_PREMIUM_ENABLED) return
-        prefs.edit().putBoolean(KEY_TESTER_PREMIUM, true).apply()
-        _isPremium.value = true
-    }
-
     companion object {
         /**
          * Testing switch: when true, the account is treated as Premium without subscribing.
@@ -196,15 +173,6 @@ class BillingManager(context: Context) {
          * false to exercise the real free-tier / paywall flow in debug.
          */
         private const val FORCE_PREMIUM = true
-
-        /**
-         * Master switch for the tester-only 11-tap Premium unlock ([unlockTesterPremium]). Set to
-         * false in a future release to disable the gesture *and* ignore any unlock already granted,
-         * fully removing the backdoor.
-         */
-        const val TESTER_PREMIUM_ENABLED = true
-
-        private const val KEY_TESTER_PREMIUM = "tester_premium"
 
         const val MONTHLY = "budgetty_premium_monthly"
         const val YEARLY = "budgetty_premium_yearly"

@@ -613,8 +613,6 @@
     <string name="login_feature_2">Automatische Kategoriezuordnung</string>
     <string name="login_feature_3">Budgets, Rechnungen und Ausgaben-Insights</string>
     <string name="login_premium_note">Premium schaltet unbegrenzte Scans, Kategorien und Rechnungen frei</string>
-    <string name="toast_tester_premium_unlocked">Premium freigeschaltet 🎉</string>
-    <string name="toast_tester_premium_countdown">Noch %1$d bis Premium freigeschaltet ist</string>
     <string name="cd_edit_date">Belegdatum bearbeiten</string>
     <string name="cd_customize_sections">Bereiche anpassen</string>
     <string name="cd_move_section_up">Nach oben</string>
