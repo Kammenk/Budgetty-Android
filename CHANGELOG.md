@@ -15,6 +15,17 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.2.1 (versionCode 1121) — 2026-08-06
+
+Internal maintenance — no user-facing changes.
+
+### Changed
+- Removed unused internal tooling.
+
+> No database change — schema stays v22.
+
+> **Play status — not yet uploaded.** Follows 11.2.0/vc1120 (uploaded 2026-08-06). Kept deliberately generic here rather than describing the removed internal shortcut, since the shortcut still exists in the live vc1120 build until users update.
+
 ## 11.2.0 (versionCode 1120) — 2026-08-04
 
 A new feature: a Wellbeing score with personalised coaching.
