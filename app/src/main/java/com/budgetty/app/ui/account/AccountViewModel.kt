@@ -41,9 +41,6 @@ class AccountViewModel(
     val settings: StateFlow<AppSettings> = settingsStore.settings
     val isPremium: StateFlow<Boolean> = billingManager.isPremium
 
-    /** Tester-only Premium unlock, triggered by the hidden 11-tap gesture on the version label. */
-    fun unlockTesterPremium() = billingManager.unlockTesterPremium()
-
     fun setThemeMode(value: ThemeMode) = settingsStore.setThemeMode(value)
     fun setAccent(value: AccentTheme) = settingsStore.setAccent(value)
     fun setCurrency(value: Currency) = settingsStore.setCurrency(value)

@@ -559,8 +559,6 @@
     <string name="toast_account_deleted">Konto raderat</string>
     <string name="toast_no_link_app">Ingen app kan öppna länken</string>
     <string name="toast_no_email_app">Ingen e-postapp hittades</string>
-    <string name="toast_tester_premium_unlocked">Premium upplåst 🎉</string>
-    <string name="toast_tester_premium_countdown">%1$d till för att låsa upp Premium</string>
     <string name="delete_error_message">Något gick fel när kontot skulle raderas. Försök igen.</string>
 
     <string name="go_premium">Skaffa Premium</string>

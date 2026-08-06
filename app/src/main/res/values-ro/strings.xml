@@ -559,8 +559,6 @@
     <string name="toast_account_deleted">Cont șters</string>
     <string name="toast_no_link_app">Nicio aplicație nu poate deschide acest link</string>
     <string name="toast_no_email_app">Nu s-a găsit nicio aplicație de e-mail</string>
-    <string name="toast_tester_premium_unlocked">Premium deblocat 🎉</string>
-    <string name="toast_tester_premium_countdown">Încă %1$d până la deblocarea Premium</string>
     <string name="delete_error_message">Ceva n-a mers la ștergerea contului. Încearcă din nou.</string>
 
     <string name="go_premium">Treci la Premium</string>

@@ -628,8 +628,6 @@
     <string name="login_feature_2">Автоматическая сортировка по категориям</string>
     <string name="login_feature_3">Бюджеты, счета и аналитика расходов</string>
     <string name="login_premium_note">Премиум открывает безлимитные сканирования, категории и счета</string>
-    <string name="toast_tester_premium_unlocked">Premium разблокирован 🎉</string>
-    <string name="toast_tester_premium_countdown">Ещё %1$d до разблокировки Premium</string>
     <string name="cd_edit_date">Изменить дату чека</string>
     <string name="cd_customize_sections">Настроить разделы</string>
     <string name="cd_move_section_up">Вверх</string>

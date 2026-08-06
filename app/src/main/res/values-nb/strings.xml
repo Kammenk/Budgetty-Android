@@ -559,8 +559,6 @@
     <string name="toast_account_deleted">Konto slettet</string>
     <string name="toast_no_link_app">Ingen app kan åpne denne lenken</string>
     <string name="toast_no_email_app">Fant ingen e-postapp</string>
-    <string name="toast_tester_premium_unlocked">Premium låst opp 🎉</string>
-    <string name="toast_tester_premium_countdown">%1$d til for å låse opp Premium</string>
     <string name="delete_error_message">Noe gikk galt under sletting av kontoen. Prøv igjen.</string>
 
     <string name="go_premium">Skaff Premium</string>

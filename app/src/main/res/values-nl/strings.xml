@@ -628,8 +628,6 @@
     <string name="login_feature_2">Automatisch sorteren op categorie</string>
     <string name="login_feature_3">Budgetten, rekeningen en uitgaveninzichten</string>
     <string name="login_premium_note">Premium ontgrendelt onbeperkt scannen, categorieën en rekeningen</string>
-    <string name="toast_tester_premium_unlocked">Premium ontgrendeld 🎉</string>
-    <string name="toast_tester_premium_countdown">Nog %1$d tot Premium ontgrendeld is</string>
     <string name="cd_edit_date">Bondatum bewerken</string>
     <string name="cd_customize_sections">Secties aanpassen</string>
     <string name="cd_move_section_up">Omhoog</string>
