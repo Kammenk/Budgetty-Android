@@ -44,7 +44,9 @@ class SavingsSectionScreenshotTest {
         val s = BigDecimal(saved)
         val remaining = (t - s).max(BigDecimal.ZERO)
         return SavingsGoalCardUi(
-            goal = SavingsGoalEntity(id = id, name = name, emoji = emoji, targetAmount = t, targetDate = date?.let(::millis)),
+            goal = SavingsGoalEntity(
+                id = id, name = name, emoji = emoji, targetAmount = t, targetDate = date?.let(::millis),
+            ),
             progress = SavingsProgress(
                 saved = s,
                 remaining = remaining,
@@ -58,7 +60,8 @@ class SavingsSectionScreenshotTest {
 
     private val laptop get() = card(1, "💻", "New laptop", "1200", "480", LocalDate.of(2026, 12, 31), "144.00")
     private val fund get() = card(2, "🛟", "Emergency fund", "3000", "830", null, null)
-    private val japan get() = card(3, "✈️", "Japan trip", "2500", "200", LocalDate.of(2027, 3, 31), "288.00", behind = true)
+    private val japan get() =
+        card(3, "✈️", "Japan trip", "2500", "200", LocalDate.of(2027, 3, 31), "288.00", behind = true)
 
     @Test fun empty_light() = capture(emptyList(), isPremium = false, dark = false)
     @Test fun multiple_premium_light() = capture(listOf(laptop, fund, japan), isPremium = true, dark = false)
@@ -75,7 +78,10 @@ class SavingsSectionScreenshotTest {
         AppFormats.currencySymbol = "€"
         val target = BigDecimal("1200")
         val saved = if (reached) target else BigDecimal("480")
-        val goal = SavingsGoalEntity(id = 1, name = "New laptop", emoji = "💻", targetAmount = target, targetDate = millis(LocalDate.of(2026, 12, 31)))
+        val goal = SavingsGoalEntity(
+            id = 1, name = "New laptop", emoji = "💻", targetAmount = target,
+            targetDate = millis(LocalDate.of(2026, 12, 31)),
+        )
         val progress = SavingsProgress(
             saved = saved,
             remaining = (target - saved).max(BigDecimal.ZERO),

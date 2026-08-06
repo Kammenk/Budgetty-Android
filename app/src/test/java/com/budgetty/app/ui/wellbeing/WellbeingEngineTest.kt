@@ -35,7 +35,8 @@ class WellbeingEngineTest {
         budgetedCount = budgetedCount, overCount = overCount, overspendTotal = bd(overspendTotal),
         budgetedTotal = bd(budgetedTotal), trendPercent = trendPercent, subsSharePercent = subsSharePercent,
         subsMonthly = bd(subsMonthly), subsCount = subsCount, goals = goals, categories = categories,
-        spend = bd(spend), receiptsLogged = receiptsLogged, monthsTracked = monthsTracked, previousScore = previousScore,
+        spend = bd(spend), receiptsLogged = receiptsLogged, monthsTracked = monthsTracked,
+        previousScore = previousScore,
     )
 
     // ── Bands & tiers ─────────────────────────────────────────────────────────────
@@ -166,7 +167,10 @@ class WellbeingEngineTest {
             inputs(
                 overCount = 0, overspendTotal = "0", netCashflow = "300",
                 categories = listOf(
-                    CategorySpend("Dining", current = bd("182"), average = bd("136"), monthlyAverage = bd("150"), hasBudget = false),
+                    CategorySpend(
+                        "Dining", current = bd("182"), average = bd("136"),
+                        monthlyAverage = bd("150"), hasBudget = false,
+                    ),
                 ),
             )
         )

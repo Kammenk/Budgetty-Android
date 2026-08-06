@@ -66,7 +66,10 @@ class ExportStatementScreenshotTest {
         val bmp = DataExporter.renderBitmap(data).asImageBitmap()
         composeRule.setContent {
             Surface {
-                Image(bitmap = bmp, contentDescription = null, modifier = Modifier.width(460.dp).aspectRatio(595f / 842f))
+                Image(
+                    bitmap = bmp, contentDescription = null,
+                    modifier = Modifier.width(460.dp).aspectRatio(595f / 842f),
+                )
             }
         }
         composeRule.onRoot().captureRoboImage()

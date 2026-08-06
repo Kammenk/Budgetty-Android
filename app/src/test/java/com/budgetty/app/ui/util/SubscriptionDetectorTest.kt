@@ -36,7 +36,10 @@ class SubscriptionDetectorTest {
         assertEquals(3, s.chargeCount)
         assertNull(s.priceHike)
         // next expected ≈ 14 Aug
-        assertEquals(LocalDate.of(2026, 8, 14), java.time.Instant.ofEpochMilli(s.nextExpectedMillis).atZone(ZoneId.systemDefault()).toLocalDate())
+        assertEquals(
+            LocalDate.of(2026, 8, 14),
+            java.time.Instant.ofEpochMilli(s.nextExpectedMillis).atZone(ZoneId.systemDefault()).toLocalDate(),
+        )
     }
 
     @Test fun `a price hike is flagged old-to-new`() {
@@ -52,7 +55,10 @@ class SubscriptionDetectorTest {
         assertNotNull(hike)
         assertEquals(BigDecimal("11.99"), hike!!.oldAmount)
         assertEquals(BigDecimal("13.99"), hike.newAmount)
-        assertEquals(LocalDate.of(2026, 4, 14), java.time.Instant.ofEpochMilli(hike.sinceMillis).atZone(ZoneId.systemDefault()).toLocalDate())
+        assertEquals(
+            LocalDate.of(2026, 4, 14),
+            java.time.Instant.ofEpochMilli(hike.sinceMillis).atZone(ZoneId.systemDefault()).toLocalDate(),
+        )
         assertEquals(BigDecimal("13.99"), subs.single().amount) // current amount is the new one
     }
 
@@ -108,8 +114,12 @@ class SubscriptionDetectorTest {
     @Test fun `subscriptions sort by monthly cost descending`() {
         val subs = SubscriptionDetector.detect(
             listOf(
-                charge("Spotify", "10.99", 2026, 5, 3), charge("Spotify", "10.99", 2026, 6, 3), charge("Spotify", "10.99", 2026, 7, 3),
-                charge("Gym", "24.90", 2026, 5, 1), charge("Gym", "24.90", 2026, 6, 1), charge("Gym", "24.90", 2026, 7, 1),
+                charge("Spotify", "10.99", 2026, 5, 3),
+                charge("Spotify", "10.99", 2026, 6, 3),
+                charge("Spotify", "10.99", 2026, 7, 3),
+                charge("Gym", "24.90", 2026, 5, 1),
+                charge("Gym", "24.90", 2026, 6, 1),
+                charge("Gym", "24.90", 2026, 7, 1),
             ),
             today,
         )

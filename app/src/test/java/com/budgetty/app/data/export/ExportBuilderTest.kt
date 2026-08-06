@@ -16,7 +16,10 @@ class ExportBuilderTest {
         LocalDate.of(y, m, d).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
     private fun tx(receiptId: Long, price: String, category: String, y: Int, mo: Int, d: Int) =
-        TransactionEntity(name = "x", timestamp = ms(y, mo, d), price = BigDecimal(price), quantity = 1, category = category, receiptId = receiptId)
+        TransactionEntity(
+            name = "x", timestamp = ms(y, mo, d), price = BigDecimal(price),
+            quantity = 1, category = category, receiptId = receiptId,
+        )
 
     private fun receipt(id: Long, store: String) =
         ReceiptEntity(timestamp = id, store = store, date = id, discount = BigDecimal.ZERO)

@@ -179,7 +179,10 @@ object DataExporter {
         y += 6f
 
         pageRows.forEachIndexed { i, r ->
-            if (i % 2 == 1) { p.color = ZEBRA; c.drawRoundRect(RectF(MARGIN, y - 2f, PAGE_W - MARGIN, y + 12f), 4f, 4f, p) }
+            if (i % 2 == 1) {
+                p.color = ZEBRA
+                c.drawRoundRect(RectF(MARGIN, y - 2f, PAGE_W - MARGIN, y + 12f), 4f, 4f, p)
+            }
             p.typeface = reg; p.textSize = 10f; p.color = Color.rgb(0x49, 0x45, 0x4F)
             c.drawText(r.dateLabel, MARGIN + 8f, y + 9f, p)
             p.typeface = bold; p.textSize = 11f; p.color = INK
@@ -188,7 +191,8 @@ object DataExporter {
             p.typeface = reg; p.textSize = 10f; p.color = Color.rgb(0x49, 0x45, 0x4F)
             c.drawText(ellipsize(r.category, p, 80f), PAGE_W - MARGIN - 180f + 12f, y + 9f, p)
             p.typeface = bold; p.textSize = 11f; p.color = INK; p.textAlign = Paint.Align.RIGHT
-            c.drawText(money(r.amount, data.currencySymbol), PAGE_W - MARGIN - 8f, y + 9f, p); p.textAlign = Paint.Align.LEFT
+            c.drawText(money(r.amount, data.currencySymbol), PAGE_W - MARGIN - 8f, y + 9f, p)
+            p.textAlign = Paint.Align.LEFT
             y += 15f
         }
 
@@ -199,13 +203,15 @@ object DataExporter {
             p.typeface = bold; p.textSize = 12f; p.color = INK
             c.drawText(data.totalRowLabel, MARGIN + 8f, y + 8f, p)
             p.textAlign = Paint.Align.RIGHT; p.textSize = 13f
-            c.drawText(money(data.totalSpent, data.currencySymbol), PAGE_W - MARGIN - 8f, y + 8f, p); p.textAlign = Paint.Align.LEFT
+            c.drawText(money(data.totalSpent, data.currencySymbol), PAGE_W - MARGIN - 8f, y + 8f, p)
+            p.textAlign = Paint.Align.LEFT
         }
 
         // Footer
         p.color = LINE; c.drawRect(MARGIN, PAGE_H - MARGIN - 22f, PAGE_W - MARGIN, PAGE_H - MARGIN - 21.5f, p)
         p.typeface = reg; p.textSize = 8f; p.color = Color.rgb(0x8A, 0x84, 0x96)
-        c.drawText("Created on device by Budgetty from your own receipts. Not a tax document or a bank statement.", MARGIN, PAGE_H - MARGIN - 8f, p)
+        val footer = "Created on device by Budgetty from your own receipts. Not a tax document or a bank statement."
+        c.drawText(footer, MARGIN, PAGE_H - MARGIN - 8f, p)
         p.textAlign = Paint.Align.RIGHT
         c.drawText("Page $pageNo of $pageCount", PAGE_W - MARGIN, PAGE_H - MARGIN - 8f, p)
         p.textAlign = Paint.Align.LEFT
