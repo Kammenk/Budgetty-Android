@@ -2001,7 +2001,7 @@ private fun SheetSectionLabel(text: String) {
     )
 }
 
-/** Compact whole-number "spent / limit" summary for a category box, e.g. "242 / 400 лв". */
+/** Compact whole-number "spent / limit" summary for a category box, e.g. "242 / 400 €". */
 private fun budgetSummary(spent: BigDecimal, budget: BigDecimal): String {
     val s = spent.setScale(0, RoundingMode.HALF_UP).toPlainString()
     val b = budget.setScale(0, RoundingMode.HALF_UP).toPlainString()
