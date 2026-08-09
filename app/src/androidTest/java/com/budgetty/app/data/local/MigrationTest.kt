@@ -207,6 +207,56 @@ class MigrationTest {
     }
 
     /**
+     * [MIGRATION_22_23] splits "Insurance & Utilities" three ways: everything filed under the old name
+     * is repointed onto the survivor "Utilities", while the two new siblings ("Insurance",
+     * "Phone & Internet") arrive via the onOpen re-seed. Same trap as the Subscriptions/Services split —
+     * the category name is the only reference, so the rename must reach all four tables at once.
+     */
+    @Test
+    fun migration22To23SplitsInsuranceAndUtilities() {
+        openRawAtV1().use { db ->
+            ALL_MIGRATIONS.filter { it.endVersion <= 22 }.forEach { it.migrate(db) }
+            val old = "Insurance & Utilities"
+            db.execSQL("INSERT OR REPLACE INTO categories (name, colorArgb) VALUES (?, ?)", arrayOf<Any>(old, 1))
+            db.execSQL(
+                "INSERT INTO transactions (name, timestamp, price, quantity, category, receiptId) VALUES (?, ?, ?, ?, ?, ?)",
+                arrayOf<Any>("Electric bill", 1_700_000_000_000L, "60.00", 1, old, 0),
+            )
+            db.execSQL(
+                "INSERT INTO recurring (label, amount, isIncome, category) VALUES (?, ?, ?, ?)",
+                arrayOf<Any>("Electric bill", "60", 0, old),
+            )
+            db.execSQL("INSERT INTO category_rules (name, category) VALUES (?, ?)", arrayOf<Any>("electric bill", old))
+            db.execSQL("INSERT INTO budgets (budgetKey, amount) VALUES (?, ?)", arrayOf<Any>("CAT:$old", "80"))
+            db.version = 22
+        }
+
+        openWithRoom().useSqlite { db ->
+            fun single(sql: String): String? = db.query(sql).use { c -> if (c.moveToFirst()) c.getString(0) else null }
+
+            assertEquals("the transaction must follow the split", "Utilities", single("SELECT category FROM transactions WHERE name = 'Electric bill'"))
+            assertEquals("the recurring bill must follow the split", "Utilities", single("SELECT category FROM recurring WHERE label = 'Electric bill'"))
+            assertEquals("the learned rule must follow the split", "Utilities", single("SELECT category FROM category_rules WHERE name = 'electric bill'"))
+            assertEquals("the per-category budget key must follow the split", "80", single("SELECT amount FROM budgets WHERE budgetKey = 'CAT:Utilities'"))
+
+            // The pre-split name must be gone, or it lingers as an unmapped, custom-looking row (the
+            // re-seed is INSERT-OR-IGNORE and never deletes).
+            db.query("SELECT COUNT(*) FROM categories WHERE name = 'Insurance & Utilities'").use { c ->
+                assertTrue(c.moveToFirst())
+                assertEquals("the pre-split category must not survive", 0, c.getInt(0))
+            }
+            // All three resulting categories must exist — "Utilities" via the rename, the other two via
+            // the onOpen re-seed.
+            for (name in listOf("Utilities", "Insurance", "Phone & Internet")) {
+                db.query("SELECT COUNT(*) FROM categories WHERE name = ?", arrayOf<Any>(name)).use { c ->
+                    assertTrue(c.moveToFirst())
+                    assertEquals("$name must exist after the split", 1, c.getInt(0))
+                }
+            }
+        }
+    }
+
+    /**
      * Opens [TEST_DB] with the schema as it stood at v1: transactions only, before
      * [MIGRATION_1_2] added category and [MIGRATION_6_7] added receiptId.
      */
