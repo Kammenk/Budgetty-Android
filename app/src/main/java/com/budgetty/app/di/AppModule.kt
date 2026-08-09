@@ -83,8 +83,8 @@ val appModule = module {
     // Crash reporting (Crashlytics collection control)
     single { CrashReporting() }
 
-    // Play Billing (subscriptions)
-    single { BillingManager(androidContext()) }
+    // Play Billing (subscriptions) + the server-granted account-comp entitlement
+    single { BillingManager(androidContext(), get()) }
 
     // App settings (theme / currency / date format)
     single { SettingsStore(androidContext()) }
