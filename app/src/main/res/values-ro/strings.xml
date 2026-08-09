@@ -836,10 +836,12 @@
     <string name="period_all_time">tot timpul</string>
     <plurals name="receipt_count">
         <item quantity="one">%1$d bon</item>
-        <item quantity="other">%1$d bonuri</item>
+        <item quantity="few">%1$d bonuri</item>
+        <item quantity="other">%1$d de bonuri</item>
     </plurals>
     <plurals name="history_bought_count">
         <item quantity="one">Cumpărat de %1$d×</item>
+        <item quantity="few">Cumpărat de %1$d×</item>
         <item quantity="other">Cumpărat de %1$d×</item>
     </plurals>
     <string name="history_open_receipt">Deschide bonul</string>

@@ -831,10 +831,14 @@
     <string name="period_all_time">всё время</string>
     <plurals name="receipt_count">
         <item quantity="one">%1$d чек</item>
+        <item quantity="few">%1$d чека</item>
+        <item quantity="many">%1$d чеков</item>
         <item quantity="other">%1$d чека</item>
     </plurals>
     <plurals name="history_bought_count">
         <item quantity="one">Куплено %1$d×</item>
+        <item quantity="few">Куплено %1$d×</item>
+        <item quantity="many">Куплено %1$d×</item>
         <item quantity="other">Куплено %1$d×</item>
     </plurals>
     <string name="history_open_receipt">Открыть чек</string>

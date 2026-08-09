@@ -842,10 +842,14 @@
     <string name="period_all_time">celá doba</string>
     <plurals name="receipt_count">
         <item quantity="one">%1$d účtenka</item>
+        <item quantity="few">%1$d účtenky</item>
+        <item quantity="many">%1$d účtenky</item>
         <item quantity="other">%1$d účtenek</item>
     </plurals>
     <plurals name="history_bought_count">
         <item quantity="one">Koupeno %1$d×</item>
+        <item quantity="few">Koupeno %1$d×</item>
+        <item quantity="many">Koupeno %1$d×</item>
         <item quantity="other">Koupeno %1$d×</item>
     </plurals>
     <string name="history_open_receipt">Otevřít účtenku</string>

@@ -831,10 +831,14 @@
     <string name="period_all_time">cały czas</string>
     <plurals name="receipt_count">
         <item quantity="one">%1$d paragon</item>
-        <item quantity="other">%1$d paragony</item>
+        <item quantity="few">%1$d paragony</item>
+        <item quantity="many">%1$d paragonów</item>
+        <item quantity="other">%1$d paragonu</item>
     </plurals>
     <plurals name="history_bought_count">
         <item quantity="one">Kupione %1$d×</item>
+        <item quantity="few">Kupione %1$d×</item>
+        <item quantity="many">Kupione %1$d×</item>
         <item quantity="other">Kupione %1$d×</item>
     </plurals>
     <string name="history_open_receipt">Otwórz paragon</string>
