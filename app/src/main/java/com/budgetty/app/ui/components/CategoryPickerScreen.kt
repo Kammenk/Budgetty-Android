@@ -155,6 +155,65 @@ fun CategoryPickerScreen(
     }
 }
 
+/**
+ * The create/edit form on its own, as a full-screen dialog — the **Manage categories** screen opens
+ * this to create a new custom category ([original] == null) or edit an existing one, reusing the
+ * picker's exact form (preview, name, colour, emoji grid, parent group) and its Save/Delete flow.
+ * [onClose] fires after a save or delete, or on back / dismiss.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategoryEditorScreen(
+    original: CategoryEntity?,
+    custom: CustomCategoryActions,
+    onClose: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onClose,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
+            Scaffold(
+                containerColor = Color.Transparent,
+                topBar = {
+                    val titleRes = if (original == null) R.string.custom_new_title else R.string.custom_edit_title
+                    TopAppBar(
+                        title = { Text(stringResource(titleRes), fontWeight = FontWeight.Bold) },
+                        navigationIcon = {
+                            IconButton(onClick = onClose) {
+                                Icon(
+                                    Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = stringResource(R.string.action_back),
+                                )
+                            }
+                        },
+                    )
+                },
+            ) { padding ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(padding),
+                    contentAlignment = Alignment.TopCenter,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .widthIn(max = 560.dp)
+                            .fillMaxSize(),
+                    ) {
+                        CreateEditContent(
+                            original = original,
+                            custom = custom,
+                            onSaved = { onClose() },
+                            onDeleted = onClose,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CategoryPickerContent(
