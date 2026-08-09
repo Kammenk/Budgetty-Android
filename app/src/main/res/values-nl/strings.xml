@@ -948,4 +948,24 @@
     <string name="wellbeing_banner_nogoal">Begin een spaardoel</string>
     <string name="wellbeing_banner_savingswin">%1$d%% gespaard deze maand</string>
     <string name="wellbeing_banner_generic">Bekijk hoe je ervoor staat</string>
+
+    <!-- Manage Categories screen -->
+    <string name="account_manage_categories">Categorieën beheren</string>
+    <string name="manage_your_categories">Je categorieën</string>
+    <string name="manage_builtin">Standaard</string>
+    <string name="manage_builtin_summary">%1$d groepen · %2$d categorieën</string>
+    <string name="manage_create_category">Categorie maken</string>
+    <string name="manage_cap_hint">Gratis versie bevat %1$d eigen categorieën</string>
+    <string name="manage_unlimited_premium">Onbeperkt met Premium</string>
+    <string name="manage_in_group">In %1$s</string>
+    <string name="manage_top_level">Hoofdniveau</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d subcategorie</item>
+        <item quantity="other">%1$d subcategorieën</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d van jou</string>
+    <string name="manage_no_subs">Geen subcategorieën</string>
+    <string name="manage_move_title">Naar groep verplaatsen</string>
+    <string name="manage_move_cd">%1$s naar een andere groep verplaatsen</string>
+    <string name="manage_empty_hint">Nog geen eigen categorieën — maak er een om je uitgaven op jouw manier in te delen.</string>
 </resources>

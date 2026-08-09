@@ -948,4 +948,22 @@
     <string name="wellbeing_banner_nogoal">Starte ein Sparziel</string>
     <string name="wellbeing_banner_savingswin">Diesen Monat %1$d%% gespart</string>
     <string name="wellbeing_banner_generic">Sieh, wie du dastehst</string>
+    <string name="account_manage_categories">Kategorien verwalten</string>
+    <string name="manage_your_categories">Deine Kategorien</string>
+    <string name="manage_builtin">Integriert</string>
+    <string name="manage_builtin_summary">%1$d Gruppen · %2$d Kategorien</string>
+    <string name="manage_create_category">Kategorie erstellen</string>
+    <string name="manage_cap_hint">Gratis-Tarif enthält %1$d eigene Kategorien</string>
+    <string name="manage_unlimited_premium">Unbegrenzt mit Premium</string>
+    <string name="manage_in_group">In %1$s</string>
+    <string name="manage_top_level">Oberste Ebene</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d Unterkategorie</item>
+        <item quantity="other">%1$d Unterkategorien</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d eigene</string>
+    <string name="manage_no_subs">Keine Unterkategorien</string>
+    <string name="manage_move_title">In Gruppe verschieben</string>
+    <string name="manage_move_cd">%1$s in eine andere Gruppe verschieben</string>
+    <string name="manage_empty_hint">Noch keine eigenen Kategorien — erstelle eine, um Ausgaben auf deine Weise zu erfassen.</string>
 </resources>

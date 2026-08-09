@@ -961,4 +961,23 @@
     <string name="wellbeing_banner_nogoal">Starta ett sparmål</string>
     <string name="wellbeing_banner_savingswin">Sparade %1$d%% den här månaden</string>
     <string name="wellbeing_banner_generic">Se hur det går för dig</string>
+
+    <string name="account_manage_categories">Hantera kategorier</string>
+    <string name="manage_your_categories">Dina kategorier</string>
+    <string name="manage_builtin">Inbyggda</string>
+    <string name="manage_builtin_summary">%1$d grupper · %2$d kategorier</string>
+    <string name="manage_create_category">Skapa kategori</string>
+    <string name="manage_cap_hint">Gratis inkluderar %1$d egna kategorier</string>
+    <string name="manage_unlimited_premium">Obegränsat med Premium</string>
+    <string name="manage_in_group">I %1$s</string>
+    <string name="manage_top_level">Toppnivå</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d underkategori</item>
+        <item quantity="other">%1$d underkategorier</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d dina</string>
+    <string name="manage_no_subs">Inga underkategorier</string>
+    <string name="manage_move_title">Flytta till grupp</string>
+    <string name="manage_move_cd">Flytta %1$s till en annan grupp</string>
+    <string name="manage_empty_hint">Inga egna kategorier ännu — skapa en för att märka dina utgifter på ditt eget sätt.</string>
 </resources>

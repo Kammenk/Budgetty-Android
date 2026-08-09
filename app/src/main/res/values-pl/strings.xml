@@ -961,4 +961,26 @@
     <string name="wellbeing_banner_nogoal">Ustaw cel oszczędnościowy</string>
     <string name="wellbeing_banner_savingswin">Oszczędzono %1$d%% w tym miesiącu</string>
     <string name="wellbeing_banner_generic">Zobacz, jak sobie radzisz</string>
+
+    <!-- Manage categories -->
+    <string name="account_manage_categories">Zarządzaj kategoriami</string>
+    <string name="manage_your_categories">Twoje kategorie</string>
+    <string name="manage_builtin">Wbudowane</string>
+    <string name="manage_builtin_summary">%1$d grup · %2$d kategorii</string>
+    <string name="manage_create_category">Utwórz kategorię</string>
+    <string name="manage_cap_hint">Plan darmowy obejmuje %1$d własne kategorie</string>
+    <string name="manage_unlimited_premium">Bez limitu z Premium</string>
+    <string name="manage_in_group">W grupie %1$s</string>
+    <string name="manage_top_level">Najwyższy poziom</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d subkategoria</item>
+        <item quantity="few">%1$d subkategorie</item>
+        <item quantity="many">%1$d subkategorii</item>
+        <item quantity="other">%1$d subkategorii</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d Twoich</string>
+    <string name="manage_no_subs">Brak subkategorii</string>
+    <string name="manage_move_title">Przenieś do grupy</string>
+    <string name="manage_move_cd">Przenieś %1$s do innej grupy</string>
+    <string name="manage_empty_hint">Nie masz jeszcze własnych kategorii — utwórz jedną, aby oznaczać wydatki po swojemu.</string>
 </resources>

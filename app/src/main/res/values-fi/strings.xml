@@ -961,4 +961,24 @@
     <string name="wellbeing_banner_nogoal">Aloita säästötavoite</string>
     <string name="wellbeing_banner_savingswin">Säästit %1$d%% tässä kuussa</string>
     <string name="wellbeing_banner_generic">Katso miten sinulla menee</string>
+
+    <!-- Manage categories -->
+    <string name="account_manage_categories">Hallitse kategorioita</string>
+    <string name="manage_your_categories">Omat kategoriasi</string>
+    <string name="manage_builtin">Valmiit</string>
+    <string name="manage_builtin_summary">%1$d ryhmää · %2$d kategoriaa</string>
+    <string name="manage_create_category">Luo kategoria</string>
+    <string name="manage_cap_hint">Ilmainen sisältää %1$d omaa kategoriaa</string>
+    <string name="manage_unlimited_premium">Rajoittamaton Premiumilla</string>
+    <string name="manage_in_group">Ryhmässä %1$s</string>
+    <string name="manage_top_level">Ylin taso</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d alaluokka</item>
+        <item quantity="other">%1$d alaluokkaa</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d omaa</string>
+    <string name="manage_no_subs">Ei alaluokkia</string>
+    <string name="manage_move_title">Siirrä ryhmään</string>
+    <string name="manage_move_cd">Siirrä %1$s toiseen ryhmään</string>
+    <string name="manage_empty_hint">Ei vielä omia kategorioita — luo sellainen merkitäksesi kulut omalla tavallasi.</string>
 </resources>
