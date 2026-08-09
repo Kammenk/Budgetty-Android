@@ -653,6 +653,7 @@
     <string name="safe_to_spend_spent">Utraceno · %1$s</string>
     <string name="safe_to_spend_bills_due">Účty k zaplacení</string>
     <string name="safe_to_spend_bills_paid">%1$s již zaplaceno</string>
+    <string name="safe_to_spend_total_spent">Celkem utraceno v tomto cyklu</string>
     <string name="safe_to_spend_resets">obnoví se %1$s</string>
     <string name="safe_to_spend_over">%1$s nad limit — utratili jste víc, než v tomto cyklu zbývá.</string>
     <string name="safe_to_spend_income_foot">Obojí se hradí z příjmu %1$s v tomto cyklu.</string>

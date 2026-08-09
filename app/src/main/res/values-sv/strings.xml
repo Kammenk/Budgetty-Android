@@ -653,6 +653,7 @@
     <string name="safe_to_spend_spent">Spenderat · %1$s</string>
     <string name="safe_to_spend_bills_due">Räkningar kvar att betala</string>
     <string name="safe_to_spend_bills_paid">%1$s redan betalt</string>
+    <string name="safe_to_spend_total_spent">Spenderat totalt denna period</string>
     <string name="safe_to_spend_resets">återställs %1$s</string>
     <string name="safe_to_spend_over">%1$s över — du har spenderat mer än du har kvar denna period.</string>
     <string name="safe_to_spend_income_foot">Båda tas från %1$s i inkomst denna period.</string>

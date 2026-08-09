@@ -652,6 +652,7 @@
     <string name="safe_to_spend_spent">Brugt · %1$s</string>
     <string name="safe_to_spend_bills_due">Ubetalte regninger</string>
     <string name="safe_to_spend_bills_paid">%1$s allerede betalt</string>
+    <string name="safe_to_spend_total_spent">Brugt i alt denne cyklus</string>
     <string name="safe_to_spend_resets">nulstilles %1$s</string>
     <string name="safe_to_spend_over">%1$s over — du har brugt mere, end du har tilbage denne cyklus.</string>
     <string name="safe_to_spend_income_foot">Begge dele kommer fra din indkomst på %1$s denne cyklus.</string>

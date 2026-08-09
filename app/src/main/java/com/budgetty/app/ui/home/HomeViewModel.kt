@@ -75,7 +75,8 @@ data class HomeUiState(
     // (date-based, independent of the period filter). [hasBills] gates the card on any bill existing.
     val upcomingBills: List<UpcomingBill> = emptyList(),
     val hasBills: Boolean = false,
-    // Left to spend freely before the next payday: income − spent so far − bills still due.
+    // Left to spend freely before the next payday: income − spent so far − every recurring bill this
+    // cycle (still due + already paid). Paying a bill is net-neutral here — it was already reserved.
     val safeToSpend: BigDecimal = BigDecimal.ZERO,
     // Whole days from today to the next pay-cycle start (min 1) and that date, for the per-day line.
     val daysUntilPayday: Int = 1,
@@ -204,8 +205,11 @@ class HomeViewModel(
             val previousSpent = brw.previous.spend() + paidAdjustmentOf(brw.previous, receiptsById)
             val colorByCategory = categories.associate { it.name to it.colorArgb }
             val cashFlow = monthlyData.cashFlow
-            // Safe to spend before the next payday = cycle income − spent so far − bills still owed.
-            val safeToSpend = cashFlow.income - monthlySpent - cashFlow.billsStillDue
+            // Safe to spend before the next payday = cycle income − spent so far − every recurring bill
+            // this cycle (still due + already paid). Paid bills stay subtracted, so marking one paid just
+            // shifts it from the still-due bucket to the paid bucket and the figure holds (never jumps up).
+            val safeToSpend =
+                cashFlow.income - monthlySpent - cashFlow.billsStillDue - cashFlow.billsPaid
             val today = LocalDate.now()
             val payday = PayCycle.month(today, ctx.monthStartDay, 1).first
             val daysUntilPayday = ChronoUnit.DAYS.between(today, payday).toInt().coerceAtLeast(1)

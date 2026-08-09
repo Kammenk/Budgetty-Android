@@ -642,6 +642,7 @@
     <string name="safe_to_spend_spent">Wydano · %1$s</string>
     <string name="safe_to_spend_bills_due">Rachunki do zapłaty</string>
     <string name="safe_to_spend_bills_paid">%1$s już zapłacono</string>
+    <string name="safe_to_spend_total_spent">Łącznie wydano w tym cyklu</string>
     <string name="safe_to_spend_resets">odnawia się %1$s</string>
     <string name="safe_to_spend_over">%1$s ponad — wydano więcej, niż zostało w tym cyklu.</string>
     <string name="safe_to_spend_income_foot">Obie kwoty pochodzą z dochodu %1$s w tym cyklu.</string>

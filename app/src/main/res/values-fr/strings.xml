@@ -641,6 +641,7 @@
     <string name="safe_to_spend_spent">Dépensé · %1$s</string>
     <string name="safe_to_spend_bills_due">Factures à payer</string>
     <string name="safe_to_spend_bills_paid">%1$s déjà payé</string>
+    <string name="safe_to_spend_total_spent">Total dépensé ce cycle</string>
     <string name="safe_to_spend_resets">recommence le %1$s</string>
     <string name="safe_to_spend_over">%1$s de trop — vous avez dépensé plus qu\'il ne vous reste pour ce cycle.</string>
     <string name="safe_to_spend_income_foot">Les deux sont déduits de vos %1$s de revenus ce cycle.</string>

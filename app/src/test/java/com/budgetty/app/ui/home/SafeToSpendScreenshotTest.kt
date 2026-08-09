@@ -42,25 +42,30 @@ class SafeToSpendScreenshotTest {
     // A fixed payday so the "resets …" date never drifts with the wall clock.
     private val payday: LocalDate = LocalDate.of(2026, 8, 25)
 
+    // Numbers reconcile to income: spent (incl. paid bills) + safe-to-spend + bills-still-due = income,
+    // i.e. safe = 2400 − 712.40 − 1067.60 − 182.40 = 437.60. Paid bills are part of "spent", so they're
+    // subtracted from safe just like receipts — the card's figures add up to the cycle income.
     private fun healthy() = HomeUiState(
         isLoaded = true,
         monthlySpent = BigDecimal("712.40"),
         cycleIncome = BigDecimal("2400.00"),
         billsStillDue = BigDecimal("1067.60"),
         billsPaid = BigDecimal("182.40"),
-        safeToSpend = BigDecimal("620.00"),
+        safeToSpend = BigDecimal("437.60"),
         daysUntilPayday = 15,
         nextPayday = payday,
     )
 
+    // safe = 2400 − 1110.00 − 1067.60 − 182.40 = 40.00 (≤ 10% of income ⇒ the "getting low" state).
     private fun low() = healthy().copy(
-        monthlySpent = BigDecimal("1292.40"),
+        monthlySpent = BigDecimal("1110.00"),
         safeToSpend = BigDecimal("40.00"),
         daysUntilPayday = 9,
     )
 
+    // safe = 2400 − 1215.00 − 1067.60 − 182.40 = −65.00 (negative ⇒ the "overspent" state).
     private fun over() = healthy().copy(
-        monthlySpent = BigDecimal("1397.40"),
+        monthlySpent = BigDecimal("1215.00"),
         safeToSpend = BigDecimal("-65.00"),
         daysUntilPayday = 9,
     )
