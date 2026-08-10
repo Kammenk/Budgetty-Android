@@ -51,6 +51,7 @@ class SafeToSpendScreenshotTest {
         cycleIncome = BigDecimal("2400.00"),
         billsStillDue = BigDecimal("1067.60"),
         billsPaid = BigDecimal("182.40"),
+        billsStillDueCount = 3,
         safeToSpend = BigDecimal("437.60"),
         daysUntilPayday = 15,
         nextPayday = payday,

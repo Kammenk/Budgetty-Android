@@ -658,19 +658,21 @@
     <string name="update_restart_action">Redémarrer</string>
     <!-- Safe to spend (current pay-cycle cash-flow card) -->
     <string name="safe_to_spend_title">Reste à dépenser</string>
-    <string name="safe_to_spend_spent">Dépensé · %1$s</string>
     <string name="safe_to_spend_bills_due">Factures à payer</string>
-    <string name="safe_to_spend_bills_paid">%1$s déjà payé</string>
     <string name="safe_to_spend_total_spent">Total dépensé ce cycle</string>
-    <string name="safe_to_spend_resets">recommence le %1$s</string>
+    <string name="safe_to_spend_composition">%1$s dépensé + %2$s factures payées</string>
+    <string name="safe_to_spend_nothing_yet">Encore rien dépensé ce cycle</string>
     <string name="safe_to_spend_over">%1$s de trop — vous avez dépensé plus qu\'il ne vous reste pour ce cycle.</string>
-    <string name="safe_to_spend_income_foot">Les deux sont déduits de vos %1$s de revenus ce cycle.</string>
     <string name="safe_to_spend_setup_message">Ajoutez vos revenus pour connaître votre reste à dépenser avant la paie.</string>
     <string name="safe_to_spend_setup_cta">Configurer les revenus</string>
     <string name="safe_to_spend_setup_foot">Les revenus se trouvent dans l\'onglet Budget · environ une minute pour les ajouter.</string>
     <plurals name="safe_to_spend_per_day">
         <item quantity="one">%1$s/jour pendant %2$d jour</item>
         <item quantity="other">%1$s/jour pendant %2$d jours</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d facture</item>
+        <item quantity="other">%1$d factures</item>
     </plurals>
     <!-- Savings goals (Budget tab) -->
     <string name="savings_title">Objectifs d\'épargne</string>

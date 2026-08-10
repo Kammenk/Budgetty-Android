@@ -659,13 +659,11 @@
 
     <!-- Safe to spend (current pay-cycle cash-flow card) -->
     <string name="safe_to_spend_title">Можно потратить</string>
-    <string name="safe_to_spend_spent">Потрачено · %1$s</string>
     <string name="safe_to_spend_bills_due">Счета к оплате</string>
-    <string name="safe_to_spend_bills_paid">%1$s уже оплачено</string>
     <string name="safe_to_spend_total_spent">Всего потрачено в этом цикле</string>
-    <string name="safe_to_spend_resets">обновится %1$s</string>
+    <string name="safe_to_spend_composition">%1$s потрачено + %2$s оплаченные счета</string>
+    <string name="safe_to_spend_nothing_yet">Пока ничего не потрачено в этом цикле</string>
     <string name="safe_to_spend_over">%1$s сверх лимита — потрачено больше, чем осталось в этом цикле.</string>
-    <string name="safe_to_spend_income_foot">И то, и другое вычитается из дохода %1$s в этом цикле.</string>
     <string name="safe_to_spend_setup_message">Добавьте доход, чтобы узнать, сколько можно спокойно потратить до зарплаты.</string>
     <string name="safe_to_spend_setup_cta">Настроить доход</string>
     <string name="safe_to_spend_setup_foot">Доход находится во вкладке Бюджет · добавить можно примерно за минуту.</string>
@@ -674,6 +672,12 @@
         <item quantity="few">%1$s/день на следующие %2$d дня</item>
         <item quantity="many">%1$s/день на следующие %2$d дней</item>
         <item quantity="other">%1$s/день на следующие %2$d дня</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d счёт</item>
+        <item quantity="few">%1$d счёта</item>
+        <item quantity="many">%1$d счетов</item>
+        <item quantity="other">%1$d счёта</item>
     </plurals>
 
     <!-- Savings goals (Budget tab) -->

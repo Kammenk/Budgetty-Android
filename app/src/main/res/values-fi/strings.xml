@@ -670,19 +670,21 @@
 
     <!-- Safe to spend (current pay-cycle cash-flow card) -->
     <string name="safe_to_spend_title">Turvallista käyttää</string>
-    <string name="safe_to_spend_spent">Käytetty · %1$s</string>
     <string name="safe_to_spend_bills_due">Maksamattomat laskut</string>
-    <string name="safe_to_spend_bills_paid">%1$s jo maksettu</string>
     <string name="safe_to_spend_total_spent">Käytetty yhteensä tällä jaksolla</string>
-    <string name="safe_to_spend_resets">nollautuu %1$s</string>
+    <string name="safe_to_spend_composition">%1$s käytetty + %2$s maksetut laskut</string>
+    <string name="safe_to_spend_nothing_yet">Ei vielä käytetty mitään tällä jaksolla</string>
     <string name="safe_to_spend_over">%1$s yli — käytit enemmän kuin sinulla on jäljellä tällä jaksolla.</string>
-    <string name="safe_to_spend_income_foot">Molemmat otetaan %1$s tuloista tällä jaksolla.</string>
     <string name="safe_to_spend_setup_message">Lisää tulosi nähdäksesi, mitä on turvallista käyttää ennen palkkapäivää.</string>
     <string name="safe_to_spend_setup_cta">Määritä tulot</string>
     <string name="safe_to_spend_setup_foot">Tulot löytyvät Budjetti-välilehdeltä · lisääminen kestää noin minuutin.</string>
     <plurals name="safe_to_spend_per_day">
         <item quantity="one">%1$s/päivä seuraavan %2$d päivän ajan</item>
         <item quantity="other">%1$s/päivä seuraavien %2$d päivän ajan</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d lasku</item>
+        <item quantity="other">%1$d laskua</item>
     </plurals>
 
     <!-- Savings goals (Budget tab) -->
