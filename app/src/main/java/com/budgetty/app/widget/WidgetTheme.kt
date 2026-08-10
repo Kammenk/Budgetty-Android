@@ -42,8 +42,8 @@ private val centsFormat = NumberFormat.getNumberInstance(Locale.US).apply {
     maximumFractionDigits = 2
 }
 
-/** Compact whole amount + currency symbol, e.g. "1,200 лв" (symbol as a suffix, like the app). */
+/** Compact whole amount + currency symbol, e.g. "1,200 €" (symbol as a suffix, like the app). */
 fun BigDecimal.widgetWhole(symbol: String): String = "${wholeFormat.format(this)} $symbol"
 
-/** Amount with cents + currency symbol, e.g. "712.40 лв" — the summary widget's headline figure. */
+/** Amount with cents + currency symbol, e.g. "712.40 €" — the summary widget's headline figure. */
 fun BigDecimal.widgetCents(symbol: String): String = "${centsFormat.format(this)} $symbol"

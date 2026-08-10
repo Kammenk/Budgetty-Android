@@ -17,13 +17,13 @@ private val moneyFormat: NumberFormat = NumberFormat.getNumberInstance(Locale.US
 
 /** App-wide formatting prefs, refreshed from SettingsStore at the top of the UI tree. */
 object AppFormats {
-    var currencySymbol: String = "лв"
+    var currencySymbol: String = "€"
     var datePattern: String = "d MMM yyyy"
     /** Year-less short form (day/month order follows the same preference as [datePattern]). */
     var dayMonthPattern: String = "d MMM"
 }
 
-/** Formats a monetary amount as e.g. "12.50 лв" (currency symbol from settings). */
+/** Formats a monetary amount as e.g. "12.50 €" (currency symbol from settings). */
 fun BigDecimal.formatMoney(): String =
     "${moneyFormat.format(setScale(2, RoundingMode.HALF_UP))} ${AppFormats.currencySymbol}"
 

@@ -8,7 +8,7 @@ import java.math.BigDecimal
  * a widget's `provideContent` is a pure function of this data.
  */
 data class WidgetData(
-    val currencySymbol: String = "лв",
+    val currencySymbol: String = "€",
     /** Effective monthly budget: the saved MONTHLY budget (plus any carried-over balance when rollover
      *  is on), else the weekly budget scaled up, else ZERO. */
     val monthlyBudget: BigDecimal = BigDecimal.ZERO,
