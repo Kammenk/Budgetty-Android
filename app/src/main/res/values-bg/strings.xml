@@ -965,4 +965,24 @@
     <string name="wellbeing_banner_nogoal">Започни цел за спестяване</string>
     <string name="wellbeing_banner_savingswin">Заделени %1$d%% този месец</string>
     <string name="wellbeing_banner_generic">Виж как се справяш</string>
+
+    <!-- Manage categories -->
+    <string name="account_manage_categories">Управление на категориите</string>
+    <string name="manage_your_categories">Твоите категории</string>
+    <string name="manage_builtin">Вградени</string>
+    <string name="manage_builtin_summary">%1$d групи · %2$d категории</string>
+    <string name="manage_create_category">Създай категория</string>
+    <string name="manage_cap_hint">Безплатно включва %1$d свои категории</string>
+    <string name="manage_unlimited_premium">Неограничено с Premium</string>
+    <string name="manage_in_group">В група %1$s</string>
+    <string name="manage_top_level">Най-горно ниво</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d подкатегория</item>
+        <item quantity="other">%1$d подкатегории</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d твои</string>
+    <string name="manage_no_subs">Няма подкатегории</string>
+    <string name="manage_move_title">Премести в група</string>
+    <string name="manage_move_cd">Премести %1$s в друга група</string>
+    <string name="manage_empty_hint">Все още няма свои категории — създай една, за да отбелязваш разходите по свой начин.</string>
 </resources>

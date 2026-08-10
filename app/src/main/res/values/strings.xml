@@ -389,6 +389,7 @@
 
     <!-- Category rules management screen (Account → Category rules) -->
     <string name="account_category_rules">Category rules</string>
+    <string name="account_manage_categories">Manage categories</string>
     <string name="category_rules_title">Category rules</string>
     <string name="category_rules_subtitle">Applied automatically when Budgetty scans a new receipt. Delete one to stop using it.</string>
     <plurals name="category_rules_count">
@@ -423,6 +424,25 @@
         <item quantity="other">Move %1$d transactions to Other and delete this category?</item>
     </plurals>
     <string name="cd_edit_category">Edit %1$s</string>
+
+    <!-- Manage categories (Account → Manage categories). English-first; localized in a later batch. -->
+    <string name="manage_your_categories">Your categories</string>
+    <string name="manage_builtin">Built-in</string>
+    <string name="manage_builtin_summary">%1$d groups · %2$d categories</string>
+    <string name="manage_create_category">Create category</string>
+    <string name="manage_cap_hint">Free includes %1$d custom categories</string>
+    <string name="manage_unlimited_premium">Unlimited with Premium</string>
+    <string name="manage_in_group">In %1$s</string>
+    <string name="manage_top_level">Top level</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d sub-category</item>
+        <item quantity="other">%1$d sub-categories</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d yours</string>
+    <string name="manage_no_subs">No sub-categories</string>
+    <string name="manage_move_title">Move to group</string>
+    <string name="manage_move_cd">Move %1$s to another group</string>
+    <string name="manage_empty_hint">No custom categories yet — create one to tag spending your own way.</string>
 
     <!-- Insights -->
     <string name="insights_breakdown">Breakdown</string>

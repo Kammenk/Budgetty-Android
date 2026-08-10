@@ -977,4 +977,23 @@
     <string name="wellbeing_banner_nogoal">Start et opsparingsmål</string>
     <string name="wellbeing_banner_savingswin">Sparede %1$d%% op denne måned</string>
     <string name="wellbeing_banner_generic">Se, hvordan det går</string>
+
+    <string name="account_manage_categories">Administrer kategorier</string>
+    <string name="manage_your_categories">Dine kategorier</string>
+    <string name="manage_builtin">Indbygget</string>
+    <string name="manage_builtin_summary">%1$d grupper · %2$d kategorier</string>
+    <string name="manage_create_category">Opret kategori</string>
+    <string name="manage_cap_hint">Gratis inkluderer %1$d egne kategorier</string>
+    <string name="manage_unlimited_premium">Ubegrænset med Premium</string>
+    <string name="manage_in_group">I %1$s</string>
+    <string name="manage_top_level">Øverste niveau</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d underkategori</item>
+        <item quantity="other">%1$d underkategorier</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d dine</string>
+    <string name="manage_no_subs">Ingen underkategorier</string>
+    <string name="manage_move_title">Flyt til gruppe</string>
+    <string name="manage_move_cd">Flyt %1$s til en anden gruppe</string>
+    <string name="manage_empty_hint">Ingen egne kategorier endnu — opret en for at kategorisere dit forbrug på din egen måde.</string>
 </resources>

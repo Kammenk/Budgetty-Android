@@ -964,4 +964,22 @@
     <string name="wellbeing_banner_nogoal">Lancez un objectif d\'épargne</string>
     <string name="wellbeing_banner_savingswin">%1$d%% épargné ce mois-ci</string>
     <string name="wellbeing_banner_generic">Voyez où vous en êtes</string>
+    <string name="account_manage_categories">Gérer les catégories</string>
+    <string name="manage_your_categories">Vos catégories</string>
+    <string name="manage_builtin">Intégrées</string>
+    <string name="manage_builtin_summary">%1$d groupes · %2$d catégories</string>
+    <string name="manage_create_category">Créer une catégorie</string>
+    <string name="manage_cap_hint">L\'offre gratuite inclut %1$d catégories personnalisées</string>
+    <string name="manage_unlimited_premium">Illimitées avec Premium</string>
+    <string name="manage_in_group">Dans %1$s</string>
+    <string name="manage_top_level">Niveau supérieur</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d sous-catégorie</item>
+        <item quantity="other">%1$d sous-catégories</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d à vous</string>
+    <string name="manage_no_subs">Aucune sous-catégorie</string>
+    <string name="manage_move_title">Déplacer vers un groupe</string>
+    <string name="manage_move_cd">Déplacer %1$s vers un autre groupe</string>
+    <string name="manage_empty_hint">Aucune catégorie personnalisée pour l\'instant — créez-en une pour classer vos dépenses à votre façon.</string>
 </resources>

@@ -61,6 +61,7 @@ import com.budgetty.app.ui.insights.InsightsScreen
 import com.budgetty.app.ui.onboarding.OnboardingScreen
 import com.budgetty.app.ui.paywall.PaywallScreen
 import com.budgetty.app.ui.quiz.InsightsQuizScreen
+import com.budgetty.app.ui.categories.ManageCategoriesScreen
 import com.budgetty.app.ui.rules.CategoryRulesScreen
 import com.budgetty.app.ui.upload.UploadScreen
 import com.budgetty.app.ui.widgets.WidgetsScreen
@@ -303,6 +304,7 @@ private fun BudgettyNavHost(
                 onOpenBudget = { navController.navigate(Routes.BUDGET) },
                 onOpenWidgets = { navController.navigate(Routes.WIDGETS) },
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
+                onOpenManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
         }
@@ -362,6 +364,12 @@ private fun BudgettyNavHost(
         }
         composable(Routes.CATEGORY_RULES) {
             CategoryRulesScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.MANAGE_CATEGORIES) {
+            ManageCategoriesScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onOpenPaywall = { navController.navigate(Routes.PAYWALL) },
+            )
         }
     }
 }

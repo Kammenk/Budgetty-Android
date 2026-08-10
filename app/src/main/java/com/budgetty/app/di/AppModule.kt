@@ -37,6 +37,7 @@ import com.budgetty.app.ui.insights.InsightsViewModel
 import com.budgetty.app.ui.paywall.PaywallViewModel
 import com.budgetty.app.ui.lock.AppLockViewModel
 import com.budgetty.app.ui.quiz.InsightsQuizViewModel
+import com.budgetty.app.ui.categories.ManageCategoriesViewModel
 import com.budgetty.app.ui.rules.CategoryRulesViewModel
 import com.budgetty.app.ui.upload.UploadViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -136,6 +137,7 @@ val appModule = module {
     viewModel { WellbeingViewModel(get(), get()) }
     viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
+    viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get()) }
     viewModel { AppLockViewModel(get(), get()) }

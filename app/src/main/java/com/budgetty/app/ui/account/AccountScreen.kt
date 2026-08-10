@@ -33,6 +33,7 @@ import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
@@ -122,6 +123,7 @@ fun AccountScreen(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenManageCategories: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -141,6 +143,7 @@ fun AccountScreen(
         onOpenBudget = onOpenBudget,
         onOpenWidgets = onOpenWidgets,
         onOpenCategoryRules = onOpenCategoryRules,
+        onOpenManageCategories = onOpenManageCategories,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -171,6 +174,7 @@ private fun AccountScreenContent(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenManageCategories: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -256,6 +260,7 @@ private fun AccountScreenContent(
                 onExportData = { if (isPremium) exportOpen = true else onOpenPaywall() },
                 onOpenWidgets = onOpenWidgets,
                 onOpenCategoryRules = onOpenCategoryRules,
+                onOpenManageCategories = onOpenManageCategories,
             )
         }
     }
@@ -557,6 +562,7 @@ private fun AccountSectionRows(
     onExportData: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenManageCategories: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -568,6 +574,8 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.account_budget)) { onOpenBudget() }
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
+    RowDivider()
+    SettingRow(Icons.Filled.Category, stringResource(R.string.account_manage_categories)) { onOpenManageCategories() }
     RowDivider()
     SettingRow(
         icon = Icons.Filled.Upload,
@@ -1156,6 +1164,7 @@ private fun AccountScreenPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onOpenManageCategories = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1189,6 +1198,7 @@ private fun AccountScreenTabletPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onOpenManageCategories = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
