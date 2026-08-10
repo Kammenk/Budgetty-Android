@@ -25,6 +25,7 @@ import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.isEffectivelyPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
 import com.budgetty.app.ui.util.upcomingBills
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +35,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -250,6 +252,9 @@ class HomeViewModel(
             )
         }
             .let { base -> combine(base, wellbeingProvider.summary()) { s, wb -> s.copy(wellbeing = wb) } }
+            // Run the whole aggregation (groupBy/sort/BigDecimal folds, heaviest under All-time) off the
+            // main thread; stateIn still caches on the main dispatcher.
+            .flowOn(Dispatchers.Default)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),
@@ -261,7 +266,7 @@ class HomeViewModel(
     val recentReceipts: StateFlow<List<Receipt>> =
         combine(repository.getAll(), receiptRepository.getAll()) { txns, receipts ->
             txns.toReceipts(receipts.associateBy { it.timestamp }).take(5)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+        }.flowOn(Dispatchers.Default).stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun onFilterSelected(filter: DateRangeFilter) {
         selectedFilter.value = filter
