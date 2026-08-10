@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 import com.budgetty.app.ui.savings.SavingsGoalCardUi
 import com.budgetty.app.ui.util.BudgetRollover
 import com.budgetty.app.ui.util.currentMonthRange
+import com.budgetty.app.ui.util.isAutoPayActive
 import com.budgetty.app.ui.util.isEffectivelyPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
 import com.budgetty.app.ui.util.SavingsMath
@@ -255,10 +256,12 @@ class BudgetViewModel(
             category = if (isIncome) "" else category,
             cadence = cadence,
             dueDay = dueDay,
-            // Income never autopays; a bill only autopays for monthly/weekly (others can't compute a due date).
-            autoPay = autoPay && !isIncome,
+            autoPay = autoPay,
         )
-        viewModelScope.launch { recurringRepository.upsert(entity) }
+        // Autopay applies to monthly/weekly bills only; force it off for income, yearly, and one-off
+        // entries so a hidden or stale switch can't persist a stuck "Auto" state (isAutoPayActive() is
+        // the shared rule the Budget row displays by too).
+        viewModelScope.launch { recurringRepository.upsert(entity.copy(autoPay = entity.isAutoPayActive())) }
     }
 
     fun deleteRecurring(id: Long) {

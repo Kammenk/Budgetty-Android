@@ -80,6 +80,7 @@ import com.budgetty.app.ui.util.categoryDisplayName
 import com.budgetty.app.ui.util.budgetColor
 import com.budgetty.app.ui.util.budgetRatio
 import com.budgetty.app.ui.util.formatMoney
+import com.budgetty.app.ui.util.isAutoPayActive
 import com.budgetty.app.ui.util.recurringSubtitle
 import com.budgetty.app.ui.util.monthlyToWeekly
 import com.budgetty.app.ui.util.weeklyToMonthly
@@ -1632,7 +1633,9 @@ private fun RecurringCard(
                 onClick = { onEdit(item) },
                 paid = isPaid,
                 onTogglePaid = { onSetPaid(item, !isPaid) },
-                autoPay = item.autoPay,
+                // Gate the "Auto" chip on cadence eligibility so an ineligible row (e.g. a yearly bill
+                // saved before the rule was enforced) shows the manual paid toggle instead of a stuck chip.
+                autoPay = item.isAutoPayActive(),
             )
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -1784,7 +1787,7 @@ private fun RecurringEntrySheet(
     var amount by remember { mutableStateOf(original?.amount?.toPlainString() ?: "") }
     var cadence by remember { mutableStateOf(original?.cadence ?: RecurringEntity.Cadence.MONTHLY) }
     var dueDay by remember { mutableStateOf(original?.dueDay ?: if (isIncome) 25 else 1) }
-    var autoPay by remember { mutableStateOf(original?.autoPay ?: false) }
+    var autoPay by remember { mutableStateOf(original?.isAutoPayActive() ?: false) }
     var category by remember {
         mutableStateOf(original?.category?.takeIf { it.isNotBlank() } ?: Categories.DEFAULT)
     }
