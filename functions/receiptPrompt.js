@@ -8,22 +8,27 @@
 
 // The model's assignable categories: every name here must also exist in Categories.predefined on
 // the client (which validates the response and drops anything unknown). Kept in sync with that set,
-// EXCEPT three client-only categories deliberately omitted so the model can't file a purchased item
-// under them: "Investments" (recurring-payments-only), and "Delivery"/"Tips" (materialized client-side
-// from the separate `deliveryAndFees`/`tip` amounts, never chosen by the model for a product line).
+// EXCEPT categories a scanned receipt line should never be filed under, deliberately omitted here:
+//   • the whole Bills & Finance group — "Loan Repayment", "Taxes", "Bank & Fees", "Savings" — plus
+//     "Investments", "Mortgage" and "Childcare": recurring/manual money, not a till-receipt product.
+//   • "Insurance" and "Phone & Internet": recurring bills, not scanned product lines. ("Utilities",
+//     the third half of the old "Insurance & Utilities", stays — a utility bill can be photographed.)
+//   • "Delivery"/"Tips": materialized client-side from the separate `deliveryAndFees`/`tip` amounts.
 const CATEGORIES = [
   "Groceries", "Bakery", "Dairy", "Meat & Poultry", "Fish & Seafood", "Fruits & Vegetables",
   "Snacks & Sweets", "Frozen Foods", "Nuts & Snacks", "Canned & Preserved", "Grains & Pasta",
   "Condiments & Sauces", "Beverages",
   "Household & Personal", "Household Cleaning", "Personal Care", "Beauty", "Baby Products",
   "Pet Supplies", "Paper Products", "Kitchen Supplies",
-  "Health & Wellness", "Health & Pharmacy", "Medical", "Sports & Fitness",
+  "Health & Wellness", "Health & Pharmacy", "Medical", "Sports & Fitness", "Dental", "Optical",
   "Dining & Entertainment", "Restaurant & Dining", "Entertainment", "Video Games",
+  "Coffee & Cafés", "Bars & Nightlife",
   "Shopping & Lifestyle", "Clothing & Accessories", "Electronics", "Garden & Plants",
   "Home Improvement", "Tobacco & Alcohol",
-  "Transportation", "Fuel", "Car Maintenance",
+  "Transportation", "Fuel", "Car Maintenance", "Public Transport", "Taxi & Rideshare", "Parking",
+  "Tolls & Vignette",
   "Services & Subscriptions", "Subscriptions", "Services", "Education", "Travel & Accommodation",
-  "Insurance & Utilities", "Rent", "Office & Work Supplies", "Gifts & Charitable Donations",
+  "Utilities", "Rent", "Office & Work Supplies", "Gifts & Charitable Donations",
   "Other",
 ];
 

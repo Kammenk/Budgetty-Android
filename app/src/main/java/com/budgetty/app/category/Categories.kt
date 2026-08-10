@@ -93,24 +93,52 @@ object Categories {
         Def("Subscriptions", "🔁", "Services & Subscriptions"),
         Def("Education", "🎓", "Services & Subscriptions"),
         Def("Travel & Accommodation", "🧳", "Services & Subscriptions"),
-        Def("Insurance & Utilities", "🛡️", "Services & Subscriptions"),
+        // Was "Insurance & Utilities"; split three ways (2026-08). The survivor "Utilities" reuses this
+        // slot so it keeps that category's generated color; its siblings "Insurance" and
+        // "Phone & Internet" are appended below. MIGRATION_22_23 repoints old data onto "Utilities".
+        Def("Utilities", "⚡", "Services & Subscriptions"),
         Def("Rent", "🔑", "Services & Subscriptions"),
         Def("Office & Work Supplies", "🗂️", "Services & Subscriptions"),
         Def("Gifts & Charitable Donations", "🎁", "Services & Subscriptions"),
-        // Appended below their group headers on purpose (Video Games → Dining, Investments → Services):
-        // sub-category hues are assigned by walking `defs` in order (farthest-point), so inserting these
-        // mid-list would recolor every sub after them. Appending leaves all existing colors untouched;
-        // `children()` filters by parent, so they still render inside their own group.
+        // New sub-categories are APPENDED here (never inserted mid-list): sub-category hues are assigned
+        // by walking `defs` in order (farthest-point), so a mid-list insert would recolor every sub after
+        // it — appending avoids that. `children()` filters by parent, so each still renders inside its own
+        // group regardless of position here. (NB: adding a brand-new *group* — Bills & Finance below —
+        // grows the hue seed, so the generated sub colors do reshuffle once; the pinned group anchors don't.)
         Def("Video Games", "🎮", "Dining & Entertainment"),
-        Def("Investments", "📈", "Services & Subscriptions"),
+        Def("Investments", "📈", "Bills & Finance"), // re-homed from Services & Subscriptions (2026-08)
         // The non-subscription half of the old "Subscriptions & Services" (repairs, haircuts, cleaning
-        // — one-off paid-for work). Appended for the same reason as the two above: a mid-list insert
-        // would recolor every sub-category after it.
+        // — one-off paid-for work).
         Def("Services", "🧰", "Services & Subscriptions"),
         // 🪙 Gratuity on a delivery/restaurant order — its own line, kept apart from the food.
         Def("Tips", "🪙", "Dining & Entertainment"),
         // 🛵 Combined delivery + service + bag/booking fees on a delivery-app order.
         Def("Delivery", "🛵", "Other"),
+        // ── Taxonomy expansion 2026-08 ─────────────────────────────────────────────────────────────
+        // 💳 Bills & Finance — a new top-level group for money/bills the scanner never sees; every sub
+        // here is excluded from the receipt-scan enum (like Investments). Emojis/colors are placeholders
+        // pending a design pass.
+        Def("Bills & Finance", "💳", null),
+        Def("Loan Repayment", "🏦", "Bills & Finance"),
+        Def("Taxes", "🧾", "Bills & Finance"),
+        Def("Bank & Fees", "🏧", "Bills & Finance"),
+        Def("Savings", "🐷", "Bills & Finance"),
+        // 🚗 Transportation fills — everyday point-of-sale travel spend.
+        Def("Public Transport", "🚆", "Transportation"),
+        Def("Taxi & Rideshare", "🚕", "Transportation"),
+        Def("Parking", "🅿️", "Transportation"),
+        Def("Tolls & Vignette", "🛣️", "Transportation"),
+        // ❤️ Health fills.
+        Def("Dental", "🦷", "Health & Wellness"),
+        Def("Optical", "👓", "Health & Wellness"),
+        // 🍽️ Dining fills.
+        Def("Coffee & Cafés", "☕", "Dining & Entertainment"),
+        Def("Bars & Nightlife", "🍸", "Dining & Entertainment"),
+        // 📋 Services & Subscriptions fills + the other two halves of the Insurance & Utilities split.
+        Def("Childcare", "🧸", "Services & Subscriptions"),
+        Def("Mortgage", "🏡", "Services & Subscriptions"),
+        Def("Insurance", "🛡️", "Services & Subscriptions"),
+        Def("Phone & Internet", "📱", "Services & Subscriptions"),
         // 📦 Catch-all
         Def("Other", "📦", null),
     )
@@ -123,9 +151,10 @@ object Categories {
     /**
      * Exact top-level group colors, taken straight from the design's Insights pie (the mockup source
      * of truth): green Groceries, rose Household, teal Health, terracotta Dining, amber
-     * Transportation, plus a matching violet Shopping and blue Services for the two groups the pie
-     * sample doesn't show. Sub-categories are spread across distinct hues around these (see
-     * [predefined]); "Other" is the pie's neutral grey ([OTHER_COLOR]).
+     * Transportation, plus a matching violet Shopping and blue Services for the groups the pie sample
+     * doesn't show — and an indigo Bills & Finance (a placeholder hue pending a design pass, filling the
+     * gap between the Services blue and Shopping violet). Sub-categories are spread across distinct hues
+     * around these (see [predefined]); "Other" is the pie's neutral grey ([OTHER_COLOR]).
      */
     private val groupColor: Map<String, Int> = mapOf(
         "Groceries" to 0xFF4FA85A.toInt(),
@@ -135,6 +164,7 @@ object Categories {
         "Shopping & Lifestyle" to 0xFFAE72CC.toInt(),
         "Transportation" to 0xFFD08A4A.toInt(),
         "Services & Subscriptions" to 0xFF588AC7.toInt(),
+        "Bills & Finance" to 0xFF6E6AC4.toInt(),
     )
 
     /** Neutral grey for the catch-all "Other" category (design pie value). */

@@ -876,11 +876,30 @@
     <string name="cat_investments">Investments</string>
     <string name="cat_education">Education</string>
     <string name="cat_travel_accommodation">Travel &amp; Accommodation</string>
-    <string name="cat_insurance_utilities">Insurance &amp; Utilities</string>
+    <string name="cat_utilities">Utilities</string>
     <string name="cat_rent">Rent</string>
     <string name="cat_office_work_supplies">Office &amp; Work Supplies</string>
     <string name="cat_gifts_donations">Gifts &amp; Charitable Donations</string>
     <string name="cat_delivery">Delivery</string>
+    <!-- Taxonomy expansion 2026-08: Bills & Finance group, Transportation/Health/Dining fills, and the
+         Insurance & Utilities split (survivor cat_utilities is above). -->
+    <string name="cat_bills_finance">Bills &amp; Finance</string>
+    <string name="cat_loan_repayment">Loan Repayment</string>
+    <string name="cat_taxes">Taxes</string>
+    <string name="cat_bank_fees">Bank &amp; Fees</string>
+    <string name="cat_savings">Savings</string>
+    <string name="cat_public_transport">Public Transport</string>
+    <string name="cat_taxi_rideshare">Taxi &amp; Rideshare</string>
+    <string name="cat_parking">Parking</string>
+    <string name="cat_tolls_vignette">Tolls &amp; Vignette</string>
+    <string name="cat_dental">Dental</string>
+    <string name="cat_optical">Optical</string>
+    <string name="cat_coffee_cafes">Coffee &amp; Cafés</string>
+    <string name="cat_bars_nightlife">Bars &amp; Nightlife</string>
+    <string name="cat_childcare">Childcare</string>
+    <string name="cat_mortgage">Mortgage</string>
+    <string name="cat_insurance">Insurance</string>
+    <string name="cat_phone_internet">Phone &amp; Internet</string>
     <string name="cat_other">Other</string>
 
     <!-- In-app update prompt (Google Play In-App Updates) -->
