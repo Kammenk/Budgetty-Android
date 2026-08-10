@@ -1299,11 +1299,15 @@ internal fun SafeToSpendCard(
     onSetupIncome: () -> Unit = {},
 ) {
     val status = state.safeToSpendStatus()
-    val tone = when (status) {
+    // The status colour now tints the demoted "Safe to spend" stat and the bar's safe tail — the
+    // "Total spent" hero stays neutral onSurface, since spending has no good/bad on its own.
+    val safeTone = when (status) {
         SafeToSpendStatus.OVER -> budgetBadColor()
         SafeToSpendStatus.LOW -> budgetWarnColor()
         else -> budgetGoodColor()
     }
+    // What has actually left the account this cycle = discretionary spend + bills already paid.
+    val totalSpent = state.monthlySpent + state.billsPaid
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(MaterialTheme.dimens.radiusXl),
@@ -1311,148 +1315,149 @@ internal fun SafeToSpendCard(
     ) {
         Column(modifier = Modifier.padding(MaterialTheme.dimens.xl)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = stringResource(R.string.safe_to_spend_title),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Row(
                     modifier = Modifier.weight(1f),
-                )
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    SplitSwatch()
+                    Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                    Text(
+                        text = stringResource(R.string.safe_to_spend_total_spent),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
                 if (showPeriodPill) {
                     HomePeriodFilter(selected = state.filter, onSelected = onFilterSelected)
                 }
             }
             Spacer(Modifier.height(MaterialTheme.dimens.sm))
 
-            when {
-                !state.isLoaded ->
-                    SkeletonBar(width = 160.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
-
-                status == SafeToSpendStatus.SETUP -> {
-                    Text(
-                        text = "—",
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+            if (!state.isLoaded) {
+                SkeletonBar(width = 160.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
+            } else {
+                // Spent-first hero: the money already out this cycle, in neutral onSurface.
+                Text(
+                    text = totalSpent.formatMoney(),
+                    style = MaterialTheme.typography.displaySmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    softWrap = false,
+                    overflow = TextOverflow.Clip,
+                    modifier = Modifier.fillMaxWidth().basicMarquee(),
+                )
+                // Composition sub-line: split total into spend + paid bills when a bill's been paid
+                // (that's the confusing case), else the receipt count, else the zero state.
+                val composition = when {
+                    totalSpent.signum() == 0 -> stringResource(R.string.safe_to_spend_nothing_yet)
+                    state.billsPaid.signum() > 0 -> stringResource(
+                        R.string.safe_to_spend_composition,
+                        state.monthlySpent.formatMoney(),
+                        state.billsPaid.formatMoney(),
                     )
+                    state.receipts.isNotEmpty() -> pluralStringResource(
+                        R.plurals.home_across_receipts, state.receipts.size, state.receipts.size,
+                    )
+                    else -> null
+                }
+                if (composition != null) {
                     Text(
-                        text = stringResource(R.string.safe_to_spend_setup_message),
+                        text = composition,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = MaterialTheme.dimens.xs),
                     )
                 }
+            }
 
-                else -> {
-                    Text(
-                        text = state.safeToSpend.formatMoney(),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = tone,
-                        maxLines = 1,
-                        softWrap = false,
-                        overflow = TextOverflow.Clip,
-                        modifier = Modifier.fillMaxWidth().basicMarquee(),
-                    )
-                    val detail = if (status == SafeToSpendStatus.OVER) {
-                        stringResource(R.string.safe_to_spend_over, state.safeToSpend.abs().formatMoney())
+            // Bar + the Safe / Bills-due stats need income to split against, so they show once income
+            // is set. The setup state (no income) instead prompts to add it — the hero above still
+            // shows the real total spent, which needs no income.
+            if (state.isLoaded && status != SafeToSpendStatus.SETUP) {
+                SafeToSpendBar(
+                    income = state.cycleIncome,
+                    spending = state.monthlySpent,
+                    paidBills = state.billsPaid,
+                    billsStillDue = state.billsStillDue,
+                    safe = state.safeToSpend,
+                    safeTone = safeTone,
+                    modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
+                ) {
+                    // Per-day only reads when there's something safe left; overspent shows just the
+                    // red figure (the footer carries the "over" explanation).
+                    val safeSub = if (status == SafeToSpendStatus.OVER) {
+                        null
                     } else {
                         val perDay = state.safeToSpend
                             .divide(BigDecimal(state.daysUntilPayday), 2, RoundingMode.HALF_UP)
-                        val perDayText = pluralStringResource(
+                        pluralStringResource(
                             R.plurals.safe_to_spend_per_day,
                             state.daysUntilPayday,
                             perDay.formatMoney(),
                             state.daysUntilPayday,
                         )
-                        val resets = state.nextPayday?.let {
-                            stringResource(R.string.safe_to_spend_resets, it.formatDayMonth())
-                        }
-                        if (resets != null) "$perDayText · $resets" else perDayText
                     }
+                    SafeToSpendStat(
+                        swatch = { SolidSwatch(safeTone) },
+                        label = stringResource(R.string.safe_to_spend_title),
+                        amount = state.safeToSpend,
+                        amountColor = safeTone,
+                        sub = safeSub,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Box(
+                        Modifier.width(1.dp).height(44.dp)
+                            .background(MaterialTheme.colorScheme.outlineVariant),
+                    )
+                    SafeToSpendStat(
+                        swatch = { PlannedSwatch(hatched = true) },
+                        label = stringResource(R.string.safe_to_spend_bills_due),
+                        amount = state.billsStillDue,
+                        amountColor = MaterialTheme.colorScheme.onSurface,
+                        sub = if (state.billsStillDueCount > 0) pluralStringResource(
+                            R.plurals.safe_to_spend_bills_count,
+                            state.billsStillDueCount,
+                            state.billsStillDueCount,
+                        ) else null,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
+                // Only the overspent state carries a one-line warning; healthy/low stay compact with no
+                // footer (we don't spell out the income − spent − bills formula), so the card is shorter.
+                if (status == SafeToSpendStatus.OVER) {
                     Text(
-                        text = detail,
-                        style = MaterialTheme.typography.bodyMedium,
+                        text = stringResource(
+                            R.string.safe_to_spend_over, state.safeToSpend.abs().formatMoney(),
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(top = MaterialTheme.dimens.xs),
+                        modifier = Modifier.padding(top = MaterialTheme.dimens.md),
                     )
                 }
             }
 
-            SafeToSpendBar(
-                income = state.cycleIncome,
-                // Paid bills are spent money, so they join receipts in the solid share; the tonal share
-                // stays "still due". The hatched middle (what's safe) is then unaffected by paying a bill.
-                spent = state.monthlySpent + state.billsPaid,
-                billsStillDue = state.billsStillDue,
-                tone = tone,
-                inactive = status == SafeToSpendStatus.SETUP,
-                modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
-            ) {
-                SafeToSpendStat(
-                    hatched = false,
-                    label = stringResource(R.string.safe_to_spend_spent, monthOrFilterLabel(state.filter)),
-                    amount = state.monthlySpent,
-                    sub = if (state.receipts.isNotEmpty()) pluralStringResource(
-                        R.plurals.home_across_receipts, state.receipts.size, state.receipts.size,
-                    ) else null,
-                    modifier = Modifier.weight(1f),
-                )
-                Box(
-                    Modifier.width(1.dp).height(44.dp)
-                        .background(MaterialTheme.colorScheme.outlineVariant),
-                )
-                SafeToSpendStat(
-                    hatched = true,
-                    label = stringResource(R.string.safe_to_spend_bills_due),
-                    amount = state.billsStillDue,
-                    sub = if (state.billsPaid.signum() > 0) stringResource(
-                        R.string.safe_to_spend_bills_paid, state.billsPaid.formatMoney(),
-                    ) else null,
-                    modifier = Modifier.weight(1f),
-                )
-            }
-
-            // Roll-up of what's actually left your pocket this cycle = receipt spend + bills marked
-            // paid. Only shown once a bill is paid; until then it just equals the "Spent" stat above.
-            if (state.billsPaid.signum() > 0) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(R.string.safe_to_spend_total_spent),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        text = (state.monthlySpent + state.billsPaid).formatMoney(),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                    )
-                }
-            }
-
-            val foot = when {
-                status == SafeToSpendStatus.SETUP -> stringResource(R.string.safe_to_spend_setup_foot)
-                state.cycleIncome.signum() > 0 ->
-                    stringResource(R.string.safe_to_spend_income_foot, state.cycleIncome.formatMoney())
-                else -> null
-            }
-            if (foot != null) {
+            if (state.isLoaded && status == SafeToSpendStatus.SETUP) {
                 Text(
-                    text = foot,
-                    style = MaterialTheme.typography.bodySmall,
+                    text = stringResource(R.string.safe_to_spend_setup_message),
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = MaterialTheme.dimens.md),
                 )
-            }
-            if (status == SafeToSpendStatus.SETUP) {
+                Text(
+                    text = stringResource(R.string.safe_to_spend_setup_foot),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = MaterialTheme.dimens.xs),
+                )
                 FilledTonalButton(
                     onClick = onSetupIncome,
                     shape = RoundedCornerShape(percent = 50),
@@ -1465,19 +1470,21 @@ internal fun SafeToSpendCard(
     }
 }
 
-/** One stat in the Spent / Bills-still-due strip: a key swatch + label, the amount, an optional sub. */
+/** One stat in the Safe-to-spend / Bills-still-due strip: a key [swatch] + label, the amount in
+ *  [amountColor], and an optional sub. */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SafeToSpendStat(
-    hatched: Boolean,
+    swatch: @Composable () -> Unit,
     label: String,
     amount: BigDecimal,
+    amountColor: Color,
     sub: String?,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            PlannedSwatch(hatched = hatched)
+            swatch()
             Spacer(Modifier.width(MaterialTheme.dimens.sm))
             Text(
                 text = label,
@@ -1491,17 +1498,20 @@ private fun SafeToSpendStat(
             text = amount.formatMoney(),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
+            color = amountColor,
             maxLines = 1,
             softWrap = false,
             overflow = TextOverflow.Clip,
             modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.xs).basicMarquee(),
         )
         if (sub != null) {
+            // Up to two lines so the per-day runway ("€29/day for the next 15 days") isn't clipped in
+            // the narrow half-width column; the bills-count sub stays a single line.
             Text(
                 text = sub,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
             )
         }
@@ -1509,52 +1519,87 @@ private fun SafeToSpendStat(
 }
 
 /**
- * A slim bar showing how the cycle's income splits: a solid accent share for what's been spent, a
- * tonal share on the right for the bills still due, and the hatched middle for what's safe to spend.
- * Full-hatched when [inactive] (no income to split).
+ * A slim 6dp bar splitting the cycle's income into four gapped pills, left → right: discretionary
+ * spending (solid primary), bills already paid (solid outline), bills still due (hatched), and what's
+ * safe to spend (the status tone). Paying a bill turns a hatched share solid without moving the safe
+ * tail. A single neutral hatched track when there's no income to split against.
  */
 @Composable
 private fun SafeToSpendBar(
     income: BigDecimal,
-    spent: BigDecimal,
+    spending: BigDecimal,
+    paidBills: BigDecimal,
     billsStillDue: BigDecimal,
-    tone: Color,
-    inactive: Boolean,
+    safe: BigDecimal,
+    safeTone: Color,
     modifier: Modifier = Modifier,
 ) {
     val primary = MaterialTheme.colorScheme.primary
-    val outline = MaterialTheme.colorScheme.outlineVariant
-    val shape = RoundedCornerShape(3.dp)
+    val paidColor = MaterialTheme.colorScheme.outline
+    val hatchColor = MaterialTheme.colorScheme.outlineVariant
+    val pill = RoundedCornerShape(percent = 50)
     val incomeD = income.toDouble()
+    if (incomeD <= 0.0) {
+        Box(
+            modifier
+                .height(6.dp)
+                .clip(pill)
+                .drawBehind { drawHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
+                .border(1.dp, hatchColor, pill),
+        )
+        return
+    }
+    fun frac(v: BigDecimal) = (v.toDouble() / incomeD).toFloat().coerceIn(0f, 1f)
+    // safe is floored at 0 — when overspent the spent/owed shares fill the whole bar, no safe tail.
+    val safeFrac = (safe.toDouble().coerceAtLeast(0.0) / incomeD).toFloat().coerceIn(0f, 1f)
+    Row(
+        modifier.height(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        if (spending.signum() > 0) {
+            Box(Modifier.weight(frac(spending)).height(6.dp).clip(pill).background(primary))
+        }
+        if (paidBills.signum() > 0) {
+            Box(Modifier.weight(frac(paidBills)).height(6.dp).clip(pill).background(paidColor))
+        }
+        if (billsStillDue.signum() > 0) {
+            Box(
+                Modifier.weight(frac(billsStillDue)).height(6.dp).clip(pill)
+                    .drawBehind { drawHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
+                    .border(1.dp, hatchColor, pill),
+            )
+        }
+        if (safeFrac > 0f) {
+            Box(Modifier.weight(safeFrac).height(6.dp).clip(pill).background(safeTone))
+        }
+    }
+}
+
+/** A 10dp split key — half primary (spending), half outline (paid bills) — marking the "Total spent"
+ *  roll-up wherever it appears, so the label reads as the sum of those two shares. */
+@Composable
+private fun SplitSwatch(modifier: Modifier = Modifier) {
+    val primary = MaterialTheme.colorScheme.primary
+    val outline = MaterialTheme.colorScheme.outline
     Box(
         modifier
-            .height(6.dp)
-            .clip(shape)
+            .size(10.dp)
+            .clip(RoundedCornerShape(3.dp))
             .drawBehind {
-                val radius = CornerRadius(size.height / 2f)
-                drawHatch(outline, spacing = 5.dp, stroke = 1.2.dp)
-                drawRoundRect(color = outline, cornerRadius = radius, style = Stroke(width = 1.dp.toPx()))
-                if (inactive || incomeD <= 0.0) return@drawBehind
-                val spentW = (size.width * (spent.toDouble() / incomeD).coerceIn(0.0, 1.0)).toFloat()
-                if (spentW > 0f) {
-                    drawRoundRect(
-                        color = primary,
-                        size = Size(spentW.coerceAtLeast(size.height), size.height),
-                        cornerRadius = radius,
-                    )
-                }
-                val billsW = (size.width * (billsStillDue.toDouble() / incomeD).coerceIn(0.0, 1.0))
-                    .toFloat().coerceAtMost((size.width - spentW).coerceAtLeast(0f))
-                if (billsW > 0f) {
-                    drawRoundRect(
-                        color = tone,
-                        topLeft = Offset(size.width - billsW, 0f),
-                        size = Size(billsW.coerceAtLeast(size.height), size.height),
-                        cornerRadius = radius,
-                    )
-                }
+                drawRect(color = primary, size = Size(size.width / 2f, size.height))
+                drawRect(
+                    color = outline,
+                    topLeft = Offset(size.width / 2f, 0f),
+                    size = Size(size.width / 2f, size.height),
+                )
             },
     )
+}
+
+/** A 10dp solid key in [color] — the status-tinted swatch for the Safe-to-spend stat. */
+@Composable
+private fun SolidSwatch(color: Color, modifier: Modifier = Modifier) {
+    Box(modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(color))
 }
 
 /** Top section: total spent for the selected period, with recurring bills shown as planned when set. */
@@ -2283,6 +2328,7 @@ private fun SafeToSpendHealthyPreview() {
                     cycleIncome = BigDecimal("2400.00"),
                     billsStillDue = BigDecimal("1067.60"),
                     billsPaid = BigDecimal("182.40"),
+                    billsStillDueCount = 3,
                     safeToSpend = BigDecimal("620.00"),
                     daysUntilPayday = 15,
                     nextPayday = java.time.LocalDate.now().plusDays(15),

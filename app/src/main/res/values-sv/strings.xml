@@ -670,19 +670,21 @@
 
     <!-- Safe to spend (current pay-cycle cash-flow card) -->
     <string name="safe_to_spend_title">Tryggt att spendera</string>
-    <string name="safe_to_spend_spent">Spenderat · %1$s</string>
     <string name="safe_to_spend_bills_due">Räkningar kvar att betala</string>
-    <string name="safe_to_spend_bills_paid">%1$s redan betalt</string>
     <string name="safe_to_spend_total_spent">Spenderat totalt denna period</string>
-    <string name="safe_to_spend_resets">återställs %1$s</string>
+    <string name="safe_to_spend_composition">%1$s spenderat + %2$s betalda räkningar</string>
+    <string name="safe_to_spend_nothing_yet">Inget spenderat än denna period</string>
     <string name="safe_to_spend_over">%1$s över — du har spenderat mer än du har kvar denna period.</string>
-    <string name="safe_to_spend_income_foot">Båda tas från %1$s i inkomst denna period.</string>
     <string name="safe_to_spend_setup_message">Lägg till din inkomst för att se vad som är tryggt att spendera före lönedagen.</string>
     <string name="safe_to_spend_setup_cta">Ställ in inkomst</string>
     <string name="safe_to_spend_setup_foot">Inkomst finns under Budget-fliken · tar ungefär en minut att lägga till.</string>
     <plurals name="safe_to_spend_per_day">
         <item quantity="one">%1$s/dag den närmaste %2$d dagen</item>
         <item quantity="other">%1$s/dag de närmaste %2$d dagarna</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d räkning</item>
+        <item quantity="other">%1$d räkningar</item>
     </plurals>
 
     <!-- Savings goals (Budget tab) -->

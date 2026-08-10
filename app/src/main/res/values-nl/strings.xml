@@ -658,19 +658,21 @@
     <string name="update_restart_action">Opnieuw starten</string>
     <!-- Safe to spend (current pay-cycle cash-flow card) -->
     <string name="safe_to_spend_title">Vrij besteedbaar</string>
-    <string name="safe_to_spend_spent">Uitgegeven · %1$s</string>
     <string name="safe_to_spend_bills_due">Openstaande rekeningen</string>
-    <string name="safe_to_spend_bills_paid">%1$s al betaald</string>
     <string name="safe_to_spend_total_spent">Totaal uitgegeven deze cyclus</string>
-    <string name="safe_to_spend_resets">nieuw vanaf %1$s</string>
+    <string name="safe_to_spend_composition">%1$s uitgegeven + %2$s betaalde rekeningen</string>
+    <string name="safe_to_spend_nothing_yet">Nog niets uitgegeven deze cyclus</string>
     <string name="safe_to_spend_over">%1$s te veel — meer uitgegeven dan er deze cyclus over is.</string>
-    <string name="safe_to_spend_income_foot">Beide komen deze cyclus uit je inkomen van %1$s.</string>
     <string name="safe_to_spend_setup_message">Voeg je inkomen toe om te zien wat je veilig kunt uitgeven voor je betaaldag.</string>
     <string name="safe_to_spend_setup_cta">Inkomen instellen</string>
     <string name="safe_to_spend_setup_foot">Je inkomen staat in het tabblad Budget · ongeveer een minuut om toe te voegen.</string>
     <plurals name="safe_to_spend_per_day">
         <item quantity="one">%1$s/dag voor de komende %2$d dag</item>
         <item quantity="other">%1$s/dag voor de komende %2$d dagen</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d rekening</item>
+        <item quantity="other">%1$d rekeningen</item>
     </plurals>
 
     <!-- Savings goals (Budget tab) -->

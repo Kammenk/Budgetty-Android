@@ -669,19 +669,21 @@
     <string name="update_restart_action">Genstart</string>
     <!-- Safe to spend (current pay-cycle cash-flow card) -->
     <string name="safe_to_spend_title">Til rådighed</string>
-    <string name="safe_to_spend_spent">Brugt · %1$s</string>
     <string name="safe_to_spend_bills_due">Ubetalte regninger</string>
-    <string name="safe_to_spend_bills_paid">%1$s allerede betalt</string>
     <string name="safe_to_spend_total_spent">Brugt i alt denne cyklus</string>
-    <string name="safe_to_spend_resets">nulstilles %1$s</string>
+    <string name="safe_to_spend_composition">%1$s brugt + %2$s betalte regninger</string>
+    <string name="safe_to_spend_nothing_yet">Intet brugt endnu denne cyklus</string>
     <string name="safe_to_spend_over">%1$s over — du har brugt mere, end du har tilbage denne cyklus.</string>
-    <string name="safe_to_spend_income_foot">Begge dele kommer fra din indkomst på %1$s denne cyklus.</string>
     <string name="safe_to_spend_setup_message">Tilføj din indkomst for at se, hvad du trygt kan bruge inden lønningsdag.</string>
     <string name="safe_to_spend_setup_cta">Tilføj indkomst</string>
     <string name="safe_to_spend_setup_foot">Din indkomst ligger i Budget-fanen · cirka et minut at tilføje.</string>
     <plurals name="safe_to_spend_per_day">
         <item quantity="one">%1$s/dag i %2$d dag</item>
         <item quantity="other">%1$s/dag i %2$d dage</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d regning</item>
+        <item quantity="other">%1$d regninger</item>
     </plurals>
 
     <!-- Savings goals (Budget tab) -->

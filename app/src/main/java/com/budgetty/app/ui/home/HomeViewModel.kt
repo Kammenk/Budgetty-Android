@@ -71,6 +71,8 @@ data class HomeUiState(
     // Recurring bills split into what's still owed this cycle vs already marked paid (planning-only).
     val billsStillDue: BigDecimal = BigDecimal.ZERO,
     val billsPaid: BigDecimal = BigDecimal.ZERO,
+    // How many recurring bills are still unpaid this cycle — the "N bills" sub on the Safe-to-spend card.
+    val billsStillDueCount: Int = 0,
     // Recurring bills (monthly/weekly) due soon, soonest first — the Home "Upcoming bills" card
     // (date-based, independent of the period filter). [hasBills] gates the card on any bill existing.
     val upcomingBills: List<UpcomingBill> = emptyList(),
@@ -153,18 +155,23 @@ class HomeViewModel(
             var income = BigDecimal.ZERO
             var billsStillDue = BigDecimal.ZERO
             var billsPaid = BigDecimal.ZERO
+            var billsStillDueCount = 0
             items.forEach { r ->
                 val amount = r.monthlyAmount(start, end)
                 when {
                     r.isIncome -> income += amount
                     r.isEffectivelyPaidThisCycle(today, day) -> billsPaid += amount
-                    else -> billsStillDue += amount
+                    else -> {
+                        billsStillDue += amount
+                        billsStillDueCount++
+                    }
                 }
             }
             CashFlow(
                 income = income,
                 billsStillDue = billsStillDue,
                 billsPaid = billsPaid,
+                billsStillDueCount = billsStillDueCount,
                 upcomingBills = items.upcomingBills(today, day),
                 hasBills = items.any { !it.isIncome },
             )
@@ -225,6 +232,7 @@ class HomeViewModel(
                 cycleIncome = cashFlow.income,
                 billsStillDue = cashFlow.billsStillDue,
                 billsPaid = cashFlow.billsPaid,
+                billsStillDueCount = cashFlow.billsStillDueCount,
                 upcomingBills = cashFlow.upcomingBills,
                 hasBills = cashFlow.hasBills,
                 safeToSpend = safeToSpend,
@@ -337,6 +345,7 @@ class HomeViewModel(
         val income: BigDecimal,
         val billsStillDue: BigDecimal,
         val billsPaid: BigDecimal,
+        val billsStillDueCount: Int,
         val upcomingBills: List<UpcomingBill>,
         val hasBills: Boolean,
     )

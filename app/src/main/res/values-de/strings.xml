@@ -659,19 +659,21 @@
     </plurals>
     <!-- Safe to spend (current pay-cycle cash-flow card) -->
     <string name="safe_to_spend_title">Frei verfügbar</string>
-    <string name="safe_to_spend_spent">Ausgegeben · %1$s</string>
     <string name="safe_to_spend_bills_due">Noch offene Rechnungen</string>
-    <string name="safe_to_spend_bills_paid">%1$s bereits bezahlt</string>
     <string name="safe_to_spend_total_spent">Insgesamt ausgegeben in diesem Zyklus</string>
-    <string name="safe_to_spend_resets">neu ab %1$s</string>
+    <string name="safe_to_spend_composition">%1$s ausgegeben + %2$s bezahlte Rechnungen</string>
+    <string name="safe_to_spend_nothing_yet">Noch nichts ausgegeben in diesem Zyklus</string>
     <string name="safe_to_spend_over">%1$s drüber — mehr ausgegeben, als dir in diesem Zyklus bleibt.</string>
-    <string name="safe_to_spend_income_foot">Beides kommt aus deinen Einnahmen von %1$s in diesem Zyklus.</string>
     <string name="safe_to_spend_setup_message">Füge deine Einnahmen hinzu, um zu sehen, was du bis zum Zahltag sicher ausgeben kannst.</string>
     <string name="safe_to_spend_setup_cta">Einnahmen einrichten</string>
     <string name="safe_to_spend_setup_foot">Einnahmen findest du im Budget-Tab · etwa eine Minute zum Hinzufügen.</string>
     <plurals name="safe_to_spend_per_day">
         <item quantity="one">%1$s/Tag für %2$d weiteren Tag</item>
         <item quantity="other">%1$s/Tag für %2$d weitere Tage</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d Rechnung</item>
+        <item quantity="other">%1$d Rechnungen</item>
     </plurals>
 
     <!-- Savings goals (Budget tab) -->
