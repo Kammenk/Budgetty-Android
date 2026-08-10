@@ -100,6 +100,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -984,6 +985,7 @@ private fun StoreCard(
                     value = storeName,
                     onValueChange = onStoreChange,
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     textStyle = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -1222,6 +1224,7 @@ private fun ReviewRow(
                     onValueChange = onNameChange,
                     label = { Text(stringResource(R.string.upload_product), fontWeight = FontWeight.SemiBold) },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     shape = FieldShape,
                     colors = reviewFieldColors(),
                     modifier = Modifier.weight(1f),

@@ -44,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.budgetty.app.R
@@ -139,6 +140,7 @@ fun SavingsGoalEditSheet(
                 onValueChange = { name = it },
                 placeholder = { Text(stringResource(R.string.savings_name_hint)) },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 shape = SavingsFieldShape,
                 colors = savingsFieldColors(),
                 modifier = Modifier.fillMaxWidth(),
@@ -318,6 +320,7 @@ fun SavingsContributionSheet(
                 onValueChange = { note = it },
                 placeholder = { Text(stringResource(R.string.savings_note_hint)) },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 shape = SavingsFieldShape,
                 colors = savingsFieldColors(),
                 modifier = Modifier.fillMaxWidth(),

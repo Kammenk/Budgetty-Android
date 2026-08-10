@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -54,9 +55,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -1806,6 +1810,7 @@ private fun RecurringEntrySheet(
                     )
                 },
                 singleLine = true,
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 shape = SheetFieldShape,
                 colors = sheetFieldColors(),
                 modifier = Modifier.fillMaxWidth(),
@@ -1931,15 +1936,13 @@ private fun RecurringEntrySheet(
     }
 }
 
-/** −/+ stepper for the day the entry lands: weekday name when weekly, otherwise the day-of-month. */
+/** −/+ stepper for the day the entry lands: weekday name when weekly, otherwise the day-of-month.
+ *  For the day-of-month the number can also be typed directly (see [DayNumberField]); the weekly
+ *  weekday, which has no natural typed form, stays stepper-only. */
 @Composable
 private fun DayStepper(cadence: String, value: Int, onChange: (Int) -> Unit) {
-    val max = if (cadence == RecurringEntity.Cadence.WEEKLY) 7 else 31
-    val display = if (cadence == RecurringEntity.Cadence.WEEKLY) {
-        DayOfWeek.of(value.coerceIn(1, 7)).getDisplayName(TextStyle.FULL, Locale.getDefault())
-    } else {
-        value.coerceIn(1, 31).toString()
-    }
+    val isWeekly = cadence == RecurringEntity.Cadence.WEEKLY
+    val max = if (isWeekly) 7 else 31
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -1950,17 +1953,63 @@ private fun DayStepper(cadence: String, value: Int, onChange: (Int) -> Unit) {
         IconButton(onClick = { onChange(if (value > 1) value - 1 else max) }) {
             Icon(Icons.Filled.Remove, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
         }
-        Text(
-            text = display,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            modifier = Modifier.weight(1f),
-        )
+        if (isWeekly) {
+            Text(
+                text = DayOfWeek.of(value.coerceIn(1, 7)).getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                modifier = Modifier.weight(1f),
+            )
+        } else {
+            DayNumberField(value = value, onChange = onChange, modifier = Modifier.weight(1f))
+        }
         IconButton(onClick = { onChange(if (value < max) value + 1 else 1) }) {
             Icon(Icons.Filled.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
         }
     }
+}
+
+/**
+ * The editable day-of-month at the centre of a monthly/yearly [DayStepper]: the user can type 1–31
+ * directly instead of only tapping −/+. Out-of-range or leading-zero input is clamped live (so "45"
+ * becomes 31), an empty field is allowed while retyping and settles back to the current day on blur,
+ * and the −/+ buttons keep working — their changes flow back into the field.
+ */
+@Composable
+private fun DayNumberField(value: Int, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
+    var text by remember { mutableStateOf(value.toString()) }
+    // Reflect −/+ taps (or any external change) back into the field, but not while it is mid-edit and
+    // already resolves to the same day — so typing isn't stomped.
+    LaunchedEffect(value) {
+        if (text.toIntOrNull() != value) text = value.toString()
+    }
+    BasicTextField(
+        value = text,
+        onValueChange = { input ->
+            val digits = input.filter { it.isDigit() }.take(2)
+            val n = digits.toIntOrNull()
+            if (n == null) {
+                text = "" // allow clearing the field to retype; the day only changes on a real number
+            } else {
+                val day = n.coerceIn(1, 31)
+                text = day.toString()
+                if (day != value) onChange(day)
+            }
+        },
+        singleLine = true,
+        textStyle = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+        ),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        modifier = modifier.onFocusChanged { focus ->
+            // Leaving an emptied field restores the current day so it never saves blank.
+            if (!focus.isFocused && text.isEmpty()) text = value.toString()
+        },
+    )
 }
 
 /** Parses a budget field's text into a positive amount, or null if blank/invalid/non-positive. */
