@@ -16,6 +16,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,9 +24,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.data.settings.LocaleHelper
 import com.budgetty.app.data.settings.SettingsStore
@@ -95,6 +98,19 @@ class MainActivity : ComponentActivity() {
                 ThemeMode.SYSTEM -> isSystemInDarkTheme()
                 ThemeMode.LIGHT -> false
                 ThemeMode.DARK -> true
+            }
+            // The in-app theme is applied only in Compose, but enableEdgeToEdge() derived the
+            // status-/navigation-bar icon contrast from the *system* dark-mode. Drive it from the
+            // resolved in-app theme instead — keyed on `dark` so a live theme toggle re-applies —
+            // otherwise forcing the app to the opposite of the device theme leaves the bar icons
+            // invisible (dark icons on a dark bar). PaywallScreen overrides this locally and restores
+            // to whatever we set here.
+            val view = LocalView.current
+            DisposableEffect(dark) {
+                val controller = WindowCompat.getInsetsController(window, view)
+                controller.isAppearanceLightStatusBars = !dark
+                controller.isAppearanceLightNavigationBars = !dark
+                onDispose {}
             }
             BudgettyTheme(darkTheme = dark, accent = settings.accent) {
                 // A themed Surface paints colorScheme.background behind every screen, so screens
