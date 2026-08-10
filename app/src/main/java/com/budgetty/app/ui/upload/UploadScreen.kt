@@ -371,6 +371,10 @@ private fun UploadScreenContent(
                     onAddRow = onAddRow,
                     onFinalize = onFinalize,
                     onAddReceipt = onAddReceipt,
+                    // Only enable Save while actually reviewing. REVIEW and DONE share this branch,
+                    // so once a save starts the button greys out — a visible companion to the
+                    // ViewModel's re-entrancy guard against creating a duplicate receipt.
+                    finalizeEnabled = state.stage == UploadStage.REVIEW,
                 )
             }
         }
@@ -683,6 +687,7 @@ private fun ReviewList(
     onAddRow: () -> Unit,
     onFinalize: () -> Unit,
     onAddReceipt: () -> Unit,
+    finalizeEnabled: Boolean,
 ) {
     val gross = transactions.fold(BigDecimal.ZERO) { acc, txn ->
         acc + txn.price.multiply(BigDecimal(txn.quantity))
@@ -856,6 +861,7 @@ private fun ReviewList(
                     }
                     Button(
                         onClick = attemptFinalize,
+                        enabled = finalizeEnabled,
                         modifier = Modifier
                             .weight(1f)
                             .height(MaterialTheme.dimens.buttonHeight),
@@ -871,6 +877,7 @@ private fun ReviewList(
             } else {
                 Button(
                     onClick = attemptFinalize,
+                    enabled = finalizeEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(MaterialTheme.dimens.buttonHeight),

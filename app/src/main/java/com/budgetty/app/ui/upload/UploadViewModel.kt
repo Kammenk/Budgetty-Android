@@ -577,6 +577,16 @@ class UploadViewModel(
      * messages are passed in already-localized from the screen.
      */
     fun finalizeUpload(noItemsMessage: String, noAmountMessage: String, onDone: () -> Unit) {
+        // Re-entrancy guard: only ever save from the review screen. A second invocation — a fast
+        // double-tap on Save before the screen switches to the saving spinner, or a tap in the brief
+        // window after the save finishes (stage DONE) but before the screen navigates away — would
+        // otherwise run the save again. Because a *new* upload mints a fresh id each call
+        // ([System.currentTimeMillis] below) and only the editing path deletes the old rows first,
+        // that second run creates a whole duplicate receipt (or, on a same-millisecond collision,
+        // duplicate line items under one receipt). Click handlers run sequentially on the main thread
+        // and [stage] is updated synchronously just below, so by the time a second handler runs this
+        // bails out.
+        if (_uiState.value.stage != UploadStage.REVIEW) return
         val rows = _uiState.value.transactions.filter { it.name.isNotBlank() }
         if (rows.isEmpty()) {
             _uiState.update { it.copy(error = noItemsMessage) }
