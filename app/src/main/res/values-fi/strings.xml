@@ -399,6 +399,9 @@
     <string name="recurring_paid">Maksettu</string>
     <string name="recurring_mark_paid">Merkitse maksetuksi</string>
     <string name="recurring_paid_count">%1$d/%2$d maksettu</string>
+    <string name="recurring_autopay_title">Automaattinen maksu</string>
+    <string name="recurring_autopay_sub">Merkitse automaattisesti maksetuksi eräpäivänä</string>
+    <string name="recurring_autopay_badge">Auto</string>
     <string name="recurring_upgrade_more">Päivitä lisätäksesi useampia</string>
     <string name="recurring_money_empty_hint">Lisää tulosi ja laskusi nähdäksesi, mitä jää jäljelle joka kuukausi.</string>
     <string name="recurring_this_month">Tässä kuussa</string>

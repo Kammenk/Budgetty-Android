@@ -66,4 +66,52 @@ class RecurringPaidTest {
         val b = bill(RecurringEntity.Cadence.ONCE, lastPosted = millis(LocalDate.of(2020, 1, 1)))
         assertTrue(b.isPaidThisCycle(today, monthStartDay = 1))
     }
+
+    // ── Autopay: derived "effectively paid" once the due day passes (no lastPosted stamp) ──
+
+    private fun autoBill(cadence: String, dueDay: Int, autoPay: Boolean = true) = RecurringEntity(
+        label = "Rent",
+        amount = BigDecimal("800"),
+        isIncome = false,
+        cadence = cadence,
+        dueDay = dueDay,
+        autoPay = autoPay,
+    )
+
+    @Test
+    fun `monthly due day passed this cycle, upcoming day not yet`() {
+        // today = Jul 25; the Jul 10 due day has passed, the Jul 28 one has not.
+        assertTrue(autoBill(RecurringEntity.Cadence.MONTHLY, dueDay = 10).isDuePassedThisCycle(today, 1))
+        assertFalse(autoBill(RecurringEntity.Cadence.MONTHLY, dueDay = 28).isDuePassedThisCycle(today, 1))
+    }
+
+    @Test
+    fun `weekly monday has passed by any later day of its week`() {
+        assertTrue(autoBill(RecurringEntity.Cadence.WEEKLY, dueDay = 1).isDuePassedThisCycle(today, 1))
+    }
+
+    @Test
+    fun `yearly and one-off never auto-mark (no computable due date)`() {
+        assertFalse(autoBill(RecurringEntity.Cadence.YEARLY, dueDay = 1).isDuePassedThisCycle(today, 1))
+        assertFalse(autoBill(RecurringEntity.Cadence.ONCE, dueDay = 1).isDuePassedThisCycle(today, 1))
+    }
+
+    @Test
+    fun `autopay fills paid once the due day passes`() {
+        assertTrue(autoBill(RecurringEntity.Cadence.MONTHLY, dueDay = 10).isEffectivelyPaidThisCycle(today, 1))
+        assertFalse(autoBill(RecurringEntity.Cadence.MONTHLY, dueDay = 28).isEffectivelyPaidThisCycle(today, 1))
+    }
+
+    @Test
+    fun `autopay off leaves it to the manual stamp`() {
+        val b = autoBill(RecurringEntity.Cadence.MONTHLY, dueDay = 10, autoPay = false)
+        assertFalse(b.isEffectivelyPaidThisCycle(today, 1))
+    }
+
+    @Test
+    fun `a manual payment counts even before the autopay due day`() {
+        val b = autoBill(RecurringEntity.Cadence.MONTHLY, dueDay = 28)
+            .copy(lastPosted = millis(LocalDate.of(2026, 7, 10)))
+        assertTrue(b.isEffectivelyPaidThisCycle(today, 1))
+    }
 }

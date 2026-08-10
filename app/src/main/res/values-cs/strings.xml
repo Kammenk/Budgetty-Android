@@ -399,6 +399,9 @@
     <string name="recurring_paid">Zaplaceno</string>
     <string name="recurring_mark_paid">Označit jako zaplacené</string>
     <string name="recurring_paid_count">%1$d z %2$d zaplaceno</string>
+    <string name="recurring_autopay_title">Automatická platba</string>
+    <string name="recurring_autopay_sub">Automaticky označit jako zaplacené v den splatnosti</string>
+    <string name="recurring_autopay_badge">Auto</string>
     <string name="recurring_upgrade_more">Upgradujte pro přidání dalších</string>
     <string name="recurring_money_empty_hint">Přidejte své příjmy a účty a uvidíte, co vám každý měsíc zbývá.</string>
     <string name="recurring_this_month">Tento měsíc</string>

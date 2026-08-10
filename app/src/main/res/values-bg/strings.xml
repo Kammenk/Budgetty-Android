@@ -608,6 +608,9 @@
     <string name="recurring_paid">Платено</string>
     <string name="recurring_mark_paid">Отбележи като платено</string>
     <string name="recurring_paid_count">%1$d от %2$d платени</string>
+    <string name="recurring_autopay_title">Автоплащане</string>
+    <string name="recurring_autopay_sub">Отбелязвай като платено автоматично на падежа</string>
+    <string name="recurring_autopay_badge">Авто</string>
     <string name="recurring_upgrade_more">Надгради, за да добавиш още</string>
     <string name="recurring_money_empty_hint">Добави доход и сметки, за да видиш какво остава всеки месец.</string>
     <string name="recurring_this_month">Този месец</string>

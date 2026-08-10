@@ -616,6 +616,9 @@
     <string name="recurring_paid">Paid</string>
     <string name="recurring_mark_paid">Mark as paid</string>
     <string name="recurring_paid_count">%1$d of %2$d paid</string>
+    <string name="recurring_autopay_title">Autopay</string>
+    <string name="recurring_autopay_sub">Mark as paid automatically on its due day</string>
+    <string name="recurring_autopay_badge">Auto</string>
     <string name="recurring_upgrade_more">Upgrade to add more</string>
     <string name="recurring_money_empty_hint">Add your income and bills to see what\'s left each month.</string>
     <string name="recurring_this_month">This month</string>

@@ -37,6 +37,12 @@ data class RecurringEntity(
     /** Creation time (epoch millis); orders each list by when the entry was added. */
     @ColumnInfo(defaultValue = "0")
     val createdAt: Long = 0L,
+    /**
+     * Bills only: when true, the bill auto-marks as paid once [dueDay] has passed in the current cycle
+     * — monthly & weekly only (yearly stores no month, one-offs don't recur). Derived on read, no job.
+     */
+    @ColumnInfo(defaultValue = "0")
+    val autoPay: Boolean = false,
     // ── Reserved for the later auto-posting phase (unused while planning-only) ──
     @ColumnInfo(defaultValue = "0")
     val nextDue: Long = 0L,

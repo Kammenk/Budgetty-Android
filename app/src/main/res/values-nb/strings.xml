@@ -399,6 +399,9 @@
     <string name="recurring_paid">Betalt</string>
     <string name="recurring_mark_paid">Marker som betalt</string>
     <string name="recurring_paid_count">%1$d av %2$d betalt</string>
+    <string name="recurring_autopay_title">Automatisk betaling</string>
+    <string name="recurring_autopay_sub">Marker automatisk som betalt på forfallsdagen</string>
+    <string name="recurring_autopay_badge">Auto</string>
     <string name="recurring_upgrade_more">Oppgrader for å legge til flere</string>
     <string name="recurring_money_empty_hint">Legg til inntekt og regninger for å se hva som er igjen hver måned.</string>
     <string name="recurring_this_month">Denne måneden</string>
