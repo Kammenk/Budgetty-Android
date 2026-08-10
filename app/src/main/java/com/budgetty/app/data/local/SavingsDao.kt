@@ -36,8 +36,12 @@ interface SavingsDao {
     suspend fun deleteContribution(id: Long)
 
     // ── Backup restore (fresh ids; goals inserted before their contributions) ──
+    /**
+     * Inserts goals with fresh ids and returns the new row ids in the same order as [goals], so the
+     * restore can remap each contribution's [SavingsContributionEntity.goalId] onto its new goal.
+     */
     @Insert
-    suspend fun insertAllGoals(goals: List<SavingsGoalEntity>)
+    suspend fun insertAllGoals(goals: List<SavingsGoalEntity>): List<Long>
 
     @Insert
     suspend fun insertAllContributions(contributions: List<SavingsContributionEntity>)

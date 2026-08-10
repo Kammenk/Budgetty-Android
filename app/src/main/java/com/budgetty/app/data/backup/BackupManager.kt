@@ -1,5 +1,6 @@
 package com.budgetty.app.data.backup
 
+import androidx.room.withTransaction
 import com.budgetty.app.data.local.UserDatabaseManager
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
@@ -15,6 +16,7 @@ class BackupManager(
     private val receiptDao get() = db.database.receiptDao()
     private val categoryRuleDao get() = db.database.categoryRuleDao()
     private val recurringDao get() = db.database.recurringDao()
+    private val savingsDao get() = db.database.savingsDao()
 
     private val gson = Gson()
 
@@ -27,6 +29,8 @@ class BackupManager(
             receipts = receiptDao.getAll().first(),
             rules = categoryRuleDao.getAll().first(),
             recurring = recurringDao.getAll().first(),
+            savingsGoals = savingsDao.getGoals().first(),
+            savingsContributions = savingsDao.getAllContributions().first(),
         )
         return gson.toJson(data)
     }
@@ -43,24 +47,43 @@ class BackupManager(
             throw IllegalArgumentException("Not a valid Budgetty backup file", e)
         } ?: throw IllegalArgumentException("Empty backup file")
 
-        if (replace) {
-            transactionDao.clearAll()
-            categoryDao.clearAll()
-            budgetDao.clearAll()
-            receiptDao.clearAll()
-            categoryRuleDao.clearAll()
-            recurringDao.clearAll()
+        // One transaction so a failure or process death mid-restore can't leave the account
+        // half-wiped (matters most under replace=true, which clears first).
+        db.database.withTransaction {
+            if (replace) {
+                transactionDao.clearAll()
+                categoryDao.clearAll()
+                budgetDao.clearAll()
+                receiptDao.clearAll()
+                categoryRuleDao.clearAll()
+                recurringDao.clearAll()
+                // Child before parent (the goal→contribution CASCADE would cover it too).
+                savingsDao.clearContributions()
+                savingsDao.clearGoals()
+            }
+            // New ids so a merge never collides with existing transactions.
+            transactionDao.insertAll(data.transactions.map { it.copy(id = 0) })
+            // .orZero() tolerates older backups without receipts.tax (pre-v15) or receipts.extraCharges
+            // (pre-v17) — Gson leaves the non-null column null, which would otherwise fail the insert.
+            receiptDao.insertAll(data.receipts.map { it.copy(tax = it.tax.orZero(), extraCharges = it.extraCharges.orZero()) })
+            categoryDao.insertOrIgnore(data.categories)
+            budgetDao.insertOrIgnore(data.budgets)
+            categoryRuleDao.insertOrIgnore(data.rules)
+            // New ids so a merge never collides; .orEmpty() tolerates pre-v14 backups without this field.
+            recurringDao.insertAll(data.recurring.orEmpty().map { it.copy(id = 0) })
+            // Savings: insert goals with fresh ids, then remap each contribution's goalId onto the
+            // freshly-minted goal id (insertAllGoals returns the new ids in input order) so the
+            // goal↔contribution link survives. .orEmpty() tolerates pre-savings backups; a
+            // contribution whose goal is missing from the backup is dropped.
+            val goals = data.savingsGoals.orEmpty()
+            val newGoalIds = savingsDao.insertAllGoals(goals.map { it.copy(id = 0) })
+            val goalIdMap = goals.zip(newGoalIds).associate { (old, newId) -> old.id to newId }
+            savingsDao.insertAllContributions(
+                data.savingsContributions.orEmpty().mapNotNull { contribution ->
+                    goalIdMap[contribution.goalId]?.let { contribution.copy(id = 0, goalId = it) }
+                },
+            )
         }
-        // New ids so a merge never collides with existing transactions.
-        transactionDao.insertAll(data.transactions.map { it.copy(id = 0) })
-        // .orZero() tolerates older backups without receipts.tax (pre-v15) or receipts.extraCharges
-        // (pre-v17) — Gson leaves the non-null column null, which would otherwise fail the insert.
-        receiptDao.insertAll(data.receipts.map { it.copy(tax = it.tax.orZero(), extraCharges = it.extraCharges.orZero()) })
-        categoryDao.insertOrIgnore(data.categories)
-        budgetDao.insertOrIgnore(data.budgets)
-        categoryRuleDao.insertOrIgnore(data.rules)
-        // New ids so a merge never collides; .orEmpty() tolerates pre-v14 backups without this field.
-        recurringDao.insertAll(data.recurring.orEmpty().map { it.copy(id = 0) })
     }
 }
 
