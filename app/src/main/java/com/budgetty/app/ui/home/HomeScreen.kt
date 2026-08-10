@@ -1380,7 +1380,9 @@ internal fun SafeToSpendCard(
 
             SafeToSpendBar(
                 income = state.cycleIncome,
-                spent = state.monthlySpent,
+                // Paid bills are spent money, so they join receipts in the solid share; the tonal share
+                // stays "still due". The hatched middle (what's safe) is then unaffected by paying a bill.
+                spent = state.monthlySpent + state.billsPaid,
                 billsStillDue = state.billsStillDue,
                 tone = tone,
                 inactive = status == SafeToSpendStatus.SETUP,
@@ -1413,6 +1415,27 @@ internal fun SafeToSpendCard(
                     ) else null,
                     modifier = Modifier.weight(1f),
                 )
+            }
+
+            // Roll-up of what's actually left your pocket this cycle = receipt spend + bills marked
+            // paid. Only shown once a bill is paid; until then it just equals the "Spent" stat above.
+            if (state.billsPaid.signum() > 0) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = stringResource(R.string.safe_to_spend_total_spent),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = (state.monthlySpent + state.billsPaid).formatMoney(),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                }
             }
 
             val foot = when {

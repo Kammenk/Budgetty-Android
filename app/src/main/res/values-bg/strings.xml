@@ -659,6 +659,7 @@
     <string name="safe_to_spend_spent">Похарчено · %1$s</string>
     <string name="safe_to_spend_bills_due">Неплатени сметки</string>
     <string name="safe_to_spend_bills_paid">%1$s вече платени</string>
+    <string name="safe_to_spend_total_spent">Общо похарчено този цикъл</string>
     <string name="safe_to_spend_resets">нулира се %1$s</string>
     <string name="safe_to_spend_over">%1$s над лимита — похарчи повече, отколкото ти остава този цикъл.</string>
     <string name="safe_to_spend_income_foot">И двете излизат от дохода ти от %1$s този цикъл.</string>

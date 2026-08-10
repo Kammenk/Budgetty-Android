@@ -659,6 +659,7 @@
     <string name="safe_to_spend_spent">Потрачено · %1$s</string>
     <string name="safe_to_spend_bills_due">Счета к оплате</string>
     <string name="safe_to_spend_bills_paid">%1$s уже оплачено</string>
+    <string name="safe_to_spend_total_spent">Всего потрачено в этом цикле</string>
     <string name="safe_to_spend_resets">обновится %1$s</string>
     <string name="safe_to_spend_over">%1$s сверх лимита — потрачено больше, чем осталось в этом цикле.</string>
     <string name="safe_to_spend_income_foot">И то, и другое вычитается из дохода %1$s в этом цикле.</string>

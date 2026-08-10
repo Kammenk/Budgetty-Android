@@ -658,6 +658,7 @@
     <string name="safe_to_spend_spent">Speso · %1$s</string>
     <string name="safe_to_spend_bills_due">Spese da pagare</string>
     <string name="safe_to_spend_bills_paid">%1$s già pagati</string>
+    <string name="safe_to_spend_total_spent">Totale speso questo ciclo</string>
     <string name="safe_to_spend_resets">riparte il %1$s</string>
     <string name="safe_to_spend_over">%1$s in più — hai speso più di quanto ti resta questo ciclo.</string>
     <string name="safe_to_spend_income_foot">Entrambi provengono dai tuoi %1$s di entrate di questo ciclo.</string>

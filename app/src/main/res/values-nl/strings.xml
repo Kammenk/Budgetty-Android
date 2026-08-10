@@ -658,6 +658,7 @@
     <string name="safe_to_spend_spent">Uitgegeven · %1$s</string>
     <string name="safe_to_spend_bills_due">Openstaande rekeningen</string>
     <string name="safe_to_spend_bills_paid">%1$s al betaald</string>
+    <string name="safe_to_spend_total_spent">Totaal uitgegeven deze cyclus</string>
     <string name="safe_to_spend_resets">nieuw vanaf %1$s</string>
     <string name="safe_to_spend_over">%1$s te veel — meer uitgegeven dan er deze cyclus over is.</string>
     <string name="safe_to_spend_income_foot">Beide komen deze cyclus uit je inkomen van %1$s.</string>

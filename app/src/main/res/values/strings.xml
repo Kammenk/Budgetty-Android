@@ -210,6 +210,7 @@
     <string name="safe_to_spend_spent">Spent · %1$s</string>
     <string name="safe_to_spend_bills_due">Bills still due</string>
     <string name="safe_to_spend_bills_paid">%1$s already paid</string>
+    <string name="safe_to_spend_total_spent">Total spent this cycle</string>
     <string name="safe_to_spend_resets">resets %1$s</string>
     <string name="safe_to_spend_over">%1$s over — spent more than you have left this cycle.</string>
     <string name="safe_to_spend_income_foot">Both come out of %1$s income this cycle.</string>

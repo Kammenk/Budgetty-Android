@@ -670,6 +670,7 @@
     <string name="safe_to_spend_spent">Käytetty · %1$s</string>
     <string name="safe_to_spend_bills_due">Maksamattomat laskut</string>
     <string name="safe_to_spend_bills_paid">%1$s jo maksettu</string>
+    <string name="safe_to_spend_total_spent">Käytetty yhteensä tällä jaksolla</string>
     <string name="safe_to_spend_resets">nollautuu %1$s</string>
     <string name="safe_to_spend_over">%1$s yli — käytit enemmän kuin sinulla on jäljellä tällä jaksolla.</string>
     <string name="safe_to_spend_income_foot">Molemmat otetaan %1$s tuloista tällä jaksolla.</string>

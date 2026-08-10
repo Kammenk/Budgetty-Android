@@ -659,6 +659,7 @@
     <string name="safe_to_spend_spent">Ausgegeben · %1$s</string>
     <string name="safe_to_spend_bills_due">Noch offene Rechnungen</string>
     <string name="safe_to_spend_bills_paid">%1$s bereits bezahlt</string>
+    <string name="safe_to_spend_total_spent">Insgesamt ausgegeben in diesem Zyklus</string>
     <string name="safe_to_spend_resets">neu ab %1$s</string>
     <string name="safe_to_spend_over">%1$s drüber — mehr ausgegeben, als dir in diesem Zyklus bleibt.</string>
     <string name="safe_to_spend_income_foot">Beides kommt aus deinen Einnahmen von %1$s in diesem Zyklus.</string>

@@ -670,6 +670,7 @@
     <string name="safe_to_spend_spent">Cheltuit · %1$s</string>
     <string name="safe_to_spend_bills_due">Facturi de plătit</string>
     <string name="safe_to_spend_bills_paid">%1$s deja plătit</string>
+    <string name="safe_to_spend_total_spent">Total cheltuit în acest ciclu</string>
     <string name="safe_to_spend_resets">se resetează %1$s</string>
     <string name="safe_to_spend_over">%1$s peste — ai cheltuit mai mult decât ți-a rămas în acest ciclu.</string>
     <string name="safe_to_spend_income_foot">Ambele provin din venitul de %1$s al acestui ciclu.</string>
