@@ -110,12 +110,17 @@ fun RecurringEntity.monthlyAmount(monthStart: Long, monthEnd: Long): BigDecimal 
 
 /**
  * The entry's contribution to the inclusive [windowStart]..[windowEnd] epoch-millis window, counting
- * a recurring cadence only from the calendar month it was added ([RecurringEntity.createdAt]) onward.
- * A salary or bill is therefore never projected backward onto months it didn't yet exist for — a
- * half-year view no longer shows 6× a salary that was only just added — while a one-time entry still
- * counts its full amount exactly once, and only when it was added inside the window. Used by the
- * Insights money-flow cards and the History Budgets snapshot so both scale a plan to the selected
- * range using only what's actually known, rather than predicting the past.
+ * a recurring cadence only from the month it was added ([RecurringEntity.createdAt]) onward. A salary
+ * or bill is therefore never projected backward onto months it didn't yet exist for — a half-year
+ * view no longer shows 6× a salary that was only just added — while a one-time entry still counts its
+ * full amount exactly once, and only when it was added inside the window. Used by the Insights
+ * money-flow cards and the History Budgets snapshot so both scale a plan to the selected range using
+ * only what's actually known, rather than predicting the past.
+ *
+ * A window that is a whole number of monthly steps from its own start day — the calendar month, the
+ * user's pay-cycle month (e.g. the 10th → the 9th) and quarters/halves — counts by months, so one
+ * such period is exactly one month's rate regardless of its 28–31 day length; only genuinely partial
+ * windows (a week step, a custom range) are day-scaled.
  */
 fun RecurringEntity.windowAmount(
     windowStart: Long,
@@ -131,21 +136,26 @@ fun RecurringEntity.windowAmount(
 
     val startDate = Instant.ofEpochMilli(windowStart).atZone(zone).toLocalDate()
     val endDate = Instant.ofEpochMilli(windowEnd).atZone(zone).toLocalDate()
-    val createdMonth = YearMonth.from(Instant.ofEpochMilli(createdAt).atZone(zone))
+    val createdDate = Instant.ofEpochMilli(createdAt).atZone(zone).toLocalDate()
+    val createdMonth = YearMonth.from(createdDate)
     // Clip the window to the part on/after the month the entry was added; nothing left ⇒ no contribution.
     val activeStart = maxOf(startDate, createdMonth.atDay(1))
     if (activeStart.isAfter(endDate)) return BigDecimal.ZERO
 
-    val startMonth = YearMonth.from(startDate)
-    val endMonth = YearMonth.from(endDate)
-    val wholeMonths = startDate == startMonth.atDay(1) && endDate == endMonth.atEndOfMonth()
+    // Whole-month window: an exact integer number of monthly steps from the window's own start day.
+    // This covers the calendar month (1st → next 1st) AND the user's pay-cycle month (e.g. the 10th →
+    // the 9th), as well as quarters/halves — so a single such period counts as exactly one month's rate
+    // whether it spans 28 or 31 days, instead of being day-scaled. [months] == 0 ⇒ a genuine partial
+    // window (a week step or a custom range). A pay day clamped into a short month (29–31) can leave a
+    // cycle boundary that isn't a clean month step; that rare case falls back to day-scaling below.
+    val endExclusive = endDate.plusDays(1)
+    val months = ChronoUnit.MONTHS.between(startDate, endExclusive)
+    val wholeMonths = months >= 1 && startDate.plusMonths(months) == endExclusive
     return if (wholeMonths) {
-        // Whole calendar-month window (every Home/History preset and the Insights month/quarter/half
-        // steps): count the eligible months exactly for clean integer scaling of the monthly rate.
-        val eligibleMonths = generateSequence(startMonth) { it.plusMonths(1) }
-            .takeWhile { !it.isAfter(endMonth) }
-            .count { !it.isBefore(createdMonth) }
-        rate.multiply(BigDecimal(eligibleMonths)).setScale(2, RoundingMode.HALF_UP)
+        // Count only the month-steps whose occurrence began on/after the entry was added, so a plan is
+        // never projected back onto cycles before it existed (matches the calendar-month clip exactly).
+        val eligible = (0L until months).count { step -> createdDate.isBefore(startDate.plusMonths(step + 1)) }
+        rate.multiply(BigDecimal(eligible)).setScale(2, RoundingMode.HALF_UP)
     } else {
         // Partial window (a week step or a custom range): scale by active days over an average month,
         // matching the Insights custom-range factor.
