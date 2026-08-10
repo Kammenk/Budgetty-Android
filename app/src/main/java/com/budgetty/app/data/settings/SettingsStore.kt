@@ -198,6 +198,49 @@ class SettingsStore(context: Context) {
         _settings.update { it.copy(dismissedWellbeingTips = updated) }
     }
 
+    /**
+     * Wipes every setting tied to the signed-in user — identity, search history, app-lock PIN +
+     * biometric, the setup questionnaire, dismissed tips, and personal section layout — while
+     * leaving device/app display preferences (theme, accent, currency, date format, language,
+     * onboarding, month-start day) intact.
+     *
+     * These prefs are a single device-global store, so anything left here leaks to the next account
+     * on a shared device. Every sign-out and account-deletion path MUST call this (currently
+     * AuthViewModel.signOut, AppLockViewModel.forgotPin, AccountViewModel.deleteAccount); add the
+     * call to any new sign-out path too.
+     */
+    fun clearUserState() {
+        prefs.edit()
+            .remove(KEY_DISPLAY_NAME)
+            .remove(KEY_RECENT_SEARCHES)
+            .remove(KEY_PIN_HASH)
+            .remove(KEY_APP_LOCK)
+            .remove(KEY_BIOMETRIC)
+            .remove(KEY_QUIZ_PENDING)
+            .remove(KEY_QUIZ_ANSWERS)
+            .remove(KEY_DISMISSED_TIPS)
+            .remove(KEY_HIDDEN_HOME)
+            .remove(KEY_HIDDEN_INSIGHTS)
+            .remove(KEY_ORDER_HOME)
+            .remove(KEY_ORDER_INSIGHTS)
+            .apply()
+        _settings.update {
+            it.copy(
+                displayName = "",
+                recentSearches = emptyList(),
+                appLockEnabled = false,
+                pinHash = "",
+                biometricEnabled = false,
+                insightsQuizPending = false,
+                dismissedWellbeingTips = emptySet(),
+                hiddenHomeSections = emptySet(),
+                hiddenInsightsSections = emptySet(),
+                homeSectionOrder = emptyList(),
+                insightsSectionOrder = emptyList(),
+            )
+        }
+    }
+
     private fun Set<String>.toggled(key: String, present: Boolean): Set<String> =
         if (present) this + key else this - key
 
