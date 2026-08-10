@@ -934,16 +934,31 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">В этом месяце вы потратили на %1$s больше, чем заработали</string>
-    <string name="wellbeing_tip_overbudget_title">Превышение в %1$d категориях — %2$s сверх плана</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Превышение в %1$d категории — %2$s сверх плана</item>
+        <item quantity="few">Превышение в %1$d категориях — %2$s сверх плана</item>
+        <item quantity="many">Превышение в %1$d категориях — %2$s сверх плана</item>
+        <item quantity="other">Превышение в %1$d категориях — %2$s сверх плана</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s выше на %2$d%% — %3$s против вашего среднего %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d подписок — %2$s в месяц</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d подписка — %2$s в месяц</item>
+        <item quantity="few">%1$d подписки — %2$s в месяц</item>
+        <item quantity="many">%1$d подписок — %2$s в месяц</item>
+        <item quantity="other">%1$d подписок — %2$s в месяц</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Вы тратите около %1$s в месяц на %2$s, но без бюджета</string>
     <string name="wellbeing_tip_nogoal_title">Пока нет цели накоплений — даже немного в месяц создаёт подушку</string>
     <string name="wellbeing_tip_goaloff_title">%1$s отстаёт от плана</string>
     <string name="wellbeing_tip_savingswin_title">Отлично — в этом месяце вы отложили %1$d%% дохода</string>
     <string name="wellbeing_tip_improved_title">%1$s ниже на %2$d%% в этом месяце</string>
     <string name="wellbeing_tip_pace_title">Вы на %1$d%% недельного бюджета</string>
-    <string name="wellbeing_tip_leak_title">%1$d мелких покупок в %2$s на этой неделе</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d мелкая покупка в %2$s на этой неделе</item>
+        <item quantity="few">%1$d мелкие покупки в %2$s на этой неделе</item>
+        <item quantity="many">%1$d мелких покупок в %2$s на этой неделе</item>
+        <item quantity="other">%1$d мелких покупок в %2$s на этой неделе</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">На этой неделе вы тратите меньше плана</string>
 
     <!-- Wellbeing · tip details -->

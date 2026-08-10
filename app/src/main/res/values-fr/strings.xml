@@ -915,16 +915,25 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">Vous avez dépensé %1$s de plus que ce que vous avez gagné ce mois-ci</string>
-    <string name="wellbeing_tip_overbudget_title">Budget dépassé dans %1$d catégories — %2$s au-dessus du plan</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Budget dépassé dans %1$d catégorie — %2$s au-dessus du plan</item>
+        <item quantity="other">Budget dépassé dans %1$d catégories — %2$s au-dessus du plan</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s a augmenté de %2$d%% — %3$s contre votre moyenne de %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d abonnements — %2$s par mois</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d abonnement — %2$s par mois</item>
+        <item quantity="other">%1$d abonnements — %2$s par mois</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Vous dépensez environ %1$s par mois en %2$s mais sans budget</string>
     <string name="wellbeing_tip_nogoal_title">Pas encore d\'objectif d\'épargne — même un peu par mois crée un matelas</string>
     <string name="wellbeing_tip_goaloff_title">%1$s est en retard</string>
     <string name="wellbeing_tip_savingswin_title">Bravo — vous avez épargné %1$d%% de vos revenus ce mois-ci</string>
     <string name="wellbeing_tip_improved_title">%1$s a baissé de %2$d%% ce mois-ci</string>
     <string name="wellbeing_tip_pace_title">Vous êtes à %1$d%% de votre budget hebdomadaire</string>
-    <string name="wellbeing_tip_leak_title">%1$d petits achats en %2$s cette semaine</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d petit achat en %2$s cette semaine</item>
+        <item quantity="other">%1$d petits achats en %2$s cette semaine</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">Vous êtes sous le rythme cette semaine</string>
 
     <!-- Wellbeing · tip details -->
