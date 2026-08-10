@@ -35,8 +35,9 @@ enum class DateRangeFilter(val label: String, @param:StringRes val labelRes: Int
             LAST_MONTH -> cycle(-1)
             LAST_3_MONTHS -> cycle(-2).first to cycle(0).second
             LAST_6_MONTHS -> cycle(-5).first to cycle(0).second
-            // Everything ever recorded, through the end of today.
-            ALL_TIME -> LocalDate.EPOCH to today
+            // Everything ever recorded, through the end of today. LocalDate.of(1970,1,1) rather than
+            // LocalDate.EPOCH, which is API 34+ (minSdk is 28) — same value, no desugaring needed.
+            ALL_TIME -> LocalDate.of(1970, 1, 1) to today
         }
         return dateRangeToEpochMillis(startDate, endInclusive)
     }
