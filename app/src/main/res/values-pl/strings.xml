@@ -1012,4 +1012,13 @@
     <string name="manage_move_title">Przenieś do grupy</string>
     <string name="manage_move_cd">Przenieś %1$s do innej grupy</string>
     <string name="manage_empty_hint">Nie masz jeszcze własnych kategorii — utwórz jedną, aby oznaczać wydatki po swojemu.</string>
+    <string name="pie_center_total">Razem</string>
+    <string name="pie_slice_share">%1$d%% wydatków</string>
+    <string name="pie_all_categories">Wszystkie kategorie</string>
+    <string name="pie_amount_total">%1$s razem</string>
+    <string name="pie_no_spending">Brak wydatków w tym okresie</string>
+    <string name="receipt_fallback_name">Paragon</string>
+    <string name="home_empty_receipts_cta">+ Dodaj paragon</string>
+    <string name="home_empty_receipts_body">Dotknij %1$s, aby zeskanować pierwszy — odczytamy go i skategoryzujemy za Ciebie.</string>
+    <string name="history_select_receipt">Wybierz paragon, aby zobaczyć jego pozycje.</string>
 </resources>

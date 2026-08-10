@@ -1004,4 +1004,13 @@
     <string name="manage_move_title">Siirrä ryhmään</string>
     <string name="manage_move_cd">Siirrä %1$s toiseen ryhmään</string>
     <string name="manage_empty_hint">Ei vielä omia kategorioita — luo sellainen merkitäksesi kulut omalla tavallasi.</string>
+    <string name="pie_center_total">Yhteensä</string>
+    <string name="pie_slice_share">%1$d%% menoista</string>
+    <string name="pie_all_categories">Kaikki luokat</string>
+    <string name="pie_amount_total">%1$s yhteensä</string>
+    <string name="pie_no_spending">Ei menoja tällä jaksolla</string>
+    <string name="receipt_fallback_name">Kuitti</string>
+    <string name="home_empty_receipts_cta">+ Lisää kuitti</string>
+    <string name="home_empty_receipts_body">Skannaa ensimmäinen napauttamalla %1$s — luemme ja luokittelemme sen puolestasi.</string>
+    <string name="history_select_receipt">Valitse kuitti nähdäksesi sen tuotteet.</string>
 </resources>

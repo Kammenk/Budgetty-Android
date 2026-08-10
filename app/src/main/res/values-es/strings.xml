@@ -988,4 +988,13 @@
     <string name="manage_move_title">Mover a un grupo</string>
     <string name="manage_move_cd">Mover %1$s a otro grupo</string>
     <string name="manage_empty_hint">Aún no hay categorías propias — crea una para clasificar tus gastos a tu manera.</string>
+    <string name="pie_center_total">Total</string>
+    <string name="pie_slice_share">%1$d%% del gasto</string>
+    <string name="pie_all_categories">Todas las categorías</string>
+    <string name="pie_amount_total">%1$s en total</string>
+    <string name="pie_no_spending">Sin gastos en este período</string>
+    <string name="receipt_fallback_name">Recibo</string>
+    <string name="home_empty_receipts_cta">+ Añadir recibo</string>
+    <string name="home_empty_receipts_body">Toca %1$s para escanear el primero — lo leeremos y lo categorizaremos por ti.</string>
+    <string name="history_select_receipt">Selecciona un recibo para ver sus artículos.</string>
 </resources>

@@ -991,4 +991,13 @@
     <string name="manage_move_title">Naar groep verplaatsen</string>
     <string name="manage_move_cd">%1$s naar een andere groep verplaatsen</string>
     <string name="manage_empty_hint">Nog geen eigen categorieën — maak er een om je uitgaven op jouw manier in te delen.</string>
+    <string name="pie_center_total">Totaal</string>
+    <string name="pie_slice_share">%1$d%% van de uitgaven</string>
+    <string name="pie_all_categories">Alle categorieën</string>
+    <string name="pie_amount_total">%1$s totaal</string>
+    <string name="pie_no_spending">Geen uitgaven in deze periode</string>
+    <string name="receipt_fallback_name">Bon</string>
+    <string name="home_empty_receipts_cta">+ Bon toevoegen</string>
+    <string name="home_empty_receipts_body">Tik op %1$s om je eerste te scannen — we lezen en categoriseren hem voor je.</string>
+    <string name="history_select_receipt">Selecteer een bon om de artikelen te zien.</string>
 </resources>

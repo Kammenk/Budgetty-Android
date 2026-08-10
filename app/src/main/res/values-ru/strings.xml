@@ -1011,4 +1011,13 @@
     <string name="manage_move_title">Переместить в группу</string>
     <string name="manage_move_cd">Переместить %1$s в другую группу</string>
     <string name="manage_empty_hint">Пока нет своих категорий — создайте одну, чтобы отмечать траты по-своему.</string>
+    <string name="pie_center_total">Итого</string>
+    <string name="pie_slice_share">%1$d%% расходов</string>
+    <string name="pie_all_categories">Все категории</string>
+    <string name="pie_amount_total">%1$s всего</string>
+    <string name="pie_no_spending">Нет расходов за этот период</string>
+    <string name="receipt_fallback_name">Чек</string>
+    <string name="home_empty_receipts_cta">+ Добавить чек</string>
+    <string name="home_empty_receipts_body">Нажмите %1$s, чтобы отсканировать первый — мы прочитаем и распределим его по категориям за вас.</string>
+    <string name="history_select_receipt">Выберите чек, чтобы увидеть его позиции.</string>
 </resources>

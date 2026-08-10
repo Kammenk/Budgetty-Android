@@ -1022,4 +1022,13 @@
     <string name="manage_move_title">Přesunout do skupiny</string>
     <string name="manage_move_cd">Přesunout %1$s do jiné skupiny</string>
     <string name="manage_empty_hint">Zatím žádné vlastní kategorie — vytvořte si jednu a označujte výdaje po svém.</string>
+    <string name="pie_center_total">Celkem</string>
+    <string name="pie_slice_share">%1$d%% výdajů</string>
+    <string name="pie_all_categories">Všechny kategorie</string>
+    <string name="pie_amount_total">%1$s celkem</string>
+    <string name="pie_no_spending">V tomto období žádné výdaje</string>
+    <string name="receipt_fallback_name">Účtenka</string>
+    <string name="home_empty_receipts_cta">+ Přidat účtenku</string>
+    <string name="home_empty_receipts_body">Klepnutím na %1$s naskenujete svou první — přečteme ji a zařadíme za vás.</string>
+    <string name="history_select_receipt">Vyberte účtenku a zobrazte její položky.</string>
 </resources>

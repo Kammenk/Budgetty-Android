@@ -1003,4 +1003,13 @@
     <string name="manage_move_title">Flytta till grupp</string>
     <string name="manage_move_cd">Flytta %1$s till en annan grupp</string>
     <string name="manage_empty_hint">Inga egna kategorier ännu — skapa en för att märka dina utgifter på ditt eget sätt.</string>
+    <string name="pie_center_total">Totalt</string>
+    <string name="pie_slice_share">%1$d%% av utgifterna</string>
+    <string name="pie_all_categories">Alla kategorier</string>
+    <string name="pie_amount_total">%1$s totalt</string>
+    <string name="pie_no_spending">Inga utgifter under den här perioden</string>
+    <string name="receipt_fallback_name">Kvitto</string>
+    <string name="home_empty_receipts_cta">+ Lägg till kvitto</string>
+    <string name="home_empty_receipts_body">Tryck på %1$s för att skanna ditt första — vi läser och kategoriserar det åt dig.</string>
+    <string name="history_select_receipt">Välj ett kvitto för att se dess varor.</string>
 </resources>

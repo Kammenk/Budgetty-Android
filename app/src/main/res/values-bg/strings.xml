@@ -991,4 +991,13 @@
     <string name="manage_move_title">Премести в група</string>
     <string name="manage_move_cd">Премести %1$s в друга група</string>
     <string name="manage_empty_hint">Все още няма свои категории — създай една, за да отбелязваш разходите по свой начин.</string>
+    <string name="pie_center_total">Общо</string>
+    <string name="pie_slice_share">%1$d%% от разходите</string>
+    <string name="pie_all_categories">Всички категории</string>
+    <string name="pie_amount_total">%1$s общо</string>
+    <string name="pie_no_spending">Няма разходи за този период</string>
+    <string name="receipt_fallback_name">Касова бележка</string>
+    <string name="home_empty_receipts_cta">+ Добави бележка</string>
+    <string name="home_empty_receipts_body">Докоснете %1$s, за да сканирате първата си — ще я разчетем и категоризираме вместо вас.</string>
+    <string name="history_select_receipt">Изберете касова бележка, за да видите артикулите в нея.</string>
 </resources>

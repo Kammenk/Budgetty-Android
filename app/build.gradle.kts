@@ -287,3 +287,46 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+// ── i18n guard ────────────────────────────────────────────────────────────────────────────────
+// Android's built-in HardcodedText lint does NOT inspect Jetpack Compose `Text("…")` calls, so
+// untranslated user-facing strings slipped past CI. This task fails the build on a hardcoded,
+// translatable literal in a `Text(text = "…")` call. Interpolated literals (contain $), the
+// "Budgetty" brand, and emoji/symbol-only literals are ignored; mark a deliberately
+// non-translatable literal (e.g. an illustrative sample) with a trailing `// i18n-ignore` comment.
+val checkHardcodedComposeStrings = tasks.register("checkHardcodedComposeStrings") {
+    group = "verification"
+    description = "Fails on hardcoded translatable strings in Compose Text(text = \"…\") calls."
+    val kotlinSources = fileTree("src/main/java") { include("**/*.kt") }
+    inputs.files(kotlinSources)
+    doLast {
+        val literalPattern = Regex("text\\s*=\\s*\"([^\"]*)\"")
+        val offenders = mutableListOf<String>()
+        kotlinSources.files.sorted().forEach { file ->
+            file.readLines().forEachIndexed { index, line ->
+                if (line.contains("stringResource") || line.contains("i18n-ignore")) return@forEachIndexed
+                literalPattern.findAll(line).forEach { match ->
+                    val value = match.groupValues[1]
+                    val translatable = value.count(Char::isLetter) >= 2 &&
+                        !value.contains('$') &&
+                        value != "Budgetty"
+                    if (translatable) offenders += "${file.relativeTo(projectDir)}:${index + 1}  \"$value\""
+                }
+            }
+        }
+        if (offenders.isNotEmpty()) {
+            throw GradleException(
+                buildString {
+                    appendLine(
+                        "Hardcoded translatable Compose Text() strings — move them to stringResource(), " +
+                            "or mark a genuinely non-translatable literal with // i18n-ignore:",
+                    )
+                    offenders.forEach { appendLine("  $it") }
+                },
+            )
+        }
+    }
+}
+
+// Run it as part of the standard verification lifecycle (CI's `check`/`build`).
+tasks.named("check").configure { dependsOn(checkHardcodedComposeStrings) }

@@ -191,7 +191,7 @@ private fun HistoryScreenContent(
     val historyColumn: @Composable (Modifier) -> Unit = { colModifier ->
         Column(modifier = colModifier.fillMaxHeight()) {
             Text(
-                text = "History",
+                text = stringResource(R.string.nav_history),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = MaterialTheme.dimens.xl, end = MaterialTheme.dimens.xl, top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg),
@@ -510,7 +510,7 @@ private fun HistoryScreenContent(
                         Text(text = "🧾", fontSize = 40.sp)
                         Spacer(Modifier.height(MaterialTheme.dimens.sm))
                         Text(
-                            text = "Select a receipt to see its items.",
+                            text = stringResource(R.string.history_select_receipt),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )

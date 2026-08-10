@@ -111,7 +111,7 @@ fun ReceiptDetailContent(
                 Spacer(Modifier.width(14.dp))
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = receipt.store.ifBlank { "Receipt" },
+                        text = receipt.store.ifBlank { stringResource(R.string.receipt_fallback_name) },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
@@ -132,7 +132,7 @@ fun ReceiptDetailContent(
                     )
                     if (receipt.discount.signum() > 0) {
                         Text(
-                            text = "Discount −${receipt.discount.formatMoney()}",
+                            text = "${stringResource(R.string.upload_discount)} −${receipt.discount.formatMoney()}",
                             style = MaterialTheme.typography.bodySmall,
                             color = budgetGoodColor(),
                         )

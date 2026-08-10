@@ -535,7 +535,7 @@ private fun ThisWeekPreview(large: Boolean) {
                 fontWeight = FontWeight.Bold,
             )
             Spacer(Modifier.weight(1f))
-            Text(text = "Jun 24–30", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(text = "Jun 24–30", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant) // i18n-ignore: illustrative sample date in the widget preview mock
         }
         Spacer(Modifier.height(if (large) 14.dp else 10.dp))
         Text(
