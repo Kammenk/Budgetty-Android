@@ -467,7 +467,9 @@ class UploadViewModel(
                 categoryRepository.upsert(
                     CategoryEntity(name, colorArgb, icon, isCustom = true, createdAt = createdAt, parent = parent),
                 )
-                if (!name.equals(original, ignoreCase = true)) {
+                // Exact compare (not case-insensitive): a case-only rename still needs the cascade +
+                // delete, or the case-sensitive categories primary key keeps the old row as a duplicate.
+                if (name != original) {
                     repository.reassignCategory(original, name)
                     categoryRuleRepository.reassignCategory(original, name)
                     budgetRepository.renameCategoryBudget(original, name)

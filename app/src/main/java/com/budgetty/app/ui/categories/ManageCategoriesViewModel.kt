@@ -77,7 +77,11 @@ class ManageCategoriesViewModel(
                 categoryRepository.upsert(
                     CategoryEntity(name, colorArgb, icon, isCustom = true, createdAt = createdAt, parent = parent),
                 )
-                if (!name.equals(original, ignoreCase = true)) {
+                // Compare EXACTLY (not case-insensitively): a case-only rename (e.g. "Coffee" →
+                // "COFFEE") is still a rename. The categories primary key is case-sensitive, so
+                // skipping the cascade + delete would leave the old-cased row behind as a duplicate
+                // (rendering with the wrong colour) and let a free user slip past the custom cap.
+                if (name != original) {
                     transactionRepository.reassignCategory(original, name)
                     categoryRuleRepository.reassignCategory(original, name)
                     budgetRepository.renameCategoryBudget(original, name)
