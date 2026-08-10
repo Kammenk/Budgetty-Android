@@ -6,6 +6,7 @@
       "node_modules",
       ".git",
       "eval",
+      "tools",
       "firebase-debug.log",
       "firebase-debug.*.log"
     ]
