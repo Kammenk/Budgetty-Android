@@ -14,7 +14,7 @@ import com.budgetty.app.category.Categories
         SavingsGoalEntity::class, SavingsContributionEntity::class,
         IgnoredSubscriptionEntity::class,
     ],
-    version = 22,
+    version = 23,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -334,6 +334,13 @@ val MIGRATION_21_22 = object : Migration(21, 22) {
     }
 }
 
+/** v23 adds recurring.autoPay: bills that auto-mark paid once their due day passes each cycle. */
+val MIGRATION_22_23 = object : Migration(22, 23) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE recurring ADD COLUMN autoPay INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -378,4 +385,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
+    MIGRATION_22_23,
 )

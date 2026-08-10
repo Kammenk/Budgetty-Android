@@ -22,7 +22,7 @@ import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.UpcomingBill
 import com.budgetty.app.ui.util.currentMonthRange
-import com.budgetty.app.ui.util.isPaidThisCycle
+import com.budgetty.app.ui.util.isEffectivelyPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
 import com.budgetty.app.ui.util.upcomingBills
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -157,7 +157,7 @@ class HomeViewModel(
                 val amount = r.monthlyAmount(start, end)
                 when {
                     r.isIncome -> income += amount
-                    r.isPaidThisCycle(today, day) -> billsPaid += amount
+                    r.isEffectivelyPaidThisCycle(today, day) -> billsPaid += amount
                     else -> billsStillDue += amount
                 }
             }

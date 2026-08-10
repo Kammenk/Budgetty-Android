@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import com.budgetty.app.ui.savings.SavingsGoalCardUi
 import com.budgetty.app.ui.util.BudgetRollover
 import com.budgetty.app.ui.util.currentMonthRange
-import com.budgetty.app.ui.util.isPaidThisCycle
+import com.budgetty.app.ui.util.isEffectivelyPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
 import com.budgetty.app.ui.util.SavingsMath
 import java.math.BigDecimal
@@ -237,6 +237,7 @@ class BudgetViewModel(
         category: String,
         cadence: String,
         dueDay: Int,
+        autoPay: Boolean,
     ) {
         val amount = amountText.replace(',', '.').trim().toBigDecimalOrNull() ?: return
         val name = label.trim()
@@ -254,6 +255,8 @@ class BudgetViewModel(
             category = if (isIncome) "" else category,
             cadence = cadence,
             dueDay = dueDay,
+            // Income never autopays; a bill only autopays for monthly/weekly (others can't compute a due date).
+            autoPay = autoPay && !isIncome,
         )
         viewModelScope.launch { recurringRepository.upsert(entity) }
     }
@@ -365,7 +368,8 @@ class BudgetViewModel(
             bills = bills,
             monthlyIncome = income.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(monthStart, monthEnd) },
             monthlyBills = bills.fold(BigDecimal.ZERO) { a, r -> a + r.monthlyAmount(monthStart, monthEnd) },
-            paidBillIds = bills.filter { it.isPaidThisCycle(today, monthStartDay) }.map { it.id }.toSet(),
+            paidBillIds = bills.filter { it.isEffectivelyPaidThisCycle(today, monthStartDay) }
+                .map { it.id }.toSet(),
         )
     }
 

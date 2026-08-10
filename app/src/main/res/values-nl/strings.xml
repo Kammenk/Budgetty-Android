@@ -591,6 +591,9 @@
     <string name="recurring_paid">Betaald</string>
     <string name="recurring_mark_paid">Markeren als betaald</string>
     <string name="recurring_paid_count">%1$d van %2$d betaald</string>
+    <string name="recurring_autopay_title">Automatische betaling</string>
+    <string name="recurring_autopay_sub">Automatisch als betaald markeren op de vervaldag</string>
+    <string name="recurring_autopay_badge">Auto</string>
     <string name="recurring_upgrade_more">Upgrade om meer toe te voegen</string>
     <string name="recurring_money_empty_hint">Voeg je inkomen en rekeningen toe om te zien wat er elke maand overblijft.</string>
     <string name="recurring_this_month">Deze maand</string>

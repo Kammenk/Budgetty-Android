@@ -591,6 +591,9 @@
     <string name="recurring_paid">Payé</string>
     <string name="recurring_mark_paid">Marquer comme payé</string>
     <string name="recurring_paid_count">%1$d sur %2$d payés</string>
+    <string name="recurring_autopay_title">Paiement automatique</string>
+    <string name="recurring_autopay_sub">Marquer comme payé automatiquement à l\'échéance</string>
+    <string name="recurring_autopay_badge">Auto</string>
     <string name="recurring_upgrade_more">Passez à la version supérieure pour en ajouter</string>
     <string name="recurring_money_empty_hint">Ajoutez vos revenus et factures pour voir ce qu\'il reste chaque mois.</string>
     <string name="recurring_this_month">Ce mois-ci</string>

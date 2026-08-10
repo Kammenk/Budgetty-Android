@@ -56,6 +56,44 @@ fun RecurringEntity.isPaidThisCycle(
     return lastPosted in startMs..endMs
 }
 
+/** The date within [today]'s pay-cycle month whose day-of-month is [day] (clamped to the month). */
+private fun dueDateThisCycle(today: LocalDate, monthStartDay: Int, day: Int): LocalDate {
+    val (start, end) = PayCycle.month(today, monthStartDay)
+    val d = day.coerceIn(1, 31)
+    val candidate = clampDay(YearMonth.from(start), d)
+    return if (!candidate.isBefore(start) && !candidate.isAfter(end)) candidate
+    else clampDay(YearMonth.from(end), d)
+}
+
+/**
+ * Whether this bill's due date within its current occurrence has already arrived (today on/after it):
+ * the [RecurringEntity.dueDay]-th of the pay-cycle month for a monthly bill, the [dueDay] weekday of
+ * this Mon–Sun week for a weekly one. Yearly (stores no month) and one-offs return false — they have
+ * no computable due date to auto-mark against.
+ */
+fun RecurringEntity.isDuePassedThisCycle(
+    today: LocalDate = LocalDate.now(),
+    monthStartDay: Int = 1,
+): Boolean = when (cadence) {
+    RecurringEntity.Cadence.MONTHLY -> !today.isBefore(dueDateThisCycle(today, monthStartDay, dueDay))
+    RecurringEntity.Cadence.WEEKLY -> {
+        val weekStart = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        !today.isBefore(weekStart.plusDays((dueDay.coerceIn(1, 7) - 1).toLong()))
+    }
+    else -> false
+}
+
+/**
+ * Whether a bill counts as paid for this cycle: either manually marked ([isPaidThisCycle]) or, when
+ * [RecurringEntity.autoPay] is on, its due date has already passed ([isDuePassedThisCycle]). Auto-pay
+ * only fills paid in once the day arrives; it never clears a manual payment.
+ */
+fun RecurringEntity.isEffectivelyPaidThisCycle(
+    today: LocalDate = LocalDate.now(),
+    monthStartDay: Int = 1,
+): Boolean = isPaidThisCycle(today, monthStartDay) ||
+    (autoPay && isDuePassedThisCycle(today, monthStartDay))
+
 /**
  * The entry's amount expressed per month (weekly ×52/12, yearly ÷12), for the totals/breakdown.
  * A one-time ([RecurringEntity.Cadence.ONCE]) entry counts its full amount only in the calendar
@@ -133,8 +171,8 @@ fun List<RecurringEntity>.upcomingBills(
     monthStartDay: Int = 1,
 ): List<UpcomingBill> =
     filterNot { it.isIncome }
-        // A bill marked paid for this cycle drops off "upcoming" until its next occurrence.
-        .filterNot { it.isPaidThisCycle(today, monthStartDay) }
+        // A bill paid for this cycle (manually or via autopay) drops off "upcoming" until next time.
+        .filterNot { it.isEffectivelyPaidThisCycle(today, monthStartDay) }
         .mapNotNull { bill -> bill.nextOccurrenceDays(today)?.let { UpcomingBill(bill, it) } }
         .sortedBy { it.daysUntil }
 

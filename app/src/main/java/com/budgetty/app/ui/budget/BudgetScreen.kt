@@ -90,6 +90,7 @@ import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Lock
@@ -183,8 +184,8 @@ private fun BudgetScreenContent(
     isPremium: Boolean = false,
     customActions: CustomCategoryActions = CustomCategoryActions(),
     onSetBillPaid: (RecurringEntity, Boolean) -> Unit = { _, _ -> },
-    onSaveRecurring: (RecurringEntity?, String, String, Boolean, String, String, Int) -> Unit =
-        { _, _, _, _, _, _, _ -> },
+    onSaveRecurring: (RecurringEntity?, String, String, Boolean, String, String, Int, Boolean) -> Unit =
+        { _, _, _, _, _, _, _, _ -> },
     onDeleteRecurring: (Long) -> Unit = {},
     onOpenPaywall: () -> Unit = {},
     savingsGoals: List<SavingsGoalCardUi> = emptyList(),
@@ -529,8 +530,10 @@ private fun BudgetScreenContent(
         RecurringEntrySheet(
             draft = draft,
             customActions = customActions,
-            onSave = { label, amount, category, cadence, dueDay ->
-                onSaveRecurring(draft.original, label, amount, draft.isIncome, category, cadence, dueDay)
+            onSave = { label, amount, category, cadence, dueDay, autoPay ->
+                onSaveRecurring(
+                    draft.original, label, amount, draft.isIncome, category, cadence, dueDay, autoPay,
+                )
                 recurringDraft = null
             },
             onDelete = {
@@ -1426,6 +1429,8 @@ private fun MoneyRow(
     /** Non-null on a payable bill row: whether it's marked paid this cycle. Null on income rows. */
     paid: Boolean? = null,
     onTogglePaid: (() -> Unit)? = null,
+    /** True when the bill autopays: shows a non-interactive "Auto" chip instead of the manual toggle. */
+    autoPay: Boolean = false,
 ) {
     Row(
         modifier = Modifier
@@ -1468,7 +1473,31 @@ private fun MoneyRow(
             color = if (paid == true) amountColor.copy(alpha = 0.4f) else amountColor,
             maxLines = 1,
         )
-        if (paid != null && onTogglePaid != null) {
+        if (autoPay && paid != null) {
+            // Auto-managed: the paid state follows the due date, so there's no manual toggle.
+            val autoTint = if (paid) budgetGoodColor() else MaterialTheme.colorScheme.onSurfaceVariant
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                    .padding(horizontal = MaterialTheme.dimens.sm, vertical = 3.dp),
+            ) {
+                Icon(
+                    Icons.Filled.Autorenew,
+                    contentDescription = null,
+                    tint = autoTint,
+                    modifier = Modifier.size(14.dp),
+                )
+                Text(
+                    text = stringResource(R.string.recurring_autopay_badge),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = autoTint,
+                )
+            }
+        } else if (paid != null && onTogglePaid != null) {
             Icon(
                 imageVector = if (paid) Icons.Filled.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
                 contentDescription = stringResource(
@@ -1599,6 +1628,7 @@ private fun RecurringCard(
                 onClick = { onEdit(item) },
                 paid = isPaid,
                 onTogglePaid = { onSetPaid(item, !isPaid) },
+                autoPay = item.autoPay,
             )
         }
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -1740,7 +1770,7 @@ private fun SpendingBudgetHeader() {
 private fun RecurringEntrySheet(
     draft: RecurringDraft,
     customActions: CustomCategoryActions,
-    onSave: (label: String, amount: String, category: String, cadence: String, dueDay: Int) -> Unit,
+    onSave: (label: String, amount: String, category: String, cadence: String, dueDay: Int, autoPay: Boolean) -> Unit,
     onDelete: () -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -1750,6 +1780,7 @@ private fun RecurringEntrySheet(
     var amount by remember { mutableStateOf(original?.amount?.toPlainString() ?: "") }
     var cadence by remember { mutableStateOf(original?.cadence ?: RecurringEntity.Cadence.MONTHLY) }
     var dueDay by remember { mutableStateOf(original?.dueDay ?: if (isIncome) 25 else 1) }
+    var autoPay by remember { mutableStateOf(original?.autoPay ?: false) }
     var category by remember {
         mutableStateOf(original?.category?.takeIf { it.isNotBlank() } ?: Categories.DEFAULT)
     }
@@ -1860,6 +1891,32 @@ private fun RecurringEntrySheet(
                 DayStepper(cadence = cadence, value = dueDay, onChange = { dueDay = it })
             }
 
+            // Bills on a monthly/weekly schedule can auto-mark as paid once the due day arrives.
+            if (!isIncome && (cadence == RecurringEntity.Cadence.MONTHLY ||
+                    cadence == RecurringEntity.Cadence.WEEKLY)
+            ) {
+                Spacer(Modifier.height(MaterialTheme.dimens.md))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = stringResource(R.string.recurring_autopay_title),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium,
+                        )
+                        Text(
+                            text = stringResource(R.string.recurring_autopay_sub),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Switch(checked = autoPay, onCheckedChange = { autoPay = it })
+                }
+            }
+
             if (!isIncome) {
                 Spacer(Modifier.height(MaterialTheme.dimens.md))
                 SheetSectionLabel(stringResource(R.string.recurring_field_category))
@@ -1908,7 +1965,7 @@ private fun RecurringEntrySheet(
                     Text(stringResource(R.string.action_cancel))
                 }
                 Button(
-                    onClick = { if (valid) onSave(name, amount, category, cadence, dueDay) },
+                    onClick = { if (valid) onSave(name, amount, category, cadence, dueDay, autoPay) },
                     enabled = valid,
                     modifier = Modifier
                         .weight(1f)

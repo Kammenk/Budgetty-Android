@@ -591,6 +591,9 @@
     <string name="recurring_paid">Оплачено</string>
     <string name="recurring_mark_paid">Отметить как оплаченное</string>
     <string name="recurring_paid_count">Оплачено %1$d из %2$d</string>
+    <string name="recurring_autopay_title">Автоплатёж</string>
+    <string name="recurring_autopay_sub">Автоматически отмечать как оплаченное в день платежа</string>
+    <string name="recurring_autopay_badge">Авто</string>
     <string name="recurring_upgrade_more">Оформите подписку, чтобы добавить больше</string>
     <string name="recurring_money_empty_hint">Добавьте доход и счета, чтобы видеть, сколько остаётся каждый месяц.</string>
     <string name="recurring_this_month">Этот месяц</string>

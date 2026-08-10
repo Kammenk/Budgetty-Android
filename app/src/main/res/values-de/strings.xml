@@ -576,6 +576,9 @@
     <string name="recurring_paid">Bezahlt</string>
     <string name="recurring_mark_paid">Als bezahlt markieren</string>
     <string name="recurring_paid_count">%1$d von %2$d bezahlt</string>
+    <string name="recurring_autopay_title">Automatische Zahlung</string>
+    <string name="recurring_autopay_sub">Am Fälligkeitstag automatisch als bezahlt markieren</string>
+    <string name="recurring_autopay_badge">Auto</string>
     <string name="recurring_upgrade_more">Upgrade, um mehr hinzuzufügen</string>
     <string name="recurring_money_empty_hint">Füge deine Einnahmen und Rechnungen hinzu, um zu sehen, was jeden Monat übrig bleibt.</string>
     <string name="recurring_this_month">Dieser Monat</string>
