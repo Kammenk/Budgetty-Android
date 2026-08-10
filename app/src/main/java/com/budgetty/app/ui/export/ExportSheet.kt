@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
-import com.budgetty.app.data.export.DataExporter
 import com.budgetty.app.data.export.ExportBuilder
 import com.budgetty.app.data.export.ExportData
 import com.budgetty.app.ui.components.AdaptiveSheet
@@ -51,7 +50,6 @@ import com.budgetty.app.ui.savings.SavingsSheetLabel
 import com.budgetty.app.ui.theme.dimens
 import com.budgetty.app.ui.util.formatMoney
 import org.koin.androidx.compose.koinViewModel
-import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -61,6 +59,7 @@ import java.util.Locale
 @Composable
 fun ExportSheet(onDismiss: () -> Unit, viewModel: ExportViewModel = koinViewModel()) {
     val source by viewModel.source.collectAsStateWithLifecycle()
+    val exporting by viewModel.exporting.collectAsStateWithLifecycle()
     var isPdf by remember { mutableStateOf(false) }
     var filter by remember { mutableStateOf(DateRangeFilter.CURRENT_MONTH) }
     var menuOpen by remember { mutableStateOf(false) }
@@ -89,21 +88,25 @@ fun ExportSheet(onDismiss: () -> Unit, viewModel: ExportViewModel = koinViewMode
             byCategory = core.byCategory,
             totalRowLabel = totalRowLabel,
         )
-        val dir = File(context.cacheDir, "exports").apply { mkdirs() }
         val safe = "Budgetty " + periodLabel.replace(Regex("[^\\p{L}\\p{N} \\-]"), "").trim()
-        val (file, mime) = if (isPdf) {
-            File(dir, "$safe.pdf").also { DataExporter.renderPdf(data, it) } to "application/pdf"
-        } else {
-            File(dir, "$safe.csv").also { it.writeText(ExportBuilder.toCsv(data)) } to "text/csv"
-        }
-        val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        val send = Intent(Intent.ACTION_SEND).apply {
-            type = mime
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        context.startActivity(Intent.createChooser(send, shareTitle))
-        onDismiss()
+        // The VM renders/writes the file off the main thread, then hands it back here (on the main
+        // thread) to become a share Intent — startActivity + FileProvider need the Context.
+        viewModel.export(
+            data = data,
+            isPdf = isPdf,
+            fileBaseName = safe,
+            cacheDir = context.cacheDir,
+            onReady = { file, mime ->
+                val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
+                val send = Intent(Intent.ACTION_SEND).apply {
+                    type = mime
+                    putExtra(Intent.EXTRA_STREAM, uri)
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+                context.startActivity(Intent.createChooser(send, shareTitle))
+                onDismiss()
+            },
+        )
     }
 
     AdaptiveSheet(onDismiss = onDismiss) {
@@ -191,7 +194,7 @@ fun ExportSheet(onDismiss: () -> Unit, viewModel: ExportViewModel = koinViewMode
 
             PrimaryPill(
                 text = stringResource(if (isPdf) R.string.export_do_pdf else R.string.export_do_csv),
-                onClick = { if (!core.isEmpty) export() },
+                onClick = { if (!core.isEmpty && !exporting) export() },
                 fillWidth = true,
             )
             Text(
