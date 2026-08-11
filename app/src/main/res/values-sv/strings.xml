@@ -3,7 +3,6 @@
 
     <string name="action_save">Spara</string>
     <string name="action_cancel">Avbryt</string>
-    <string name="action_discard">Ignorera</string>
     <string name="action_done">Klar</string>
     <string name="action_apply">Använd</string>
     <string name="action_delete">Ta bort</string>
@@ -148,7 +147,6 @@
     <string name="home_view_all">Visa alla</string>
     <string name="home_no_receipts">Inga kvitton ännu</string>
     <string name="home_budgets">Budgetar</string>
-    <string name="home_budgets_discretionary">Fria budgetar</string>
     <string name="home_monthly_progress">Månadsbudgetens förlopp</string>
     <string name="home_weekly_progress">Veckobudgetens förlopp</string>
     <string name="home_budget_progress">Budgetförlopp</string>
@@ -383,11 +381,6 @@
     <string name="budget_left">%1$s kvar</string>
     <string name="budget_over">%1$s över</string>
     <string name="budget_carried_over">+%1$s överfört</string>
-    <string name="budget_left_of_carried">%1$s av %2$s kvar · inkl. %3$s överfört</string>
-    <string name="budget_unsaved_changes">Osparade ändringar</string>
-    <string name="budget_discard_message">Spara budgetändringarna innan du går?</string>
-    <string name="budget_status_near_limit">Nära gränsen</string>
-    <string name="budget_status_over_budget">Över budget</string>
     <string name="budget_rollover_title">Överför oanvänd budget</string>
     <string name="budget_rollover_hint">Oanvänd budget förs över till nästa period</string>
     <string name="budget_spent">%1$s spenderat</string>
@@ -679,10 +672,6 @@
     <string name="safe_to_spend_title">Tryggt att spendera</string>
     <string name="safe_to_spend_bills_due">Räkningar kvar att betala</string>
     <string name="safe_to_spend_total_spent">Spenderat totalt denna period</string>
-    <string name="safe_to_spend_status_on_track">I fas</string>
-    <string name="safe_to_spend_status_low">Snart slut</string>
-    <string name="safe_to_spend_status_over">Överskridet</string>
-    <string name="safe_to_spend_total_out_incl_bills">Spenderat totalt · inkl. räkningar</string>
     <string name="safe_to_spend_composition">%1$s spenderat + %2$s betalda räkningar</string>
     <string name="safe_to_spend_nothing_yet">Inget spenderat än denna period</string>
     <string name="safe_to_spend_over">%1$s över — du har spenderat mer än du har kvar denna period.</string>

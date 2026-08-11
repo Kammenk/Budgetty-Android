@@ -1,7 +1,6 @@
 <resources>
     <string name="action_save">Speichern</string>
     <string name="action_cancel">Abbrechen</string>
-    <string name="action_discard">Verwerfen</string>
     <string name="action_done">Fertig</string>
     <string name="action_apply">Übernehmen</string>
     <string name="action_delete">Löschen</string>
@@ -67,7 +66,6 @@
     <string name="home_receipts">Belege</string>
     <string name="home_no_receipts">Noch keine Belege</string>
     <string name="home_budgets">Budgets</string>
-    <string name="home_budgets_discretionary">Frei verfügbare Budgets</string>
     <string name="home_monthly_progress">Monatsbudget-Fortschritt</string>
     <string name="home_weekly_progress">Wochenbudget-Fortschritt</string>
     <string name="home_set_budget">Tippen, um ein Budget festzulegen</string>
@@ -121,11 +119,6 @@
     <string name="budget_left">%1$s übrig</string>
     <string name="budget_over">%1$s drüber</string>
     <string name="budget_carried_over">+%1$s übertragen</string>
-    <string name="budget_left_of_carried">%1$s von %2$s übrig · inkl. %3$s übertragen</string>
-    <string name="budget_unsaved_changes">Nicht gespeicherte Änderungen</string>
-    <string name="budget_discard_message">Budgetänderungen speichern, bevor du gehst?</string>
-    <string name="budget_status_near_limit">Fast am Limit</string>
-    <string name="budget_status_over_budget">Über Budget</string>
     <string name="budget_rollover_title">Ungenutztes Budget übertragen</string>
     <string name="budget_rollover_hint">Nicht genutztes Budget geht in die nächste Periode über</string>
     <string name="budget_spent">%1$s ausgegeben</string>
@@ -668,10 +661,6 @@
     <string name="safe_to_spend_title">Frei verfügbar</string>
     <string name="safe_to_spend_bills_due">Noch offene Rechnungen</string>
     <string name="safe_to_spend_total_spent">Insgesamt ausgegeben in diesem Zyklus</string>
-    <string name="safe_to_spend_status_on_track">Auf Kurs</string>
-    <string name="safe_to_spend_status_low">Wird knapp</string>
-    <string name="safe_to_spend_status_over">Überzogen</string>
-    <string name="safe_to_spend_total_out_incl_bills">Gesamtausgaben · inkl. Rechnungen</string>
     <string name="safe_to_spend_composition">%1$s ausgegeben + %2$s bezahlte Rechnungen</string>
     <string name="safe_to_spend_nothing_yet">Noch nichts ausgegeben in diesem Zyklus</string>
     <string name="safe_to_spend_over">%1$s drüber — mehr ausgegeben, als dir in diesem Zyklus bleibt.</string>

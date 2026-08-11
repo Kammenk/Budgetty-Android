@@ -3,7 +3,6 @@
 
     <string name="action_save">Uložit</string>
     <string name="action_cancel">Zrušit</string>
-    <string name="action_discard">Zahodit</string>
     <string name="action_done">Hotovo</string>
     <string name="action_apply">Použít</string>
     <string name="action_delete">Smazat</string>
@@ -148,7 +147,6 @@
     <string name="home_view_all">Zobrazit vše</string>
     <string name="home_no_receipts">Zatím žádné účtenky</string>
     <string name="home_budgets">Rozpočty</string>
-    <string name="home_budgets_discretionary">Volitelné rozpočty</string>
     <string name="home_monthly_progress">Průběh měsíčního rozpočtu</string>
     <string name="home_weekly_progress">Průběh týdenního rozpočtu</string>
     <string name="home_budget_progress">Průběh rozpočtu</string>
@@ -383,11 +381,6 @@
     <string name="budget_left">Zbývá %1$s</string>
     <string name="budget_over">%1$s nad limit</string>
     <string name="budget_carried_over">+%1$s převedeno</string>
-    <string name="budget_left_of_carried">Zbývá %1$s z %2$s · vč. %3$s převedeno</string>
-    <string name="budget_unsaved_changes">Neuložené změny</string>
-    <string name="budget_discard_message">Uložit změny rozpočtu před odchodem?</string>
-    <string name="budget_status_near_limit">Blízko limitu</string>
-    <string name="budget_status_over_budget">Nad rozpočet</string>
     <string name="budget_rollover_title">Převádět nevyužitý rozpočet</string>
     <string name="budget_rollover_hint">Nevyužitý rozpočet přechází do dalšího období</string>
     <string name="budget_spent">%1$s utraceno</string>
@@ -679,10 +672,6 @@
     <string name="safe_to_spend_title">Můžete utratit</string>
     <string name="safe_to_spend_bills_due">Účty k zaplacení</string>
     <string name="safe_to_spend_total_spent">Celkem utraceno v tomto cyklu</string>
-    <string name="safe_to_spend_status_on_track">Podle plánu</string>
-    <string name="safe_to_spend_status_low">Dochází</string>
-    <string name="safe_to_spend_status_over">Překročeno</string>
-    <string name="safe_to_spend_total_out_incl_bills">Celkem utraceno · vč. účtů</string>
     <string name="safe_to_spend_composition">%1$s utraceno + %2$s zaplacené účty</string>
     <string name="safe_to_spend_nothing_yet">V tomto cyklu zatím nic neutraceno</string>
     <string name="safe_to_spend_over">%1$s nad limit — utratili jste víc, než v tomto cyklu zbývá.</string>

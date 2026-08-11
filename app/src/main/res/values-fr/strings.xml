@@ -1,7 +1,6 @@
 <resources>
     <string name="action_save">Enregistrer</string>
     <string name="action_cancel">Annuler</string>
-    <string name="action_discard">Ignorer</string>
     <string name="action_done">Terminé</string>
     <string name="action_apply">Appliquer</string>
     <string name="action_delete">Supprimer</string>
@@ -67,7 +66,6 @@
     <string name="home_receipts">Reçus</string>
     <string name="home_no_receipts">Aucun reçu pour le moment</string>
     <string name="home_budgets">Budgets</string>
-    <string name="home_budgets_discretionary">Budgets discrétionnaires</string>
     <string name="home_monthly_progress">Progression du budget mensuel</string>
     <string name="home_weekly_progress">Progression du budget hebdomadaire</string>
     <string name="home_set_budget">Appuyez pour définir un budget</string>
@@ -121,11 +119,6 @@
     <string name="budget_left">%1$s restant</string>
     <string name="budget_over">%1$s de trop</string>
     <string name="budget_carried_over">+%1$s reporté</string>
-    <string name="budget_left_of_carried">%1$s restant sur %2$s · incl. %3$s reporté</string>
-    <string name="budget_unsaved_changes">Modifications non enregistrées</string>
-    <string name="budget_discard_message">Enregistrer les modifications du budget avant de quitter ?</string>
-    <string name="budget_status_near_limit">Proche de la limite</string>
-    <string name="budget_status_over_budget">Budget dépassé</string>
     <string name="budget_rollover_title">Reporter le budget non utilisé</string>
     <string name="budget_rollover_hint">Le budget non dépensé est reporté à la période suivante</string>
     <string name="budget_spent">%1$s dépensé</string>
@@ -667,10 +660,6 @@
     <string name="safe_to_spend_title">Reste à dépenser</string>
     <string name="safe_to_spend_bills_due">Factures à payer</string>
     <string name="safe_to_spend_total_spent">Total dépensé ce cycle</string>
-    <string name="safe_to_spend_status_on_track">Dans les temps</string>
-    <string name="safe_to_spend_status_low">Bientôt épuisé</string>
-    <string name="safe_to_spend_status_over">Dépassé</string>
-    <string name="safe_to_spend_total_out_incl_bills">Total dépensé · factures incl.</string>
     <string name="safe_to_spend_composition">%1$s dépensé + %2$s factures payées</string>
     <string name="safe_to_spend_nothing_yet">Encore rien dépensé ce cycle</string>
     <string name="safe_to_spend_over">%1$s de trop — vous avez dépensé plus qu\'il ne vous reste pour ce cycle.</string>
