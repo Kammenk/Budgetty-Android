@@ -93,6 +93,9 @@ class AccountViewModel(
                 uid?.let { databaseManager.deleteDataFor(it) }
                 scanQuota.reset()
                 reviewTracker.reset()
+                // Erase this account's device-global settings (display name, recent searches,
+                // app-lock PIN, questionnaire, layout) so nothing survives the account deletion.
+                settingsStore.clearUserState()
                 DeleteAccountResult.SUCCESS
             } catch (e: FirebaseAuthRecentLoginRequiredException) {
                 DeleteAccountResult.REQUIRES_REAUTH

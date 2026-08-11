@@ -23,9 +23,11 @@ class AppLockViewModel(
     fun setAutoLockMinutes(value: Int) = settingsStore.setAutoLockMinutes(value)
     fun disableLock() = settingsStore.disableAppLock()
 
-    /** "Forgot PIN": clear the lock and sign out so the user re-authenticates instead of being stuck. */
+    /** "Forgot PIN": clear this user's local state (incl. the lock) and sign out so they re-authenticate. */
     fun forgotPin() {
-        settingsStore.disableAppLock()
+        // clearUserState() supersedes disableAppLock() and also wipes the rest of the account's
+        // device-global state, so the forgotten-PIN sign-out leaks nothing to the next account.
+        settingsStore.clearUserState()
         authRepository.signOut()
     }
 }

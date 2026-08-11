@@ -64,7 +64,12 @@ class AuthViewModel(
             }
         }
 
-    fun signOut() = repository.signOut()
+    fun signOut() {
+        // Wipe this account's device-global local state before the auth flips, so a shared device
+        // never leaks one user's name / searches / app-lock PIN to the next account.
+        settingsStore.clearUserState()
+        repository.signOut()
+    }
 
     /** Sends a password-reset email; [onSent] fires on success. Errors surface via [error]. */
     fun resetPassword(email: String, onSent: () -> Unit) {
