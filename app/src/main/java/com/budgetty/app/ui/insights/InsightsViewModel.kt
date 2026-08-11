@@ -20,6 +20,7 @@ import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.windowAmount
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
@@ -326,6 +328,9 @@ class InsightsViewModel(
                 )
             }
             .combine(wellbeingProvider.summary()) { state, wb -> state.copy(wellbeing = wb) }
+            // Heavy aggregation (BigDecimal folds, groupBy/sort over all receipts, trend/highlights,
+            // whole dataset under All-time) runs off the main thread; stateIn caches on main.
+            .flowOn(Dispatchers.Default)
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),

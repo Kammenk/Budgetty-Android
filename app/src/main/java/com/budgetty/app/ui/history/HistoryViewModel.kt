@@ -14,10 +14,14 @@ import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.home.DateRangeFilter
 import com.budgetty.app.ui.util.monthlyAmount
 import com.budgetty.app.ui.util.windowAmount
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -179,12 +183,17 @@ class HistoryViewModel(
     // snapshot reads only the Date window (below) — so choosing a date on any tab carries across.
     private val filters = MutableStateFlow(HistoryFilters())
 
+    // debounce() on the filter flow is still a preview coroutines API.
+    @OptIn(FlowPreview::class)
     val uiState: StateFlow<HistoryUiState> =
         combine(
             transactionRepository.getAll(),
             receiptRepository.getAll(),
             recurringRepository.items,
-            filters,
+            // Debounce so rapid filter changes — above all per-keystroke search — collapse into a
+            // single pass instead of re-running the whole (O(n log n) over the full ledger) aggregation
+            // on every character. Deliberate taps (category/store/date) just settle ~180 ms later.
+            filters.debounce(timeoutMillis = 180),
             settingsStore.settings,
         ) { transactions, receipts, recurring, activeFilters, settings ->
             // Transactions join to their receipt by the upload timestamp (see ReceiptEntity).
@@ -254,7 +263,7 @@ class HistoryViewModel(
                 periodIncome = income.fold(BigDecimal.ZERO) { a, r -> a + r.windowAmount(windowStart, windowEnd) },
                 periodBills = bills.fold(BigDecimal.ZERO) { a, r -> a + r.windowAmount(windowStart, windowEnd) },
             )
-        }.stateIn(
+        }.flowOn(Dispatchers.Default).stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HistoryUiState(),
