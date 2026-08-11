@@ -25,6 +25,14 @@ object WellbeingEngine {
     /** Below this many logged receipts we can't score meaningfully → first-run state. */
     const val MIN_RECEIPTS_TO_SCORE = 5
 
+    /**
+     * A subscription share of 0% only counts as a genuine "no subscriptions" win once there's at least
+     * this many months of history. Before that, a brand-new user simply hasn't accrued subscription
+     * data — scoring the absence as a perfect 100 would hand them a bogus top score, since it can be
+     * their only scored component. See [subscriptionsComponentScore].
+     */
+    const val MIN_MONTHS_FOR_ZERO_SUBS = 2
+
     const val MONTHLY_TIP_CAP = 5
     const val WEEKLY_TIP_CAP = 3
 
@@ -76,6 +84,17 @@ object WellbeingEngine {
     fun subscriptionsScore(sharePercent: Int): Int =
         clampScore(100.0 - (sharePercent - 5).coerceAtLeast(0) * 11.0)
 
+    /**
+     * The subscriptions component's sub-score, or null when there isn't enough signal to score it — a
+     * 0% share only counts once there's at least [MIN_MONTHS_FOR_ZERO_SUBS] months of history (see the
+     * const). This is what stops a brand-new user (no income/budget/goals/trend yet, no subscriptions)
+     * from scoring a bogus 100 off their only scored component.
+     */
+    fun subscriptionsComponentScore(inputs: WellbeingInputs): Int? {
+        if (inputs.subsCount == 0 && inputs.monthsTracked < MIN_MONTHS_FOR_ZERO_SUBS) return null
+        return inputs.subsSharePercent?.let { subscriptionsScore(it) }
+    }
+
     // ── Aggregate ─────────────────────────────────────────────────────────────────
 
     /** Weighted, renormalising mean over the components that have a score. Null if none do. */
@@ -109,7 +128,7 @@ object WellbeingEngine {
         WellbeingComponent(
             key = WellbeingComponentKey.SUBSCRIPTIONS,
             weight = W_SUBSCRIPTIONS,
-            score = inputs.subsSharePercent?.let { subscriptionsScore(it) },
+            score = subscriptionsComponentScore(inputs),
         ),
         WellbeingComponent(
             key = WellbeingComponentKey.GOALS,
