@@ -936,16 +936,28 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">Ai cheltuit cu %1$s mai mult decât ai câștigat luna aceasta</string>
-    <string name="wellbeing_tip_overbudget_title">Peste buget la %1$d categorii — %2$s peste plan</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Peste buget la %1$d categorie — %2$s peste plan</item>
+        <item quantity="few">Peste buget la %1$d categorii — %2$s peste plan</item>
+        <item quantity="other">Peste buget la %1$d de categorii — %2$s peste plan</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s a crescut cu %2$d%% — %3$s față de media ta de %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d abonamente — %2$s pe lună</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d abonament — %2$s pe lună</item>
+        <item quantity="few">%1$d abonamente — %2$s pe lună</item>
+        <item quantity="other">%1$d de abonamente — %2$s pe lună</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Cheltuiești cam %1$s pe lună pe %2$s, dar nu ai buget</string>
     <string name="wellbeing_tip_nogoal_title">Încă niciun obiectiv de economisire — și puțin pe lună îți face o rezervă</string>
     <string name="wellbeing_tip_goaloff_title">%1$s a rămas în urmă</string>
     <string name="wellbeing_tip_savingswin_title">Bravo — ai economisit %1$d%% din venit luna aceasta</string>
     <string name="wellbeing_tip_improved_title">%1$s a scăzut cu %2$d%% luna aceasta</string>
     <string name="wellbeing_tip_pace_title">Ești la %1$d%% din bugetul tău săptămânal</string>
-    <string name="wellbeing_tip_leak_title">%1$d cumpărături mici la %2$s săptămâna aceasta</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d cumpărătură mică la %2$s săptămâna aceasta</item>
+        <item quantity="few">%1$d cumpărături mici la %2$s săptămâna aceasta</item>
+        <item quantity="other">%1$d de cumpărături mici la %2$s săptămâna aceasta</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">Ești sub ritm săptămâna aceasta</string>
 
     <!-- Wellbeing · tip details -->

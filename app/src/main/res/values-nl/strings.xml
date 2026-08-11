@@ -916,16 +916,25 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">Je gaf deze maand %1$s meer uit dan je verdiende</string>
-    <string name="wellbeing_tip_overbudget_title">Budget overschreden in %1$d categorieën — %2$s boven plan</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Budget overschreden in %1$d categorie — %2$s boven plan</item>
+        <item quantity="other">Budget overschreden in %1$d categorieën — %2$s boven plan</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s is %2$d%% gestegen — %3$s tegenover je gemiddelde van %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d abonnementen — %2$s per maand</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d abonnement — %2$s per maand</item>
+        <item quantity="other">%1$d abonnementen — %2$s per maand</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Je geeft zo\'n %1$s per maand uit aan %2$s, maar hebt geen budget</string>
     <string name="wellbeing_tip_nogoal_title">Nog geen spaardoel — zelfs een beetje per maand bouwt een buffer op</string>
     <string name="wellbeing_tip_goaloff_title">%1$s loopt achter</string>
     <string name="wellbeing_tip_savingswin_title">Mooi — je spaarde deze maand %1$d%% van je inkomen</string>
     <string name="wellbeing_tip_improved_title">%1$s is deze maand %2$d%% gedaald</string>
     <string name="wellbeing_tip_pace_title">Je zit op %1$d%% van je weekbudget</string>
-    <string name="wellbeing_tip_leak_title">%1$d kleine aankopen in %2$s deze week</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d kleine aankoop in %2$s deze week</item>
+        <item quantity="other">%1$d kleine aankopen in %2$s deze week</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">Je zit deze week onder je tempo</string>
 
     <!-- Wellbeing · tip details -->

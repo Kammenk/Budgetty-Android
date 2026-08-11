@@ -916,16 +916,25 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">Този месец похарчи %1$s повече, отколкото спечели</string>
-    <string name="wellbeing_tip_overbudget_title">Над бюджета в %1$d категории — %2$s над плана</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Над бюджета в %1$d категория — %2$s над плана</item>
+        <item quantity="other">Над бюджета в %1$d категории — %2$s над плана</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s е с %2$d%% нагоре — %3$s спрямо средното ти %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d абонамента — %2$s на месец</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d абонамент — %2$s на месец</item>
+        <item quantity="other">%1$d абонамента — %2$s на месец</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Харчиш около %1$s на месец за %2$s, но нямаш бюджет</string>
     <string name="wellbeing_tip_nogoal_title">Още няма цел за спестяване — дори малко на месец гради резерв</string>
     <string name="wellbeing_tip_goaloff_title">%1$s изостава</string>
     <string name="wellbeing_tip_savingswin_title">Браво — този месец задели %1$d%% от дохода си</string>
     <string name="wellbeing_tip_improved_title">%1$s е с %2$d%% надолу този месец</string>
     <string name="wellbeing_tip_pace_title">Ти си на %1$d%% от седмичния бюджет</string>
-    <string name="wellbeing_tip_leak_title">%1$d малки покупки в %2$s тази седмица</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d малка покупка в %2$s тази седмица</item>
+        <item quantity="other">%1$d малки покупки в %2$s тази седмица</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">Тази седмица харчиш под плана</string>
 
     <!-- Wellbeing · tip details -->

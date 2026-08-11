@@ -928,16 +928,25 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">Du brugte %1$s mere, end du tjente denne måned</string>
-    <string name="wellbeing_tip_overbudget_title">Over budget i %1$d kategorier — %2$s over planen</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Over budget i %1$d kategori — %2$s over planen</item>
+        <item quantity="other">Over budget i %1$d kategorier — %2$s over planen</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s er steget %2$d%% — %3$s mod dit gennemsnit på %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d abonnementer — %2$s om måneden</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d abonnement — %2$s om måneden</item>
+        <item quantity="other">%1$d abonnementer — %2$s om måneden</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Du bruger cirka %1$s om måneden på %2$s, men har intet budget</string>
     <string name="wellbeing_tip_nogoal_title">Intet opsparingsmål endnu — selv lidt om måneden opbygger en buffer</string>
     <string name="wellbeing_tip_goaloff_title">%1$s er bagud</string>
     <string name="wellbeing_tip_savingswin_title">Flot — du sparede %1$d%% af din indkomst op denne måned</string>
     <string name="wellbeing_tip_improved_title">%1$s er faldet %2$d%% denne måned</string>
     <string name="wellbeing_tip_pace_title">Du er på %1$d%% af dit ugebudget</string>
-    <string name="wellbeing_tip_leak_title">%1$d små køb i %2$s denne uge</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d lille køb i %2$s denne uge</item>
+        <item quantity="other">%1$d små køb i %2$s denne uge</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">Du er under takten denne uge</string>
 
     <!-- Wellbeing · tip details -->

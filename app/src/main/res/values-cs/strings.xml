@@ -945,16 +945,31 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">Tento měsíc jste utratili o %1$s více, než jste vydělali</string>
-    <string name="wellbeing_tip_overbudget_title">Nad rozpočet v %1$d kategoriích — %2$s nad plán</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Nad rozpočet v %1$d kategorii — %2$s nad plán</item>
+        <item quantity="few">Nad rozpočet v %1$d kategoriích — %2$s nad plán</item>
+        <item quantity="many">Nad rozpočet v %1$d kategorie — %2$s nad plán</item>
+        <item quantity="other">Nad rozpočet v %1$d kategoriích — %2$s nad plán</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s je o %2$d%% výš — %3$s oproti vašemu průměru %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d předplatných — %2$s měsíčně</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d předplatné — %2$s měsíčně</item>
+        <item quantity="few">%1$d předplatná — %2$s měsíčně</item>
+        <item quantity="many">%1$d předplatného — %2$s měsíčně</item>
+        <item quantity="other">%1$d předplatných — %2$s měsíčně</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Utrácíte asi %1$s měsíčně za %2$s, ale nemáte rozpočet</string>
     <string name="wellbeing_tip_nogoal_title">Zatím žádný spořicí cíl — i málo měsíčně vytvoří rezervu</string>
     <string name="wellbeing_tip_goaloff_title">%1$s je pozadu</string>
     <string name="wellbeing_tip_savingswin_title">Skvělé — tento měsíc jste ušetřili %1$d%% příjmu</string>
     <string name="wellbeing_tip_improved_title">%1$s je tento měsíc o %2$d%% níž</string>
     <string name="wellbeing_tip_pace_title">Jste na %1$d%% týdenního rozpočtu</string>
-    <string name="wellbeing_tip_leak_title">%1$d malých nákupů v %2$s tento týden</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d malý nákup v %2$s tento týden</item>
+        <item quantity="few">%1$d malé nákupy v %2$s tento týden</item>
+        <item quantity="many">%1$d malého nákupu v %2$s tento týden</item>
+        <item quantity="other">%1$d malých nákupů v %2$s tento týden</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">Tento týden utrácíte pod plán</string>
 
     <!-- Wellbeing · tip details -->

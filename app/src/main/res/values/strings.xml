@@ -998,16 +998,25 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">You spent %1$s more than you earned this month</string>
-    <string name="wellbeing_tip_overbudget_title">Over budget in %1$d categories — %2$s above plan</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Over budget in %1$d category — %2$s above plan</item>
+        <item quantity="other">Over budget in %1$d categories — %2$s above plan</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s is up %2$d%% — %3$s vs your %4$s average</string>
-    <string name="wellbeing_tip_subs_title">%1$d subscriptions — %2$s a month</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d subscription — %2$s a month</item>
+        <item quantity="other">%1$d subscriptions — %2$s a month</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">You spend about %1$s a month on %2$s but have no budget</string>
     <string name="wellbeing_tip_nogoal_title">No savings goal yet — even a little a month builds a buffer</string>
     <string name="wellbeing_tip_goaloff_title">%1$s is running behind</string>
     <string name="wellbeing_tip_savingswin_title">Nice — you saved %1$d%% of your income this month</string>
     <string name="wellbeing_tip_improved_title">%1$s is down %2$d%% this month</string>
     <string name="wellbeing_tip_pace_title">You\'re at %1$d%% of your weekly budget</string>
-    <string name="wellbeing_tip_leak_title">%1$d small buys in %2$s this week</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d small buy in %2$s this week</item>
+        <item quantity="other">%1$d small buys in %2$s this week</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">You\'re under pace this week</string>
 
     <!-- Wellbeing · tip details -->

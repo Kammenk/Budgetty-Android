@@ -935,16 +935,31 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">W tym miesiącu wydajesz o %1$s więcej, niż zarabiasz</string>
-    <string name="wellbeing_tip_overbudget_title">Przekroczono budżet w %1$d kategoriach — %2$s ponad plan</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Przekroczono budżet w %1$d kategorii — %2$s ponad plan</item>
+        <item quantity="few">Przekroczono budżet w %1$d kategoriach — %2$s ponad plan</item>
+        <item quantity="many">Przekroczono budżet w %1$d kategoriach — %2$s ponad plan</item>
+        <item quantity="other">Przekroczono budżet w %1$d kategoriach — %2$s ponad plan</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s w górę o %2$d%% — %3$s vs. średnia %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d subskrypcji — %2$s miesięcznie</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d subskrypcja — %2$s miesięcznie</item>
+        <item quantity="few">%1$d subskrypcje — %2$s miesięcznie</item>
+        <item quantity="many">%1$d subskrypcji — %2$s miesięcznie</item>
+        <item quantity="other">%1$d subskrypcji — %2$s miesięcznie</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Wydajesz około %1$s miesięcznie na %2$s, ale nie masz budżetu</string>
     <string name="wellbeing_tip_nogoal_title">Brak celu oszczędnościowego — nawet niewielka kwota miesięcznie buduje poduszkę</string>
     <string name="wellbeing_tip_goaloff_title">%1$s ma opóźnienie</string>
     <string name="wellbeing_tip_savingswin_title">Świetnie — w tym miesiącu oszczędzasz %1$d%% dochodu</string>
     <string name="wellbeing_tip_improved_title">%1$s w dół o %2$d%% w tym miesiącu</string>
     <string name="wellbeing_tip_pace_title">Jesteś na %1$d%% swojego tygodniowego budżetu</string>
-    <string name="wellbeing_tip_leak_title">%1$d małych zakupów w %2$s w tym tygodniu</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d mały zakup w %2$s w tym tygodniu</item>
+        <item quantity="few">%1$d małe zakupy w %2$s w tym tygodniu</item>
+        <item quantity="many">%1$d małych zakupów w %2$s w tym tygodniu</item>
+        <item quantity="other">%1$d małych zakupów w %2$s w tym tygodniu</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">W tym tygodniu jesteś poniżej tempa</string>
 
     <!-- Wellbeing · tip details -->

@@ -915,16 +915,25 @@
 
     <!-- Wellbeing · tip titles -->
     <string name="wellbeing_tip_cashflow_title">Questo mese hai speso %1$s più di quanto hai guadagnato</string>
-    <string name="wellbeing_tip_overbudget_title">Budget superato in %1$d categorie — %2$s oltre il piano</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Budget superato in %1$d categoria — %2$s oltre il piano</item>
+        <item quantity="other">Budget superato in %1$d categorie — %2$s oltre il piano</item>
+    </plurals>
     <string name="wellbeing_tip_spike_title">%1$s è salito del %2$d%% — %3$s contro la tua media di %4$s</string>
-    <string name="wellbeing_tip_subs_title">%1$d abbonamenti — %2$s al mese</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d abbonamento — %2$s al mese</item>
+        <item quantity="other">%1$d abbonamenti — %2$s al mese</item>
+    </plurals>
     <string name="wellbeing_tip_missingbudget_title">Spendi circa %1$s al mese in %2$s ma non hai un budget</string>
     <string name="wellbeing_tip_nogoal_title">Ancora nessun obiettivo di risparmio — anche poco al mese crea un cuscinetto</string>
     <string name="wellbeing_tip_goaloff_title">%1$s è in ritardo</string>
     <string name="wellbeing_tip_savingswin_title">Bene — questo mese hai risparmiato il %1$d%% delle tue entrate</string>
     <string name="wellbeing_tip_improved_title">%1$s è sceso del %2$d%% questo mese</string>
     <string name="wellbeing_tip_pace_title">Sei al %1$d%% del tuo budget settimanale</string>
-    <string name="wellbeing_tip_leak_title">%1$d piccoli acquisti in %2$s questa settimana</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d piccolo acquisto in %2$s questa settimana</item>
+        <item quantity="other">%1$d piccoli acquisti in %2$s questa settimana</item>
+    </plurals>
     <string name="wellbeing_tip_underpace_title">Questa settimana sei sotto il ritmo</string>
 
     <!-- Wellbeing · tip details -->
