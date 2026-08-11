@@ -95,6 +95,24 @@ fun RecurringEntity.isEffectivelyPaidThisCycle(
     (autoPay && isDuePassedThisCycle(today, monthStartDay))
 
 /**
+ * Whether autopay can apply to this entry at all — independent of the [RecurringEntity.autoPay]
+ * switch. Bills only (never income), and only monthly or weekly cadences: yearly stores no month and
+ * one-offs don't recur, so neither has a due date to auto-mark against.
+ */
+fun RecurringEntity.autoPayEligible(): Boolean =
+    !isIncome &&
+        (cadence == RecurringEntity.Cadence.MONTHLY || cadence == RecurringEntity.Cadence.WEEKLY)
+
+/**
+ * True when autopay is both switched on and [autoPayEligible] for this entry's cadence — the single
+ * source of truth for "this bill is auto-managed". Used when persisting (so a yearly/one-off entry
+ * can never keep a stuck autopay flag) and when displaying (so the Budget row shows a manual paid
+ * toggle, not the "Auto" chip, for any ineligible entry — including rows saved before the rule was
+ * enforced).
+ */
+fun RecurringEntity.isAutoPayActive(): Boolean = autoPay && autoPayEligible()
+
+/**
  * The entry's amount expressed per month (weekly ×52/12, yearly ÷12), for the totals/breakdown.
  * A one-time ([RecurringEntity.Cadence.ONCE]) entry counts its full amount only in the calendar
  * month it was added ([monthStart]..[monthEnd]) and zero afterwards, so a variable monthly wage or
