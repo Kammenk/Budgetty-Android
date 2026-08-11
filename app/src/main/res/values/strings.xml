@@ -4,6 +4,7 @@
     <!-- Common actions -->
     <string name="action_save">Save</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_discard">Discard</string>
     <string name="action_done">Done</string>
     <string name="action_apply">Apply</string>
     <string name="action_delete">Delete</string>
@@ -187,6 +188,7 @@
     <string name="home_view_all">View all</string>
     <string name="home_no_receipts">No receipts yet</string>
     <string name="home_budgets">Budgets</string>
+    <string name="home_budgets_discretionary">Discretionary budgets</string>
     <string name="home_monthly_progress">Monthly budget progress</string>
     <string name="home_weekly_progress">Weekly budget progress</string>
     <string name="home_budget_progress">Budget progress</string>
@@ -209,6 +211,10 @@
     <string name="safe_to_spend_title">Safe to spend</string>
     <string name="safe_to_spend_bills_due">Bills still due</string>
     <string name="safe_to_spend_total_spent">Total spent this cycle</string>
+    <string name="safe_to_spend_status_on_track">On track</string>
+    <string name="safe_to_spend_status_low">Running low</string>
+    <string name="safe_to_spend_status_over">Over</string>
+    <string name="safe_to_spend_total_out_incl_bills">Total out · incl. bills</string>
     <string name="safe_to_spend_composition">%1$s spending + %2$s bills paid</string>
     <string name="safe_to_spend_nothing_yet">Nothing spent yet this cycle</string>
     <string name="safe_to_spend_over">%1$s over — spent more than you have left this cycle.</string>
@@ -596,6 +602,11 @@
     <string name="budget_left">%1$s left</string>
     <string name="budget_over">%1$s over</string>
     <string name="budget_carried_over">+%1$s carried over</string>
+    <string name="budget_left_of_carried">%1$s left of %2$s · incl. %3$s carried over</string>
+    <string name="budget_unsaved_changes">Unsaved changes</string>
+    <string name="budget_discard_message">Save your budget changes before leaving?</string>
+    <string name="budget_status_near_limit">Near limit</string>
+    <string name="budget_status_over_budget">Over budget</string>
     <string name="budget_rollover_title">Carry over unused budget</string>
     <string name="budget_rollover_hint">Unspent budget rolls into next period</string>
     <string name="budget_spent">%1$s spent</string>

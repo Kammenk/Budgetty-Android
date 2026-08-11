@@ -1,6 +1,7 @@
 <resources>
     <string name="action_save">Salva</string>
     <string name="action_cancel">Annulla</string>
+    <string name="action_discard">Ignora</string>
     <string name="action_done">Fatto</string>
     <string name="action_apply">Applica</string>
     <string name="action_delete">Elimina</string>
@@ -66,6 +67,7 @@
     <string name="home_receipts">Scontrini</string>
     <string name="home_no_receipts">Ancora nessuno scontrino</string>
     <string name="home_budgets">Budget</string>
+    <string name="home_budgets_discretionary">Budget discrezionali</string>
     <string name="home_monthly_progress">Avanzamento budget mensile</string>
     <string name="home_weekly_progress">Avanzamento budget settimanale</string>
     <string name="home_set_budget">Tocca per impostare un budget</string>
@@ -119,6 +121,11 @@
     <string name="budget_left">%1$s rimasti</string>
     <string name="budget_over">%1$s in più</string>
     <string name="budget_carried_over">+%1$s riportato</string>
+    <string name="budget_left_of_carried">%1$s rimasti su %2$s · incl. %3$s riportato</string>
+    <string name="budget_unsaved_changes">Modifiche non salvate</string>
+    <string name="budget_discard_message">Salvare le modifiche al budget prima di uscire?</string>
+    <string name="budget_status_near_limit">Vicino al limite</string>
+    <string name="budget_status_over_budget">Budget superato</string>
     <string name="budget_rollover_title">Riporta il budget non utilizzato</string>
     <string name="budget_rollover_hint">Il budget non speso passa al periodo successivo</string>
     <string name="budget_spent">%1$s spesi</string>
@@ -660,6 +667,10 @@
     <string name="safe_to_spend_title">Puoi spendere</string>
     <string name="safe_to_spend_bills_due">Spese da pagare</string>
     <string name="safe_to_spend_total_spent">Totale speso questo ciclo</string>
+    <string name="safe_to_spend_status_on_track">In linea</string>
+    <string name="safe_to_spend_status_low">Quasi esaurito</string>
+    <string name="safe_to_spend_status_over">Superato</string>
+    <string name="safe_to_spend_total_out_incl_bills">Totale uscite · incl. spese</string>
     <string name="safe_to_spend_composition">%1$s speso + %2$s spese pagate</string>
     <string name="safe_to_spend_nothing_yet">Ancora niente speso questo ciclo</string>
     <string name="safe_to_spend_over">%1$s in più — hai speso più di quanto ti resta questo ciclo.</string>

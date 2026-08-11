@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.UploadFile
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -54,6 +55,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SnackbarDuration
@@ -81,6 +83,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -129,6 +132,12 @@ import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetWarnColor
+import com.budgetty.app.ui.theme.budgetGoodOnColor
+import com.budgetty.app.ui.theme.budgetWarnOnColor
+import com.budgetty.app.ui.theme.budgetBadOnColor
+import com.budgetty.app.ui.theme.wellbeingGoodContainer
+import com.budgetty.app.ui.theme.wellbeingWarnContainer
+import com.budgetty.app.ui.theme.wellbeingBadContainer
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -405,7 +414,7 @@ private fun PhoneHomeContent(
                             item(key = section.key) {
                                 BudgetProgressCard(
                                     state = state,
-                                    label = stringResource(R.string.home_budgets),
+                                    label = stringResource(R.string.home_budgets_discretionary),
                                     monthlySpent = state.monthlySpent,
                                     monthlyBudget = state.monthlyBudget,
                                     weeklySpent = state.weeklySpent,
@@ -548,7 +557,7 @@ private fun TabletHomeContent(
                 item {
                     BudgetProgressCard(
                         state = state,
-                        label = stringResource(R.string.home_budgets),
+                        label = stringResource(R.string.home_budgets_discretionary),
                         monthlySpent = state.monthlySpent,
                         monthlyBudget = state.monthlyBudget,
                         weeklySpent = state.weeklySpent,
@@ -667,7 +676,7 @@ private fun WideHomeContent(
                     if (state.filter == DateRangeFilter.CURRENT_MONTH) {
                         BudgetProgressCard(
                             state = state,
-                            label = stringResource(R.string.home_budgets),
+                            label = stringResource(R.string.home_budgets_discretionary),
                             monthlySpent = state.monthlySpent,
                             monthlyBudget = state.monthlyBudget,
                             weeklySpent = state.weeklySpent,
@@ -722,6 +731,7 @@ private fun WideHomeHeader(
             initials = initials,
             size = 40.dp,
             modifier = Modifier
+                .minimumInteractiveComponentSize()
                 .clip(CircleShape)
                 .clickable(onClick = onAvatarClick),
         )
@@ -738,6 +748,7 @@ private fun HomePeriodFilter(
     Box {
         Row(
             modifier = Modifier
+                .minimumInteractiveComponentSize()
                 .clip(RoundedCornerShape(50))
                 .background(MaterialTheme.colorScheme.surfaceContainerHigh)
                 .clickable { expanded = true }
@@ -1299,12 +1310,19 @@ internal fun SafeToSpendCard(
     onSetupIncome: () -> Unit = {},
 ) {
     val status = state.safeToSpendStatus()
-    // The status colour now tints the demoted "Safe to spend" stat and the bar's safe tail — the
+    // The status colour tints the demoted "Safe to spend" stat and the bar's safe tail — the
     // "Total spent" hero stays neutral onSurface, since spending has no good/bad on its own.
-    val safeTone = when (status) {
+    // Two tones per status: a bright one for the *bar/swatch* graphics (clears 3:1 as a large shape),
+    // and an accessible "on" tone for the *text* figure — amber #F9A825 failed 4.5:1 as text (WCAG).
+    val safeBarTone = when (status) {
         SafeToSpendStatus.OVER -> budgetBadColor()
         SafeToSpendStatus.LOW -> budgetWarnColor()
         else -> budgetGoodColor()
+    }
+    val safeTextTone = when (status) {
+        SafeToSpendStatus.OVER -> budgetBadOnColor()
+        SafeToSpendStatus.LOW -> budgetWarnOnColor()
+        else -> budgetGoodOnColor()
     }
     // What has actually left the account this cycle = discretionary spend + bills already paid.
     val totalSpent = state.monthlySpent + state.billsPaid
@@ -1322,12 +1340,24 @@ internal fun SafeToSpendCard(
                     SplitSwatch()
                     Spacer(Modifier.width(MaterialTheme.dimens.sm))
                     Text(
-                        text = stringResource(R.string.safe_to_spend_total_spent),
+                        // Only flag "incl. bills" when a bill has actually been folded into the hero
+                        // (billsPaid > 0) — the confusing case the audit flagged. Otherwise the hero is
+                        // pure discretionary spend and the plain label is accurate.
+                        text = if (state.billsPaid.signum() > 0) {
+                            stringResource(R.string.safe_to_spend_total_out_incl_bills)
+                        } else {
+                            stringResource(R.string.safe_to_spend_total_spent)
+                        },
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false),
                     )
+                    if (status != SafeToSpendStatus.SETUP) {
+                        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                        SafeToSpendStatusChip(status)
+                    }
                 }
                 if (showPeriodPill) {
                     HomePeriodFilter(selected = state.filter, onSelected = onFilterSelected)
@@ -1383,7 +1413,7 @@ internal fun SafeToSpendCard(
                     paidBills = state.billsPaid,
                     billsStillDue = state.billsStillDue,
                     safe = state.safeToSpend,
-                    safeTone = safeTone,
+                    safeTone = safeBarTone,
                     modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.md),
                 )
 
@@ -1406,11 +1436,12 @@ internal fun SafeToSpendCard(
                         )
                     }
                     SafeToSpendStat(
-                        swatch = { SolidSwatch(safeTone) },
+                        swatch = { SolidSwatch(safeBarTone) },
                         label = stringResource(R.string.safe_to_spend_title),
                         amount = state.safeToSpend,
-                        amountColor = safeTone,
+                        amountColor = safeTextTone,
                         sub = safeSub,
+                        amountStyle = MaterialTheme.typography.headlineSmall,
                         modifier = Modifier.weight(1f),
                     )
                     Box(
@@ -1470,6 +1501,53 @@ internal fun SafeToSpendCard(
     }
 }
 
+/** Small text+icon status pill for the safe-to-spend health, so the state isn't signalled by colour
+ *  alone (WCAG 1.4.1): On track (✓) / Running low (⚠) / Over (⚠). No chip in the setup state. */
+@Composable
+private fun SafeToSpendStatusChip(status: SafeToSpendStatus, modifier: Modifier = Modifier) {
+    val container: Color
+    val content: Color
+    val icon: androidx.compose.ui.graphics.vector.ImageVector
+    val labelRes: Int
+    when (status) {
+        SafeToSpendStatus.HEALTHY -> {
+            container = wellbeingGoodContainer(); content = budgetGoodOnColor()
+            icon = Icons.Filled.Check; labelRes = R.string.safe_to_spend_status_on_track
+        }
+        SafeToSpendStatus.LOW -> {
+            container = wellbeingWarnContainer(); content = budgetWarnOnColor()
+            icon = Icons.Filled.Warning; labelRes = R.string.safe_to_spend_status_low
+        }
+        SafeToSpendStatus.OVER -> {
+            container = wellbeingBadContainer(); content = budgetBadOnColor()
+            icon = Icons.Filled.Warning; labelRes = R.string.safe_to_spend_status_over
+        }
+        SafeToSpendStatus.SETUP -> return
+    }
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(percent = 50))
+            .background(container)
+            .padding(horizontal = MaterialTheme.dimens.sm, vertical = 3.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = content,
+            modifier = Modifier.size(14.dp),
+        )
+        Spacer(Modifier.width(MaterialTheme.dimens.xs))
+        Text(
+            text = stringResource(labelRes),
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = content,
+            maxLines = 1,
+        )
+    }
+}
+
 /** One stat in the Safe-to-spend / Bills-still-due strip: a key [swatch] + label, the amount in
  *  [amountColor], and an optional sub. */
 @OptIn(ExperimentalFoundationApi::class)
@@ -1480,6 +1558,7 @@ private fun SafeToSpendStat(
     amount: BigDecimal,
     amountColor: Color,
     sub: String?,
+    amountStyle: TextStyle = MaterialTheme.typography.titleLarge,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -1496,7 +1575,7 @@ private fun SafeToSpendStat(
         }
         Text(
             text = amount.formatMoney(),
-            style = MaterialTheme.typography.titleLarge,
+            style = amountStyle,
             fontWeight = FontWeight.Bold,
             color = amountColor,
             maxLines = 1,

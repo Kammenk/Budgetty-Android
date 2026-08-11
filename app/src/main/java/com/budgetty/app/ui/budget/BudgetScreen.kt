@@ -78,6 +78,12 @@ import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
 import com.budgetty.app.ui.util.categoryDisplayName
 import com.budgetty.app.ui.util.budgetColor
+import com.budgetty.app.ui.util.budgetOnColor
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.border
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import com.budgetty.app.ui.theme.budgetWarnOnColor
 import com.budgetty.app.ui.util.budgetRatio
 import com.budgetty.app.ui.util.formatMoney
 import com.budgetty.app.ui.util.isAutoPayActive
@@ -278,6 +284,31 @@ private fun BudgetScreenContent(
     // The income/recurring add-or-edit sheet, if open.
     var recurringDraft by remember { mutableStateOf<RecurringDraft?>(null) }
     var savingsCreateOpen by remember { mutableStateOf(false) }
+    var showDiscardDialog by remember { mutableStateOf(false) }
+
+    // Guard the back gesture/button: the main amount commits explicitly, so leaving with unsaved edits
+    // would silently drop them — intercept and let the user Save or Discard first.
+    BackHandler(enabled = budgetDirty) { showDiscardDialog = true }
+    if (showDiscardDialog) {
+        AlertDialog(
+            onDismissRequest = { showDiscardDialog = false },
+            title = { Text(stringResource(R.string.budget_unsaved_changes)) },
+            text = { Text(stringResource(R.string.budget_discard_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    saveBudget()
+                    showDiscardDialog = false
+                    onNavigateBack()
+                }) { Text(stringResource(R.string.action_save)) }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    showDiscardDialog = false
+                    onNavigateBack()
+                }) { Text(stringResource(R.string.action_discard)) }
+            },
+        )
+    }
 
     Scaffold(
         modifier = modifier,
@@ -285,7 +316,7 @@ private fun BudgetScreenContent(
             TopAppBar(
                 title = { Text(stringResource(R.string.home_budgets)) },
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
+                    IconButton(onClick = { if (budgetDirty) showDiscardDialog = true else onNavigateBack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
                     }
                 },
@@ -324,6 +355,7 @@ private fun BudgetScreenContent(
                     budget = effectiveBudget(activeKey, activeBudget),
                     carried = carriedFor(activeKey),
                     onChange = { amountText = it },
+                    dirty = budgetDirty,
                 )
                 BudgetRolloverToggle(enabled = rolloverEnabled, onToggle = onSetRolloverEnabled)
                 // Live "≈ X / other-period" equivalent, so the single amount reads at both cadences.
@@ -337,8 +369,16 @@ private fun BudgetScreenContent(
                         modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xs),
                     )
                 }
-                // Save appears only while the budget has unsaved changes.
+                // Save appears only while the budget has unsaved changes; a cue + the tinted field ring
+                // (BudgetAmountCard dirty) make the uncommitted state legible before it's saved.
                 if (budgetDirty) {
+                    Text(
+                        text = stringResource(R.string.budget_unsaved_changes),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = budgetWarnOnColor(),
+                        modifier = Modifier.padding(horizontal = MaterialTheme.dimens.xs),
+                    )
                     Button(
                         onClick = { saveBudget() },
                         modifier = Modifier
@@ -616,6 +656,7 @@ private fun BudgetAmountCard(
     onChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     carried: BigDecimal = BigDecimal.ZERO,
+    dirty: Boolean = false,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Card(
@@ -643,10 +684,21 @@ private fun BudgetAmountCard(
                 shape = RoundedCornerShape(14.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 colors = sheetFieldColors(),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .then(
+                        // Tinted ring while the amount has uncommitted edits (pairs with the
+                        // "Unsaved changes" cue + Save button) — the explicit-commit model made legible.
+                        if (dirty) Modifier.border(
+                            1.5.dp,
+                            MaterialTheme.colorScheme.primary,
+                            RoundedCornerShape(14.dp),
+                        ) else Modifier,
+                    ),
             )
             if (hasBudget) {
                 val color = budgetColor(spent, budget!!)
+                val textColor = budgetOnColor(spent, budget)
                 val remaining = budget.subtract(spent)
                 Spacer(Modifier.height(MaterialTheme.dimens.md))
                 Row(
@@ -660,14 +712,26 @@ private fun BudgetAmountCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = if (remaining.signum() >= 0) stringResource(R.string.budget_left, remaining.formatMoney())
-                        else stringResource(R.string.budget_over, remaining.negate().formatMoney()),
+                        // Rollover makes the field (base) and the bar (base + carried) disagree, so when
+                        // something's carried in we state the effective limit and the carry inline —
+                        // "€260 left of €1,240 · incl. €40 carried over" — instead of a bare "€260 left".
+                        text = when {
+                            remaining.signum() < 0 ->
+                                stringResource(R.string.budget_over, remaining.negate().formatMoney())
+                            carried.signum() > 0 -> stringResource(
+                                R.string.budget_left_of_carried,
+                                remaining.formatMoney(), budget.formatMoney(), carried.formatMoney(),
+                            )
+                            else -> stringResource(R.string.budget_left, remaining.formatMoney())
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
-                        color = color,
+                        color = textColor,
                     )
                 }
-                if (carried.signum() > 0) {
+                // Over-budget keeps the separate carried chip (it isn't folded into an "€X left" line);
+                // the within-budget case now carries it inline via budget_left_of_carried above.
+                if (carried.signum() > 0 && remaining.signum() < 0) {
                     Spacer(Modifier.height(MaterialTheme.dimens.xs))
                     Text(
                         text = stringResource(R.string.budget_carried_over, carried.formatMoney()),
@@ -717,6 +781,25 @@ private fun BudgetRolloverToggle(enabled: Boolean, onToggle: (Boolean) -> Unit) 
         }
         Switch(checked = enabled, onCheckedChange = onToggle)
     }
+}
+
+/** "Near limit" / "Over budget" status word for a category bar in the caution band (≥50% used, or
+ *  over), so budget status isn't carried by bar colour alone. Renders nothing when comfortably under. */
+@Composable
+private fun BudgetStatusWord(spent: BigDecimal, budget: BigDecimal, modifier: Modifier = Modifier) {
+    val res = when {
+        spent > budget -> R.string.budget_status_over_budget
+        budgetRatio(spent, budget) >= 0.5f -> R.string.budget_status_near_limit
+        else -> return
+    }
+    Text(
+        text = stringResource(res),
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.SemiBold,
+        color = budgetOnColor(spent, budget),
+        maxLines = 1,
+        modifier = modifier,
+    )
 }
 
 /**
@@ -809,6 +892,7 @@ private fun CategoryGroupBox(
                         maxLines = 1,
                     )
                 }
+                BudgetStatusWord(spent, budget!!, Modifier.padding(top = MaterialTheme.dimens.xs))
             } else {
                 Spacer(Modifier.height(MaterialTheme.dimens.xs))
                 Text(
@@ -816,6 +900,18 @@ private fun CategoryGroupBox(
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.primary,
+                )
+                // Empty "set a budget" track so an unset card reads as intentional, not unfinished
+                // (parity with the filled cards' bar).
+                Spacer(Modifier.height(10.dp))
+                LinearProgressIndicator(
+                    progress = { 0f },
+                    color = Color.Transparent,
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(MaterialTheme.dimens.sm)
+                        .clip(RoundedCornerShape(50)),
                 )
             }
         }
@@ -924,6 +1020,7 @@ private fun CategoryBudgetRow(
                         maxLines = 1,
                     )
                 }
+                BudgetStatusWord(spent, budget!!, Modifier.padding(top = 3.dp))
             }
         }
         Spacer(Modifier.width(MaterialTheme.dimens.md))

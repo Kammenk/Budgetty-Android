@@ -1,6 +1,7 @@
 <resources>
     <string name="action_save">Zapisz</string>
     <string name="action_cancel">Anuluj</string>
+    <string name="action_discard">Odrzuć</string>
     <string name="action_done">Gotowe</string>
     <string name="action_apply">Zastosuj</string>
     <string name="action_delete">Usuń</string>
@@ -66,6 +67,7 @@
     <string name="home_receipts">Paragony</string>
     <string name="home_no_receipts">Brak paragonów</string>
     <string name="home_budgets">Budżety</string>
+    <string name="home_budgets_discretionary">Budżety uznaniowe</string>
     <string name="home_monthly_progress">Postęp budżetu miesięcznego</string>
     <string name="home_weekly_progress">Postęp budżetu tygodniowego</string>
     <string name="home_set_budget">Dotknij, aby ustawić budżet</string>
@@ -119,6 +121,11 @@
     <string name="budget_left">Pozostało %1$s</string>
     <string name="budget_over">%1$s ponad</string>
     <string name="budget_carried_over">+%1$s przeniesione</string>
+    <string name="budget_left_of_carried">Pozostało %1$s z %2$s · w tym %3$s przeniesione</string>
+    <string name="budget_unsaved_changes">Niezapisane zmiany</string>
+    <string name="budget_discard_message">Zapisać zmiany budżetu przed wyjściem?</string>
+    <string name="budget_status_near_limit">Blisko limitu</string>
+    <string name="budget_status_over_budget">Przekroczony budżet</string>
     <string name="budget_rollover_title">Przenoś niewykorzystany budżet</string>
     <string name="budget_rollover_hint">Niewykorzystany budżet przechodzi na następny okres</string>
     <string name="budget_spent">Wydano %1$s</string>
@@ -661,6 +668,10 @@
     <string name="safe_to_spend_title">Można wydać</string>
     <string name="safe_to_spend_bills_due">Rachunki do zapłaty</string>
     <string name="safe_to_spend_total_spent">Łącznie wydano w tym cyklu</string>
+    <string name="safe_to_spend_status_on_track">Zgodnie z planem</string>
+    <string name="safe_to_spend_status_low">Na wyczerpaniu</string>
+    <string name="safe_to_spend_status_over">Przekroczono</string>
+    <string name="safe_to_spend_total_out_incl_bills">Łącznie wydano · z rachunkami</string>
     <string name="safe_to_spend_composition">%1$s wydane + %2$s opłacone rachunki</string>
     <string name="safe_to_spend_nothing_yet">Nic jeszcze nie wydano w tym cyklu</string>
     <string name="safe_to_spend_over">%1$s ponad — wydano więcej, niż zostało w tym cyklu.</string>
