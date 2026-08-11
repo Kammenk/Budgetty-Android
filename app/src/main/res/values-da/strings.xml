@@ -1002,4 +1002,13 @@
     <string name="manage_move_title">Flyt til gruppe</string>
     <string name="manage_move_cd">Flyt %1$s til en anden gruppe</string>
     <string name="manage_empty_hint">Ingen egne kategorier endnu — opret en for at kategorisere dit forbrug på din egen måde.</string>
+    <string name="pie_center_total">I alt</string>
+    <string name="pie_slice_share">%1$d%% af forbruget</string>
+    <string name="pie_all_categories">Alle kategorier</string>
+    <string name="pie_amount_total">%1$s i alt</string>
+    <string name="pie_no_spending">Intet forbrug i denne periode</string>
+    <string name="receipt_fallback_name">Kvittering</string>
+    <string name="home_empty_receipts_cta">+ Tilføj kvittering</string>
+    <string name="home_empty_receipts_body">Tryk på %1$s for at scanne din første — vi læser og kategoriserer den for dig.</string>
+    <string name="history_select_receipt">Vælg en kvittering for at se dens varer.</string>
 </resources>

@@ -1012,4 +1012,13 @@
     <string name="manage_move_title">Mută în grup</string>
     <string name="manage_move_cd">Mută %1$s în alt grup</string>
     <string name="manage_empty_hint">Încă nu ai categorii personalizate — creează una ca să-ți etichetezi cheltuielile în felul tău.</string>
+    <string name="pie_center_total">Total</string>
+    <string name="pie_slice_share">%1$d%% din cheltuieli</string>
+    <string name="pie_all_categories">Toate categoriile</string>
+    <string name="pie_amount_total">%1$s în total</string>
+    <string name="pie_no_spending">Nicio cheltuială în această perioadă</string>
+    <string name="receipt_fallback_name">Bon</string>
+    <string name="home_empty_receipts_cta">+ Adaugă bon</string>
+    <string name="home_empty_receipts_body">Atinge %1$s pentru a-l scana pe primul — îl vom citi și categoriza pentru tine.</string>
+    <string name="history_select_receipt">Selectează un bon pentru a-i vedea articolele.</string>
 </resources>

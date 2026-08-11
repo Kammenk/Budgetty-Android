@@ -1934,7 +1934,7 @@ private fun ReceiptRowBody(
         Spacer(Modifier.width(MaterialTheme.dimens.md))
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = receipt.store.ifBlank { "Receipt" },
+                text = receipt.store.ifBlank { stringResource(R.string.receipt_fallback_name) },
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
@@ -2206,12 +2206,15 @@ private fun EmptyReceipts(
         )
         Spacer(Modifier.height(6.dp))
         Text(
-            text = buildAnnotatedString {
-                append("Tap ")
-                withStyle(SpanStyle(color = accent, fontWeight = FontWeight.SemiBold)) {
-                    append("+ Add receipt")
+            text = run {
+                val cta = stringResource(R.string.home_empty_receipts_cta)
+                // Split the localized body on its %1$s placeholder and drop the accented CTA into the gap.
+                val parts = stringResource(R.string.home_empty_receipts_body).split("%1\$s", limit = 2)
+                buildAnnotatedString {
+                    append(parts[0])
+                    withStyle(SpanStyle(color = accent, fontWeight = FontWeight.SemiBold)) { append(cta) }
+                    if (parts.size > 1) append(parts[1])
                 }
-                append(" to scan your first one — we'll read & categorize it for you.")
             },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -400,7 +400,7 @@ fun PieChart(
                     }
                 }
                 Text(
-                    text = selected?.label ?: "Total",
+                    text = selected?.label ?: stringResource(R.string.pie_center_total),
                     style = MaterialTheme.typography.labelMedium,
                     // When a slice is tapped, tint its name with the slice's own color.
                     color = selected?.color ?: MaterialTheme.colorScheme.onSurfaceVariant,
@@ -419,7 +419,7 @@ fun PieChart(
                         .multiply(BigDecimal(100))
                         .divide(sliceTotal, 0, java.math.RoundingMode.HALF_UP)
                     Text(
-                        text = "$pct% of spend",
+                        text = stringResource(R.string.pie_slice_share, pct.toInt()),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -495,12 +495,12 @@ fun AllCategoriesSheet(
                 .padding(start = 18.dp, end = 18.dp, top = 4.dp, bottom = 10.dp),
         ) {
             Text(
-                text = "All categories",
+                text = stringResource(R.string.pie_all_categories),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = listOfNotNull(periodLabel, "${total.formatMoney()} total")
+                text = listOfNotNull(periodLabel, stringResource(R.string.pie_amount_total, total.formatMoney()))
                     .joinToString(" · "),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -647,7 +647,7 @@ private fun PieChartEmptyState(
         }
         Spacer(Modifier.height(20.dp))
         Text(
-            text = "No spending in this period",
+            text = stringResource(R.string.pie_no_spending),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

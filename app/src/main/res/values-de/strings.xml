@@ -989,4 +989,13 @@
     <string name="manage_move_title">In Gruppe verschieben</string>
     <string name="manage_move_cd">%1$s in eine andere Gruppe verschieben</string>
     <string name="manage_empty_hint">Noch keine eigenen Kategorien — erstelle eine, um Ausgaben auf deine Weise zu erfassen.</string>
+    <string name="pie_center_total">Gesamt</string>
+    <string name="pie_slice_share">%1$d%% der Ausgaben</string>
+    <string name="pie_all_categories">Alle Kategorien</string>
+    <string name="pie_amount_total">%1$s gesamt</string>
+    <string name="pie_no_spending">Keine Ausgaben in diesem Zeitraum</string>
+    <string name="receipt_fallback_name">Beleg</string>
+    <string name="home_empty_receipts_cta">+ Beleg hinzufügen</string>
+    <string name="home_empty_receipts_body">Tippe auf %1$s, um deinen ersten zu scannen — wir lesen ihn und kategorisieren ihn für dich.</string>
+    <string name="history_select_receipt">Wähle einen Beleg, um seine Artikel zu sehen.</string>
 </resources>

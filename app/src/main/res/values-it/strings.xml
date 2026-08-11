@@ -990,4 +990,13 @@
     <string name="manage_move_title">Sposta nel gruppo</string>
     <string name="manage_move_cd">Sposta %1$s in un altro gruppo</string>
     <string name="manage_empty_hint">Ancora nessuna categoria personalizzata — creane una per etichettare le spese a modo tuo.</string>
+    <string name="pie_center_total">Totale</string>
+    <string name="pie_slice_share">%1$d%% della spesa</string>
+    <string name="pie_all_categories">Tutte le categorie</string>
+    <string name="pie_amount_total">%1$s in totale</string>
+    <string name="pie_no_spending">Nessuna spesa in questo periodo</string>
+    <string name="receipt_fallback_name">Scontrino</string>
+    <string name="home_empty_receipts_cta">+ Aggiungi scontrino</string>
+    <string name="home_empty_receipts_body">Tocca %1$s per scansionare il primo — lo leggeremo e lo categorizzeremo per te.</string>
+    <string name="history_select_receipt">Seleziona uno scontrino per vederne gli articoli.</string>
 </resources>

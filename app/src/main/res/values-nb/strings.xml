@@ -1003,4 +1003,13 @@
     <string name="manage_move_title">Flytt til gruppe</string>
     <string name="manage_move_cd">Flytt %1$s til en annen gruppe</string>
     <string name="manage_empty_hint">Ingen egne kategorier ennå — opprett en for å merke forbruket ditt på din egen måte.</string>
+    <string name="pie_center_total">Totalt</string>
+    <string name="pie_slice_share">%1$d%% av forbruket</string>
+    <string name="pie_all_categories">Alle kategorier</string>
+    <string name="pie_amount_total">%1$s totalt</string>
+    <string name="pie_no_spending">Ingen forbruk i denne perioden</string>
+    <string name="receipt_fallback_name">Kvittering</string>
+    <string name="home_empty_receipts_cta">+ Legg til kvittering</string>
+    <string name="home_empty_receipts_body">Trykk på %1$s for å skanne din første — vi leser og kategoriserer den for deg.</string>
+    <string name="history_select_receipt">Velg en kvittering for å se varene.</string>
 </resources>

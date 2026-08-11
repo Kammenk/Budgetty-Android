@@ -539,6 +539,7 @@
 
     <!-- History -->
     <string name="history_search">Search items</string>
+    <string name="history_select_receipt">Select a receipt to see its items.</string>
     <string name="history_today">Today</string>
     <string name="history_yesterday">Yesterday</string>
     <string name="history_tab_receipts">Receipts</string>
@@ -1052,4 +1053,16 @@
     <string name="wellbeing_banner_nogoal">Start a savings goal</string>
     <string name="wellbeing_banner_savingswin">Saved %1$d%% this month</string>
     <string name="wellbeing_banner_generic">See how you\'re doing</string>
+
+    <!-- Category breakdown / pie chart -->
+    <string name="pie_center_total">Total</string>
+    <string name="pie_slice_share">%1$d%% of spend</string>
+    <string name="pie_all_categories">All categories</string>
+    <string name="pie_amount_total">%1$s total</string>
+    <string name="pie_no_spending">No spending in this period</string>
+    <!-- Fallback title for a receipt saved without a store name -->
+    <string name="receipt_fallback_name">Receipt</string>
+    <!-- Home empty-receipts prompt; %1$s is the accented "+ Add receipt" label spliced in by the UI -->
+    <string name="home_empty_receipts_cta">+ Add receipt</string>
+    <string name="home_empty_receipts_body">Tap %1$s to scan your first one — we\'ll read &amp; categorize it for you.</string>
 </resources>
