@@ -1,6 +1,7 @@
 <resources>
     <string name="action_save">Opslaan</string>
     <string name="action_cancel">Annuleren</string>
+    <string name="action_discard">Negeren</string>
     <string name="action_done">Klaar</string>
     <string name="action_apply">Toepassen</string>
     <string name="action_delete">Verwijderen</string>
@@ -66,6 +67,7 @@
     <string name="home_receipts">Bonnen</string>
     <string name="home_no_receipts">Nog geen bonnen</string>
     <string name="home_budgets">Budgetten</string>
+    <string name="home_budgets_discretionary">Vrij besteedbare budgetten</string>
     <string name="home_monthly_progress">Voortgang maandbudget</string>
     <string name="home_weekly_progress">Voortgang weekbudget</string>
     <string name="home_set_budget">Tik om een budget in te stellen</string>
@@ -119,6 +121,11 @@
     <string name="budget_left">%1$s over</string>
     <string name="budget_over">%1$s te veel</string>
     <string name="budget_carried_over">+%1$s overgedragen</string>
+    <string name="budget_left_of_carried">%1$s van %2$s over · incl. %3$s overgedragen</string>
+    <string name="budget_unsaved_changes">Niet-opgeslagen wijzigingen</string>
+    <string name="budget_discard_message">Budgetwijzigingen opslaan voordat je weggaat?</string>
+    <string name="budget_status_near_limit">Bijna op limiet</string>
+    <string name="budget_status_over_budget">Boven budget</string>
     <string name="budget_rollover_title">Ongebruikt budget overdragen</string>
     <string name="budget_rollover_hint">Niet-besteed budget gaat naar de volgende periode</string>
     <string name="budget_spent">%1$s uitgegeven</string>
@@ -660,6 +667,10 @@
     <string name="safe_to_spend_title">Vrij besteedbaar</string>
     <string name="safe_to_spend_bills_due">Openstaande rekeningen</string>
     <string name="safe_to_spend_total_spent">Totaal uitgegeven deze cyclus</string>
+    <string name="safe_to_spend_status_on_track">Op schema</string>
+    <string name="safe_to_spend_status_low">Raakt op</string>
+    <string name="safe_to_spend_status_over">Overschreden</string>
+    <string name="safe_to_spend_total_out_incl_bills">Totaal uitgegeven · incl. rekeningen</string>
     <string name="safe_to_spend_composition">%1$s uitgegeven + %2$s betaalde rekeningen</string>
     <string name="safe_to_spend_nothing_yet">Nog niets uitgegeven deze cyclus</string>
     <string name="safe_to_spend_over">%1$s te veel — meer uitgegeven dan er deze cyclus over is.</string>

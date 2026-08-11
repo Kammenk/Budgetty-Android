@@ -3,6 +3,7 @@
 
     <string name="action_save">Tallenna</string>
     <string name="action_cancel">Peruuta</string>
+    <string name="action_discard">Hylkää</string>
     <string name="action_done">Valmis</string>
     <string name="action_apply">Käytä</string>
     <string name="action_delete">Poista</string>
@@ -147,6 +148,7 @@
     <string name="home_view_all">Näytä kaikki</string>
     <string name="home_no_receipts">Ei kuitteja vielä</string>
     <string name="home_budgets">Budjetit</string>
+    <string name="home_budgets_discretionary">Vapaan kulutuksen budjetit</string>
     <string name="home_monthly_progress">Kuukausibudjetin edistyminen</string>
     <string name="home_weekly_progress">Viikkobudjetin edistyminen</string>
     <string name="home_budget_progress">Budjetin edistyminen</string>
@@ -381,6 +383,11 @@
     <string name="budget_left">%1$s jäljellä</string>
     <string name="budget_over">%1$s yli</string>
     <string name="budget_carried_over">+%1$s siirretty</string>
+    <string name="budget_left_of_carried">Jäljellä %1$s / %2$s · sis. %3$s siirretty</string>
+    <string name="budget_unsaved_changes">Tallentamattomat muutokset</string>
+    <string name="budget_discard_message">Tallennetaanko budjetin muutokset ennen poistumista?</string>
+    <string name="budget_status_near_limit">Lähellä rajaa</string>
+    <string name="budget_status_over_budget">Yli budjetin</string>
     <string name="budget_rollover_title">Siirrä käyttämätön budjetti</string>
     <string name="budget_rollover_hint">Käyttämätön budjetti siirtyy seuraavalle jaksolle</string>
     <string name="budget_spent">%1$s käytetty</string>
@@ -672,6 +679,10 @@
     <string name="safe_to_spend_title">Turvallista käyttää</string>
     <string name="safe_to_spend_bills_due">Maksamattomat laskut</string>
     <string name="safe_to_spend_total_spent">Käytetty yhteensä tällä jaksolla</string>
+    <string name="safe_to_spend_status_on_track">Aikataulussa</string>
+    <string name="safe_to_spend_status_low">Vähissä</string>
+    <string name="safe_to_spend_status_over">Ylitetty</string>
+    <string name="safe_to_spend_total_out_incl_bills">Käytetty yhteensä · sis. laskut</string>
     <string name="safe_to_spend_composition">%1$s käytetty + %2$s maksetut laskut</string>
     <string name="safe_to_spend_nothing_yet">Ei vielä käytetty mitään tällä jaksolla</string>
     <string name="safe_to_spend_over">%1$s yli — käytit enemmän kuin sinulla on jäljellä tällä jaksolla.</string>

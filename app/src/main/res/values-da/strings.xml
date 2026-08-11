@@ -3,6 +3,7 @@
 
     <string name="action_save">Gem</string>
     <string name="action_cancel">Annuller</string>
+    <string name="action_discard">Kassér</string>
     <string name="action_done">Færdig</string>
     <string name="action_apply">Anvend</string>
     <string name="action_delete">Slet</string>
@@ -147,6 +148,7 @@
     <string name="home_view_all">Se alle</string>
     <string name="home_no_receipts">Ingen kvitteringer endnu</string>
     <string name="home_budgets">Budgetter</string>
+    <string name="home_budgets_discretionary">Frie budgetter</string>
     <string name="home_monthly_progress">Fremgang for månedsbudget</string>
     <string name="home_weekly_progress">Fremgang for ugebudget</string>
     <string name="home_budget_progress">Budgetfremgang</string>
@@ -381,6 +383,11 @@
     <string name="budget_left">%1$s tilbage</string>
     <string name="budget_over">%1$s over</string>
     <string name="budget_carried_over">+%1$s overført</string>
+    <string name="budget_left_of_carried">%1$s tilbage af %2$s · inkl. %3$s overført</string>
+    <string name="budget_unsaved_changes">Ugemte ændringer</string>
+    <string name="budget_discard_message">Gem dine budgetændringer, før du går?</string>
+    <string name="budget_status_near_limit">Nær grænsen</string>
+    <string name="budget_status_over_budget">Over budget</string>
     <string name="budget_rollover_title">Overfør ubrugt budget</string>
     <string name="budget_rollover_hint">Ubrugt budget overføres til næste periode</string>
     <string name="budget_spent">%1$s brugt</string>
@@ -671,6 +678,10 @@
     <string name="safe_to_spend_title">Til rådighed</string>
     <string name="safe_to_spend_bills_due">Ubetalte regninger</string>
     <string name="safe_to_spend_total_spent">Brugt i alt denne cyklus</string>
+    <string name="safe_to_spend_status_on_track">På sporet</string>
+    <string name="safe_to_spend_status_low">Snart brugt op</string>
+    <string name="safe_to_spend_status_over">Overforbrug</string>
+    <string name="safe_to_spend_total_out_incl_bills">Ud i alt · inkl. regninger</string>
     <string name="safe_to_spend_composition">%1$s brugt + %2$s betalte regninger</string>
     <string name="safe_to_spend_nothing_yet">Intet brugt endnu denne cyklus</string>
     <string name="safe_to_spend_over">%1$s over — du har brugt mere, end du har tilbage denne cyklus.</string>
