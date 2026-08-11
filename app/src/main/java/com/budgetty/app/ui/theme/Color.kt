@@ -92,14 +92,6 @@ val WellbeingWarnOn         = Color(0xFF8A6100); val WellbeingWarnOnDark        
 val WellbeingBadContainer   = Color(0xFFFADCDA); val WellbeingBadContainerDark   = Color(0xFF452220)
 val WellbeingGreatContainer = Color(0xFFCFE7D2); val WellbeingGreatContainerDark = Color(0xFF20422A)
 
-// ── Accessible on-surface TEXT tones for status (WCAG AA on the card surfaces). ───────────────
-// The bright Budget* tones above are for bars/graphics (they clear 3:1 as large shapes); these
-// darker/lighter "on" tones are for status *text* — the demoted "Safe to spend" figure, "€X left",
-// "Near limit" — where #F9A825 amber failed 4.5:1. Values from the 2026-08 Home/Budget audit mockup.
-val StatusGoodOn = Color(0xFF1B5E20); val StatusGoodOnDark = Color(0xFF9BD99F)
-val StatusWarnOn = Color(0xFF8A6100); val StatusWarnOnDark = Color(0xFFFFCF70)
-val StatusBadOn  = Color(0xFFB3261E); val StatusBadOnDark  = Color(0xFFFFB4AB)
-
 // ── Premium accent seeds (light / dark primary). Build alternate ColorSchemes from these. ──
 // Sage   #3E5E41 / #A8C6AA
 // Ocean  #1C5C6E / #8FC8D8
@@ -129,17 +121,6 @@ fun budgetBadColor(): Color = if (isDarkTheme()) BudgetBadDark else BudgetBad
 @Composable
 @ReadOnlyComposable
 fun budgetGreatColor(): Color = if (isDarkTheme()) BudgetGreatDark else BudgetGreat
-
-// Accessible status TEXT tones (WCAG AA). Use these for coloured status *words/figures*; keep the
-// bright budget*Color() tones for bars and swatches.
-@Composable @ReadOnlyComposable
-fun budgetGoodOnColor(): Color = if (isDarkTheme()) StatusGoodOnDark else StatusGoodOn
-
-@Composable @ReadOnlyComposable
-fun budgetWarnOnColor(): Color = if (isDarkTheme()) StatusWarnOnDark else StatusWarnOn
-
-@Composable @ReadOnlyComposable
-fun budgetBadOnColor(): Color = if (isDarkTheme()) StatusBadOnDark else StatusBadOn
 
 // ── Wellbeing tonal-container accessors ───────────────────────────────────────
 @Composable @ReadOnlyComposable

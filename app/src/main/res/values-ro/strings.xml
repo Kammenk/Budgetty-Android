@@ -3,7 +3,6 @@
 
     <string name="action_save">Salvează</string>
     <string name="action_cancel">Anulează</string>
-    <string name="action_discard">Renunță</string>
     <string name="action_done">Gata</string>
     <string name="action_apply">Aplică</string>
     <string name="action_delete">Șterge</string>
@@ -148,7 +147,6 @@
     <string name="home_view_all">Vezi toate</string>
     <string name="home_no_receipts">Niciun bon încă</string>
     <string name="home_budgets">Bugete</string>
-    <string name="home_budgets_discretionary">Bugete discreționare</string>
     <string name="home_monthly_progress">Progresul bugetului lunar</string>
     <string name="home_weekly_progress">Progresul bugetului săptămânal</string>
     <string name="home_budget_progress">Progresul bugetului</string>
@@ -383,11 +381,6 @@
     <string name="budget_left">%1$s rămas</string>
     <string name="budget_over">%1$s peste</string>
     <string name="budget_carried_over">+%1$s reportat</string>
-    <string name="budget_left_of_carried">%1$s rămas din %2$s · incl. %3$s reportat</string>
-    <string name="budget_unsaved_changes">Modificări nesalvate</string>
-    <string name="budget_discard_message">Salvezi modificările bugetului înainte de a ieși?</string>
-    <string name="budget_status_near_limit">Aproape de limită</string>
-    <string name="budget_status_over_budget">Peste buget</string>
     <string name="budget_rollover_title">Reportează bugetul neutilizat</string>
     <string name="budget_rollover_hint">Bugetul necheltuit trece în perioada următoare</string>
     <string name="budget_spent">%1$s cheltuit</string>
@@ -679,10 +672,6 @@
     <string name="safe_to_spend_title">Sigur de cheltuit</string>
     <string name="safe_to_spend_bills_due">Facturi de plătit</string>
     <string name="safe_to_spend_total_spent">Total cheltuit în acest ciclu</string>
-    <string name="safe_to_spend_status_on_track">Conform planului</string>
-    <string name="safe_to_spend_status_low">Aproape epuizat</string>
-    <string name="safe_to_spend_status_over">Depășit</string>
-    <string name="safe_to_spend_total_out_incl_bills">Total cheltuit · incl. facturi</string>
     <string name="safe_to_spend_composition">%1$s cheltuit + %2$s facturi plătite</string>
     <string name="safe_to_spend_nothing_yet">Încă nimic cheltuit în acest ciclu</string>
     <string name="safe_to_spend_over">%1$s peste — ai cheltuit mai mult decât ți-a rămas în acest ciclu.</string>
