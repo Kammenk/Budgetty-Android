@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 /** Persists the user's app-customization settings (theme, accent, currency, date format). */
+@Suppress("TooManyFunctions") // A flat store of one-line preference accessors; each is trivial by design.
 class SettingsStore(context: Context) {
 
     private val prefs = context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
