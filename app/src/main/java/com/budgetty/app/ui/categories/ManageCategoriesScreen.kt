@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -162,6 +163,9 @@ fun ManageCategoriesContent(
                         )
                     }
                 },
+                // The NavHost already applies the parent scaffold's top inset, so the toolbar must not
+                // add the status-bar inset again (that double-count is the gap above the toolbar).
+                windowInsets = WindowInsets(0, 0, 0, 0),
             )
         },
     ) { padding ->
