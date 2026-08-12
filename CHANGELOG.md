@@ -15,6 +15,19 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.2.2 (versionCode 1122) — 2026-08-12
+
+A small UI fix.
+
+### Fixed
+- Removed an extra gap that showed above the toolbar on the **Manage Categories** screen; its header now sits at the same height as every other screen.
+
+> No database change — schema stays v22.
+
+> Internal: added a detekt rule (`TopAppBarInsetNotZeroed`) that fails the build if a screen's toolbar re-applies the status-bar inset, so that gap can't regress; plus a cleanup of pre-existing detekt findings so `:app:detekt` is green again. Also reverted the unshipped Home & Budget design-audit changes (never in an uploaded build, so invisible to users).
+
+> **Play status — not yet uploaded.** Intended for a **closed-testing** upload. Follows 11.2.1/vc1121 (never uploaded) and 11.2.0/vc1120 (Wellbeing, currently on the closed track); carries the same accumulated changes as 11.2.0/11.2.1 plus this fix.
+
 ## 11.2.1 (versionCode 1121) — 2026-08-06
 
 Internal maintenance — no user-facing changes.
