@@ -95,3 +95,5 @@ budgetty:
   active: true
   SheetScrollNotCapped:
     active: true
+  TopAppBarInsetNotZeroed:
+    active: true

@@ -99,5 +99,5 @@ class SheetScrollNotCapped(config: Config) : Rule(config) {
 class BudgettyRuleSetProvider : RuleSetProvider {
     override val ruleSetId: String = "budgetty"
     override fun instance(config: Config): RuleSet =
-        RuleSet(ruleSetId, listOf(SheetScrollNotCapped(config)))
+        RuleSet(ruleSetId, listOf(SheetScrollNotCapped(config), TopAppBarInsetNotZeroed(config)))
 }
