@@ -76,7 +76,9 @@ class WellbeingEngineScoreTest {
     fun `actual subscriptions score regardless of history`() {
         // subsCount > 0 means there IS data to score, from month one: 100 - (10-5)*11 = 45.
         assertThat(
-            WellbeingEngine.subscriptionsComponentScore(inputs(subsSharePercent = 10, subsCount = 2, monthsTracked = 1)),
+            WellbeingEngine.subscriptionsComponentScore(
+                inputs(subsSharePercent = 10, subsCount = 2, monthsTracked = 1),
+            ),
         ).isEqualTo(45)
     }
 }

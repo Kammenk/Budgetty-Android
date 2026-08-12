@@ -729,18 +729,20 @@ private fun toneIcon(tone: TipTone): ImageVector = when (tone) {
 @Composable private fun tipTitle(tip: WellbeingTip): String {
     val amt = (tip.amount ?: BigDecimal.ZERO).formatMoney()
     val amt2 = (tip.amount2 ?: BigDecimal.ZERO).formatMoney()
+    val cat = categoryDisplayName(tip.label.orEmpty())
+    val n = tip.count ?: 0
     return when (tip.type) {
         TipType.NEGATIVE_CASHFLOW -> stringResource(R.string.wellbeing_tip_cashflow_title, amt)
-        TipType.OVER_BUDGET -> pluralStringResource(R.plurals.wellbeing_tip_overbudget_title, tip.count ?: 0, tip.count ?: 0, amt)
-        TipType.CATEGORY_SPIKE -> stringResource(R.string.wellbeing_tip_spike_title, categoryDisplayName(tip.label.orEmpty()), tip.percent ?: 0, amt, amt2)
-        TipType.SUBSCRIPTION_COST -> pluralStringResource(R.plurals.wellbeing_tip_subs_title, tip.count ?: 0, tip.count ?: 0, amt)
-        TipType.MISSING_BUDGET -> stringResource(R.string.wellbeing_tip_missingbudget_title, amt, categoryDisplayName(tip.label.orEmpty()))
+        TipType.OVER_BUDGET -> pluralStringResource(R.plurals.wellbeing_tip_overbudget_title, n, n, amt)
+        TipType.CATEGORY_SPIKE -> stringResource(R.string.wellbeing_tip_spike_title, cat, tip.percent ?: 0, amt, amt2)
+        TipType.SUBSCRIPTION_COST -> pluralStringResource(R.plurals.wellbeing_tip_subs_title, n, n, amt)
+        TipType.MISSING_BUDGET -> stringResource(R.string.wellbeing_tip_missingbudget_title, amt, cat)
         TipType.NO_GOAL -> stringResource(R.string.wellbeing_tip_nogoal_title)
         TipType.GOAL_OFF_TRACK -> stringResource(R.string.wellbeing_tip_goaloff_title, tip.label.orEmpty())
         TipType.SAVINGS_WIN -> stringResource(R.string.wellbeing_tip_savingswin_title, tip.percent ?: 0)
-        TipType.CATEGORY_IMPROVED -> stringResource(R.string.wellbeing_tip_improved_title, categoryDisplayName(tip.label.orEmpty()), tip.percent ?: 0)
+        TipType.CATEGORY_IMPROVED -> stringResource(R.string.wellbeing_tip_improved_title, cat, tip.percent ?: 0)
         TipType.BUDGET_PACE -> stringResource(R.string.wellbeing_tip_pace_title, tip.percent ?: 0)
-        TipType.SMALL_PURCHASE_LEAK -> pluralStringResource(R.plurals.wellbeing_tip_leak_title, tip.count ?: 0, tip.count ?: 0, categoryDisplayName(tip.label.orEmpty()))
+        TipType.SMALL_PURCHASE_LEAK -> pluralStringResource(R.plurals.wellbeing_tip_leak_title, n, n, cat)
         TipType.UNDER_PACE_WIN -> stringResource(R.string.wellbeing_tip_underpace_title)
     }
 }
@@ -783,7 +785,8 @@ private fun tipCta(type: TipType, nav: WellbeingNav) = when (type) {
 
 @Composable private fun winLabel(win: WellbeingWin): String = when (win.type) {
     TipType.SAVINGS_WIN -> stringResource(R.string.wellbeing_win_savings, win.percent ?: 0)
-    TipType.CATEGORY_IMPROVED -> stringResource(R.string.wellbeing_win_improved, categoryDisplayName(win.label.orEmpty()), win.percent ?: 0)
+    TipType.CATEGORY_IMPROVED ->
+        stringResource(R.string.wellbeing_win_improved, categoryDisplayName(win.label.orEmpty()), win.percent ?: 0)
     TipType.UNDER_PACE_WIN -> stringResource(R.string.wellbeing_win_underpace)
     else -> stringResource(R.string.wellbeing_win_generic)
 }

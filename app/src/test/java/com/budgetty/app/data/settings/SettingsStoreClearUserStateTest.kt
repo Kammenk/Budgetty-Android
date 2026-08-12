@@ -26,7 +26,7 @@ class SettingsStoreClearUserStateTest {
         store.setDisplayName("Alice")
         store.addRecentSearch("Pharmacy")
         store.addRecentSearch("Rent")
-        store.setPin("1234")                       // sets pinHash + appLockEnabled
+        store.setPin("1234") // sets pinHash + appLockEnabled
         store.setBiometricEnabled(true)
         store.setInsightsQuizPending(true)
         store.setHomeSectionHidden("safe_to_spend", hidden = true)
@@ -65,9 +65,9 @@ class SettingsStoreClearUserStateTest {
         store.clearUserState()
 
         val s = store.settings.value
-        assertThat(s.themeMode).isEqualTo(ThemeMode.DARK)   // retained
-        assertThat(s.monthStartDay).isEqualTo(15)           // retained
-        assertThat(s.displayName).isEmpty()                 // cleared
+        assertThat(s.themeMode).isEqualTo(ThemeMode.DARK) // retained
+        assertThat(s.monthStartDay).isEqualTo(15) // retained
+        assertThat(s.displayName).isEmpty() // cleared
     }
 
     @Test
@@ -86,6 +86,6 @@ class SettingsStoreClearUserStateTest {
         assertThat(reloaded.appLockEnabled).isFalse()
         assertThat(reloaded.biometricEnabled).isFalse()
         assertThat(reloaded.hiddenHomeSections).isEmpty()
-        assertThat(reloaded.themeMode).isEqualTo(ThemeMode.DARK)   // device pref survived
+        assertThat(reloaded.themeMode).isEqualTo(ThemeMode.DARK) // device pref survived
     }
 }
