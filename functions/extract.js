@@ -95,11 +95,20 @@ function scanDiagnostics(input) {
   };
 }
 
-/** Dollar cost of a single call's `usage` block for `model`, at the PRICING list rates. */
+/**
+ * Dollar cost of a single call's `usage` block for `model`, at the PRICING list rates. Cache-aware:
+ * `input_tokens` is only the uncached remainder (the image), cached-prefix reads bill at 0.1x the input
+ * rate, and 5-minute-TTL cache writes at 1.25x. Falls back cleanly when the usage block carries no cache
+ * fields (an uncached call), so the number stays comparable before and after prompt caching.
+ */
 function costOf(model, usage) {
   const p = PRICING[model];
   if (!p || !usage) return 0;
-  return ((Number(usage.input_tokens) || 0) * p.in + (Number(usage.output_tokens) || 0) * p.out) / 1e6;
+  const input = Number(usage.input_tokens) || 0;
+  const cacheRead = Number(usage.cache_read_input_tokens) || 0;
+  const cacheWrite = Number(usage.cache_creation_input_tokens) || 0;
+  const output = Number(usage.output_tokens) || 0;
+  return (input * p.in + cacheRead * p.in * 0.1 + cacheWrite * p.in * 1.25 + output * p.out) / 1e6;
 }
 
 /**
@@ -113,7 +122,13 @@ async function callModel({ model, sourceBlock, apiKey }) {
     model,
     // A long receipt (49 items ≈ 2100 output tokens) needs headroom; 8192 clears a 40+ line haul.
     max_tokens: 8192,
-    tools: [RECORD_RECEIPT_TOOL],
+    // Cache the tool schema — it's byte-identical every scan and renders before the per-scan image, so it's
+    // a clean stable prefix; a cache_control on the tool definition caches ~1.1k tokens, read at ~0.1x once
+    // warm. The PROMPT stays in the user message on purpose: caching it too (by moving it into a `system`
+    // block) failed bg-kaufland-interleaved 5/5 in the eval where the user-turn prompt still passed it, so
+    // the extra ~0.5c/scan isn't worth changing what the model reads. Model input stays byte-identical to
+    // the pre-caching request.
+    tools: [{ ...RECORD_RECEIPT_TOOL, cache_control: { type: "ephemeral" } }],
     tool_choice: { type: "tool", name: "record_receipt" },
     messages: [{ role: "user", content: [sourceBlock, { type: "text", text: PROMPT }] }],
   };
