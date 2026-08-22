@@ -1074,4 +1074,61 @@
     <!-- Home empty-receipts prompt; %1$s is the accented "+ Add receipt" label spliced in by the UI -->
     <string name="home_empty_receipts_cta">+ Add receipt</string>
     <string name="home_empty_receipts_body">Tap %1$s to scan your first one — we\'ll read &amp; categorize it for you.</string>
+
+    <!-- Buying limits (Account → Buying limits): keyword-based item purchase caps -->
+    <string name="account_buying_limits">Buying limits</string>
+    <string name="buying_limits_title">Buying limits</string>
+    <string name="buying_limits_subtitle">Counted off the items on your saved receipts.</string>
+    <string name="buying_limits_empty_title">Set a buying limit</string>
+    <string name="buying_limits_empty_body">Cap how many of something you buy — we\'ll count it off your receipts.</string>
+    <string name="buying_limits_add">Add limit</string>
+    <string name="buying_limits_free_hint">1 limit free · unlimited with Premium</string>
+    <string name="buying_limits_explainer">A limit is a few keywords, a week or a month, and a number.</string>
+    <string name="buying_limits_explainer_example">no more than 1 Coke a week</string>
+    <string name="buying_limits_status_on_track">On track</string>
+    <string name="buying_limits_status_at_limit">At limit</string>
+    <string name="buying_limits_status_over">Over</string>
+    <string name="buying_limits_weekly">Weekly</string>
+    <string name="buying_limits_monthly">Monthly</string>
+    <string name="buying_limits_bought_of">Bought %1$d of %2$d</string>
+    <string name="buying_limits_bought_over">Bought %1$d, limit %2$d</string>
+    <string name="buying_limits_resets">resets %1$s</string>
+    <string name="buying_limits_cap_pill">%1$d / %2$d</string>
+    <string name="buying_limits_unlock_title">Unlock unlimited buying limits</string>
+    <string name="buying_limits_unlock_body">The free plan includes 1 buying limit. Premium adds as many as you like — plus unlimited scans and custom categories.</string>
+    <string name="buying_limits_used">%1$d of %2$d free limits used</string>
+    <string name="buying_limits_new_title">New limit</string>
+    <string name="buying_limits_edit_title">Edit limit</string>
+    <string name="buying_limits_delete">Delete limit</string>
+    <string name="buying_limits_label">Label</string>
+    <string name="buying_limits_label_optional">Label · optional</string>
+    <string name="buying_limits_label_hint">e.g. Fizzy drinks</string>
+    <string name="buying_limits_keywords">Keywords</string>
+    <string name="buying_limits_keywords_hint">Add keyword</string>
+    <string name="buying_limits_keywords_helper">Any of these counts toward the same limit.</string>
+    <string name="buying_limits_remove_keyword">Remove %1$s</string>
+    <string name="buying_limits_pick_emoji">Choose an emoji</string>
+    <string name="buying_limits_matches_header">Currently matches</string>
+    <string name="buying_limits_no_match_title">No matching items yet</string>
+    <string name="buying_limits_no_match_body">Nothing on your saved receipts matches. We\'ll start counting from your next one.</string>
+    <string name="buying_limits_broad_header">Catching a lot</string>
+    <string name="buying_limits_use_instead">Use “%1$s” instead</string>
+    <string name="buying_limits_more">+%1$d more</string>
+    <string name="buying_limits_this_week">this week</string>
+    <string name="buying_limits_this_month">this month</string>
+    <plurals name="buying_limits_bought_this">
+        <item quantity="one">%1$d bought %2$s</item>
+        <item quantity="other">%1$d bought %2$s</item>
+    </plurals>
+    <string name="buying_limits_timeframe">Timeframe</string>
+    <string name="buying_limits_per_week">Limit per week</string>
+    <string name="buying_limits_per_month">Limit per month</string>
+    <string name="buying_limits_decrease">Decrease limit</string>
+    <string name="buying_limits_increase">Increase limit</string>
+    <string name="buying_limit_nudge_title">Heads up — that\'s %1$d× %2$s %3$s (limit %4$d).</string>
+    <string name="buying_limit_nudge_body">Receipt saved. Your %1$s limit resets %2$s.</string>
+    <string name="buying_limit_nudge_dismiss">Got it</string>
+    <string name="buying_limit_nudge_view">View limits</string>
+    <string name="paywall_benefit_limits">Unlimited buying limits</string>
+    <string name="paywall_benefit_limits_detail">Free plan includes %1$d</string>
 </resources>

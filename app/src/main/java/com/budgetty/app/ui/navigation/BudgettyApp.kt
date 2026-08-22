@@ -50,6 +50,7 @@ import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
 import com.budgetty.app.ui.budget.BudgetScreen
+import com.budgetty.app.ui.buyinglimits.BuyingLimitsScreen
 import com.budgetty.app.ui.savings.SavingsGoalDetailScreen
 import com.budgetty.app.ui.lock.SetPinScreen
 import com.budgetty.app.ui.subscriptions.SubscriptionsScreen
@@ -272,6 +273,7 @@ private fun BudgettyNavHost(
                 onNavigateToInsights = { navController.navigateToTab(Routes.INSIGHTS) },
                 onNavigateToAccount = { navController.navigateToTab(Routes.ACCOUNT) },
                 onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
+                onNavigateToBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
             )
         }
         composable(Routes.INSIGHTS) {
@@ -304,6 +306,7 @@ private fun BudgettyNavHost(
                 onOpenBudget = { navController.navigate(Routes.BUDGET) },
                 onOpenWidgets = { navController.navigate(Routes.WIDGETS) },
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
+                onOpenBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
                 onOpenManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
@@ -364,6 +367,12 @@ private fun BudgettyNavHost(
         }
         composable(Routes.CATEGORY_RULES) {
             CategoryRulesScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.BUYING_LIMITS) {
+            BuyingLimitsScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+            )
         }
         composable(Routes.MANAGE_CATEGORIES) {
             ManageCategoriesScreen(

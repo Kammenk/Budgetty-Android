@@ -12,9 +12,9 @@ import com.budgetty.app.category.Categories
         TransactionEntity::class, CategoryEntity::class, BudgetEntity::class, ReceiptEntity::class,
         CategoryRuleEntity::class, RecurringEntity::class, BudgetRolloverEntity::class,
         SavingsGoalEntity::class, SavingsContributionEntity::class,
-        IgnoredSubscriptionEntity::class,
+        IgnoredSubscriptionEntity::class, BuyingLimitEntity::class,
     ],
-    version = 24,
+    version = 25,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -28,6 +28,7 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun budgetRolloverDao(): BudgetRolloverDao
     abstract fun savingsDao(): SavingsDao
     abstract fun ignoredSubscriptionDao(): IgnoredSubscriptionDao
+    abstract fun buyingLimitDao(): BuyingLimitDao
 }
 
 /** v2 adds the [TransactionEntity.category] column, defaulting existing rows to "Groceries". */
@@ -371,6 +372,27 @@ val MIGRATION_23_24 = object : Migration(23, 24) {
     }
 }
 
+/**
+ * v25 adds the buying_limits table: keyword-based item purchase caps (Account → Buying limits). A
+ * limit is a few normalized keywords (newline-joined), a timeframe (WEEKLY/MONTHLY, stored as text
+ * via [Converters]), and a per-window count; the count bought is derived from transactions, never
+ * stored. Column order, types, and defaults mirror [BuyingLimitEntity] so Room's schema validation
+ * passes.
+ */
+val MIGRATION_24_25 = object : Migration(24, 25) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `buying_limits` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`emoji` TEXT NOT NULL DEFAULT '', `label` TEXT NOT NULL DEFAULT '', " +
+                "`keywords` TEXT NOT NULL DEFAULT '', " +
+                "`timeframe` TEXT NOT NULL DEFAULT 'MONTHLY', " +
+                "`count` INTEGER NOT NULL DEFAULT 1, " +
+                "`createdAt` INTEGER NOT NULL DEFAULT 0)",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -415,5 +437,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
-    MIGRATION_22_23, MIGRATION_23_24,
+    MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
 )

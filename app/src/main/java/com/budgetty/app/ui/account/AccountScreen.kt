@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Fingerprint
@@ -125,6 +126,7 @@ fun AccountScreen(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
@@ -145,6 +147,7 @@ fun AccountScreen(
         onOpenBudget = onOpenBudget,
         onOpenWidgets = onOpenWidgets,
         onOpenCategoryRules = onOpenCategoryRules,
+        onOpenBuyingLimits = onOpenBuyingLimits,
         onOpenManageCategories = onOpenManageCategories,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
@@ -176,6 +179,7 @@ private fun AccountScreenContent(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
@@ -262,6 +266,7 @@ private fun AccountScreenContent(
                 onExportData = { if (isPremium) exportOpen = true else onOpenPaywall() },
                 onOpenWidgets = onOpenWidgets,
                 onOpenCategoryRules = onOpenCategoryRules,
+                onOpenBuyingLimits = onOpenBuyingLimits,
                 onOpenManageCategories = onOpenManageCategories,
             )
         }
@@ -564,6 +569,7 @@ private fun AccountSectionRows(
     onExportData: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
 ) {
     SettingRow(
@@ -576,6 +582,8 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.account_budget)) { onOpenBudget() }
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
+    RowDivider()
+    SettingRow(Icons.Filled.Equalizer, stringResource(R.string.account_buying_limits)) { onOpenBuyingLimits() }
     RowDivider()
     SettingRow(Icons.Filled.Category, stringResource(R.string.account_manage_categories)) { onOpenManageCategories() }
     RowDivider()
@@ -1167,6 +1175,7 @@ private fun AccountScreenPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onSetupPin = {},
             onDisableAppLock = {},
@@ -1201,6 +1210,7 @@ private fun AccountScreenTabletPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onSetupPin = {},
             onDisableAppLock = {},

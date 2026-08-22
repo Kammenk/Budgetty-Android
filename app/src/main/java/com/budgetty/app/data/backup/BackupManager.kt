@@ -17,6 +17,7 @@ class BackupManager(
     private val categoryRuleDao get() = db.database.categoryRuleDao()
     private val recurringDao get() = db.database.recurringDao()
     private val savingsDao get() = db.database.savingsDao()
+    private val buyingLimitDao get() = db.database.buyingLimitDao()
 
     private val gson = Gson()
 
@@ -31,6 +32,7 @@ class BackupManager(
             recurring = recurringDao.getAll().first(),
             savingsGoals = savingsDao.getGoals().first(),
             savingsContributions = savingsDao.getAllContributions().first(),
+            buyingLimits = buyingLimitDao.getAll().first(),
         )
         return gson.toJson(data)
     }
@@ -60,6 +62,7 @@ class BackupManager(
                 // Child before parent (the goal→contribution CASCADE would cover it too).
                 savingsDao.clearContributions()
                 savingsDao.clearGoals()
+                buyingLimitDao.clearAll()
             }
             // New ids so a merge never collides with existing transactions.
             transactionDao.insertAll(data.transactions.map { it.copy(id = 0) })
@@ -83,6 +86,9 @@ class BackupManager(
                     goalIdMap[contribution.goalId]?.let { contribution.copy(id = 0, goalId = it) }
                 },
             )
+            // Buying limits: fresh ids so a merge never collides; .orEmpty() tolerates pre-v25 backups
+            // (Gson leaves the absent field null). Limits carry no child rows, so no id remap is needed.
+            buyingLimitDao.insertAll(data.buyingLimits.orEmpty().map { it.copy(id = 0) })
         }
     }
 }

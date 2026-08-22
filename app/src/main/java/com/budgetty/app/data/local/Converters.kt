@@ -11,4 +11,13 @@ class Converters {
 
     @TypeConverter
     fun toBigDecimal(value: String?): BigDecimal? = value?.let { BigDecimal(it) }
+
+    @TypeConverter
+    fun fromTimeframe(value: BuyingLimitTimeframe?): String? = value?.name
+
+    // An unknown/legacy value falls back to MONTHLY rather than crashing the read.
+    @TypeConverter
+    fun toTimeframe(value: String?): BuyingLimitTimeframe? = value?.let {
+        runCatching { BuyingLimitTimeframe.valueOf(it) }.getOrDefault(BuyingLimitTimeframe.MONTHLY)
+    }
 }

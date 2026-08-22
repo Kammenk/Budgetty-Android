@@ -21,6 +21,8 @@ import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.store.StoreNormalizer
+import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
+import com.budgetty.app.ui.util.CountableItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -97,6 +99,7 @@ class UploadViewModel(
     private val billingManager: BillingManager,
     private val budgetRepository: BudgetRepository,
     private val reviewTracker: ReviewTracker,
+    private val buyingLimitNudger: BuyingLimitNudger,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UploadUiState())
@@ -656,6 +659,15 @@ class UploadViewModel(
                 // earns a rating prompt. Editing an existing receipt is neither.
                 reviewTracker.recordSuccessfulScan()
                 scanPendingCount = false
+            }
+            // Save-time buying-limit nudge — only for a brand-new receipt (not a re-save of an edit),
+            // so editing an old receipt that still matches a keyword doesn't re-nudge. Non-blocking:
+            // the receipt is already saved regardless of whether a nudge fires.
+            if (editing == null) {
+                val savedItems = resolved.map { (parsed, _, _) ->
+                    CountableItem(parsed.name.trim(), parsed.quantity, madeAt)
+                }
+                buyingLimitNudger.onReceiptSaved(savedItems)
             }
             editingReceiptId = null
             _uiState.update { it.copy(stage = UploadStage.DONE) }
