@@ -216,7 +216,13 @@ fun CategoryEditorScreen(
     }
 }
 
+// Dialog-hosted bar: CategoryPickerScreen wraps this Content in a full-bleed Dialog, which lives in
+// its own window and so must keep the app bar's default insets (zeroing them would clip under the
+// status bar). TopAppBarInsetNotZeroed's isInsideDialog check is lexical, so it can't see the Dialog
+// in the caller and flags this bar; exempt it explicitly, as the rule's docs prescribe.
+// (CategoryEditorScreen's bar is auto-exempt — its Dialog is in the same function.)
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("TopAppBarInsetNotZeroed")
 @Composable
 private fun CategoryPickerContent(
     selected: String,

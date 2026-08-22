@@ -22,9 +22,11 @@ import org.jetbrains.kotlin.psi.KtCallExpression
  * this rule stops the next new screen from regressing so we don't re-discover it one screen at a time.
  *
  * Exemption: a top app bar inside a `Dialog` (or `AlertDialog` / `BasicAlertDialog`) lives in its OWN
- * window, not the NavHost, so it MUST keep its default insets (e.g. the full-bleed CategoryPicker).
- * Those are skipped automatically. A genuinely-immersive app bar that wants the status-bar inset can
- * `@Suppress("TopAppBarInsetNotZeroed")` with a note.
+ * window, not the NavHost, so it MUST keep its default insets. A `Dialog` that lexically encloses the
+ * bar (same function) is skipped automatically. When the `Dialog` is in a *caller* instead — e.g. the
+ * full-bleed CategoryPicker, whose CategoryPickerScreen wraps CategoryPickerContent's bar — this
+ * PSI-only walk can't see it, so annotate that function with `@Suppress("TopAppBarInsetNotZeroed")`
+ * and a note (as would a genuinely-immersive full-screen bar that intentionally wants the inset).
  *
  * Scope/limitation: PSI-only (no type resolution). It matches by callee name and by the literal
  * `WindowInsets(0…)` idiom the codebase uses uniformly; an unusual zero form (e.g.
