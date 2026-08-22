@@ -40,6 +40,10 @@ class SettingsStore(context: Context) {
         biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
         autoLockMinutes = prefs.getInt(KEY_AUTO_LOCK, 1),
         dismissedWellbeingTips = prefs.getStringSet(KEY_DISMISSED_TIPS, emptySet()).orEmpty().toSet(),
+        recapEnabled = prefs.getBoolean(KEY_RECAP_ENABLED, true),
+        recapFrequency = read(KEY_RECAP_FREQUENCY, RecapFrequency.MONTHLY),
+        recapLastShownWeek = prefs.getString(KEY_RECAP_LAST_WEEK, "").orEmpty(),
+        recapLastShownMonth = prefs.getString(KEY_RECAP_LAST_MONTH, "").orEmpty(),
     )
 
     fun setThemeMode(value: ThemeMode) = save(KEY_THEME, value) { it.copy(themeMode = value) }
@@ -192,6 +196,34 @@ class SettingsStore(context: Context) {
         _settings.update { it.copy(recentSearches = emptyList()) }
     }
 
+    // ── End-of-period recap ──
+
+    /** Turns the end-of-period recap interstitial on/off. Keeps the stored cadence either way. */
+    fun setRecapEnabled(value: Boolean) =
+        save(KEY_RECAP_ENABLED, value) { it.copy(recapEnabled = value) }
+
+    /** Sets which period(s) trigger a recap (Weekly / Monthly / Both). */
+    fun setRecapFrequency(value: RecapFrequency) =
+        save(KEY_RECAP_FREQUENCY, value) { it.copy(recapFrequency = value) }
+
+    /**
+     * Stamps the periods a recap open has just handled: [weekId] (yyyy-MM-dd start) and/or [monthId]
+     * (yyyy-MM) — either may be null when only one cadence was due. Written once per completed period
+     * so the interstitial fires at most once, matching the [ReviewTracker]-style last-shown key.
+     */
+    fun setRecapShown(weekId: String?, monthId: String?) {
+        val editor = prefs.edit()
+        weekId?.let { editor.putString(KEY_RECAP_LAST_WEEK, it) }
+        monthId?.let { editor.putString(KEY_RECAP_LAST_MONTH, it) }
+        editor.apply()
+        _settings.update {
+            it.copy(
+                recapLastShownWeek = weekId ?: it.recapLastShownWeek,
+                recapLastShownMonth = monthId ?: it.recapLastShownMonth,
+            )
+        }
+    }
+
     /** Records a Wellbeing tip as dismissed for its period ([scopedId] = "periodId|tipId"). */
     fun dismissWellbeingTip(scopedId: String) {
         val updated = _settings.value.dismissedWellbeingTips + scopedId
@@ -224,6 +256,10 @@ class SettingsStore(context: Context) {
             .remove(KEY_HIDDEN_INSIGHTS)
             .remove(KEY_ORDER_HOME)
             .remove(KEY_ORDER_INSIGHTS)
+            // Per-user recap timing (not the cadence preference, which is device-global like theme):
+            // reset so the next account on a shared device gets fresh recap boundaries.
+            .remove(KEY_RECAP_LAST_WEEK)
+            .remove(KEY_RECAP_LAST_MONTH)
             .apply()
         _settings.update {
             it.copy(
@@ -238,6 +274,8 @@ class SettingsStore(context: Context) {
                 hiddenInsightsSections = emptySet(),
                 homeSectionOrder = emptyList(),
                 insightsSectionOrder = emptyList(),
+                recapLastShownWeek = "",
+                recapLastShownMonth = "",
             )
         }
     }
@@ -319,6 +357,10 @@ class SettingsStore(context: Context) {
         const val KEY_RECENT_SEARCHES = "recent_searches"
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"
         const val KEY_DISMISSED_TIPS = "dismissed_wellbeing_tips"
+        const val KEY_RECAP_ENABLED = "recap_enabled"
+        const val KEY_RECAP_FREQUENCY = "recap_frequency"
+        const val KEY_RECAP_LAST_WEEK = "recap_last_shown_week"
+        const val KEY_RECAP_LAST_MONTH = "recap_last_shown_month"
         const val MAX_RECENT_SEARCHES = 6
     }
 }

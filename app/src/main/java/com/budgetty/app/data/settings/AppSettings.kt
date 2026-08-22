@@ -6,6 +6,13 @@ enum class ThemeMode(val label: String) {
     DARK("Dark"),
 }
 
+/**
+ * How often the end-of-period recap interstitial appears. The 0–100 wellbeing score is a monthly
+ * measure, so [WEEKLY] is a lighter momentum check with no score; [MONTHLY] is the full report card;
+ * [BOTH] shows each on its own boundary. Default is [MONTHLY] (weekly off).
+ */
+enum class RecapFrequency { WEEKLY, MONTHLY, BOTH }
+
 /** Accent color theme. Non-DEFAULT options are premium. */
 enum class AccentTheme(val label: String) {
     DEFAULT("Violet (default)"),
@@ -132,4 +139,19 @@ data class AppSettings(
      * persistence the Wellbeing feature adds.
      */
     val dismissedWellbeingTips: Set<String> = emptySet(),
+    // ── End-of-period recap ──
+    /** Whether the end-of-period recap interstitial is shown at all. Default on. */
+    val recapEnabled: Boolean = true,
+    /** Which period(s) trigger a recap. Default [RecapFrequency.MONTHLY] (weekly off). */
+    val recapFrequency: RecapFrequency = RecapFrequency.MONTHLY,
+    /**
+     * ISO date (yyyy-MM-dd) of the start of the last weekly recap already shown; empty = none yet.
+     * The interstitial writes it after showing so a week's recap fires at most once.
+     */
+    val recapLastShownWeek: String = "",
+    /**
+     * Pay-cycle month id (yyyy-MM) of the last monthly recap already shown; empty = none yet. The
+     * interstitial writes it after showing so a month's recap fires at most once.
+     */
+    val recapLastShownMonth: String = "",
 )

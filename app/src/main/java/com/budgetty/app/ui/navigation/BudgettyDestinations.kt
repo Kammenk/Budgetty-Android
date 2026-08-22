@@ -30,6 +30,7 @@ object Routes {
     const val SUBSCRIPTIONS = "subscriptions"
     const val WELLBEING = "wellbeing"
     const val SET_PIN = "set_pin"
+    const val RECAP = "recap"
 
     /** Upload route for a given source: "camera", "file", or "manual". */
     fun upload(source: String) = "upload/$source"

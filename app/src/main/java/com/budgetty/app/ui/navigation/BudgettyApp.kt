@@ -25,6 +25,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,8 +46,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.budgetty.app.data.settings.AppSettings
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.debug.DebugAuth
+import com.budgetty.app.ui.recap.RecapLoadingBackdrop
+import com.budgetty.app.ui.recap.RecapReopenScreen
+import com.budgetty.app.ui.recap.RecapScheduler
+import com.budgetty.app.ui.recap.RecapStoryScreen
+import com.budgetty.app.ui.recap.RecapViewModel
+import com.budgetty.app.ui.util.BuyingLimitCounter
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.account.AccountScreen
 import com.budgetty.app.ui.auth.AuthState
@@ -68,6 +79,7 @@ import com.budgetty.app.ui.upload.UploadScreen
 import com.budgetty.app.ui.widgets.WidgetsScreen
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
+import java.time.LocalDate
 
 @Composable
 fun BudgettyApp(
@@ -111,12 +123,83 @@ fun BudgettyApp(
             // sign-up dodges this by arming the flag before it calls Firebase at all.
             authInProgress -> AuthProgress()
             settings.insightsQuizPending -> InsightsQuizScreen()
-            else -> MainScaffold(
+            // Layered like the quiz gate: on the first open on/after a period boundary the recap
+            // interstitial shows over the app, then dismisses to Home. Everyday opens skip it.
+            else -> RecapGate(
                 startRoute = startRoute,
                 onStartRouteHandled = onStartRouteHandled,
+                settings = settings,
             )
         }
     }
+}
+
+/**
+ * Decides whether the end-of-period recap interstitial shows before the main app. The cheap
+ * [RecapScheduler.due] check (settings + clock, no DB) short-circuits the common "nothing due" open
+ * straight to [MainScaffold] with no flash; only when a boundary is due does it spin up the
+ * [RecapViewModel] to load the story, holding a neutral backdrop until the data guard has run.
+ */
+@Composable
+private fun RecapGate(
+    startRoute: String?,
+    onStartRouteHandled: () -> Unit,
+    settings: AppSettings,
+) {
+    // "See details" on the last card exits to Insights; a plain close exits to Home (or the widget route).
+    var pendingStart by rememberSaveable { mutableStateOf<String?>(null) }
+    val effectiveStart = pendingStart ?: startRoute
+    val onHandled = {
+        pendingStart = null
+        onStartRouteHandled()
+    }
+
+    val maybeDue = remember(
+        settings.recapEnabled,
+        settings.recapFrequency,
+        settings.recapLastShownWeek,
+        settings.recapLastShownMonth,
+        settings.monthStartDay,
+    ) {
+        RecapScheduler.due(
+            enabled = settings.recapEnabled,
+            frequency = settings.recapFrequency,
+            lastShownWeek = settings.recapLastShownWeek,
+            lastShownMonth = settings.recapLastShownMonth,
+            today = LocalDate.now(),
+            monthStartDay = settings.monthStartDay,
+            firstDayOfWeek = BuyingLimitCounter.localeFirstDayOfWeek(),
+        ) != null
+    }
+
+    // When a boundary is due, load + show the story (or a neutral hold); the guard-skip path falls
+    // through to the single MainScaffold call below, so closing the recap never recreates the NavHost.
+    if (maybeDue) {
+        val recapViewModel: RecapViewModel = koinViewModel()
+        val state by recapViewModel.interstitial.collectAsStateWithLifecycle()
+        val story = state.story
+        when {
+            // Rare hold on the one due open, until the DB loads + the guard runs — never flashes Home.
+            !state.isLoaded -> {
+                RecapLoadingBackdrop()
+                return
+            }
+            story != null -> {
+                RecapStoryScreen(
+                    story = story,
+                    onClose = { state.due?.let(recapViewModel::markShown) },
+                    onSeeDetails = {
+                        pendingStart = Routes.INSIGHTS
+                        state.due?.let(recapViewModel::markShown)
+                    },
+                )
+                return
+            }
+            // Guard skipped (first-run / no data): stamp the period(s) and fall through to the app.
+            else -> LaunchedEffect(state.due) { state.due?.let(recapViewModel::markShown) }
+        }
+    }
+    MainScaffold(startRoute = effectiveStart, onStartRouteHandled = onHandled)
 }
 
 @Composable
@@ -152,7 +235,8 @@ private fun MainScaffold(
     // Upload and Paywall are immersive full-screen flows on every form factor. Budget is immersive
     // on the phone (no bottom bar), but on a tablet it's a primary rail destination, so the rail
     // stays visible there.
-    val isImmersive = currentRoute == Routes.UPLOAD || currentRoute == Routes.PAYWALL
+    val isImmersive = currentRoute == Routes.UPLOAD || currentRoute == Routes.PAYWALL ||
+        currentRoute == Routes.RECAP
     // The bottom bar belongs to the top-level tabs only. Every pushed/detail route — Budget, Widgets,
     // Category rules, the Savings-goal detail, Subscriptions, Set-PIN — hides it. An allowlist of the
     // tab routes (rather than a blocklist of pushed ones) keeps new pushed routes correct by default.
@@ -252,11 +336,12 @@ private fun BudgettyNavHost(
     modifier: Modifier = Modifier,
 ) {
     // Paywall draws its gradient hero edge-to-edge (behind the status bar), so it manages its own
-    // top inset; every other route gets the standard scaffold insets.
-    val contentModifier = if (currentRoute == Routes.PAYWALL) {
-        modifier.padding(bottom = padding.calculateBottomPadding())
-    } else {
-        modifier.padding(padding)
+    // top inset; the recap story is full-bleed (its band backdrops run behind both system bars and it
+    // handles its own insets); every other route gets the standard scaffold insets.
+    val contentModifier = when (currentRoute) {
+        Routes.PAYWALL -> modifier.padding(bottom = padding.calculateBottomPadding())
+        Routes.RECAP -> modifier
+        else -> modifier.padding(padding)
     }
     NavHost(
         navController = navController,
@@ -282,6 +367,7 @@ private fun BudgettyNavHost(
                 onNavigateToSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) },
                 onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
                 onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
+                onNavigateToRecap = { navController.navigate(Routes.RECAP) },
             )
         }
         composable(Routes.SUBSCRIPTIONS) {
@@ -316,6 +402,9 @@ private fun BudgettyNavHost(
                 onBack = { navController.popBackStack() },
                 onDone = { navController.popBackStack() },
             )
+        }
+        composable(Routes.RECAP) {
+            RecapReopenScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(
             route = Routes.UPLOAD,

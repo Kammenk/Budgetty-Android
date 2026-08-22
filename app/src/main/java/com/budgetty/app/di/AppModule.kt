@@ -33,6 +33,8 @@ import com.budgetty.app.ui.buyinglimits.BuyingLimitsViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
 import com.budgetty.app.ui.export.ExportViewModel
 import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
+import com.budgetty.app.ui.recap.RecapProvider
+import com.budgetty.app.ui.recap.RecapViewModel
 import com.budgetty.app.ui.wellbeing.WellbeingProvider
 import com.budgetty.app.ui.wellbeing.WellbeingViewModel
 import com.budgetty.app.ui.history.HistoryViewModel
@@ -80,6 +82,9 @@ val appModule = module {
 
     // Wellbeing score + tips — shared by the Wellbeing screen, the Home banner and the Insights row.
     single { WellbeingProvider(get(), get(), get(), get(), get(), get(), get()) }
+
+    // End-of-period recap — builds the just-closed period's story from the same repositories.
+    single { RecapProvider(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
     // Backup / restore (import-export)
     single { BackupManager(get()) }
@@ -144,6 +149,7 @@ val appModule = module {
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { WellbeingViewModel(get(), get()) }
+    viewModel { RecapViewModel(get(), get()) }
     viewModel {
         UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }

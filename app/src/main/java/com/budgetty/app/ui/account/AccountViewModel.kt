@@ -14,6 +14,7 @@ import com.budgetty.app.data.settings.AppSettings
 import com.budgetty.app.data.settings.Currency
 import com.budgetty.app.data.settings.DateFormatOption
 import com.budgetty.app.data.settings.Language
+import com.budgetty.app.data.settings.RecapFrequency
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.data.settings.ThemeMode
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
@@ -54,6 +55,10 @@ class AccountViewModel(
         settingsStore.setCrashReportingEnabled(enabled)
         crashReporting.setEnabled(enabled)
     }
+
+    // ── End-of-period recap ──
+    fun setRecapEnabled(value: Boolean) = settingsStore.setRecapEnabled(value)
+    fun setRecapFrequency(value: RecapFrequency) = settingsStore.setRecapFrequency(value)
 
     // ── App lock ── (setPin lives on the set-PIN screen; here are the toggles.)
     fun disableAppLock() = settingsStore.disableAppLock()
