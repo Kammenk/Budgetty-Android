@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -45,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +55,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.budgetty.app.R
 import com.budgetty.app.data.local.BuyingLimitEntity
 import com.budgetty.app.data.local.BuyingLimitTimeframe
@@ -92,9 +96,36 @@ private fun commitKeywordInput(current: List<String>, raw: String): Pair<List<St
  * the bottom-sheet scroll convention (scroll region capped with weight(1f, fill = false)); the
  * Cancel/Save action row sits fixed below it.
  */
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BuyingLimitEditorSheet(
+    initial: BuyingLimitEntity?,
+    items: List<CountableItem>,
+    monthStartDay: Int,
+    onSave: (emoji: String, label: String, keywords: List<String>, timeframe: BuyingLimitTimeframe, count: Int) -> Unit,
+    onDelete: (() -> Unit)?,
+    onDismiss: () -> Unit,
+) {
+    AdaptiveSheet(onDismiss = onDismiss) {
+        BuyingLimitEditorBody(
+            initial = initial,
+            items = items,
+            monthStartDay = monthStartDay,
+            onSave = onSave,
+            onDelete = onDelete,
+            onDismiss = onDismiss,
+        )
+    }
+}
+
+/**
+ * The editor's scrolling body plus the fixed Cancel/Save row, split out of [BuyingLimitEditorSheet] so
+ * it can be rendered on its own (screenshot goldens) without the bottom-sheet / dialog window wrapper.
+ * Runs in the [ColumnScope] the sheet provides, keeping the weight(1f, fill = false) scroll cap.
+ */
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+internal fun ColumnScope.BuyingLimitEditorBody(
     initial: BuyingLimitEntity?,
     items: List<CountableItem>,
     monthStartDay: Int,
@@ -117,93 +148,91 @@ fun BuyingLimitEditorSheet(
     }
     val canSave = keywords.isNotEmpty() || keywordField.isNotBlank()
 
-    AdaptiveSheet(onDismiss = onDismiss) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f, fill = false)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = MaterialTheme.dimens.xl),
-        ) {
-            EditorHeader(isEditing = initial != null, onDelete = onDelete)
-            Spacer(Modifier.height(MaterialTheme.dimens.md))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f, fill = false)
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = MaterialTheme.dimens.xl),
+    ) {
+        EditorHeader(isEditing = initial != null, onDelete = onDelete)
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
 
-            EmojiAndLabel(
-                emoji = emoji,
-                showPicker = showEmojiPicker,
-                onTogglePicker = { showEmojiPicker = !showEmojiPicker },
-                onSelectEmoji = { emoji = if (emoji == it) "" else it },
-                label = label,
-                onLabelChange = { label = it },
-            )
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
-
-            SavingsSheetLabel(stringResource(R.string.buying_limits_keywords))
-            Spacer(Modifier.height(6.dp))
-            KeywordInput(
-                keywords = keywords,
-                field = keywordField,
-                onFieldChange = {
-                    val (updated, remainder) = commitKeywordInput(keywords, it)
-                    keywords = updated
-                    keywordField = remainder
-                },
-                onCommit = {
-                    val (updated, remainder) = commitKeywordInput(keywords, "$keywordField ")
-                    keywords = updated
-                    keywordField = remainder
-                },
-                onRemove = { keywords = keywords - it },
-            )
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = stringResource(R.string.buying_limits_keywords_helper),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
-
-            MatchPreview(
-                preview = preview,
-                timeframe = timeframe,
-                onUseSuggestion = { keywords = (keywords + it).distinct(); keywordField = "" },
-            )
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
-
-            SavingsSheetLabel(stringResource(R.string.buying_limits_timeframe))
-            Spacer(Modifier.height(6.dp))
-            SegmentedToggle(
-                options = listOf(
-                    stringResource(R.string.buying_limits_weekly),
-                    stringResource(R.string.buying_limits_monthly),
-                ),
-                selectedIndex = if (timeframe == BuyingLimitTimeframe.WEEKLY) 0 else 1,
-                onSelect = { timeframe = if (it == 0) BuyingLimitTimeframe.WEEKLY else BuyingLimitTimeframe.MONTHLY },
-            )
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
-
-            SavingsSheetLabel(
-                stringResource(
-                    if (timeframe == BuyingLimitTimeframe.WEEKLY) {
-                        R.string.buying_limits_per_week
-                    } else {
-                        R.string.buying_limits_per_month
-                    },
-                ),
-            )
-            Spacer(Modifier.height(6.dp))
-            CountStepper(count = count, onChange = { count = it })
-        }
-
-        EditorActions(
-            canSave = canSave,
-            onCancel = onDismiss,
-            onSave = {
-                val (finalKeywords, _) = commitKeywordInput(keywords, "$keywordField ")
-                onSave(emoji, label, finalKeywords, timeframe, count)
-            },
+        EmojiAndLabel(
+            emoji = emoji,
+            showPicker = showEmojiPicker,
+            onTogglePicker = { showEmojiPicker = !showEmojiPicker },
+            onSelectEmoji = { emoji = if (emoji == it) "" else it },
+            label = label,
+            onLabelChange = { label = it },
         )
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+
+        SavingsSheetLabel(stringResource(R.string.buying_limits_keywords))
+        Spacer(Modifier.height(6.dp))
+        KeywordInput(
+            keywords = keywords,
+            field = keywordField,
+            onFieldChange = {
+                val (updated, remainder) = commitKeywordInput(keywords, it)
+                keywords = updated
+                keywordField = remainder
+            },
+            onCommit = {
+                val (updated, remainder) = commitKeywordInput(keywords, "$keywordField ")
+                keywords = updated
+                keywordField = remainder
+            },
+            onRemove = { keywords = keywords - it },
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = stringResource(R.string.buying_limits_keywords_helper),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+
+        MatchPreview(
+            preview = preview,
+            timeframe = timeframe,
+            onUseSuggestion = { keywords = (keywords + it).distinct(); keywordField = "" },
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+
+        SavingsSheetLabel(stringResource(R.string.buying_limits_timeframe))
+        Spacer(Modifier.height(6.dp))
+        SegmentedToggle(
+            options = listOf(
+                stringResource(R.string.buying_limits_weekly),
+                stringResource(R.string.buying_limits_monthly),
+            ),
+            selectedIndex = if (timeframe == BuyingLimitTimeframe.WEEKLY) 0 else 1,
+            onSelect = { timeframe = if (it == 0) BuyingLimitTimeframe.WEEKLY else BuyingLimitTimeframe.MONTHLY },
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+
+        SavingsSheetLabel(
+            stringResource(
+                if (timeframe == BuyingLimitTimeframe.WEEKLY) {
+                    R.string.buying_limits_per_week
+                } else {
+                    R.string.buying_limits_per_month
+                },
+            ),
+        )
+        Spacer(Modifier.height(6.dp))
+        CountStepper(count = count, onChange = { count = it })
     }
+
+    EditorActions(
+        canSave = canSave,
+        onCancel = onDismiss,
+        onSave = {
+            val (finalKeywords, _) = commitKeywordInput(keywords, "$keywordField ")
+            onSave(emoji, label, finalKeywords, timeframe, count)
+        },
+    )
 }
 
 /** Sheet title + a delete affordance shown only while editing. */
@@ -241,21 +270,16 @@ private fun EmojiAndLabel(
     label: String,
     onLabelChange: (String) -> Unit,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+    Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxWidth()) {
         EmojiPickerChip(emoji = emoji, expanded = showPicker, onClick = onTogglePicker)
         Spacer(Modifier.width(MaterialTheme.dimens.md))
         Column(modifier = Modifier.weight(1f)) {
             SavingsSheetLabel(stringResource(R.string.buying_limits_label_optional))
             Spacer(Modifier.height(6.dp))
-            TextField(
+            CompactTextField(
                 value = label,
                 onValueChange = onLabelChange,
-                placeholder = { Text(stringResource(R.string.buying_limits_label_hint)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                shape = SavingsFieldShape,
-                colors = savingsFieldColors(),
-                modifier = Modifier.fillMaxWidth(),
+                hint = stringResource(R.string.buying_limits_label_hint),
             )
         }
     }
@@ -263,6 +287,52 @@ private fun EmojiAndLabel(
         Spacer(Modifier.height(MaterialTheme.dimens.sm))
         EmojiFlow(selected = emoji, onSelect = onSelectEmoji)
     }
+}
+
+/**
+ * A compact single-line filled field (~48dp) — shorter than the M3 default so it pairs cleanly with the
+ * 46dp emoji chip beside it, the way the mockup draws the label row.
+ */
+@Composable
+private fun CompactTextField(value: String, onValueChange: (String) -> Unit, hint: String) {
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = true,
+        textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(SavingsFieldShape)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        decorationBox = { inner ->
+            Box(contentAlignment = Alignment.CenterStart) {
+                if (value.isEmpty()) {
+                    Text(
+                        text = hint,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                inner()
+            }
+        },
+    )
+}
+
+/** The muted rounded container the match read-out sits in (mockup: a surfaceContainerLowest card). */
+@Composable
+private fun PreviewCard(content: @Composable ColumnScope.() -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(SavingsFieldShape)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .padding(MaterialTheme.dimens.md),
+        content = content,
+    )
 }
 
 /** Outlined Cancel + filled Save, full-width halves, 56dp pills (same pair as the income/goal sheets). */
@@ -298,9 +368,11 @@ private fun EmojiPickerChip(emoji: String, expanded: Boolean, onClick: () -> Uni
     val shape = RoundedCornerShape(MaterialTheme.dimens.radiusMd)
     val hasEmoji = emoji.isNotEmpty()
     val fill = if (hasEmoji || expanded) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+    // Taller than the ~48dp label field beside it and bottom-aligned with it (see the Row above): the
+    // chip's top rises up beside the LABEL while its bottom edge lines up flush with the field's bottom.
     Box(
         modifier = Modifier
-            .size(46.dp)
+            .size(60.dp)
             .clip(shape)
             .background(fill)
             .then(
@@ -310,7 +382,7 @@ private fun EmojiPickerChip(emoji: String, expanded: Boolean, onClick: () -> Uni
         contentAlignment = Alignment.Center,
     ) {
         if (hasEmoji) {
-            Text(emoji, style = MaterialTheme.typography.titleLarge)
+            Text(emoji, style = MaterialTheme.typography.headlineSmall)
         } else {
             Icon(
                 Icons.Filled.Sell,
@@ -447,7 +519,7 @@ private fun MatchPreview(
 ) {
     when (preview.state) {
         BuyingLimitPreview.State.HIDDEN -> Unit
-        BuyingLimitPreview.State.NO_MATCH -> Column {
+        BuyingLimitPreview.State.NO_MATCH -> PreviewCard {
             PreviewHeader()
             Spacer(Modifier.height(6.dp))
             Text(
@@ -465,7 +537,7 @@ private fun MatchPreview(
             if (preview.tooBroad) {
                 TooBroadCard(preview = preview, timeframe = timeframe, onUseSuggestion = onUseSuggestion)
             } else {
-                Column {
+                PreviewCard {
                     PreviewHeader()
                     Spacer(Modifier.height(6.dp))
                     MatchNames(preview)
@@ -488,8 +560,9 @@ private fun PreviewHeader() {
         Spacer(Modifier.width(6.dp))
         Text(
             text = stringResource(R.string.buying_limits_matches_header).uppercase(),
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.SemiBold,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.6.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
@@ -557,8 +630,9 @@ private fun TooBroadCard(
             Spacer(Modifier.width(6.dp))
             Text(
                 text = stringResource(R.string.buying_limits_broad_header).uppercase(),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.Bold,
+                letterSpacing = 0.6.sp,
                 color = warn,
             )
         }
@@ -592,15 +666,15 @@ private fun CountStepper(count: Int, onChange: (Int) -> Unit) {
     val canDecrease = count > 1
     Row(
         modifier = Modifier
+            .fillMaxWidth()
             .clip(SavingsFieldShape)
-            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-            .padding(horizontal = MaterialTheme.dimens.xs, vertical = MaterialTheme.dimens.xs),
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val decreaseTint = if (canDecrease) {
-            MaterialTheme.colorScheme.onSurface
+            MaterialTheme.colorScheme.primary
         } else {
-            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
+            MaterialTheme.colorScheme.outline
         }
         IconButton(onClick = { if (canDecrease) onChange(count - 1) }, enabled = canDecrease) {
             Icon(
@@ -614,13 +688,13 @@ private fun CountStepper(count: Int, onChange: (Int) -> Unit) {
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
-            modifier = Modifier.width(48.dp),
+            modifier = Modifier.weight(1f),
         )
         IconButton(onClick = { onChange(count + 1) }) {
             Icon(
                 Icons.Filled.Add,
                 contentDescription = stringResource(R.string.buying_limits_increase),
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = MaterialTheme.colorScheme.primary,
             )
         }
     }
