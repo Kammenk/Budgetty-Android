@@ -406,6 +406,5 @@
     <ID>UnusedPrivateProperty:SavingsGoalViewModel.kt$SavingsGoalViewModel$billingManager: BillingManager</ID>
     <ID>UnusedPrivateProperty:WellbeingProvider.kt$WellbeingProvider$val overCats = catBudgets.filter { (cat, bud) -&gt; (catSpend[cat] ?: BigDecimal.ZERO) &gt; bud }</ID>
     <ID>WildcardImport:ExampleUnitTest.kt$import org.junit.Assert.*</ID>
-    <ID>TopAppBarInsetNotZeroed:CategoryPickerScreen.kt$TopAppBar( title = { Text(stringResource(titleRes), fontWeight = FontWeight.Bold) }, navigationIcon = { IconButton(onClick = onBack) { Icon( Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back), ) } }, )</ID>
   </CurrentIssues>
 </SmellBaseline>
