@@ -1007,4 +1007,47 @@
     <string name="home_empty_receipts_cta">+ Beleg hinzufügen</string>
     <string name="home_empty_receipts_body">Tippe auf %1$s, um deinen ersten zu scannen — wir lesen ihn und kategorisieren ihn für dich.</string>
     <string name="history_select_receipt">Wähle einen Beleg, um seine Artikel zu sehen.</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Ebenen</string>
+    <string name="insights_overlay_toggle_title">Wiederkehrende Rechnungen einbeziehen</string>
+    <string name="insights_overlay_toggle_subtitle">Geplante Rechnungen als separate Ebene überlagern</string>
+    <string name="insights_planned_badge">Geplant</string>
+    <string name="insights_overlay_bills_planned">Rechnungen · geplant</string>
+    <string name="insights_overlay_plus_bills">+ %1$s Rechnungen</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Ausgegeben</string>
+    <string name="insights_overlay_planned">Geplant</string>
+    <string name="insights_overlay_wedge_header">Der schraffierte Abschnitt</string>
+    <string name="insights_overlay_denominator">Kategorieanteile bleiben ein Prozentsatz der ausgegebenen %1$s — geplante Rechnungen zählen nie zu dieser Summe.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d Rechnung ausgeblendet — bereits einem Beleg zugeordnet</item>
+        <item quantity="other">%1$d Rechnungen ausgeblendet — bereits einem Beleg zugeordnet</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">zugeordnet · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Einmal gezählt, bei den Ausgaben.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s schließt %2$d Rechnung aus, die in diesem Zeitraum bereits einem Beleg zugeordnet ist. Öffne die Aufschlüsselung, um zu sehen, welche.</item>
+        <item quantity="other">%1$s schließt %2$d Rechnungen aus, die in diesem Zeitraum bereits einem Beleg zugeordnet sind. Öffne die Aufschlüsselung, um zu sehen, welche.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Warum jede Kachel gleich bleibt</string>
+    <string name="insights_overlay_summary_lead">Die Kacheln oben sind Belegwerte und ändern sich nicht, wenn diese Ebene aktiv ist — Rechnungen haben keinen Beleg und keinen Rabatt, also gibt es nichts hinzuzufügen.</string>
+    <string name="insights_overlay_summary_avgday_title">Ø / Tag</string>
+    <string name="insights_overlay_summary_avgday_body">Die Verteilung deiner Ausgaben. Rechnungen zählen nicht dazu.</string>
+    <string name="insights_overlay_summary_receipts_title">Belege</string>
+    <string name="insights_overlay_summary_receipts_body">Eine Rechnung hat keinen Beleg zum Zählen.</string>
+    <string name="insights_overlay_summary_avg_title">Ø / Beleg</string>
+    <string name="insights_overlay_summary_avg_body">Gleicher Grund — nichts, wodurch geteilt werden könnte.</string>
+    <string name="insights_overlay_summary_saved_title">Gespart</string>
+    <string name="insights_overlay_summary_saved_body">Rabatte stammen von Belegen. Rechnungen haben keine.</string>
+    <string name="insights_overlay_trend_header">Die schraffierten Spitzen lesen</string>
+    <string name="insights_overlay_trend_flat_title">Jede Spitze ist gleich</string>
+    <string name="insights_overlay_trend_flat_body">Deine Rechnungen betragen konstant %1$s pro Monat, daher variiert der schraffierte Teil nicht. Nur der ausgefüllte Teil — was du tatsächlich ausgegeben hast — bewegt sich.</string>
+    <string name="insights_overlay_trend_early_title">Frühe Monate haben keine</string>
+    <string name="insights_overlay_trend_early_body">Rechnungen werden nicht rückwirkend projiziert, daher zeigen Monate, bevor du sie hinzugefügt hast, nur die Ausgaben.</string>
+    <string name="insights_overlay_trend_scale_title">Die Balken wurden kürzer</string>
+    <string name="insights_overlay_trend_scale_body">Das Diagramm fasst jetzt Ausgaben plus Rechnungen, daher hat sich der Maßstab geändert. Die Beträge nicht.</string>
+    <string name="insights_overlay_nudge_title">Einblicke und Start widersprechen sich?</string>
+    <string name="insights_overlay_nudge_text">Start zählt in diesem Zeitraum ebenfalls %1$s an wiederkehrenden Rechnungen. Überlagere sie hier als geplante Ebene.</string>
+    <string name="insights_overlay_nudge_action">Rechnungen überlagern</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Ausblenden</string>
 </resources>

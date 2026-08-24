@@ -1008,4 +1008,47 @@
     <string name="home_empty_receipts_cta">+ Aggiungi scontrino</string>
     <string name="home_empty_receipts_body">Tocca %1$s per scansionare il primo — lo leggeremo e lo categorizzeremo per te.</string>
     <string name="history_select_receipt">Seleziona uno scontrino per vederne gli articoli.</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Livelli</string>
+    <string name="insights_overlay_toggle_title">Includi le spese ricorrenti</string>
+    <string name="insights_overlay_toggle_subtitle">Sovrapponi le spese previste come livello separato</string>
+    <string name="insights_planned_badge">Previsto</string>
+    <string name="insights_overlay_bills_planned">Spese · previste</string>
+    <string name="insights_overlay_plus_bills">+ %1$s di spese</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Speso</string>
+    <string name="insights_overlay_planned">Previsto</string>
+    <string name="insights_overlay_wedge_header">La fetta tratteggiata</string>
+    <string name="insights_overlay_denominator">Le quote per categoria restano una percentuale dei %1$s che hai speso — le spese previste non rientrano mai in quel totale.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d spesa nascosta — già abbinata a uno scontrino</item>
+        <item quantity="other">%1$d spese nascoste — già abbinate a uno scontrino</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">abbinata · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Contata una volta sola, nella spesa.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s esclude %2$d spesa già abbinata a uno scontrino in questo periodo. Apri la Ripartizione per vedere quale.</item>
+        <item quantity="other">%1$s esclude %2$d spese già abbinate a uno scontrino in questo periodo. Apri la Ripartizione per vedere quali.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Perché ogni riquadro resta fermo</string>
+    <string name="insights_overlay_summary_lead">I riquadri sopra sono cifre da scontrini e non cambiano con questo livello attivo — le spese non hanno scontrino né sconto, quindi non c\'è nulla da aggiungere.</string>
+    <string name="insights_overlay_summary_avgday_title">Media / giorno</string>
+    <string name="insights_overlay_summary_avgday_body">La distribuzione di ciò che hai speso. Le spese non ci sono.</string>
+    <string name="insights_overlay_summary_receipts_title">Scontrini</string>
+    <string name="insights_overlay_summary_receipts_body">Una spesa non ha uno scontrino da contare.</string>
+    <string name="insights_overlay_summary_avg_title">Media / scontrino</string>
+    <string name="insights_overlay_summary_avg_body">Stesso motivo — niente per cui dividere.</string>
+    <string name="insights_overlay_summary_saved_title">Risparmiato</string>
+    <string name="insights_overlay_summary_saved_body">Gli sconti vengono dagli scontrini. Le spese non ne hanno.</string>
+    <string name="insights_overlay_trend_header">Leggere le cime tratteggiate</string>
+    <string name="insights_overlay_trend_flat_title">Ogni cima è uguale</string>
+    <string name="insights_overlay_trend_flat_body">Le tue spese sono fisse a %1$s al mese, quindi la parte tratteggiata non varia. Si muove solo la parte piena — ciò che hai davvero speso.</string>
+    <string name="insights_overlay_trend_early_title">I primi mesi non ne hanno</string>
+    <string name="insights_overlay_trend_early_body">Le spese non vengono proiettate all\'indietro, quindi i mesi prima di averle aggiunte mostrano solo la spesa.</string>
+    <string name="insights_overlay_trend_scale_title">Le barre si sono accorciate</string>
+    <string name="insights_overlay_trend_scale_body">Il grafico ora contiene la spesa più le spese previste, quindi la scala è cambiata. Gli importi no.</string>
+    <string name="insights_overlay_nudge_title">Analisi e Home non coincidono?</string>
+    <string name="insights_overlay_nudge_text">Home conta anche %1$s di spese ricorrenti in questo periodo. Sovrapponile qui come livello previsto.</string>
+    <string name="insights_overlay_nudge_action">Sovrapponi le spese</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Ignora</string>
 </resources>

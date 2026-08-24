@@ -1009,4 +1009,47 @@
     <string name="home_empty_receipts_cta">+ Bon toevoegen</string>
     <string name="home_empty_receipts_body">Tik op %1$s om je eerste te scannen — we lezen en categoriseren hem voor je.</string>
     <string name="history_select_receipt">Selecteer een bon om de artikelen te zien.</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Lagen</string>
+    <string name="insights_overlay_toggle_title">Terugkerende rekeningen meenemen</string>
+    <string name="insights_overlay_toggle_subtitle">Geplande rekeningen als aparte laag eroverheen leggen</string>
+    <string name="insights_planned_badge">Gepland</string>
+    <string name="insights_overlay_bills_planned">Rekeningen · gepland</string>
+    <string name="insights_overlay_plus_bills">+ %1$s aan rekeningen</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Uitgegeven</string>
+    <string name="insights_overlay_planned">Gepland</string>
+    <string name="insights_overlay_wedge_header">Het gearceerde deel</string>
+    <string name="insights_overlay_denominator">Categorie-aandelen blijven een percentage van de %1$s die je hebt uitgegeven — geplande rekeningen tellen nooit mee in dat totaal.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d rekening verborgen — al gekoppeld aan een bon</item>
+        <item quantity="other">%1$d rekeningen verborgen — al gekoppeld aan een bon</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">gekoppeld · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Eén keer geteld, bij de uitgaven.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s laat %2$d rekening buiten beschouwing die deze periode al aan een bon is gekoppeld. Open de Verdeling om te zien welke.</item>
+        <item quantity="other">%1$s laat %2$d rekeningen buiten beschouwing die deze periode al aan een bon zijn gekoppeld. Open de Verdeling om te zien welke.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Waarom elke tegel blijft staan</string>
+    <string name="insights_overlay_summary_lead">De tegels hierboven zijn boncijfers en veranderen niet met deze laag aan — rekeningen hebben geen bon en geen korting, dus er valt niets toe te voegen.</string>
+    <string name="insights_overlay_summary_avgday_title">Gem. / dag</string>
+    <string name="insights_overlay_summary_avgday_body">De spreiding van wat je hebt uitgegeven. Rekeningen zitten er niet in.</string>
+    <string name="insights_overlay_summary_receipts_title">Bonnen</string>
+    <string name="insights_overlay_summary_receipts_body">Een rekening heeft geen bon om te tellen.</string>
+    <string name="insights_overlay_summary_avg_title">Gem. / bon</string>
+    <string name="insights_overlay_summary_avg_body">Zelfde reden — niets om door te delen.</string>
+    <string name="insights_overlay_summary_saved_title">Bespaard</string>
+    <string name="insights_overlay_summary_saved_body">Kortingen komen van bonnen. Rekeningen hebben er geen.</string>
+    <string name="insights_overlay_trend_header">De gearceerde toppen lezen</string>
+    <string name="insights_overlay_trend_flat_title">Elke top is gelijk</string>
+    <string name="insights_overlay_trend_flat_body">Je rekeningen zijn een vaste %1$s per maand, dus het gearceerde deel varieert niet. Alleen het volle deel — wat je echt hebt uitgegeven — beweegt.</string>
+    <string name="insights_overlay_trend_early_title">Vroege maanden hebben er geen</string>
+    <string name="insights_overlay_trend_early_body">Rekeningen worden niet met terugwerkende kracht geprojecteerd, dus maanden voordat je ze toevoegde tonen alleen de uitgaven.</string>
+    <string name="insights_overlay_trend_scale_title">De balken werden korter</string>
+    <string name="insights_overlay_trend_scale_body">De grafiek omvat nu uitgaven plus rekeningen, dus de schaal is veranderd. De bedragen niet.</string>
+    <string name="insights_overlay_nudge_title">Inzichten en Home komen niet overeen?</string>
+    <string name="insights_overlay_nudge_text">Home telt deze periode ook %1$s aan terugkerende rekeningen. Leg ze hier als geplande laag eroverheen.</string>
+    <string name="insights_overlay_nudge_action">Rekeningen overlappen</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Sluiten</string>
 </resources>

@@ -101,6 +101,21 @@ data class AppSettings(
     /** Remembered Insights period-stepper unit (a PeriodUnit name); seeds the default window. */
     val insightsPeriodUnit: String = "MONTH",
     /**
+     * When true, Insights overlays planned recurring bills as a distinct "planned" (hatched) layer on
+     * top of actual receipt spend in Breakdown, Summary and Trend — so Insights and Home stop
+     * disagreeing about the month. Off by default, remembered per user; a presentation-only overlay
+     * (no schema change) that reads the same [com.budgetty.app.ui.util.windowAmount] projection the
+     * money-flow cards already use. See [com.budgetty.app.ui.insights.PlannedOverlay].
+     */
+    val insightsIncludeRecurringBills: Boolean = false,
+    /**
+     * Whether the one-time "Insights and Home disagree — overlay planned bills?" discovery nudge above
+     * Breakdown has been dismissed. The overlay switch is off-by-default and lives in Customize (behind
+     * the header ⋮), so this nudge is the one thing that surfaces the feature; shown once per user until
+     * dismissed or the overlay is turned on.
+     */
+    val insightsOverlayNudgeDismissed: Boolean = false,
+    /**
      * Day of the month the user's financial "month" starts on — their pay day (1–31). 1 is the
      * ordinary calendar month; any other value shifts "this month"/"last month", the monthly budget
      * and the Insights month stepper to run from this day (clamped to a short month's last day).

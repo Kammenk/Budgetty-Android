@@ -182,6 +182,112 @@ fun RecurringEntity.windowAmount(
     }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────────────────────────
+// Planned-bills overlay (Insights): projecting recurring bills onto a period as a distinct "planned"
+// layer, and de-duplicating a bill that the user also logged/scanned so it's never double-counted.
+// Pure Kotlin (no Android/Compose deps) so the dedup rule is unit-testable on the host.
+// ─────────────────────────────────────────────────────────────────────────────────────────────────
+
+/** One recurring bill projected onto the selected Insights window, for the planned overlay. */
+data class PlannedBillLine(
+    val label: String,
+    val category: String,
+    /** The bill's contribution to the whole selected window ([windowAmount]) — what the overlay
+     *  draws and sums (e.g. one month's rent for a month view). */
+    val amount: BigDecimal,
+    /** The bill's single-occurrence amount ([RecurringEntity.amount]) — what one real receipt for it
+     *  would show, used only for dedup matching (never for display). */
+    val matchAmount: BigDecimal,
+)
+
+/** The receipt-side signal the dedup matcher compares bills against: one per receipt in the window,
+ *  its normalized [merchant], paid [amount] (total) and [dateMillis]. Mirrors the per-receipt "charge"
+ *  the subscription detector already builds, so bill↔receipt matching is consistent across features. */
+data class ReceiptCharge(
+    val merchant: String,
+    val amount: BigDecimal,
+    val dateMillis: Long,
+)
+
+/** A planned bill excluded from the overlay because it already matches a real receipt in the window —
+ *  so it's counted once, in spend, not twice. Surfaced in the Breakdown dialog's dedup note as
+ *  "{label} matched · {date} {amount}" (the matched receipt's actual total and date). */
+data class MatchedBillLine(
+    val label: String,
+    val amount: BigDecimal,
+    val dateMillis: Long,
+)
+
+/** The split of a period's recurring bills into the [visible] planned layer (largest first) and the
+ *  [matched] bills hidden as already-counted-in-spend. */
+data class PlannedBillsSplit(
+    val visible: List<PlannedBillLine>,
+    val matched: List<MatchedBillLine>,
+)
+
+/**
+ * Splits [bills] into the planned layer the overlay draws and the bills already represented by a real
+ * receipt in the same window ([PlannedBillsSplit.matched]) — so a bill the user both *planned* and
+ * *logged/scanned* is counted once (in spend), never twice.
+ *
+ * A bill matches a [charge] when **both** hold: their names align (each [normalizeMerchant]-d, one
+ * containing the other as a substring of at least [MIN_MATCH_NAME_LEN] chars — "Spotify" ↔ "Spotify")
+ * and the charge total is within [amountTolerance] of the bill's single-occurrence [matchAmount] (the
+ * printed examples: Spotify €10.99, Water €18.40). Each charge is consumed by at most one bill (the
+ * closest by amount), so two same-name bills can't both claim one receipt.
+ *
+ * Deliberately conservative: an unmatched bill stays *visible* rather than risk hiding a genuinely
+ * unpaid plan and understating the planned story — the dedup note is a trust anchor, so a false hide
+ * costs more than a missed one. Bills with a non-positive window [amount] (e.g. a plan not yet created
+ * for this window — no back-projection) are dropped entirely.
+ */
+fun splitPlannedBills(bills: List<PlannedBillLine>, charges: List<ReceiptCharge>): PlannedBillsSplit {
+    val present = bills.filter { it.amount.signum() > 0 }
+    val visible = mutableListOf<PlannedBillLine>()
+    val matched = mutableListOf<MatchedBillLine>()
+    val available = charges.toMutableList()
+    for (bill in present.sortedByDescending { it.amount }) {
+        val billName = normalizeMerchant(bill.label)
+        val hit = available
+            .filter { charge ->
+                namesAlign(billName, normalizeMerchant(charge.merchant)) &&
+                    amountsClose(charge.amount, bill.matchAmount)
+            }
+            .minByOrNull { charge -> (charge.amount - bill.matchAmount).abs() }
+        if (hit != null) {
+            available.remove(hit)
+            matched += MatchedBillLine(label = bill.label, amount = hit.amount, dateMillis = hit.dateMillis)
+        } else {
+            visible += bill
+        }
+    }
+    return PlannedBillsSplit(
+        visible = visible.sortedByDescending { it.amount },
+        matched = matched.sortedByDescending { it.dateMillis },
+    )
+}
+
+/** Shortest normalized name length that may match, so 1–2 char noise ("dm" aside) can't false-match. */
+private const val MIN_MATCH_NAME_LEN = 3
+
+/** Lowercased, brand-canonicalized merchant/label for comparison (so "Netflix" ↔ a Netflix receipt). */
+private fun normalizeMerchant(raw: String): String =
+    com.budgetty.app.store.StoreNormalizer.normalize(raw).lowercase().trim()
+
+/** Whether two normalized names refer to the same merchant: equal, or one contains the other where the
+ *  shorter is at least [MIN_MATCH_NAME_LEN] chars (so "spotify" ↔ "spotify premium" match). */
+private fun namesAlign(a: String, b: String): Boolean {
+    if (a.length < MIN_MATCH_NAME_LEN || b.length < MIN_MATCH_NAME_LEN) return a == b && a.isNotEmpty()
+    return a == b || a.contains(b) || b.contains(a)
+}
+
+/** Whether a receipt total is close enough to a bill's occurrence amount to be the same payment:
+ *  within the greater of €2 or 15% of the bill (covers variable utilities without over-matching). */
+private fun amountsClose(chargeTotal: BigDecimal, billAmount: BigDecimal): Boolean {
+    val tolerance = billAmount.abs().multiply(BigDecimal("0.15")).max(BigDecimal("2.00"))
+    return (chargeTotal - billAmount).abs() <= tolerance
+}
+
 /** A recurring bill paired with the whole days until its next occurrence (0 = today), for the Home
  *  "Upcoming bills" card. */
 data class UpcomingBill(

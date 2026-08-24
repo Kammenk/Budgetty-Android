@@ -61,6 +61,9 @@ fun <T> resolveSectionOrder(order: List<String>, sections: List<T>, key: (T) -> 
  * @param onReorder invoked with the full new key order when a section is moved up or down.
  * @param onRevertToDefault invoked when the user taps "Revert to default" to restore the original
  *   visibility and order.
+ * @param header optional content rendered in its own group above the section list (with a divider) —
+ *   e.g. Insights uses it for the "Layers" group holding the planned-bills overlay switch. Empty by
+ *   default, so Home's sheet is unchanged.
  */
 @Composable
 fun <T> SectionsMenu(
@@ -72,6 +75,7 @@ fun <T> SectionsMenu(
     onToggle: (T, Boolean) -> Unit,
     onReorder: (List<String>) -> Unit,
     onRevertToDefault: () -> Unit,
+    header: @Composable () -> Unit = {},
 ) {
     var open by remember { mutableStateOf(false) }
     IconButton(onClick = { open = true }) {
@@ -87,6 +91,7 @@ fun <T> SectionsMenu(
             onToggle = onToggle,
             onReorder = onReorder,
             onRevertToDefault = onRevertToDefault,
+            header = header,
             onDismiss = { open = false },
         )
     }
@@ -104,6 +109,7 @@ private fun <T> CustomizeSectionsSheet(
     onReorder: (List<String>) -> Unit,
     onRevertToDefault: () -> Unit,
     onDismiss: () -> Unit,
+    header: @Composable () -> Unit = {},
 ) {
     val ordered = resolveSectionOrder(order, sections, sectionKey)
     val keys = ordered.map(sectionKey)
@@ -129,6 +135,8 @@ private fun <T> CustomizeSectionsSheet(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
             Spacer(Modifier.height(MaterialTheme.dimens.md))
+            // Optional caller group (e.g. Insights' "Layers" overlay switch), set apart above the list.
+            header()
             ordered.forEachIndexed { index, section ->
                 val visible = sectionKey(section) !in hiddenSections
                 Row(

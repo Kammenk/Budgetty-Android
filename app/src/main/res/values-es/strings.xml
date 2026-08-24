@@ -1006,4 +1006,47 @@
     <string name="home_empty_receipts_cta">+ Añadir recibo</string>
     <string name="home_empty_receipts_body">Toca %1$s para escanear el primero — lo leeremos y lo categorizaremos por ti.</string>
     <string name="history_select_receipt">Selecciona un recibo para ver sus artículos.</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Capas</string>
+    <string name="insights_overlay_toggle_title">Incluir pagos recurrentes</string>
+    <string name="insights_overlay_toggle_subtitle">Superponer los pagos previstos como una capa aparte</string>
+    <string name="insights_planned_badge">Previsto</string>
+    <string name="insights_overlay_bills_planned">Pagos · previstos</string>
+    <string name="insights_overlay_plus_bills">+ %1$s en pagos</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Gastado</string>
+    <string name="insights_overlay_planned">Previsto</string>
+    <string name="insights_overlay_wedge_header">La porción rayada</string>
+    <string name="insights_overlay_denominator">Las proporciones por categoría siguen siendo un porcentaje de los %1$s que gastaste — los pagos previstos nunca entran en ese total.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d pago oculto — ya vinculado a un recibo</item>
+        <item quantity="other">%1$d pagos ocultos — ya vinculados a un recibo</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">vinculado · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Contado una vez, en el gasto.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s excluye %2$d pago ya vinculado a un recibo este período. Abre el Desglose para ver cuál.</item>
+        <item quantity="other">%1$s excluye %2$d pagos ya vinculados a un recibo este período. Abre el Desglose para ver cuáles.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Por qué cada tarjeta no se mueve</string>
+    <string name="insights_overlay_summary_lead">Las tarjetas de arriba son cifras de recibos y no cambian con esta capa activada — los pagos no tienen recibo ni descuento, así que no hay nada que sumar.</string>
+    <string name="insights_overlay_summary_avgday_title">Prom. / día</string>
+    <string name="insights_overlay_summary_avgday_body">La distribución de lo que gastaste. Los pagos no están incluidos.</string>
+    <string name="insights_overlay_summary_receipts_title">Recibos</string>
+    <string name="insights_overlay_summary_receipts_body">Un pago no tiene recibo que contar.</string>
+    <string name="insights_overlay_summary_avg_title">Prom. / recibo</string>
+    <string name="insights_overlay_summary_avg_body">Por la misma razón — nada entre lo que dividir.</string>
+    <string name="insights_overlay_summary_saved_title">Ahorrado</string>
+    <string name="insights_overlay_summary_saved_body">Los descuentos vienen de los recibos. Los pagos no tienen.</string>
+    <string name="insights_overlay_trend_header">Cómo leer los remates rayados</string>
+    <string name="insights_overlay_trend_flat_title">Todos los remates son iguales</string>
+    <string name="insights_overlay_trend_flat_body">Tus pagos son fijos: %1$s al mes, así que la parte rayada no varía. Solo se mueve la parte sólida — lo que realmente gastaste.</string>
+    <string name="insights_overlay_trend_early_title">Los primeros meses no tienen</string>
+    <string name="insights_overlay_trend_early_body">Los pagos no se proyectan hacia atrás, así que los meses anteriores a añadirlos muestran solo el gasto.</string>
+    <string name="insights_overlay_trend_scale_title">Las barras se acortaron</string>
+    <string name="insights_overlay_trend_scale_body">El gráfico ahora incluye el gasto más los pagos, así que la escala cambió. Los importes no.</string>
+    <string name="insights_overlay_nudge_title">¿Análisis e Inicio no coinciden?</string>
+    <string name="insights_overlay_nudge_text">Inicio también cuenta %1$s en pagos recurrentes este período. Superponlos aquí como una capa prevista.</string>
+    <string name="insights_overlay_nudge_action">Superponer pagos</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Descartar</string>
 </resources>

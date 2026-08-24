@@ -78,7 +78,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -102,7 +101,9 @@ import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.Avatar
 import com.budgetty.app.ui.components.PieSlice
+import com.budgetty.app.ui.components.PlannedSwatch
 import com.budgetty.app.ui.components.ReceiptDetailSheet
+import com.budgetty.app.ui.components.drawPlannedHatch
 import com.budgetty.app.ui.components.SectionsMenu
 import com.budgetty.app.ui.components.StoreLogo
 import com.budgetty.app.ui.components.TransactionRow
@@ -1544,7 +1545,7 @@ private fun SafeToSpendBar(
             modifier
                 .height(6.dp)
                 .clip(pill)
-                .drawBehind { drawHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
+                .drawBehind { drawPlannedHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
                 .border(1.dp, hatchColor, pill),
         )
         return
@@ -1565,7 +1566,7 @@ private fun SafeToSpendBar(
         if (billsStillDue.signum() > 0) {
             Box(
                 Modifier.weight(frac(billsStillDue)).height(6.dp).clip(pill)
-                    .drawBehind { drawHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
+                    .drawBehind { drawPlannedHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
                     .border(1.dp, hatchColor, pill),
             )
         }
@@ -1822,30 +1823,6 @@ private fun LegendMoneyRow(
     }
 }
 
-/** A 10dp legend key: a solid accent square for real spend, or a hatched square for planned bills. */
-@Composable
-private fun PlannedSwatch(hatched: Boolean, modifier: Modifier = Modifier) {
-    val primary = MaterialTheme.colorScheme.primary
-    val outline = MaterialTheme.colorScheme.outlineVariant
-    val shape = RoundedCornerShape(3.dp)
-    if (hatched) {
-        Box(
-            modifier
-                .size(10.dp)
-                .clip(shape)
-                .drawBehind { drawHatch(outline, spacing = 3.dp, stroke = 1.dp) }
-                .border(1.dp, outline, shape),
-        )
-    } else {
-        Box(
-            modifier
-                .size(10.dp)
-                .clip(shape)
-                .background(primary),
-        )
-    }
-}
-
 /** A slim 6dp bar: solid accent for the receipt-backed share, hatched for the planned-bills remainder. */
 @Composable
 private fun SpentPlannedBar(
@@ -1863,7 +1840,7 @@ private fun SpentPlannedBar(
                 val radius = CornerRadius(size.height / 2f)
                 // The whole track carries the planned hatch, framed so the planned part reads as a
                 // container even when spend is tiny.
-                drawHatch(outline, spacing = 5.dp, stroke = 1.2.dp)
+                drawPlannedHatch(outline, spacing = 5.dp, stroke = 1.2.dp)
                 drawRoundRect(color = outline, cornerRadius = radius, style = Stroke(width = 1.dp.toPx()))
                 // Solid accent covers the receipt-backed share on the left.
                 val solidWidth = size.width * spentFraction
@@ -1876,23 +1853,6 @@ private fun SpentPlannedBar(
                 }
             },
     )
-}
-
-/** Fills the current draw bounds with thin diagonal stripes — the "planned, not yet real" texture. */
-private fun DrawScope.drawHatch(color: Color, spacing: Dp, stroke: Dp) {
-    val step = spacing.toPx()
-    val strokePx = stroke.toPx()
-    val h = size.height
-    var x = -h
-    while (x < size.width) {
-        drawLine(
-            color = color,
-            start = Offset(x, h),
-            end = Offset(x + h, 0f),
-            strokeWidth = strokePx,
-        )
-        x += step
-    }
 }
 
 /** A receipt summary row card; tap to open its detail bottom sheet. */

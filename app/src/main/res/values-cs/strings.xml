@@ -1046,4 +1046,51 @@
     <string name="home_empty_receipts_cta">+ Přidat účtenku</string>
     <string name="home_empty_receipts_body">Klepnutím na %1$s naskenujete svou první — přečteme ji a zařadíme za vás.</string>
     <string name="history_select_receipt">Vyberte účtenku a zobrazte její položky.</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Vrstvy</string>
+    <string name="insights_overlay_toggle_title">Zahrnout pravidelné účty</string>
+    <string name="insights_overlay_toggle_subtitle">Překrýt plánované účty jako samostatnou vrstvu</string>
+    <string name="insights_planned_badge">Plánováno</string>
+    <string name="insights_overlay_bills_planned">Účty · plánováno</string>
+    <string name="insights_overlay_plus_bills">+ %1$s účtů</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Utraceno</string>
+    <string name="insights_overlay_planned">Plánováno</string>
+    <string name="insights_overlay_wedge_header">Šrafovaná výseč</string>
+    <string name="insights_overlay_denominator">Podíly kategorií zůstávají procentem z %1$s, které jsi utratil — plánované účty do tohoto součtu nikdy nepatří.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d účet skryt — již spárován s účtenkou</item>
+        <item quantity="few">%1$d účty skryty — již spárovány s účtenkou</item>
+        <item quantity="many">%1$d účtu skryto — již spárováno s účtenkou</item>
+        <item quantity="other">%1$d účtů skryto — již spárováno s účtenkou</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">spárováno · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Započítáno jednou, ve výdajích.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s vynechává %2$d účet, který už je v tomto období spárován s účtenkou. Otevři Rozdělení a uvidíš který.</item>
+        <item quantity="few">%1$s vynechává %2$d účty, které už jsou v tomto období spárovány s účtenkou. Otevři Rozdělení a uvidíš které.</item>
+        <item quantity="many">%1$s vynechává %2$d účtu, který už je v tomto období spárován s účtenkou. Otevři Rozdělení a uvidíš který.</item>
+        <item quantity="other">%1$s vynechává %2$d účtů, které už jsou v tomto období spárovány s účtenkou. Otevři Rozdělení a uvidíš které.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Proč každá dlaždice zůstává na místě</string>
+    <string name="insights_overlay_summary_lead">Dlaždice výše jsou čísla z účtenek a nemění se, když je tato vrstva zapnutá — účty nemají účtenku ani slevu, takže nemají co přidat.</string>
+    <string name="insights_overlay_summary_avgday_title">Prům. / den</string>
+    <string name="insights_overlay_summary_avgday_body">Rozložení toho, cos utratil. Účty v něm nejsou.</string>
+    <string name="insights_overlay_summary_receipts_title">Účtenky</string>
+    <string name="insights_overlay_summary_receipts_body">Účet nemá žádnou účtenku k započítání.</string>
+    <string name="insights_overlay_summary_avg_title">Prům. / účtenka</string>
+    <string name="insights_overlay_summary_avg_body">Ze stejného důvodu — není čím dělit.</string>
+    <string name="insights_overlay_summary_saved_title">Uspořeno</string>
+    <string name="insights_overlay_summary_saved_body">Slevy pocházejí z účtenek. Účty žádné nemají.</string>
+    <string name="insights_overlay_trend_header">Jak číst šrafované vrcholy</string>
+    <string name="insights_overlay_trend_flat_title">Každý vrchol je stejný</string>
+    <string name="insights_overlay_trend_flat_body">Tvé účty jsou pevných %1$s měsíčně, takže šrafovaná část se nemění. Pohybuje se jen plná část — to, cos skutečně utratil.</string>
+    <string name="insights_overlay_trend_early_title">Rané měsíce žádné nemají</string>
+    <string name="insights_overlay_trend_early_body">Účty se nepromítají zpětně, takže měsíce před jejich přidáním ukazují jen výdaje.</string>
+    <string name="insights_overlay_trend_scale_title">Sloupce se zkrátily</string>
+    <string name="insights_overlay_trend_scale_body">Graf teď pojme výdaje plus účty, takže se změnilo měřítko. Částky ne.</string>
+    <string name="insights_overlay_nudge_title">Přehledy a Domů si odporují?</string>
+    <string name="insights_overlay_nudge_text">Domů v tomto období počítá také %1$s pravidelných účtů. Překryj je zde jako plánovanou vrstvu.</string>
+    <string name="insights_overlay_nudge_action">Překrýt účty</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Skrýt</string>
 </resources>

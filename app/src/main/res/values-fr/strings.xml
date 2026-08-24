@@ -1006,4 +1006,47 @@
     <string name="home_empty_receipts_cta">+ Ajouter un reçu</string>
     <string name="home_empty_receipts_body">Appuyez sur %1$s pour scanner le premier — nous le lirons et le classerons pour vous.</string>
     <string name="history_select_receipt">Sélectionnez un reçu pour voir ses articles.</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Calques</string>
+    <string name="insights_overlay_toggle_title">Inclure les factures récurrentes</string>
+    <string name="insights_overlay_toggle_subtitle">Superposer les factures prévues comme un calque distinct</string>
+    <string name="insights_planned_badge">Prévu</string>
+    <string name="insights_overlay_bills_planned">Factures · prévues</string>
+    <string name="insights_overlay_plus_bills">+ %1$s de factures</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Dépensé</string>
+    <string name="insights_overlay_planned">Prévu</string>
+    <string name="insights_overlay_wedge_header">La part hachurée</string>
+    <string name="insights_overlay_denominator">Les parts par catégorie restent un pourcentage des %1$s que vous avez dépensés — les factures prévues n\'entrent jamais dans ce total.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d facture masquée — déjà rapprochée d\'un reçu</item>
+        <item quantity="other">%1$d factures masquées — déjà rapprochées d\'un reçu</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">rapprochée · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Comptée une seule fois, dans les dépenses.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s exclut %2$d facture déjà rapprochée d\'un reçu sur cette période. Ouvrez la Répartition pour voir laquelle.</item>
+        <item quantity="other">%1$s exclut %2$d factures déjà rapprochées d\'un reçu sur cette période. Ouvrez la Répartition pour voir lesquelles.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Pourquoi chaque tuile reste immobile</string>
+    <string name="insights_overlay_summary_lead">Les tuiles ci-dessus sont des chiffres de reçus et ne changent pas quand ce calque est activé — les factures n\'ont ni reçu ni remise, il n\'y a donc rien à ajouter.</string>
+    <string name="insights_overlay_summary_avgday_title">Moy. / jour</string>
+    <string name="insights_overlay_summary_avgday_body">La répartition de ce que vous avez dépensé. Les factures n\'y figurent pas.</string>
+    <string name="insights_overlay_summary_receipts_title">Reçus</string>
+    <string name="insights_overlay_summary_receipts_body">Une facture n\'a aucun reçu à compter.</string>
+    <string name="insights_overlay_summary_avg_title">Moy. / reçu</string>
+    <string name="insights_overlay_summary_avg_body">Même raison — rien par quoi diviser.</string>
+    <string name="insights_overlay_summary_saved_title">Économisé</string>
+    <string name="insights_overlay_summary_saved_body">Les remises viennent des reçus. Les factures n\'en ont pas.</string>
+    <string name="insights_overlay_trend_header">Lire les sommets hachurés</string>
+    <string name="insights_overlay_trend_flat_title">Chaque sommet est identique</string>
+    <string name="insights_overlay_trend_flat_body">Vos factures sont fixes à %1$s par mois, donc la partie hachurée ne varie pas. Seule la partie pleine — ce que vous avez réellement dépensé — bouge.</string>
+    <string name="insights_overlay_trend_early_title">Les premiers mois n\'en ont pas</string>
+    <string name="insights_overlay_trend_early_body">Les factures ne sont pas projetées en arrière, donc les mois précédant leur ajout n\'affichent que les dépenses.</string>
+    <string name="insights_overlay_trend_scale_title">Les barres ont raccourci</string>
+    <string name="insights_overlay_trend_scale_body">Le graphique intègre désormais les dépenses plus les factures, donc l\'échelle a changé. Pas les montants.</string>
+    <string name="insights_overlay_nudge_title">Analyses et Accueil divergent ?</string>
+    <string name="insights_overlay_nudge_text">Accueil compte aussi %1$s de factures récurrentes sur cette période. Superposez-les ici comme un calque prévu.</string>
+    <string name="insights_overlay_nudge_action">Superposer les factures</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Ignorer</string>
 </resources>

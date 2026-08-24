@@ -17,6 +17,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import com.budgetty.app.ui.theme.BudgettyTheme
+import com.budgetty.app.ui.util.AppFormats
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
@@ -49,6 +50,9 @@ class PieChartLegendScreenshotTest {
     fun pieLegend_dark() = capture(dark = true)
 
     private fun capture(dark: Boolean) {
+        // Pin the currency symbol so the golden is deterministic (AppFormats is a process-global that
+        // other screenshot tests mutate; this test previously inherited a stale symbol by run order).
+        AppFormats.currencySymbol = "€"
         composeRule.setContent {
             BudgettyTheme(darkTheme = dark) {
                 Surface(modifier = Modifier.fillMaxSize()) {

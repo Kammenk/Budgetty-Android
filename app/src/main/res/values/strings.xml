@@ -514,6 +514,56 @@
     <string name="insights_empty_period_sub">Try another period using the arrows above.</string>
     <string name="insights_empty_no_data">No spending yet</string>
     <string name="insights_empty_no_data_sub">Scan a receipt to start seeing your insights.</string>
+    <!-- Insights: planned recurring-bills overlay (opt-in "planned" layer drawn over actual spend) -->
+    <string name="insights_overlay_layers">Layers</string>
+    <string name="insights_overlay_toggle_title">Include recurring bills</string>
+    <string name="insights_overlay_toggle_subtitle">Overlay planned bills as a separate layer</string>
+    <string name="insights_planned_badge">Planned</string>
+    <string name="insights_overlay_bills_planned">Bills · planned</string>
+    <!-- Donut centre subline when the overlay is on, under the "spent" hero: "+ €967 bills" -->
+    <string name="insights_overlay_plus_bills">+ %1$s bills</string>
+    <!-- Section explainer dialogs (read-only; opened by the "Planned" badge in a section header) -->
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Spent</string>
+    <string name="insights_overlay_planned">Planned</string>
+    <!-- Breakdown dialog -->
+    <string name="insights_overlay_wedge_header">The hatched wedge</string>
+    <string name="insights_overlay_denominator">Category shares stay a percentage of the %1$s you spent — planned bills are never in that total.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d bill hidden — already matched to a receipt</item>
+        <item quantity="other">%1$d bills hidden — already matched to a receipt</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">matched · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Counted once, in spend.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">The %1$s excludes %2$d bill already matched to a receipt this period. Open Breakdown to see which.</item>
+        <item quantity="other">The %1$s excludes %2$d bills already matched to a receipt this period. Open Breakdown to see which.</item>
+    </plurals>
+    <!-- Summary dialog: why the receipt tiles don't move when the layer is on -->
+    <string name="insights_overlay_summary_header">Why each tile holds still</string>
+    <string name="insights_overlay_summary_lead">The tiles above are receipt figures and don\'t change when this layer is on — bills have no receipt and no discount, so there\'s nothing for them to add.</string>
+    <string name="insights_overlay_summary_avgday_title">Avg / day</string>
+    <string name="insights_overlay_summary_avgday_body">The spread of what you spent. Bills aren\'t in it.</string>
+    <string name="insights_overlay_summary_receipts_title">Receipts</string>
+    <string name="insights_overlay_summary_receipts_body">A bill has no receipt to count.</string>
+    <string name="insights_overlay_summary_avg_title">Avg / receipt</string>
+    <string name="insights_overlay_summary_avg_body">Same reason — nothing to divide by.</string>
+    <string name="insights_overlay_summary_saved_title">Saved</string>
+    <string name="insights_overlay_summary_saved_body">Discounts come from receipts. Bills have none.</string>
+    <!-- Trend dialog: reading the hatched caps -->
+    <string name="insights_overlay_trend_header">Reading the hatched caps</string>
+    <string name="insights_overlay_trend_flat_title">Every cap is the same</string>
+    <string name="insights_overlay_trend_flat_body">Your bills are a flat %1$s a month, so the hatched part doesn\'t vary. Only the solid part — what you actually spent — moves.</string>
+    <string name="insights_overlay_trend_early_title">Early months have none</string>
+    <string name="insights_overlay_trend_early_body">Bills aren\'t projected backwards, so months before you added them show spend only.</string>
+    <string name="insights_overlay_trend_scale_title">The bars got shorter</string>
+    <string name="insights_overlay_trend_scale_body">The chart now fits spend plus bills, so the scale changed. The amounts didn\'t.</string>
+    <!-- Discovery nudge (once per user, above Breakdown) -->
+    <string name="insights_overlay_nudge_title">Insights and Home disagree?</string>
+    <string name="insights_overlay_nudge_text">Home also counts %1$s of recurring bills this period. Overlay them here as a planned layer.</string>
+    <string name="insights_overlay_nudge_action">Overlay bills</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Dismiss</string>
+
     <!-- Insights analytical labels (extracted from code) -->
     <string name="insights_title">Insights</string>
     <string name="insights_trend_daily">Daily spend</string>
