@@ -805,7 +805,7 @@ private fun InsightsPhoneBody(
  * cards keep their pane slots.
  */
 @Composable
-private fun InsightsTabletBody(
+internal fun InsightsTabletBody(
     state: InsightsUiState,
     isWide: Boolean,
     periodLabel: String,
