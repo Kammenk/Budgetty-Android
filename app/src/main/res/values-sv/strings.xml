@@ -1135,4 +1135,47 @@
     <string name="recap_pace_left">%1$s kvar</string>
     <string name="recap_pace_over">%1$s över budget</string>
     <string name="recap_pace_nobudget">Ingen veckobudget angiven</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Lager</string>
+    <string name="insights_overlay_toggle_title">Inkludera återkommande räkningar</string>
+    <string name="insights_overlay_toggle_subtitle">Lägg planerade räkningar som ett separat lager</string>
+    <string name="insights_planned_badge">Planerat</string>
+    <string name="insights_overlay_bills_planned">Räkningar · planerat</string>
+    <string name="insights_overlay_plus_bills">+ %1$s räkningar</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Spenderat</string>
+    <string name="insights_overlay_planned">Planerat</string>
+    <string name="insights_overlay_wedge_header">Det skrafferade fältet</string>
+    <string name="insights_overlay_denominator">Kategoriandelar förblir en procent av de %1$s du spenderade — planerade räkningar ingår aldrig i den summan.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d räkning dold — redan matchad mot ett kvitto</item>
+        <item quantity="other">%1$d räkningar dolda — redan matchade mot ett kvitto</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">matchad · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Räknad en gång, i utgifterna.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s utelämnar %2$d räkning som redan matchats mot ett kvitto den här perioden. Öppna Fördelning för att se vilken.</item>
+        <item quantity="other">%1$s utelämnar %2$d räkningar som redan matchats mot ett kvitto den här perioden. Öppna Fördelning för att se vilka.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Varför varje ruta står stilla</string>
+    <string name="insights_overlay_summary_lead">Rutorna ovan är kvittosiffror och ändras inte när det här lagret är på — räkningar har varken kvitto eller rabatt, så det finns inget att lägga till.</string>
+    <string name="insights_overlay_summary_avgday_title">Snitt / dag</string>
+    <string name="insights_overlay_summary_avgday_body">Spridningen av det du spenderade. Räkningar ingår inte.</string>
+    <string name="insights_overlay_summary_receipts_title">Kvitton</string>
+    <string name="insights_overlay_summary_receipts_body">En räkning har inget kvitto att räkna.</string>
+    <string name="insights_overlay_summary_avg_title">Snitt / kvitto</string>
+    <string name="insights_overlay_summary_avg_body">Samma skäl — inget att dela med.</string>
+    <string name="insights_overlay_summary_saved_title">Sparat</string>
+    <string name="insights_overlay_summary_saved_body">Rabatter kommer från kvitton. Räkningar har inga.</string>
+    <string name="insights_overlay_trend_header">Så läser du de skrafferade topparna</string>
+    <string name="insights_overlay_trend_flat_title">Varje topp är likadan</string>
+    <string name="insights_overlay_trend_flat_body">Dina räkningar är fasta %1$s i månaden, så den skrafferade delen varierar inte. Bara den fyllda delen — det du faktiskt spenderade — rör sig.</string>
+    <string name="insights_overlay_trend_early_title">Tidiga månader har inga</string>
+    <string name="insights_overlay_trend_early_body">Räkningar projiceras inte bakåt, så månader innan du lade till dem visar bara utgifterna.</string>
+    <string name="insights_overlay_trend_scale_title">Staplarna blev kortare</string>
+    <string name="insights_overlay_trend_scale_body">Diagrammet rymmer nu utgifter plus räkningar, så skalan ändrades. Beloppen gjorde inte det.</string>
+    <string name="insights_overlay_nudge_title">Säger Insikter och Hem emot varandra?</string>
+    <string name="insights_overlay_nudge_text">Hem räknar också %1$s i återkommande räkningar den här perioden. Lägg dem här som ett planerat lager.</string>
+    <string name="insights_overlay_nudge_action">Lägg räkningar över</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Stäng</string>
 </resources>

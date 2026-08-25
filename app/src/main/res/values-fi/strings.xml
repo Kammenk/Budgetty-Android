@@ -1136,4 +1136,47 @@
     <string name="recap_pace_left">%1$s jäljellä</string>
     <string name="recap_pace_over">%1$s yli budjetin</string>
     <string name="recap_pace_nobudget">Ei viikkobudjettia asetettu</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Tasot</string>
+    <string name="insights_overlay_toggle_title">Sisällytä toistuvat laskut</string>
+    <string name="insights_overlay_toggle_subtitle">Aseta suunnitellut laskut erillisenä tasona päälle</string>
+    <string name="insights_planned_badge">Suunniteltu</string>
+    <string name="insights_overlay_bills_planned">Laskut · suunniteltu</string>
+    <string name="insights_overlay_plus_bills">+ %1$s laskuja</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Käytetty</string>
+    <string name="insights_overlay_planned">Suunniteltu</string>
+    <string name="insights_overlay_wedge_header">Viivoitettu lohko</string>
+    <string name="insights_overlay_denominator">Kategoriaosuudet pysyvät prosenttiosuutena käyttämästäsi summasta %1$s — suunnitellut laskut eivät koskaan sisälly siihen kokonaissummaan.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d lasku piilotettu — jo yhdistetty kuittiin</item>
+        <item quantity="other">%1$d laskua piilotettu — jo yhdistetty kuittiin</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">yhdistetty · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Laskettu kerran, menoihin.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s jättää pois %2$d laskun, joka on jo yhdistetty kuittiin tällä jaksolla. Avaa Erittely nähdäksesi minkä.</item>
+        <item quantity="other">%1$s jättää pois %2$d laskua, jotka on jo yhdistetty kuittiin tällä jaksolla. Avaa Erittely nähdäksesi mitkä.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Miksi jokainen ruutu pysyy paikallaan</string>
+    <string name="insights_overlay_summary_lead">Yllä olevat ruudut ovat kuittilukuja eivätkä muutu, kun tämä taso on päällä — laskuilla ei ole kuittia eikä alennusta, joten niillä ei ole mitään lisättävää.</string>
+    <string name="insights_overlay_summary_avgday_title">Ka. / päivä</string>
+    <string name="insights_overlay_summary_avgday_body">Käyttämäsi rahan jakauma. Laskut eivät kuulu siihen.</string>
+    <string name="insights_overlay_summary_receipts_title">Kuitit</string>
+    <string name="insights_overlay_summary_receipts_body">Laskulla ei ole kuittia laskettavaksi.</string>
+    <string name="insights_overlay_summary_avg_title">Ka. / kuitti</string>
+    <string name="insights_overlay_summary_avg_body">Sama syy — ei mitään, millä jakaa.</string>
+    <string name="insights_overlay_summary_saved_title">Säästetty</string>
+    <string name="insights_overlay_summary_saved_body">Alennukset tulevat kuiteista. Laskuilla ei ole niitä.</string>
+    <string name="insights_overlay_trend_header">Viivoitettujen huippujen lukeminen</string>
+    <string name="insights_overlay_trend_flat_title">Jokainen huippu on sama</string>
+    <string name="insights_overlay_trend_flat_body">Laskusi ovat kiinteät %1$s kuukaudessa, joten viivoitettu osa ei vaihtele. Vain täysi osa — se, minkä todella käytit — liikkuu.</string>
+    <string name="insights_overlay_trend_early_title">Alkukuukausissa ei ole niitä</string>
+    <string name="insights_overlay_trend_early_body">Laskuja ei projisoida taaksepäin, joten niiden lisäämistä edeltävät kuukaudet näyttävät vain menot.</string>
+    <string name="insights_overlay_trend_scale_title">Palkit lyhenivät</string>
+    <string name="insights_overlay_trend_scale_body">Kaavioon mahtuu nyt menot plus laskut, joten asteikko muuttui. Summat eivät.</string>
+    <string name="insights_overlay_nudge_title">Ovatko Analyysi ja Koti eri mieltä?</string>
+    <string name="insights_overlay_nudge_text">Koti laskee myös %1$s toistuvia laskuja tällä jaksolla. Aseta ne tähän suunniteltuna tasona.</string>
+    <string name="insights_overlay_nudge_action">Aseta laskut päälle</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Ohita</string>
 </resources>

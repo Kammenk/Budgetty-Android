@@ -1151,4 +1151,51 @@
     <string name="recap_pace_left">Осталось %1$s</string>
     <string name="recap_pace_over">%1$s сверх бюджета</string>
     <string name="recap_pace_nobudget">Недельный бюджет не задан</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Слои</string>
+    <string name="insights_overlay_toggle_title">Включить регулярные счета</string>
+    <string name="insights_overlay_toggle_subtitle">Наложить плановые счета отдельным слоем</string>
+    <string name="insights_planned_badge">Плановые</string>
+    <string name="insights_overlay_bills_planned">Счета · плановые</string>
+    <string name="insights_overlay_plus_bills">+ %1$s счетов</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Потрачено</string>
+    <string name="insights_overlay_planned">Плановые</string>
+    <string name="insights_overlay_wedge_header">Заштрихованный сектор</string>
+    <string name="insights_overlay_denominator">Доли категорий остаются процентом от потраченной суммы %1$s — плановые счета никогда не входят в этот итог.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d счёт скрыт — уже сопоставлен с чеком</item>
+        <item quantity="few">%1$d счёта скрыты — уже сопоставлены с чеком</item>
+        <item quantity="many">%1$d счетов скрыто — уже сопоставлено с чеком</item>
+        <item quantity="other">%1$d счёта скрыто — уже сопоставлено с чеком</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">сопоставлено · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Учтено один раз, в тратах.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s не включает %2$d счёт, уже сопоставленный с чеком в этом периоде. Откройте Разбивку, чтобы увидеть какой.</item>
+        <item quantity="few">%1$s не включает %2$d счёта, уже сопоставленных с чеком в этом периоде. Откройте Разбивку, чтобы увидеть какие.</item>
+        <item quantity="many">%1$s не включает %2$d счетов, уже сопоставленных с чеком в этом периоде. Откройте Разбивку, чтобы увидеть какие.</item>
+        <item quantity="other">%1$s не включает %2$d счёта, уже сопоставленных с чеком в этом периоде. Откройте Разбивку, чтобы увидеть какие.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Почему каждая плитка не меняется</string>
+    <string name="insights_overlay_summary_lead">Плитки выше — это данные из чеков, и они не меняются при включённом слое — у счетов нет ни чека, ни скидки, так что добавлять нечего.</string>
+    <string name="insights_overlay_summary_avgday_title">Сред. / день</string>
+    <string name="insights_overlay_summary_avgday_body">Распределение того, что вы потратили. Счета в него не входят.</string>
+    <string name="insights_overlay_summary_receipts_title">Чеки</string>
+    <string name="insights_overlay_summary_receipts_body">У счёта нет чека для подсчёта.</string>
+    <string name="insights_overlay_summary_avg_title">Сред. / чек</string>
+    <string name="insights_overlay_summary_avg_body">По той же причине — не на что делить.</string>
+    <string name="insights_overlay_summary_saved_title">Сэкономлено</string>
+    <string name="insights_overlay_summary_saved_body">Скидки берутся из чеков. У счетов их нет.</string>
+    <string name="insights_overlay_trend_header">Как читать заштрихованные вершины</string>
+    <string name="insights_overlay_trend_flat_title">Каждая вершина одинаковая</string>
+    <string name="insights_overlay_trend_flat_body">Ваши счета — фиксированные %1$s в месяц, поэтому заштрихованная часть не меняется. Двигается только сплошная часть — то, что вы действительно потратили.</string>
+    <string name="insights_overlay_trend_early_title">В ранних месяцах их нет</string>
+    <string name="insights_overlay_trend_early_body">Счета не проецируются назад, поэтому месяцы до их добавления показывают только траты.</string>
+    <string name="insights_overlay_trend_scale_title">Столбцы стали короче</string>
+    <string name="insights_overlay_trend_scale_body">Теперь на графике умещаются траты плюс счета, поэтому масштаб изменился. Суммы — нет.</string>
+    <string name="insights_overlay_nudge_title">Аналитика и Главная расходятся?</string>
+    <string name="insights_overlay_nudge_text">Главная тоже учитывает %1$s регулярных счетов в этом периоде. Наложите их здесь плановым слоем.</string>
+    <string name="insights_overlay_nudge_action">Наложить счета</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Скрыть</string>
 </resources>

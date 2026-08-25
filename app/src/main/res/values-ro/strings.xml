@@ -1148,4 +1148,49 @@
     <string name="recap_pace_left">%1$s rămași</string>
     <string name="recap_pace_over">%1$s peste buget</string>
     <string name="recap_pace_nobudget">Niciun buget săptămânal setat</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Straturi</string>
+    <string name="insights_overlay_toggle_title">Include facturile recurente</string>
+    <string name="insights_overlay_toggle_subtitle">Suprapune facturile planificate ca strat separat</string>
+    <string name="insights_planned_badge">Planificat</string>
+    <string name="insights_overlay_bills_planned">Facturi · planificat</string>
+    <string name="insights_overlay_plus_bills">+ %1$s facturi</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Cheltuit</string>
+    <string name="insights_overlay_planned">Planificat</string>
+    <string name="insights_overlay_wedge_header">Segmentul hașurat</string>
+    <string name="insights_overlay_denominator">Cotele pe categorii rămân un procent din %1$s cheltuiți — facturile planificate nu intră niciodată în acest total.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d factură ascunsă — deja asociată cu un bon</item>
+        <item quantity="few">%1$d facturi ascunse — deja asociate cu un bon</item>
+        <item quantity="other">%1$d de facturi ascunse — deja asociate cu un bon</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">asociată · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Numărată o singură dată, în cheltuieli.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s exclude %2$d factură deja asociată cu un bon în această perioadă. Deschide Defalcare pentru a vedea care.</item>
+        <item quantity="few">%1$s exclude %2$d facturi deja asociate cu un bon în această perioadă. Deschide Defalcare pentru a vedea care.</item>
+        <item quantity="other">%1$s exclude %2$d de facturi deja asociate cu un bon în această perioadă. Deschide Defalcare pentru a vedea care.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">De ce fiecare cartonaș rămâne pe loc</string>
+    <string name="insights_overlay_summary_lead">Cartonașele de mai sus sunt cifre de pe bonuri și nu se schimbă când acest strat este activ — facturile nu au bon și nici reducere, așa că nu au ce adăuga.</string>
+    <string name="insights_overlay_summary_avgday_title">Medie / zi</string>
+    <string name="insights_overlay_summary_avgday_body">Distribuția a ceea ce ai cheltuit. Facturile nu sunt incluse.</string>
+    <string name="insights_overlay_summary_receipts_title">Bonuri</string>
+    <string name="insights_overlay_summary_receipts_body">O factură nu are niciun bon de numărat.</string>
+    <string name="insights_overlay_summary_avg_title">Medie / bon</string>
+    <string name="insights_overlay_summary_avg_body">Același motiv — nimic la ce să împarți.</string>
+    <string name="insights_overlay_summary_saved_title">Economisit</string>
+    <string name="insights_overlay_summary_saved_body">Reducerile vin de pe bonuri. Facturile nu au.</string>
+    <string name="insights_overlay_trend_header">Cum citești capetele hașurate</string>
+    <string name="insights_overlay_trend_flat_title">Fiecare capăt este la fel</string>
+    <string name="insights_overlay_trend_flat_body">Facturile tale sunt fixe la %1$s pe lună, așa că partea hașurată nu variază. Doar partea plină — ceea ce ai cheltuit efectiv — se mișcă.</string>
+    <string name="insights_overlay_trend_early_title">Primele luni nu au</string>
+    <string name="insights_overlay_trend_early_body">Facturile nu sunt proiectate în urmă, așa că lunile de dinainte de a le adăuga arată doar cheltuielile.</string>
+    <string name="insights_overlay_trend_scale_title">Barele s-au scurtat</string>
+    <string name="insights_overlay_trend_scale_body">Graficul cuprinde acum cheltuielile plus facturile, așa că scara s-a schimbat. Sumele nu.</string>
+    <string name="insights_overlay_nudge_title">Statistici și Acasă nu se potrivesc?</string>
+    <string name="insights_overlay_nudge_text">Acasă numără și %1$s în facturi recurente în această perioadă. Suprapune-le aici ca strat planificat.</string>
+    <string name="insights_overlay_nudge_action">Suprapune facturile</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Ignoră</string>
 </resources>

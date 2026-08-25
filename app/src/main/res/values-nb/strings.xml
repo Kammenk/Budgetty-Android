@@ -1135,4 +1135,47 @@
     <string name="recap_pace_left">%1$s igjen</string>
     <string name="recap_pace_over">%1$s over budsjett</string>
     <string name="recap_pace_nobudget">Ingen ukebudsjett angitt</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Lag</string>
+    <string name="insights_overlay_toggle_title">Ta med faste regninger</string>
+    <string name="insights_overlay_toggle_subtitle">Legg planlagte regninger som et eget lag</string>
+    <string name="insights_planned_badge">Planlagt</string>
+    <string name="insights_overlay_bills_planned">Regninger · planlagt</string>
+    <string name="insights_overlay_plus_bills">+ %1$s regninger</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Brukt</string>
+    <string name="insights_overlay_planned">Planlagt</string>
+    <string name="insights_overlay_wedge_header">Det skraverte feltet</string>
+    <string name="insights_overlay_denominator">Kategoriandeler forblir en prosentandel av de %1$s du brukte — planlagte regninger inngår aldri i den summen.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d regning skjult — allerede matchet med en kvittering</item>
+        <item quantity="other">%1$d regninger skjult — allerede matchet med en kvittering</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">matchet · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Telt én gang, i forbruket.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s utelater %2$d regning som allerede er matchet med en kvittering denne perioden. Åpne Fordeling for å se hvilken.</item>
+        <item quantity="other">%1$s utelater %2$d regninger som allerede er matchet med en kvittering denne perioden. Åpne Fordeling for å se hvilke.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Hvorfor hver rute står stille</string>
+    <string name="insights_overlay_summary_lead">Rutene over er kvitteringstall og endrer seg ikke når dette laget er på — regninger har verken kvittering eller rabatt, så det er ingenting å legge til.</string>
+    <string name="insights_overlay_summary_avgday_title">Snitt / dag</string>
+    <string name="insights_overlay_summary_avgday_body">Fordelingen av det du brukte. Regninger er ikke med.</string>
+    <string name="insights_overlay_summary_receipts_title">Kvitteringer</string>
+    <string name="insights_overlay_summary_receipts_body">En regning har ingen kvittering å telle.</string>
+    <string name="insights_overlay_summary_avg_title">Snitt / kvittering</string>
+    <string name="insights_overlay_summary_avg_body">Samme grunn — ingenting å dele på.</string>
+    <string name="insights_overlay_summary_saved_title">Spart</string>
+    <string name="insights_overlay_summary_saved_body">Rabatter kommer fra kvitteringer. Regninger har ingen.</string>
+    <string name="insights_overlay_trend_header">Slik leser du de skraverte toppene</string>
+    <string name="insights_overlay_trend_flat_title">Hver topp er lik</string>
+    <string name="insights_overlay_trend_flat_body">Regningene dine er faste %1$s i måneden, så den skraverte delen varierer ikke. Bare den fylte delen — det du faktisk brukte — beveger seg.</string>
+    <string name="insights_overlay_trend_early_title">Tidlige måneder har ingen</string>
+    <string name="insights_overlay_trend_early_body">Regninger projiseres ikke bakover, så måneder før du la dem til viser bare forbruket.</string>
+    <string name="insights_overlay_trend_scale_title">Søylene ble kortere</string>
+    <string name="insights_overlay_trend_scale_body">Diagrammet rommer nå forbruk pluss regninger, så skalaen endret seg. Beløpene gjorde ikke det.</string>
+    <string name="insights_overlay_nudge_title">Er Innsikt og Hjem uenige?</string>
+    <string name="insights_overlay_nudge_text">Hjem teller også %1$s i faste regninger denne perioden. Legg dem her som et planlagt lag.</string>
+    <string name="insights_overlay_nudge_action">Legg regninger over</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Avvis</string>
 </resources>

@@ -217,6 +217,10 @@ fun CategoryEditorScreen(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+// This screen renders inside a full-screen Dialog (see CategoryPickerScreen), not under the NavHost,
+// so the app bar must keep its default window insets to clear the status bar — the NavHost's top
+// inset never reaches it. TopAppBarInsetNotZeroed can't see the Dialog, so it's suppressed here.
+@Suppress("TopAppBarInsetNotZeroed")
 @Composable
 private fun CategoryPickerContent(
     selected: String,

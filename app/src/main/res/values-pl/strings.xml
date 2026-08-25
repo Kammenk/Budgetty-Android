@@ -1152,4 +1152,51 @@
     <string name="recap_pace_left">Zostało %1$s</string>
     <string name="recap_pace_over">%1$s ponad budżet</string>
     <string name="recap_pace_nobudget">Nie ustawiono budżetu tygodniowego</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Warstwy</string>
+    <string name="insights_overlay_toggle_title">Uwzględnij rachunki cykliczne</string>
+    <string name="insights_overlay_toggle_subtitle">Nałóż planowane rachunki jako osobną warstwę</string>
+    <string name="insights_planned_badge">Planowane</string>
+    <string name="insights_overlay_bills_planned">Rachunki · planowane</string>
+    <string name="insights_overlay_plus_bills">+ %1$s rachunków</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Wydano</string>
+    <string name="insights_overlay_planned">Planowane</string>
+    <string name="insights_overlay_wedge_header">Zakreskowany wycinek</string>
+    <string name="insights_overlay_denominator">Udziały kategorii pozostają procentem z %1$s, które wydałeś — planowane rachunki nigdy nie wchodzą do tej sumy.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d rachunek ukryty — już dopasowany do paragonu</item>
+        <item quantity="few">%1$d rachunki ukryte — już dopasowane do paragonu</item>
+        <item quantity="many">%1$d rachunków ukrytych — już dopasowanych do paragonu</item>
+        <item quantity="other">%1$d rachunka ukrytego — już dopasowanego do paragonu</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">dopasowano · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Liczone raz, w wydatkach.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s pomija %2$d rachunek już dopasowany do paragonu w tym okresie. Otwórz Podział, aby zobaczyć który.</item>
+        <item quantity="few">%1$s pomija %2$d rachunki już dopasowane do paragonu w tym okresie. Otwórz Podział, aby zobaczyć które.</item>
+        <item quantity="many">%1$s pomija %2$d rachunków już dopasowanych do paragonu w tym okresie. Otwórz Podział, aby zobaczyć które.</item>
+        <item quantity="other">%1$s pomija %2$d rachunka już dopasowanego do paragonu w tym okresie. Otwórz Podział, aby zobaczyć który.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Dlaczego każdy kafelek stoi w miejscu</string>
+    <string name="insights_overlay_summary_lead">Kafelki powyżej to dane z paragonów i nie zmieniają się przy włączonej tej warstwie — rachunki nie mają paragonu ani rabatu, więc nie mają czego dodać.</string>
+    <string name="insights_overlay_summary_avgday_title">Śr. / dzień</string>
+    <string name="insights_overlay_summary_avgday_body">Rozkład tego, co wydałeś. Rachunków w nim nie ma.</string>
+    <string name="insights_overlay_summary_receipts_title">Paragony</string>
+    <string name="insights_overlay_summary_receipts_body">Rachunek nie ma paragonu do policzenia.</string>
+    <string name="insights_overlay_summary_avg_title">Śr. / paragon</string>
+    <string name="insights_overlay_summary_avg_body">Z tego samego powodu — nie ma przez co dzielić.</string>
+    <string name="insights_overlay_summary_saved_title">Zaoszczędzono</string>
+    <string name="insights_overlay_summary_saved_body">Rabaty pochodzą z paragonów. Rachunki ich nie mają.</string>
+    <string name="insights_overlay_trend_header">Jak czytać zakreskowane szczyty</string>
+    <string name="insights_overlay_trend_flat_title">Każdy szczyt jest taki sam</string>
+    <string name="insights_overlay_trend_flat_body">Twoje rachunki to stałe %1$s miesięcznie, więc zakreskowana część się nie zmienia. Rusza się tylko pełna część — to, co naprawdę wydałeś.</string>
+    <string name="insights_overlay_trend_early_title">Wczesne miesiące ich nie mają</string>
+    <string name="insights_overlay_trend_early_body">Rachunki nie są rzutowane wstecz, więc miesiące sprzed ich dodania pokazują tylko wydatki.</string>
+    <string name="insights_overlay_trend_scale_title">Słupki się skróciły</string>
+    <string name="insights_overlay_trend_scale_body">Wykres mieści teraz wydatki plus rachunki, więc skala się zmieniła. Kwoty nie.</string>
+    <string name="insights_overlay_nudge_title">Statystyki i Główna się nie zgadzają?</string>
+    <string name="insights_overlay_nudge_text">Główna w tym okresie liczy też %1$s rachunków cyklicznych. Nałóż je tutaj jako warstwę planowaną.</string>
+    <string name="insights_overlay_nudge_action">Nałóż rachunki</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Odrzuć</string>
 </resources>

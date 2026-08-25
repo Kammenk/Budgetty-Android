@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
@@ -166,7 +167,46 @@ private fun DrawScope.drawDonutSlice(
     gap: Float,
     color: Color,
 ) {
-    if (sweepAngle <= 0f || innerRadius <= 0f) return
+    val path = donutSlicePath(center, innerRadius, outerRadius, startAngle, sweepAngle, gap) ?: return
+    drawPath(path, color)
+}
+
+/**
+ * The "Bills · planned" wedge: the same annular sector, but filled with the shared planned hatch on a
+ * neutral muted outline (never a category hue) instead of a solid colour — so a user reads it as
+ * planned bills, not real spend, exactly as on Home's spent-vs-planned strip. Non-interactive; the
+ * per-bill makeup lives in the Breakdown dialog behind the "Planned" badge.
+ */
+private fun DrawScope.drawPlannedWedge(
+    center: Offset,
+    innerRadius: Float,
+    outerRadius: Float,
+    startAngle: Float,
+    sweepAngle: Float,
+    gap: Float,
+    hatchColor: Color,
+) {
+    val path = donutSlicePath(center, innerRadius, outerRadius, startAngle, sweepAngle, gap) ?: return
+    clipPath(path) { drawPlannedHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
+    drawPath(path, hatchColor, style = Stroke(width = 1.dp.toPx()))
+}
+
+/**
+ * Builds one donut segment as an annular sector whose two straight sides are inset by half [gap]
+ * *parallel to the boundary radius*. Because neighbouring slices' facing sides stay parallel (rather
+ * than radial), the space between them is a constant-width strip — a clean rectangle — instead of a
+ * wedge that fans out toward the rim. Returns null for a degenerate (zero-sweep / no inner radius)
+ * slice. [startAngle] is in degrees, 0° = 3 o'clock, clockwise (Compose's arc convention).
+ */
+private fun DrawScope.donutSlicePath(
+    center: Offset,
+    innerRadius: Float,
+    outerRadius: Float,
+    startAngle: Float,
+    sweepAngle: Float,
+    gap: Float,
+): Path? {
+    if (sweepAngle <= 0f || innerRadius <= 0f) return null
     val half = gap / 2f
     val startRad = Math.toRadians(startAngle.toDouble())
     val endRad = Math.toRadians((startAngle + sweepAngle).toDouble())
@@ -186,7 +226,7 @@ private fun DrawScope.drawDonutSlice(
     val outerStart = point(startRad + outerInset, outerRadius)
     val innerEnd = point(endRad - innerInset, innerRadius)
 
-    val path = Path().apply {
+    return Path().apply {
         moveTo(innerStart.x, innerStart.y)
         lineTo(outerStart.x, outerStart.y)
         arcTo(
@@ -204,7 +244,6 @@ private fun DrawScope.drawDonutSlice(
         )
         close()
     }
-    drawPath(path, color)
 }
 
 /**
@@ -267,6 +306,11 @@ fun PieChart(
     chartSize: Dp = 200.dp,
     periodLabel: String? = null,
     onCategoryClick: (PieSlice) -> Unit = {},
+    /** When set (> 0), the planned recurring-bills overlay: a single hatched "Bills · planned" wedge is
+     *  appended to the ring and a "+ €X bills" subline is added under the centre total. The category
+     *  arcs are compressed to make room, so they read as a share of spend within a spend+bills ring —
+     *  but their percentages stay a share of *spend* (the legend/labels are unchanged). Null = off. */
+    plannedAmount: BigDecimal? = null,
 ) {
     val sliceTotal = slices.fold(BigDecimal.ZERO) { acc, slice -> acc + slice.value }
 
@@ -284,13 +328,27 @@ fun PieChart(
     val donutTotal = remember(donutSlices) {
         donutSlices.fold(BigDecimal.ZERO) { acc, slice -> acc + slice.value }
     }
+    // Planned recurring-bills overlay: a positive amount compresses the category arcs into the
+    // spend share of a spend+bills ring, leaving the remainder for one hatched "planned" wedge.
+    val planned = plannedAmount?.takeIf { it.signum() > 0 }
+    val spendFraction = planned?.let { p ->
+        val combined = (donutTotal + p).toFloat().coerceAtLeast(0.0001f)
+        (donutTotal.toFloat() / combined).coerceIn(0f, 1f)
+    }
     // Precomputed arc layout (proportional + gapped). Sized against the drawn slices' own
     // total so the ring closes cleanly; the spend figures and percentages below stay honest
-    // against the full-period [sliceTotal].
-    val arcs = remember(donutSlices) { buildArcs(donutSlices, donutTotal) }
+    // against the full-period [sliceTotal]. When the overlay is on, the category arcs are scaled
+    // into [spendFraction] of the ring and a planned wedge fills the rest.
+    val arcs = remember(donutSlices, spendFraction) {
+        val base = buildArcs(donutSlices, donutTotal)
+        if (spendFraction == null) base
+        else base.map { ArcSpec(it.startAngle * spendFraction, it.sweep * spendFraction) }
+    }
+    val plannedArc = spendFraction?.let { f -> ArcSpec(startAngle = 360f * f, sweep = 360f * (1f - f)) }
 
     val textMeasurer = rememberTextMeasurer()
     val labelColor = MaterialTheme.colorScheme.onSurface
+    val plannedHatchColor = MaterialTheme.colorScheme.outlineVariant
     // Slice % labels, enlarged 50% over the labelMedium base for legibility on the chart. Line
     // height is scaled with the font (labelMedium's own is too short for the bigger glyphs → clips).
     val labelFontSize = MaterialTheme.typography.labelMedium.fontSize * 1.5f
@@ -384,6 +442,20 @@ fun PieChart(
                         )
                     }
                 }
+                // The single hatched "Bills · planned" wedge, drawn last so it sits cleanly beside the
+                // (compressed) category arcs; dimmed with them when a category is selected.
+                plannedArc?.let { pa ->
+                    val hatch = if (selectedIndex != null) plannedHatchColor.copy(alpha = 0.25f) else plannedHatchColor
+                    drawPlannedWedge(
+                        center = center,
+                        innerRadius = innerRadius,
+                        outerRadius = outerRadius,
+                        startAngle = -90f + pa.startAngle,
+                        sweepAngle = pa.sweep,
+                        gap = gap,
+                        hatchColor = hatch,
+                    )
+                }
             }
 
             // Center shows the period total, or the tapped slice's category + spend.
@@ -420,6 +492,15 @@ fun PieChart(
                         .divide(sliceTotal, 0, java.math.RoundingMode.HALF_UP)
                     Text(
                         text = stringResource(R.string.pie_slice_share, pct.toInt()),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else if (planned != null) {
+                    // Overlay on, nothing selected: keep the spend hero and add the planned bills below
+                    // it — "+ €967 bills" — so the centre reads spend first, planned second.
+                    Text(
+                        text = stringResource(R.string.insights_overlay_plus_bills, planned.formatMoney()),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

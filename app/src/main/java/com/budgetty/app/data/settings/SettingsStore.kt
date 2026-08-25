@@ -30,6 +30,8 @@ class SettingsStore(context: Context) {
         homeSectionOrder = prefs.getString(KEY_ORDER_HOME, null).toKeyList(),
         insightsSectionOrder = prefs.getString(KEY_ORDER_INSIGHTS, null).toKeyList(),
         insightsPeriodUnit = prefs.getString(KEY_PERIOD_UNIT_INSIGHTS, "MONTH") ?: "MONTH",
+        insightsIncludeRecurringBills = prefs.getBoolean(KEY_INCLUDE_RECURRING_BILLS, false),
+        insightsOverlayNudgeDismissed = prefs.getBoolean(KEY_OVERLAY_NUDGE_DISMISSED, false),
         monthStartDay = prefs.getInt(KEY_MONTH_START_DAY, 1).coerceIn(1, 31),
         budgetRolloverEnabled = prefs.getBoolean(KEY_BUDGET_ROLLOVER, false),
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
@@ -128,6 +130,14 @@ class SettingsStore(context: Context) {
     /** Remembers the Insights period-stepper unit (a PeriodUnit name) for the next launch. */
     fun setInsightsPeriodUnit(unitName: String) =
         saveString(KEY_PERIOD_UNIT_INSIGHTS, unitName) { it.copy(insightsPeriodUnit = unitName) }
+
+    /** Toggles the Insights "planned recurring bills" overlay (opt-in, default off). */
+    fun setInsightsIncludeRecurringBills(value: Boolean) =
+        save(KEY_INCLUDE_RECURRING_BILLS, value) { it.copy(insightsIncludeRecurringBills = value) }
+
+    /** Marks the one-time Insights overlay discovery nudge as dismissed (never resurfaces). */
+    fun dismissInsightsOverlayNudge() =
+        save(KEY_OVERLAY_NUDGE_DISMISSED, true) { it.copy(insightsOverlayNudgeDismissed = true) }
 
     /** Remembers the History sort order (a SortOrder name) for the next launch. */
     fun setHistorySort(name: String) =
@@ -260,6 +270,8 @@ class SettingsStore(context: Context) {
             // reset so the next account on a shared device gets fresh recap boundaries.
             .remove(KEY_RECAP_LAST_WEEK)
             .remove(KEY_RECAP_LAST_MONTH)
+            .remove(KEY_INCLUDE_RECURRING_BILLS)
+            .remove(KEY_OVERLAY_NUDGE_DISMISSED)
             .apply()
         _settings.update {
             it.copy(
@@ -276,6 +288,8 @@ class SettingsStore(context: Context) {
                 insightsSectionOrder = emptyList(),
                 recapLastShownWeek = "",
                 recapLastShownMonth = "",
+                insightsIncludeRecurringBills = false,
+                insightsOverlayNudgeDismissed = false,
             )
         }
     }
@@ -351,6 +365,8 @@ class SettingsStore(context: Context) {
         const val KEY_BIOMETRIC = "app_lock_biometric"
         const val KEY_AUTO_LOCK = "app_lock_auto_minutes"
         const val KEY_PERIOD_UNIT_INSIGHTS = "insights_period_unit"
+        const val KEY_INCLUDE_RECURRING_BILLS = "insights_include_recurring_bills"
+        const val KEY_OVERLAY_NUDGE_DISMISSED = "insights_overlay_nudge_dismissed"
         const val KEY_MONTH_START_DAY = "month_start_day"
         const val KEY_BUDGET_ROLLOVER = "budget_rollover_enabled"
         const val KEY_HISTORY_SORT = "history_sort"

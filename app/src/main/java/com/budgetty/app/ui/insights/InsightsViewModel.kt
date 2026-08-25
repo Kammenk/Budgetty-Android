@@ -3,6 +3,7 @@ package com.budgetty.app.ui.insights
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
@@ -19,6 +20,10 @@ import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.pieColors
 import com.budgetty.app.ui.util.AppFormats
+import com.budgetty.app.ui.util.MatchedBillLine
+import com.budgetty.app.ui.util.PlannedBillLine
+import com.budgetty.app.ui.util.ReceiptCharge
+import com.budgetty.app.ui.util.splitPlannedBills
 import com.budgetty.app.ui.util.windowAmount
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -72,6 +77,13 @@ data class TrendBucket(
     /** False for a not-yet-elapsed placeholder day added only to pad the chart out to
      *  [MIN_TREND_BARS]; such bars render dimmed and aren't tappable. */
     val enabled: Boolean = true,
+    /** Planned recurring bills for this bucket's month, stacked as a hatched cap over the solid spend
+     *  bar when the overlay is on. Monthly bucketing only; ZERO for daily buckets and for months
+     *  before the plans were created (no back-projection, so the earliest bars legitimately show none). */
+    val planned: BigDecimal = BigDecimal.ZERO,
+    /** This bucket's calendar month (monthly bucketing only; null for daily buckets), used to attach
+     *  the per-month planned cap after the fact. */
+    val monthKey: YearMonth? = null,
 )
 
 /** The trend chart never draws fewer than this many bars: a just-begun month or week is padded out
@@ -116,6 +128,29 @@ sealed interface Highlight {
 
     /** [category] made up [percent]% of the period's spend. */
     data class TopShare(override val category: String, override val color: Color, val percent: Int) : Highlight
+}
+
+/**
+ * The planned recurring-bills overlay for the selected Insights period — the "planned" layer drawn
+ * alongside (never merged into) actual receipt spend. Populated only when the user has opted in via
+ * Customize → LAYERS; empty otherwise, so the OFF screen is byte-for-byte the shipped one.
+ *
+ * [plannedTotal] and [bills] are already de-duplicated: a bill that matches a real receipt in the
+ * window is moved to [matched] (counted once, in spend) and excluded here — see [splitPlannedBills].
+ */
+data class PlannedOverlay(
+    val plannedTotal: BigDecimal = BigDecimal.ZERO,
+    /** Visible planned bills for the window, largest first — the donut wedge's makeup and the
+     *  Breakdown dialog's per-bill list. */
+    val bills: List<PlannedBillLine> = emptyList(),
+    /** Bills hidden because they already match a receipt this period — the dedup note's list. */
+    val matched: List<MatchedBillLine> = emptyList(),
+) {
+    val hasPlanned: Boolean get() = plannedTotal.signum() > 0
+
+    companion object {
+        val EMPTY = PlannedOverlay()
+    }
 }
 
 /** The trend chart's data for the selected period: one [buckets] entry per day or per month. */
@@ -190,6 +225,11 @@ data class InsightsUiState(
     val hasBills: Boolean = false,
     /** Wellbeing score + top tip for the Insights entry row (null until the first summary lands). */
     val wellbeing: WellbeingSummary? = null,
+    /** Whether the planned recurring-bills overlay is switched on (Customize → LAYERS). Off by
+     *  default; when off the three analysis sections render exactly as they ship. */
+    val includeRecurringBills: Boolean = false,
+    /** The planned-bills overlay for the selected period; empty/zero unless [includeRecurringBills]. */
+    val plannedOverlay: PlannedOverlay = PlannedOverlay.EMPTY,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -231,6 +271,19 @@ class InsightsViewModel(
     private val previousPeriodTxns: Flow<List<TransactionEntity>> = periodWithDay.flatMapLatest { (period, day) ->
         val (start, end) = period.previousPeriod().toRange(monthStartDay = day)
         repository.getBetween(start, end)
+    }
+
+    // The planned recurring-bills overlay for the selected window, computed in its own combine so it
+    // has the receipts + recurring rows the dedup needs; folded onto the main state below. Recomputes
+    // when the overlay switch flips (only work when the user has opted in — off by default).
+    private val plannedOverlayBundle: Flow<PlannedOverlayBundle> = combine(
+        periodWithDay,
+        transactions,
+        receiptRepository.getAll(),
+        recurringRepository.items,
+        settingsStore.settings.map { it.insightsIncludeRecurringBills }.distinctUntilChanged(),
+    ) { (period, day), txns, receipts, recurring, include ->
+        computePlannedOverlay(period, day, txns, receipts, recurring, include)
     }
 
     val uiState: StateFlow<InsightsUiState> =
@@ -328,6 +381,20 @@ class InsightsViewModel(
                 )
             }
             .combine(wellbeingProvider.summary()) { state, wb -> state.copy(wellbeing = wb) }
+            .combine(plannedOverlayBundle) { state, bundle ->
+                state.copy(
+                    includeRecurringBills = bundle.include,
+                    plannedOverlay = bundle.overlay,
+                    // Attach each monthly bucket's planned cap (ZERO when off / for daily buckets).
+                    trend = state.trend.copy(
+                        buckets = state.trend.buckets.map { bucket ->
+                            bucket.copy(
+                                planned = bucket.monthKey?.let { bundle.perMonthPlanned[it] } ?: BigDecimal.ZERO,
+                            )
+                        },
+                    ),
+                )
+            }
             // Heavy aggregation (BigDecimal folds, groupBy/sort over all receipts, trend/highlights,
             // whole dataset under All-time) runs off the main thread; stateIn caches on main.
             .flowOn(Dispatchers.Default)
@@ -421,6 +488,7 @@ class InsightsViewModel(
                     fullLabel = MONTH_FULL_FORMAT.format(month),
                     total = byMonth[month] ?: BigDecimal.ZERO,
                     isCurrent = month == currentMonth,
+                    monthKey = month,
                 )
             }
             .toList()
@@ -530,6 +598,20 @@ class InsightsViewModel(
         return out.take(3)
     }
 
+    /**
+     * Switches the planned recurring-bills overlay on or off (remembered per user). Turning it on also
+     * dismisses the one-time discovery nudge — the user has clearly found the feature.
+     */
+    fun onIncludeRecurringBillsChanged(include: Boolean) {
+        settingsStore.setInsightsIncludeRecurringBills(include)
+        if (include) settingsStore.dismissInsightsOverlayNudge()
+    }
+
+    /** Dismisses the one-time "Insights and Home disagree — overlay planned bills?" nudge for good. */
+    fun onDismissOverlayNudge() {
+        settingsStore.dismissInsightsOverlayNudge()
+    }
+
     /** Switches to the current block of [unit] (offset 0) and remembers the unit for next launch. */
     fun onUnitSelected(unit: PeriodUnit) {
         selectedPeriod.value = InsightsPeriod.Stepped(unit)
@@ -604,6 +686,83 @@ class InsightsViewModel(
             hasIncome = incomeEntities.isNotEmpty(),
             hasBills = billEntities.isNotEmpty(),
         )
+    }
+
+    /** The overlay bundle folded onto the main state: whether it's on, the period overlay itself, and
+     *  the per-calendar-month planned caps for the trend (empty when off). */
+    private data class PlannedOverlayBundle(
+        val include: Boolean,
+        val overlay: PlannedOverlay,
+        val perMonthPlanned: Map<YearMonth, BigDecimal>,
+    )
+
+    /**
+     * Builds the planned recurring-bills overlay for [period]: each bill projected onto the window
+     * ([windowAmount], so no back-projection), de-duplicated against the period's receipts
+     * ([splitPlannedBills]) so a bill the user also logged/scanned is counted once, and the per-month
+     * planned caps for the trend. Returns an empty bundle (no work) unless the user has opted in.
+     */
+    private fun computePlannedOverlay(
+        period: InsightsPeriod,
+        monthStartDay: Int,
+        txns: List<TransactionEntity>,
+        receipts: List<ReceiptEntity>,
+        recurring: List<RecurringEntity>,
+        include: Boolean,
+    ): PlannedOverlayBundle {
+        if (!include) return PlannedOverlayBundle(false, PlannedOverlay.EMPTY, emptyMap())
+        val zone = ZoneId.systemDefault()
+        val (windowStart, windowEnd) = period.toRange(monthStartDay = monthStartDay)
+        val billEntities = recurring.filterNot { it.isIncome }
+
+        // Each bill projected onto the whole window (display amount) with its per-occurrence amount kept
+        // for dedup matching.
+        val billLines = billEntities.map { bill ->
+            PlannedBillLine(
+                label = bill.label,
+                category = bill.category,
+                amount = bill.windowAmount(windowStart, windowEnd).setScale(2, RoundingMode.HALF_UP),
+                matchAmount = bill.amount,
+            )
+        }
+
+        // Receipt-side charges in the window: one per receipt (normalized store, paid total, date) — the
+        // same primitive the subscription detector builds, so bill↔receipt matching stays consistent.
+        val receiptsById = receipts.associateBy { it.timestamp }
+        val charges = txns.groupBy { it.receiptId }.mapNotNull { (receiptId, group) ->
+            val store = StoreNormalizer.normalize(receiptsById[receiptId]?.store.orEmpty())
+            if (store.isBlank()) return@mapNotNull null
+            val net = group.fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
+            ReceiptCharge(
+                merchant = store,
+                amount = net + paidAdjustmentOf(group, receiptsById),
+                dateMillis = group.firstOrNull()?.timestamp ?: receiptId,
+            )
+        }
+
+        val split = splitPlannedBills(billLines, charges)
+        val plannedTotal = split.visible
+            .fold(BigDecimal.ZERO) { acc, bill -> acc + bill.amount }
+            .setScale(2, RoundingMode.HALF_UP)
+        val overlay = PlannedOverlay(plannedTotal = plannedTotal, bills = split.visible, matched = split.matched)
+
+        // Per-calendar-month planned caps for the trend: the gross monthly bill rate, respecting each
+        // plan's created-month clip (so the earliest bars legitimately show none). Keyed by YearMonth.
+        val startMonth = YearMonth.from(Instant.ofEpochMilli(windowStart).atZone(zone))
+        val endMonth = YearMonth.from(Instant.ofEpochMilli(windowEnd).atZone(zone))
+        val perMonth = mutableMapOf<YearMonth, BigDecimal>()
+        var month = startMonth
+        while (!month.isAfter(endMonth)) {
+            val monthStart = month.atDay(1).atStartOfDay(zone).toInstant().toEpochMilli()
+            val monthEnd = month.atEndOfMonth().plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
+            val planned = billEntities.fold(BigDecimal.ZERO) { acc, bill ->
+                acc + bill.windowAmount(monthStart, monthEnd)
+            }
+            if (planned.signum() > 0) perMonth[month] = planned.setScale(2, RoundingMode.HALF_UP)
+            month = month.plusMonths(1)
+        }
+
+        return PlannedOverlayBundle(include = true, overlay = overlay, perMonthPlanned = perMonth)
     }
 
     private fun List<TransactionEntity>.sumOfSpend(): BigDecimal =

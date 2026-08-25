@@ -1123,4 +1123,47 @@
     <string name="recap_pace_left">Остават %1$s</string>
     <string name="recap_pace_over">%1$s над бюджета</string>
     <string name="recap_pace_nobudget">Няма зададен седмичен бюджет</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Слоеве</string>
+    <string name="insights_overlay_toggle_title">Включи редовните сметки</string>
+    <string name="insights_overlay_toggle_subtitle">Наслагвай планираните сметки като отделен слой</string>
+    <string name="insights_planned_badge">Планирано</string>
+    <string name="insights_overlay_bills_planned">Сметки · планирани</string>
+    <string name="insights_overlay_plus_bills">+ %1$s сметки</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Похарчено</string>
+    <string name="insights_overlay_planned">Планирано</string>
+    <string name="insights_overlay_wedge_header">Щрихованият сектор</string>
+    <string name="insights_overlay_denominator">Дяловете по категории остават процент от сумата %1$s, която похарчи — планираните сметки никога не влизат в нея.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d сметка е скрита — вече свързана с бележка</item>
+        <item quantity="other">%1$d сметки са скрити — вече свързани с бележка</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">свързана · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Отчита се веднъж, в похарченото.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s изключва %2$d сметка, вече свързана с бележка този период. Отвори Разбивка, за да видиш коя.</item>
+        <item quantity="other">%1$s изключва %2$d сметки, вече свързани с бележка този период. Отвори Разбивка, за да видиш кои.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Защо всяка плочка не помръдва</string>
+    <string name="insights_overlay_summary_lead">Плочките горе са стойности от бележки и не се променят, когато този слой е включен — сметките нямат бележка и отстъпка, така че няма какво да добавят.</string>
+    <string name="insights_overlay_summary_avgday_title">Средно / ден</string>
+    <string name="insights_overlay_summary_avgday_body">Разпределението на похарченото. Сметките не влизат в него.</string>
+    <string name="insights_overlay_summary_receipts_title">Бележки</string>
+    <string name="insights_overlay_summary_receipts_body">Сметката няма бележка за отчитане.</string>
+    <string name="insights_overlay_summary_avg_title">Средно / бележка</string>
+    <string name="insights_overlay_summary_avg_body">По същата причина — няма на какво да се раздели.</string>
+    <string name="insights_overlay_summary_saved_title">Спестено</string>
+    <string name="insights_overlay_summary_saved_body">Отстъпките идват от бележки. Сметките нямат такива.</string>
+    <string name="insights_overlay_trend_header">Разчитане на щрихованите върхове</string>
+    <string name="insights_overlay_trend_flat_title">Всеки връх е еднакъв</string>
+    <string name="insights_overlay_trend_flat_body">Сметките ти са постоянни %1$s на месец, затова щрихованата част не се променя. Мърда само плътната част — това, което наистина си похарчил.</string>
+    <string name="insights_overlay_trend_early_title">Ранните месеци нямат</string>
+    <string name="insights_overlay_trend_early_body">Сметките не се проектират назад, затова месеците преди да ги добавиш показват само похарченото.</string>
+    <string name="insights_overlay_trend_scale_title">Стълбовете се смалиха</string>
+    <string name="insights_overlay_trend_scale_body">Графиката вече побира похарченото плюс сметките, затова мащабът се промени. Сумите — не.</string>
+    <string name="insights_overlay_nudge_title">Анализ и Начало не съвпадат?</string>
+    <string name="insights_overlay_nudge_text">Начало също отчита %1$s редовни сметки този период. Наслагвай ги тук като планиран слой.</string>
+    <string name="insights_overlay_nudge_action">Наслагвай сметките</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Скрий</string>
 </resources>

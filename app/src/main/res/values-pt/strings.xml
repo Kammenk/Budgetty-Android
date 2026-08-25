@@ -1123,4 +1123,47 @@
     <string name="recap_pace_left">%1$s restantes</string>
     <string name="recap_pace_over">%1$s acima do orçamento</string>
     <string name="recap_pace_nobudget">Nenhum orçamento semanal definido</string>
+    <!-- Insights: planned recurring-bills overlay (planned bills layer over actual spend) -->
+    <string name="insights_overlay_layers">Camadas</string>
+    <string name="insights_overlay_toggle_title">Incluir contas recorrentes</string>
+    <string name="insights_overlay_toggle_subtitle">Sobrepor as contas previstas como uma camada separada</string>
+    <string name="insights_planned_badge">Previsto</string>
+    <string name="insights_overlay_bills_planned">Contas · previstas</string>
+    <string name="insights_overlay_plus_bills">+ %1$s em contas</string>
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Gasto</string>
+    <string name="insights_overlay_planned">Previsto</string>
+    <string name="insights_overlay_wedge_header">A fatia tracejada</string>
+    <string name="insights_overlay_denominator">As frações por categoria continuam sendo uma porcentagem dos %1$s que você gastou — as contas previstas nunca entram nesse total.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d conta oculta — já associada a um recibo</item>
+        <item quantity="other">%1$d contas ocultas — já associadas a um recibo</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">associada · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Contada uma vez, no gasto.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">%1$s exclui %2$d conta já associada a um recibo neste período. Abra o Detalhamento para ver qual.</item>
+        <item quantity="other">%1$s exclui %2$d contas já associadas a um recibo neste período. Abra o Detalhamento para ver quais.</item>
+    </plurals>
+    <string name="insights_overlay_summary_header">Por que cada bloco fica parado</string>
+    <string name="insights_overlay_summary_lead">Os blocos acima são valores de recibos e não mudam com esta camada ativa — as contas não têm recibo nem desconto, então não há nada a somar.</string>
+    <string name="insights_overlay_summary_avgday_title">Média / dia</string>
+    <string name="insights_overlay_summary_avgday_body">A distribuição do que você gastou. As contas não entram nela.</string>
+    <string name="insights_overlay_summary_receipts_title">Recibos</string>
+    <string name="insights_overlay_summary_receipts_body">Uma conta não tem recibo para contar.</string>
+    <string name="insights_overlay_summary_avg_title">Média / recibo</string>
+    <string name="insights_overlay_summary_avg_body">Mesmo motivo — nada para dividir.</string>
+    <string name="insights_overlay_summary_saved_title">Poupado</string>
+    <string name="insights_overlay_summary_saved_body">Os descontos vêm dos recibos. As contas não têm.</string>
+    <string name="insights_overlay_trend_header">Como ler os topos tracejados</string>
+    <string name="insights_overlay_trend_flat_title">Todo topo é igual</string>
+    <string name="insights_overlay_trend_flat_body">Suas contas são fixas em %1$s por mês, então a parte tracejada não varia. Só a parte cheia — o que você realmente gastou — se move.</string>
+    <string name="insights_overlay_trend_early_title">Os primeiros meses não têm</string>
+    <string name="insights_overlay_trend_early_body">As contas não são projetadas para trás, então os meses antes de você adicioná-las mostram apenas o gasto.</string>
+    <string name="insights_overlay_trend_scale_title">As barras ficaram menores</string>
+    <string name="insights_overlay_trend_scale_body">O gráfico agora comporta o gasto mais as contas, então a escala mudou. Os valores não.</string>
+    <string name="insights_overlay_nudge_title">Análises e Início não batem?</string>
+    <string name="insights_overlay_nudge_text">Início também conta %1$s em contas recorrentes neste período. Sobreponha-as aqui como uma camada prevista.</string>
+    <string name="insights_overlay_nudge_action">Sobrepor contas</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Dispensar</string>
 </resources>

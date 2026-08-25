@@ -3,6 +3,7 @@ package com.budgetty.app.ui.insights
 import com.budgetty.app.ui.theme.dimens
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
@@ -34,12 +36,15 @@ import androidx.compose.material.icons.automirrored.filled.TrendingFlat
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,11 +54,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -65,7 +73,12 @@ import com.budgetty.app.ui.components.CategoryTransactionsSheet
 import com.budgetty.app.ui.components.CustomDateRangeSheet
 import com.budgetty.app.ui.components.PieChart
 import com.budgetty.app.ui.components.PieSlice
+import com.budgetty.app.ui.components.PlannedBadge
+import com.budgetty.app.ui.components.PlannedSwatch
 import com.budgetty.app.ui.components.SectionsMenu
+import com.budgetty.app.ui.components.drawPlannedHatch
+import com.budgetty.app.ui.savings.SavingsSheetLabel
+import com.budgetty.app.ui.util.MatchedBillLine
 import com.budgetty.app.ui.components.StoreTransactionsSheet
 import com.budgetty.app.ui.components.TransactionLineRow
 import com.budgetty.app.ui.components.resolveSectionOrder
@@ -90,7 +103,10 @@ import com.budgetty.app.ui.util.isWideWidth
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import java.math.BigDecimal
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 @Composable
@@ -126,6 +142,9 @@ fun InsightsScreen(
         onStepBackward = viewModel::onStepBackward,
         onStepForward = viewModel::onStepForward,
         onCustomRangeSelected = viewModel::onCustomRangeSelected,
+        onToggleIncludeRecurringBills = viewModel::onIncludeRecurringBillsChanged,
+        onDismissOverlayNudge = viewModel::onDismissOverlayNudge,
+        overlayNudgeDismissed = settings.insightsOverlayNudgeDismissed,
         modifier = modifier,
     )
 }
@@ -150,6 +169,9 @@ private fun InsightsScreenContent(
     onStepBackward: () -> Unit,
     onStepForward: () -> Unit,
     onCustomRangeSelected: (LocalDate, LocalDate) -> Unit,
+    onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
+    onDismissOverlayNudge: () -> Unit = {},
+    overlayNudgeDismissed: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     // The category whose transactions are shown in the bottom sheet, or null when none is open.
@@ -159,6 +181,8 @@ private fun InsightsScreenContent(
     var selectedStore by remember { mutableStateOf<String?>(null) }
     // Whether the custom date-range picker sheet is open.
     var showDateRangeSheet by remember { mutableStateOf(false) }
+    // Which planned-bills overlay explainer dialog is open (Breakdown / Summary / Trend), or null.
+    var plannedDialog by remember { mutableStateOf<PlannedDialog?>(null) }
     val customPeriod = state.period as? InsightsPeriod.Custom
     val stepped = state.period as? InsightsPeriod.Stepped
     // Disable the back arrow once the on-screen block already reaches the earliest recorded spend,
@@ -211,6 +235,10 @@ private fun InsightsScreenContent(
                 onNavigateToWellbeing = onNavigateToWellbeing,
                 onNavigateToRecap = onNavigateToRecap,
                 showRecapEntry = showRecapEntry,
+                onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
+                onPlannedBadgeClick = { plannedDialog = it },
+                onDismissOverlayNudge = onDismissOverlayNudge,
+                overlayNudgeDismissed = overlayNudgeDismissed,
             )
         } else {
             InsightsPhoneBody(
@@ -230,6 +258,10 @@ private fun InsightsScreenContent(
                 onNavigateToPaywall = onNavigateToPaywall,
                 onNavigateToRecap = onNavigateToRecap,
                 showRecapEntry = showRecapEntry,
+                onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
+                onPlannedBadgeClick = { plannedDialog = it },
+                onDismissOverlayNudge = onDismissOverlayNudge,
+                overlayNudgeDismissed = overlayNudgeDismissed,
             )
         }
     }
@@ -267,7 +299,20 @@ private fun InsightsScreenContent(
             onDismiss = { showDateRangeSheet = false },
         )
     }
+
+    // Read-only explainer opened by a section's "Planned" badge; the switch stays in Customize.
+    plannedDialog?.let { dialog ->
+        PlannedOverlayDialog(
+            dialog = dialog,
+            state = state,
+            periodLabel = periodLabel,
+            onDismiss = { plannedDialog = null },
+        )
+    }
 }
+
+/** Which section's planned-bills overlay explainer dialog is open. */
+enum class PlannedDialog { BREAKDOWN, SUMMARY, TREND }
 
 /** "Breakdown" title with its period sub-label, shown above the donut. */
 @Composable
@@ -291,24 +336,30 @@ private fun BreakdownHeader(periodLabel: String, modifier: Modifier = Modifier) 
  * locally as it's a pure view over the same [slices].
  */
 @Composable
-private fun BreakdownCard(
+internal fun BreakdownCard(
     slices: List<PieSlice>,
     total: BigDecimal,
     periodLabel: String,
     onSliceClick: (PieSlice) -> Unit,
     modifier: Modifier = Modifier,
+    includeBills: Boolean = false,
+    plannedOverlay: PlannedOverlay = PlannedOverlay.EMPTY,
+    onPlannedBadgeClick: () -> Unit = {},
 ) {
     // false = every category (default); true = rolled up into top-level groups.
     var groupedByTop by remember { mutableStateOf(false) }
     val shownSlices = remember(slices, groupedByTop) {
         if (groupedByTop) rollUpToGroups(slices) else slices
     }
+    val showPlanned = includeBills && plannedOverlay.hasPlanned
     InsightCard(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BreakdownHeader(periodLabel, modifier = Modifier.weight(1f))
+            // The quiet "Planned" badge → the Breakdown explainer dialog (per-bill list + dedup).
+            if (showPlanned) PlannedBadge(onClick = onPlannedBadgeClick)
             // Nothing to collapse when there's no spend, so the toggle only shows with data.
             if (slices.isNotEmpty()) {
                 IconButton(onClick = { groupedByTop = !groupedByTop }) {
@@ -333,6 +384,7 @@ private fun BreakdownCard(
             periodLabel = periodLabel,
             onCategoryClick = onSliceClick,
             chartSize = 300.dp,
+            plannedAmount = plannedOverlay.plannedTotal.takeIf { showPlanned },
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -359,16 +411,31 @@ private fun rollUpToGroups(slices: List<PieSlice>): List<PieSlice> =
 
 /** Trend card body: title, day/month sub-label, then the bar chart (or a placeholder when empty). */
 @Composable
-private fun TrendCardContent(trend: TrendData, projectedTotal: BigDecimal? = null) {
-    Text(stringResource(R.string.insights_trend), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-    Text(
-        text = if (trend.bucketing == TrendBucketing.DAILY) stringResource(R.string.insights_trend_daily) else stringResource(R.string.insights_trend_monthly),
-        style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
+internal fun TrendCardContent(
+    trend: TrendData,
+    projectedTotal: BigDecimal? = null,
+    includeBills: Boolean = false,
+    onPlannedBadgeClick: () -> Unit = {},
+) {
+    // Caps only make sense in monthly bucketing (a monthly bill isn't a per-day quantity), and only
+    // once some month actually carries a planned amount.
+    val showPlanned = includeBills && trend.bucketing == TrendBucketing.MONTHLY &&
+        trend.buckets.any { it.planned.signum() > 0 }
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(stringResource(R.string.insights_trend), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text(
+                text = if (trend.bucketing == TrendBucketing.DAILY) stringResource(R.string.insights_trend_daily) else stringResource(R.string.insights_trend_monthly),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        // The quiet "Planned" badge → the Trend explainer dialog (reading the hatched caps).
+        if (showPlanned) PlannedBadge(onClick = onPlannedBadgeClick)
+    }
     Spacer(Modifier.height(MaterialTheme.dimens.lg))
     if (trend.hasData) {
-        TrendChart(buckets = trend.buckets)
+        TrendChart(buckets = trend.buckets, showPlanned = showPlanned)
         // For the in-progress current period, a "spending pace" projection of where the period lands.
         if (projectedTotal != null) {
             Spacer(Modifier.height(MaterialTheme.dimens.md))
@@ -552,6 +619,10 @@ private fun InsightsPhoneBody(
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
     showRecapEntry: Boolean = false,
+    onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
+    onPlannedBadgeClick: (PlannedDialog) -> Unit = {},
+    onDismissOverlayNudge: () -> Unit = {},
+    overlayNudgeDismissed: Boolean = false,
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -587,6 +658,13 @@ private fun InsightsPhoneBody(
                 onToggle = onToggleSection,
                 onReorder = onReorderSections,
                 onRevertToDefault = onRevertSections,
+                // A "Layers" group above the section list: the opt-in switch for the planned-bills overlay.
+                header = {
+                    InsightsLayersToggle(
+                        checked = state.includeRecurringBills,
+                        onCheckedChange = onToggleIncludeRecurringBills,
+                    )
+                },
             )
         }
         stepper(Modifier.fillMaxWidth(), true)
@@ -603,12 +681,22 @@ private fun InsightsPhoneBody(
                     // Breakdown shows its own empty state, so it renders even with no data; the rest
                     // only appear once there's spend to summarize.
                     InsightsSection.BREAKDOWN -> if (state.isLoaded) {
+                        // One-time nudge (the off-by-default overlay is otherwise invisible), above Breakdown.
+                        OverlayDiscoveryNudge(
+                            state = state,
+                            dismissed = overlayNudgeDismissed,
+                            onEnable = { onToggleIncludeRecurringBills(true) },
+                            onDismiss = onDismissOverlayNudge,
+                        )
                         if (hasData) {
                             BreakdownCard(
                                 slices = state.slices,
                                 total = state.total,
                                 periodLabel = periodLabel,
                                 onSliceClick = onSliceClick,
+                                includeBills = state.includeRecurringBills,
+                                plannedOverlay = state.plannedOverlay,
+                                onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.BREAKDOWN) },
                                 modifier = Modifier.fillMaxWidth(),
                             )
                         } else {
@@ -626,7 +714,11 @@ private fun InsightsPhoneBody(
 
                     InsightsSection.SUMMARY -> if (hasData) {
                         InsightCard {
-                            Text(stringResource(R.string.insights_summary), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            SectionTitleRow(
+                                title = stringResource(R.string.insights_summary),
+                                showPlannedBadge = state.includeRecurringBills && state.plannedOverlay.hasPlanned,
+                                onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.SUMMARY) },
+                            )
                             Spacer(Modifier.height(MaterialTheme.dimens.md))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -678,7 +770,14 @@ private fun InsightsPhoneBody(
                     }
 
                     InsightsSection.TREND -> if (hasData && state.trend.hasData) {
-                        InsightCard { TrendCardContent(state.trend, state.projectedTotal) }
+                        InsightCard {
+                            TrendCardContent(
+                                state.trend,
+                                state.projectedTotal,
+                                includeBills = state.includeRecurringBills,
+                                onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.TREND) },
+                            )
+                        }
                     }
 
                     // Only appears once there's a previous-period total to compare against.
@@ -722,7 +821,7 @@ private fun InsightsPhoneBody(
  * cards keep their pane slots.
  */
 @Composable
-private fun InsightsTabletBody(
+internal fun InsightsTabletBody(
     state: InsightsUiState,
     isWide: Boolean,
     periodLabel: String,
@@ -737,6 +836,10 @@ private fun InsightsTabletBody(
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
     showRecapEntry: Boolean = false,
+    onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
+    onPlannedBadgeClick: (PlannedDialog) -> Unit = {},
+    onDismissOverlayNudge: () -> Unit = {},
+    overlayNudgeDismissed: Boolean = false,
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -748,12 +851,29 @@ private fun InsightsTabletBody(
             total = state.total,
             periodLabel = periodLabel,
             onSliceClick = onSliceClick,
+            includeBills = state.includeRecurringBills,
+            plannedOverlay = state.plannedOverlay,
+            onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.BREAKDOWN) },
             modifier = mod,
+        )
+    }
+    // The one-time discovery nudge, spanning the content above Breakdown (both panes/columns).
+    val overlayNudge: @Composable () -> Unit = {
+        OverlayDiscoveryNudge(
+            state = state,
+            dismissed = overlayNudgeDismissed,
+            onEnable = { onToggleIncludeRecurringBills(true) },
+            onDismiss = onDismissOverlayNudge,
         )
     }
     val trendCard: @Composable (Modifier) -> Unit = { mod ->
         if (shows(InsightsSection.TREND)) InsightCard(modifier = mod) {
-            TrendCardContent(state.trend, state.projectedTotal)
+            TrendCardContent(
+                state.trend,
+                state.projectedTotal,
+                includeBills = state.includeRecurringBills,
+                onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.TREND) },
+            )
         }
     }
     // Period-over-period comparison as its own card below the trend (mirrors the phone layout);
@@ -808,6 +928,13 @@ private fun InsightsTabletBody(
                 onToggle = onToggleSection,
                 onReorder = onReorderSections,
                 onRevertToDefault = onRevertSections,
+                // A "Layers" group above the section list: the opt-in switch for the planned-bills overlay.
+                header = {
+                    InsightsLayersToggle(
+                        checked = state.includeRecurringBills,
+                        onCheckedChange = onToggleIncludeRecurringBills,
+                    )
+                },
             )
         }
     }
@@ -843,6 +970,11 @@ private fun InsightsTabletBody(
             }
             if (showRecapEntry) {
                 RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
+                Spacer(Modifier.height(MaterialTheme.dimens.md))
+            }
+            // Discovery nudge spans the content above the panes (manual layout ⇒ gate its spacer too).
+            if (shouldShowOverlayNudge(state, overlayNudgeDismissed)) {
+                overlayNudge()
                 Spacer(Modifier.height(MaterialTheme.dimens.md))
             }
             if (!hasData) {
@@ -917,6 +1049,7 @@ private fun InsightsTabletBody(
                     }
                 }
             } else {
+                overlayNudge()
                 donutCard(Modifier.fillMaxWidth())
                 statTiles()
                 trendCard(Modifier.fillMaxWidth())
@@ -1591,9 +1724,12 @@ private fun barFraction(total: BigDecimal, maxTotal: BigDecimal): Float =
 private fun TrendChart(
     buckets: List<TrendBucket>,
     modifier: Modifier = Modifier,
+    showPlanned: Boolean = false,
 ) {
     if (buckets.isEmpty()) return
-    val maxTotal = buckets.maxOf { it.total }
+    // With the overlay on, the tallest bar is spend + its planned cap, so every bar rescales to fit
+    // both — the amounts don't change, the axis does (explained in the Trend dialog).
+    val maxTotal = buckets.maxOf { if (showPlanned) it.total + it.planned else it.total }
     // Default selection: the most recent bar with spend, falling back to the last real (enabled) bar
     // so the header never lands on an inactive future placeholder.
     val defaultIndex = remember(buckets) {
@@ -1642,6 +1778,7 @@ private fun TrendChart(
                 TrendBar(
                     bucket = bucket,
                     fraction = barFraction(bucket.total, maxTotal),
+                    plannedFraction = if (showPlanned) barFraction(bucket.planned, maxTotal) else 0f,
                     isSelected = index == selectedIndex,
                     onClick = { selectedIndex = index },
                     modifier = if (scrollable) Modifier.width(SCROLL_BAR_WIDTH) else Modifier.weight(1f),
@@ -1651,8 +1788,9 @@ private fun TrendChart(
     }
 }
 
-/** A single column in [TrendChart]: the bar sized to [fraction] of the tallest, with its axis
- *  label below. The whole column is tappable so even slim bars are easy to hit. */
+/** A single column in [TrendChart]: the solid spend bar sized to [fraction] of the tallest, optionally
+ *  capped by a hatched "planned bills" segment of [plannedFraction], with its axis label below. The
+ *  whole column is tappable so even slim bars are easy to hit. */
 @Composable
 private fun TrendBar(
     bucket: TrendBucket,
@@ -1660,6 +1798,7 @@ private fun TrendBar(
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    plannedFraction: Float = 0f,
 ) {
     val barColor = when {
         // Not-yet-elapsed padding day: a faint empty stub that isn't tappable.
@@ -1668,6 +1807,9 @@ private fun TrendBar(
         bucket.isCurrent -> MaterialTheme.colorScheme.primary.copy(alpha = 0.55f)
         else -> MaterialTheme.colorScheme.primary.copy(alpha = 0.30f)
     }
+    val hatchColor = MaterialTheme.colorScheme.outlineVariant
+    val hasCap = plannedFraction > 0f
+    val capTop = RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp)
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -1676,13 +1818,29 @@ private fun TrendBar(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom,
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .height((MAX_BAR_HEIGHT * fraction).coerceAtLeast(MaterialTheme.dimens.xs))
-                .clip(RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp))
-                .background(barColor),
-        )
+        // Bar area (wraps its content): the hatched planned cap on top, the solid spend bar below.
+        Column(
+            modifier = Modifier.fillMaxWidth(0.7f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (hasCap) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height((MAX_BAR_HEIGHT * plannedFraction).coerceAtLeast(MaterialTheme.dimens.xs))
+                        .clip(capTop)
+                        .drawBehind { drawPlannedHatch(hatchColor, spacing = 5.dp, stroke = 1.2.dp) }
+                        .border(1.dp, hatchColor, capTop),
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height((MAX_BAR_HEIGHT * fraction).coerceAtLeast(MaterialTheme.dimens.xs))
+                    .clip(if (hasCap) RectangleShape else capTop)
+                    .background(barColor),
+            )
+        }
         Spacer(Modifier.height(6.dp))
         Text(
             text = bucket.axisLabel,
@@ -1694,6 +1852,344 @@ private fun TrendBar(
                 else -> MaterialTheme.colorScheme.onSurfaceVariant
             },
             fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+        )
+    }
+}
+
+// ── Planned recurring-bills overlay: Customize toggle, discovery nudge, section badge, dialogs ──────
+
+/** Whether the one-time overlay discovery nudge should show: loaded, not dismissed, overlay off, and
+ *  there are recurring bills projecting a positive amount this period (the figure Home already shows). */
+private fun shouldShowOverlayNudge(state: InsightsUiState, dismissed: Boolean): Boolean =
+    state.isLoaded && !dismissed && !state.includeRecurringBills &&
+        state.hasBills && state.periodBills.signum() > 0
+
+/**
+ * The "Layers" group at the top of the Customize-sections sheet: the opt-in switch for the
+ * planned-bills overlay, with the hatch swatch as its icon so the sheet teaches the texture before it
+ * appears on the charts. Off by default; flipping it is remembered per user.
+ */
+@Composable
+internal fun InsightsLayersToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        SavingsSheetLabel(stringResource(R.string.insights_overlay_layers))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
+                .clickable { onCheckedChange(!checked) }
+                .padding(vertical = MaterialTheme.dimens.sm),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            PlannedSwatch(hatched = true, size = 20.dp)
+            Spacer(Modifier.width(MaterialTheme.dimens.md))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.insights_overlay_toggle_title),
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = stringResource(R.string.insights_overlay_toggle_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(Modifier.width(MaterialTheme.dimens.sm))
+            Switch(checked = checked, onCheckedChange = onCheckedChange)
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+    }
+}
+
+/**
+ * The one-time discovery nudge above Breakdown: names, in the user's own terms, the disagreement the
+ * tester reported ("Home also counts €X of recurring bills") and offers to switch the overlay on — the
+ * only surface that reveals an otherwise-invisible, off-by-default preference. Self-gating; shown once
+ * per user until enabled or dismissed.
+ */
+@Composable
+private fun OverlayDiscoveryNudge(
+    state: InsightsUiState,
+    dismissed: Boolean,
+    onEnable: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    if (!shouldShowOverlayNudge(state, dismissed)) return
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusLg))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(
+                start = MaterialTheme.dimens.lg,
+                end = MaterialTheme.dimens.sm,
+                top = MaterialTheme.dimens.sm,
+                bottom = MaterialTheme.dimens.md,
+            ),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.insights_overlay_nudge_title),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier.weight(1f),
+            )
+            IconButton(onClick = onDismiss) {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = stringResource(R.string.cd_insights_overlay_nudge_dismiss),
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                )
+            }
+        }
+        Text(
+            text = stringResource(R.string.insights_overlay_nudge_text, state.periodBills.formatMoney()),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.padding(end = MaterialTheme.dimens.sm),
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.xs))
+        TextButton(onClick = onEnable) {
+            PlannedSwatch(hatched = true, size = 12.dp)
+            Spacer(Modifier.width(MaterialTheme.dimens.sm))
+            Text(stringResource(R.string.insights_overlay_nudge_action), fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+/** A section card title with an optional trailing "Planned" badge (Summary / Trend headers). */
+@Composable
+private fun SectionTitleRow(title: String, showPlannedBadge: Boolean, onPlannedBadgeClick: () -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f),
+        )
+        if (showPlannedBadge) PlannedBadge(onClick = onPlannedBadgeClick)
+    }
+}
+
+/**
+ * The read-only explainer opened by a section's "Planned" badge. Purely explanatory — the switch stays
+ * in Customize — with a shared "Spent vs Planned" header and section-specific body (the per-bill wedge
+ * makeup + dedup for Breakdown, why the tiles hold still for Summary, how to read the caps for Trend).
+ */
+@Composable
+private fun PlannedOverlayDialog(
+    dialog: PlannedDialog,
+    state: InsightsUiState,
+    periodLabel: String,
+    onDismiss: () -> Unit,
+) {
+    val overlay = state.plannedOverlay
+    val sectionName = stringResource(
+        when (dialog) {
+            PlannedDialog.BREAKDOWN -> R.string.insights_breakdown
+            PlannedDialog.SUMMARY -> R.string.insights_summary
+            PlannedDialog.TREND -> R.string.insights_trend
+        },
+    )
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done)) } },
+        title = {
+            Column {
+                Text(
+                    text = stringResource(R.string.insights_overlay_bills_planned),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = stringResource(R.string.insights_overlay_dialog_subtitle, sectionName, periodLabel),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+            ) {
+                PlannedSpentPlannedRow(spent = state.total, planned = overlay.plannedTotal)
+                when (dialog) {
+                    PlannedDialog.BREAKDOWN -> PlannedBreakdownDialogBody(overlay = overlay, spent = state.total)
+                    PlannedDialog.SUMMARY -> PlannedSummaryDialogBody(overlay = overlay)
+                    PlannedDialog.TREND -> PlannedTrendDialogBody(overlay = overlay)
+                }
+            }
+        },
+    )
+}
+
+/** The shared "Spent €950  ·  Planned €967" key at the top of every overlay dialog. */
+@Composable
+private fun PlannedSpentPlannedRow(spent: BigDecimal, planned: BigDecimal) {
+    Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.xl)) {
+        AmountKey(hatched = false, label = stringResource(R.string.insights_overlay_spent), amount = spent)
+        AmountKey(hatched = true, label = stringResource(R.string.insights_overlay_planned), amount = planned)
+    }
+}
+
+@Composable
+private fun AmountKey(hatched: Boolean, label: String, amount: BigDecimal) {
+    Column {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.xs),
+        ) {
+            PlannedSwatch(hatched = hatched, size = 10.dp)
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text(amount.formatMoney(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
+private fun PlannedBreakdownDialogBody(overlay: PlannedOverlay, spent: BigDecimal) {
+    SavingsSheetLabel(stringResource(R.string.insights_overlay_wedge_header))
+    overlay.bills.forEach { bill -> PlannedBillRow(label = bill.label, amount = bill.amount) }
+    Text(
+        text = stringResource(R.string.insights_overlay_denominator, spent.formatMoney()),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    if (overlay.matched.isNotEmpty()) PlannedDedupNote(overlay.matched)
+}
+
+@Composable
+private fun PlannedBillRow(label: String, amount: BigDecimal) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        Text(amount.formatMoney(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+    }
+}
+
+/** The dedup note: the bills hidden as already-matched to a receipt (counted once, in spend). */
+@Composable
+private fun PlannedDedupNote(matched: List<MatchedBillLine>) {
+    val dateFormat = remember { DateTimeFormatter.ofPattern("d MMM") }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+            .padding(MaterialTheme.dimens.md),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+    ) {
+        Text(
+            text = pluralStringResource(R.plurals.insights_overlay_dedup_note, matched.size, matched.size),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.SemiBold,
+        )
+        matched.forEach { m ->
+            val date = Instant.ofEpochMilli(m.dateMillis).atZone(ZoneId.systemDefault()).toLocalDate()
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = m.label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = stringResource(
+                        R.string.insights_overlay_matched_detail,
+                        dateFormat.format(date),
+                        m.amount.formatMoney(),
+                    ),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Text(
+            text = stringResource(R.string.insights_overlay_counted_once),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun PlannedSummaryDialogBody(overlay: PlannedOverlay) {
+    Text(
+        text = stringResource(R.string.insights_overlay_summary_lead),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    SavingsSheetLabel(stringResource(R.string.insights_overlay_summary_header))
+    PlannedExplainRow(
+        stringResource(R.string.insights_overlay_summary_avgday_title),
+        stringResource(R.string.insights_overlay_summary_avgday_body),
+    )
+    PlannedExplainRow(
+        stringResource(R.string.insights_overlay_summary_receipts_title),
+        stringResource(R.string.insights_overlay_summary_receipts_body),
+    )
+    PlannedExplainRow(
+        stringResource(R.string.insights_overlay_summary_avg_title),
+        stringResource(R.string.insights_overlay_summary_avg_body),
+    )
+    PlannedExplainRow(
+        stringResource(R.string.insights_overlay_summary_saved_title),
+        stringResource(R.string.insights_overlay_summary_saved_body),
+    )
+    if (overlay.matched.isNotEmpty()) {
+        Text(
+            text = pluralStringResource(
+                R.plurals.insights_overlay_dedup_excludes,
+                overlay.matched.size,
+                overlay.plannedTotal.formatMoney(),
+                overlay.matched.size,
+            ),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun PlannedTrendDialogBody(overlay: PlannedOverlay) {
+    SavingsSheetLabel(stringResource(R.string.insights_overlay_trend_header))
+    PlannedExplainRow(
+        stringResource(R.string.insights_overlay_trend_flat_title),
+        stringResource(R.string.insights_overlay_trend_flat_body, overlay.plannedTotal.formatMoney()),
+    )
+    PlannedExplainRow(
+        stringResource(R.string.insights_overlay_trend_early_title),
+        stringResource(R.string.insights_overlay_trend_early_body),
+    )
+    PlannedExplainRow(
+        stringResource(R.string.insights_overlay_trend_scale_title),
+        stringResource(R.string.insights_overlay_trend_scale_body),
+    )
+}
+
+/** A titled explanation row used in the Summary and Trend overlay dialogs. */
+@Composable
+private fun PlannedExplainRow(title: String, body: String) {
+    Column {
+        Text(title, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = body,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
