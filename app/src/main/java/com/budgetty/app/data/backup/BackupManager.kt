@@ -18,6 +18,7 @@ class BackupManager(
     private val recurringDao get() = db.database.recurringDao()
     private val savingsDao get() = db.database.savingsDao()
     private val buyingLimitDao get() = db.database.buyingLimitDao()
+    private val wellbeingScoreDao get() = db.database.wellbeingScoreDao()
 
     private val gson = Gson()
 
@@ -33,6 +34,7 @@ class BackupManager(
             savingsGoals = savingsDao.getGoals().first(),
             savingsContributions = savingsDao.getAllContributions().first(),
             buyingLimits = buyingLimitDao.getAll().first(),
+            wellbeingScores = wellbeingScoreDao.getAll().first(),
         )
         return gson.toJson(data)
     }
@@ -63,6 +65,7 @@ class BackupManager(
                 savingsDao.clearContributions()
                 savingsDao.clearGoals()
                 buyingLimitDao.clearAll()
+                wellbeingScoreDao.clearAll()
             }
             // New ids so a merge never collides with existing transactions.
             transactionDao.insertAll(data.transactions.map { it.copy(id = 0) })
@@ -89,6 +92,10 @@ class BackupManager(
             // Buying limits: fresh ids so a merge never collides; .orEmpty() tolerates pre-v25 backups
             // (Gson leaves the absent field null). Limits carry no child rows, so no id remap is needed.
             buyingLimitDao.insertAll(data.buyingLimits.orEmpty().map { it.copy(id = 0) })
+            // Wellbeing history: keyed by periodId (a natural key, no id to remap); .orEmpty() tolerates
+            // pre-v26 backups. insertAll IGNOREs a periodId clash, so a merge keeps the on-device
+            // snapshot rather than letting the backup rewrite a month's finalized score (§3.1).
+            wellbeingScoreDao.insertAll(data.wellbeingScores.orEmpty())
         }
     }
 }

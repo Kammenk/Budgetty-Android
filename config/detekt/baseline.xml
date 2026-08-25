@@ -17,7 +17,7 @@
     <ID>CyclomaticComplexMethod:SavingsSheets.kt$@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class) @Composable fun SavingsGoalEditSheet( initial: SavingsGoalEntity?, onSave: (name: String, emoji: String, target: BigDecimal, targetDate: Long?) -&gt; Unit, onDelete: (() -&gt; Unit)?, onDismiss: () -&gt; Unit, )</ID>
     <ID>CyclomaticComplexMethod:UploadScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun UploadScreen( source: String, onNavigateBack: () -&gt; Unit, onNavigateToPaywall: () -&gt; Unit, modifier: Modifier = Modifier, receiptId: Long = -1L, viewModel: UploadViewModel = koinViewModel(), )</ID>
     <ID>CyclomaticComplexMethod:WellbeingEngine.kt$WellbeingEngine$private fun monthlyCandidates(inputs: WellbeingInputs): List&lt;WellbeingTip&gt;</ID>
-    <ID>CyclomaticComplexMethod:WellbeingProvider.kt$WellbeingProvider$private fun build(core: Core, extra: Extra): WellbeingSummary</ID>
+    <ID>CyclomaticComplexMethod:WellbeingProvider.kt$WellbeingProvider$private fun build(core: Core, extra: Extra): Built</ID>
     <ID>CyclomaticComplexMethod:WellbeingScreen.kt$@Composable private fun componentWhy(key: WellbeingComponentKey, d: ComponentDetail?): String</ID>
     <ID>CyclomaticComplexMethod:WellbeingScreen.kt$@Composable private fun tipTitle(tip: WellbeingTip): String</ID>
     <ID>EmptyFunctionBlock:BillingManager.kt$BillingManager.&lt;no name provided&gt;${}</ID>

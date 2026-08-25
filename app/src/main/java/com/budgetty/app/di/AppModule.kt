@@ -22,6 +22,7 @@ import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
 import com.budgetty.app.data.repository.SubscriptionsRepository
 import com.budgetty.app.data.repository.TransactionRepository
+import com.budgetty.app.data.repository.WellbeingScoreRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.widget.WidgetDataProvider
 import com.budgetty.app.widget.WidgetUpdater
@@ -76,13 +77,14 @@ val appModule = module {
     single { SavingsRepository(get()) }
     single { SubscriptionsRepository(get()) }
     single { BuyingLimitsRepository(get()) }
+    single { WellbeingScoreRepository(get()) }
 
     // App-scoped hand-off for the buying-limit save-time nudge (Upload posts, Home observes).
     single { BuyingLimitNudgeBus() }
     single { BuyingLimitNudger(get(), get(), get(), get()) }
 
     // Wellbeing score + tips — shared by the Wellbeing screen, the Home banner and the Insights row.
-    single { WellbeingProvider(get(), get(), get(), get(), get(), get(), get()) }
+    single { WellbeingProvider(get(), get(), get(), get(), get(), get(), get(), get()) }
 
     // End-of-period recap — builds the just-closed period's story from the same repositories.
     single { RecapProvider(get(), get(), get(), get(), get(), get(), get(), get(), get()) }

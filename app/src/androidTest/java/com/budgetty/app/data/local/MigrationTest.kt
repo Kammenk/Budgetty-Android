@@ -257,6 +257,38 @@ class MigrationTest {
     }
 
     /**
+     * [MIGRATION_25_26] adds the wellbeing_scores table (§3.1 score history). A pure CREATE, so the
+     * strongest assertion is that opening with Room afterwards validates the created table against the
+     * [WellbeingScoreEntity] schema (a column/type/PK mismatch throws on open); the round-trip below
+     * then proves the table is present and usable with all five columns.
+     */
+    @Test
+    fun migration25To26CreatesWellbeingScoresTable() {
+        openRawAtV1().use { db ->
+            ALL_MIGRATIONS.filter { it.endVersion <= 25 }.forEach { it.migrate(db) }
+            db.version = 25
+        }
+
+        openWithRoom().useSqlite { db ->
+            db.execSQL(
+                "INSERT INTO wellbeing_scores (periodId, score, band, componentsJson, computedAt) " +
+                    "VALUES (?, ?, ?, ?, ?)",
+                arrayOf<Any>("2026-02", 72, "HEALTHY", "{\"SAVINGS\":80}", 1_700_000_000_000L),
+            )
+            db.query("SELECT periodId, score, band, componentsJson, computedAt FROM wellbeing_scores")
+                .use { c ->
+                    assertTrue("the v26 table must exist and be queryable", c.moveToFirst())
+                    assertEquals("2026-02", c.getString(0))
+                    assertEquals(72, c.getInt(1))
+                    assertEquals("HEALTHY", c.getString(2))
+                    assertEquals("{\"SAVINGS\":80}", c.getString(3))
+                    assertEquals(1_700_000_000_000L, c.getLong(4))
+                    assertEquals(1, c.count)
+                }
+        }
+    }
+
+    /**
      * Opens [TEST_DB] with the schema as it stood at v1: transactions only, before
      * [MIGRATION_1_2] added category and [MIGRATION_6_7] added receiptId.
      */

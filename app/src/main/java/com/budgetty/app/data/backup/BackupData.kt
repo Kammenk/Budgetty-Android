@@ -9,11 +9,12 @@ import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.SavingsContributionEntity
 import com.budgetty.app.data.local.SavingsGoalEntity
 import com.budgetty.app.data.local.TransactionEntity
+import com.budgetty.app.data.local.WellbeingScoreEntity
 
 /**
  * The full local dataset, serialized to/from a JSON backup file. Collections added after the first
- * backup format (recurring, savings, buying limits) are read back with `.orEmpty()` in
- * [BackupManager] — Gson leaves a field absent from an older backup as null despite the default here.
+ * backup format (recurring, savings, buying limits, wellbeing history) are read back with `.orEmpty()`
+ * in [BackupManager] — Gson leaves a field absent from an older backup as null despite the default here.
  */
 data class BackupData(
     val transactions: List<TransactionEntity> = emptyList(),
@@ -25,4 +26,5 @@ data class BackupData(
     val savingsGoals: List<SavingsGoalEntity> = emptyList(),
     val savingsContributions: List<SavingsContributionEntity> = emptyList(),
     val buyingLimits: List<BuyingLimitEntity> = emptyList(),
+    val wellbeingScores: List<WellbeingScoreEntity> = emptyList(),
 )
