@@ -24,6 +24,10 @@ import com.budgetty.app.ui.util.CountableItem
 import com.budgetty.app.ui.util.MerchantCharge
 import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.SavingsMath
+import com.budgetty.app.ui.streaks.BudgetStreakInput
+import com.budgetty.app.ui.streaks.StreakEngine
+import com.budgetty.app.ui.streaks.StreakKind
+import com.budgetty.app.ui.streaks.StreakTxn
 import com.budgetty.app.ui.util.SubscriptionDetector
 import com.budgetty.app.ui.util.windowAmount
 import com.budgetty.app.ui.wellbeing.GoalPace
@@ -41,6 +45,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import kotlin.math.roundToInt
 
@@ -417,19 +422,40 @@ class RecapProvider(
         else -> RecapSegStatus.GOOD
     }
 
-    /** Consecutive closed months under budget, ending with [endOffset]; 0 if that month wasn't under. */
+    /**
+     * Consecutive closed months where EVERY budgeted scope stayed under, ending with the month at
+     * [endOffset]; 0 when that month wasn't all-under or there is no budget. Re-sourced from
+     * [StreakEngine] (§2.1) so there is a single streak implementation: each transaction is tagged with
+     * its pay-cycle-month index relative to [endOffset] (0 = that month, increasing into the past), the
+     * whole-budget paid adjustment is folded per period, and [StreakEngine.allScopesStreak] does the
+     * one-pass every-scope aggregate over [StreakEngine.MAX_STREAK] closed months.
+     */
     private fun streakMonths(loaded: Loaded, now: LocalDate, endOffset: Int): Int {
-        var count = 0
-        var off = endOffset
-        while (count < MAX_STREAK) {
-            val txns = txnsIn(loaded, monthWindow(now, loaded.monthStartDay, off))
-            val outcome = budgetOutcome(loaded, txns, paidSpend(loaded, txns))
-            val under = outcome.hasBudget && outcome.underCount == outcome.scopeCount && txns.isNotEmpty()
-            if (!under) break
-            count++
-            off--
+        val endCycle = YearMonth.from(PayCycle.month(now, loaded.monthStartDay, endOffset).first)
+        val byPeriod = loaded.txns
+            .mapNotNull { t ->
+                val date = Instant.ofEpochMilli(t.timestamp).atZone(zone).toLocalDate()
+                val txnCycle = YearMonth.from(PayCycle.month(date, loaded.monthStartDay).first)
+                val periodIndex = ChronoUnit.MONTHS.between(txnCycle, endCycle).toInt()
+                if (periodIndex in 0 until StreakEngine.MAX_STREAK) periodIndex to t else null
+            }
+            .groupBy({ it.first }, { it.second })
+        val streakTxns = byPeriod.flatMap { (periodIndex, list) ->
+            list.map { StreakTxn(periodIndex, it.category, it.price.multiply(BigDecimal(it.quantity))) }
         }
-        return count
+        val monthlyAdjustment = byPeriod.mapValues { (_, list) -> paidAdjustmentOf(list, loaded.receiptsById) }
+        val catBudgets = loaded.budgets.filterKeys { it.startsWith(BudgetRepository.CATEGORY_PREFIX) }
+            .mapKeys { it.key.removePrefix(BudgetRepository.CATEGORY_PREFIX) }
+        return StreakEngine.allScopesStreak(
+            BudgetStreakInput(
+                transactions = streakTxns,
+                categoryBudgets = catBudgets,
+                monthlyBudget = loaded.budgets[BudgetRepository.MONTHLY],
+                kind = StreakKind.BUDGET_MONTH,
+                monthlyLabel = BudgetRepository.MONTHLY,
+                monthlyAdjustmentByPeriod = monthlyAdjustment,
+            ),
+        ).current
     }
 
     // ── Buying-limits outcome ──────────────────────────────────────────────────────
@@ -579,7 +605,6 @@ class RecapProvider(
         const val TOUGH_SCORE_DROP = -5
         const val FLAT_TOLERANCE = 2
         const val WARN_FRACTION = 0.9
-        const val MAX_STREAK = 24
         const val TRAILING_MONTHS = 6
         const val NICE_STEP = 10
     }
