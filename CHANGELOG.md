@@ -15,6 +15,24 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.3.0 (versionCode 1130) — 2026-08-25
+
+The biggest update since Wellbeing: a set of gentle, privacy-first retention features — and the features they build on. Every mechanic rewards a real financial outcome (spending better), never just opening the app, and nothing uses loss framing — no "streak broken", no flames, no countdowns. All free.
+
+### Added
+- **End-of-period Recap** — when a week or month closes, a swipeable story of how your spending went and one thing to focus on next. Weekly recaps are now on by default with a **one-tap frequency control** right in the story (Weekly / Monthly / Both / Off), and the story can include **streak** and **buying-limits** cards.
+- **Buying limits** — cap how often you buy something with a few keywords, a week or month, and a number ("no more than 1 Coke a week"), counted off your receipts with an at-save nudge. Now with **live progress pips, an 8-window history strip, per-limit streaks, and suggested limits** drawn from what you buy most. The free plan now includes **3** limits (was 1); unlimited with Premium.
+- **Outcome streaks** — quiet, honest streaks like "3 months under your Groceries budget", surfaced on Recap, Wellbeing and Budget. Per-category (one over-budget category never zeroes another), and they always show your personal best rather than shaming a miss — reaching a self-set cap reads as "reached", never "failed".
+- **Wellbeing trend & coaching** — a six-month **score trend** sparkline, tips that show **"+N to your score"** so you can see what acting is worth, a **"N points to Healthy"** nudge when you're close to the next band, and streak evidence behind your budget score.
+- **Insights — planned recurring-bills overlay** — an opt-in layer (Customize → Layers) that shows planned recurring bills alongside actual spend in Breakdown, Summary and Trend, so Insights and Home stop disagreeing.
+- **Usage analytics (opt-out)** — anonymous, aggregate usage measurement to help improve the app, **on by default with a toggle in Account**. No receipts, amounts, or personal data are sent, and no advertising ID is collected.
+
+> Database schema **v22 → v26** — buying limits, recap timing, planned-overlay preferences, and stored wellbeing-score history (so the trend line is a true record, not recomputed against today's budgets). All migrations included; backup/restore updated.
+
+> **Play status — not yet uploaded.** Supersedes 11.2.2 / 11.2.1 / 11.2.0 (only 11.2.0 reached the closed track). A Play release from here covers the Recap, Buying limits and planned-bills overlay features plus this retention layer and the accumulated 11.2.x changes. Full parity shipped on iOS the same day.
+
+> **Internal — action before uploading:** this is the first release with **Firebase Analytics**. Enable Analytics in the Firebase console, then update the **Play Data-safety** declaration and the **iOS App Privacy** label to declare anonymous analytics (App activity / App info & performance; *Data shared: No*; **no** Advertising ID — the Ad-ID permission is removed in the manifest).
+
 ## 11.2.2 (versionCode 1122) — 2026-08-12
 
 A small UI fix.
