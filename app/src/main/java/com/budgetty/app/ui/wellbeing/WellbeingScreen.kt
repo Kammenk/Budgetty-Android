@@ -82,9 +82,23 @@ import com.budgetty.app.ui.util.formatMoney
 import com.budgetty.app.ui.util.formatMonth
 import com.budgetty.app.ui.util.isExpandedWidth
 import org.koin.androidx.compose.koinViewModel
+import androidx.compose.foundation.Canvas
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import com.budgetty.app.ui.streaks.Streak
+import com.budgetty.app.ui.streaks.StreakKind
+import com.budgetty.app.ui.streaks.StreakMotif
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.TextStyle
+import java.util.Locale
 
 /** Deep-link targets a Wellbeing tip / component can jump to. */
 data class WellbeingNav(
@@ -106,6 +120,22 @@ fun WellbeingScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var mode by rememberSaveable { mutableStateOf(WellbeingMode.MONTHLY) }
     var open by rememberSaveable { mutableStateOf<WellbeingComponentKey?>(null) }
+
+    // Impression analytics (§3.3 / §2.6): fire once per unique content shown on the monthly view — a
+    // "+N to your score" pill for each visible actionable tip, and streak evidence for each surfaced
+    // budget streak. Keyed on stable content strings so re-emits of the same data don't over-count.
+    val gainTips = state.monthlyTips.filter { WellbeingEngine.showsProjectedGain(it.projectedGain) }
+    val streaks = state.summary?.budgetStreaks.orEmpty()
+    LaunchedEffect(
+        mode,
+        gainTips.joinToString { "${it.type}:${it.projectedGain}" },
+        streaks.joinToString { "${it.kind}:${it.current}" },
+    ) {
+        if (mode != WellbeingMode.MONTHLY) return@LaunchedEffect
+        gainTips.forEach { viewModel.onProjectedGainShown(it.type, it.projectedGain ?: 0) }
+        if (state.summary?.hasScore == true) streaks.forEach { viewModel.onStreakSurfaced(it.kind, it.current) }
+    }
+
     val periodLabel = state.summary?.let {
         if (mode == WellbeingMode.WEEKLY && it.hasScore) "${it.weekStart.formatDayMonth()} – ${it.weekEnd.formatDayMonth()}"
         else if (it.hasScore) it.monthYear.formatMonth() else ""
@@ -241,7 +271,7 @@ private fun WellbeingContent(
 // ── Score card (monthly) ───────────────────────────────────────────────────────
 
 @Composable
-private fun ScoreCard(
+internal fun ScoreCard(
     summary: WellbeingSummary,
     open: WellbeingComponentKey?,
     onToggle: (WellbeingComponentKey) -> Unit,
@@ -259,8 +289,17 @@ private fun ScoreCard(
                     ComponentsSection(summary, open, onToggle, nav)
                 }
             }
+            // Sparkline spans the full content width below the two-up row (never tucked in one column).
+            summary.trend?.let {
+                Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                TrendSparkline(it, summary.monthYear)
+            }
         } else {
             ScoreRingHero(summary, ringSize = 152.dp)
+            summary.trend?.let {
+                Spacer(Modifier.height(MaterialTheme.dimens.lg))
+                TrendSparkline(it, summary.monthYear)
+            }
             Spacer(Modifier.height(MaterialTheme.dimens.lg))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Spacer(Modifier.height(MaterialTheme.dimens.md))
@@ -285,9 +324,10 @@ private fun ScoreRingHero(summary: WellbeingSummary, ringSize: Dp) {
                 Text(stringResource(R.string.wellbeing_out_of_100), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
-        score.trendDeltaVsPrevious?.let { delta ->
+        // §3.5: the band-up nudge replaces the old "vs last month" chip, sitting just under the ring.
+        summary.bandUp?.let { bandUp ->
             Spacer(Modifier.height(MaterialTheme.dimens.md))
-            TrendChip(delta)
+            BandUpPill(bandUp)
         }
     }
 }
@@ -306,7 +346,11 @@ private fun ComponentsSection(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     summary.score.components.forEach { comp ->
-        ComponentRow(comp, summary.detail[comp.key], open == comp.key, { onToggle(comp.key) }, nav)
+        ComponentRow(
+            comp, summary.detail[comp.key], open == comp.key, { onToggle(comp.key) }, nav,
+            // §2.6: budget-adherence streak evidence hangs under the Budget row only.
+            streakEvidence = if (comp.key == WellbeingComponentKey.BUDGET) summary.budgetStreaks else emptyList(),
+        )
     }
     if (summary.score.hasExcludedComponent) {
         Spacer(Modifier.height(MaterialTheme.dimens.sm))
@@ -325,6 +369,7 @@ private fun ComponentRow(
     open: Boolean,
     onToggle: () -> Unit,
     nav: WellbeingNav,
+    streakEvidence: List<Streak> = emptyList(),
 ) {
     val excluded = comp.score == null
     val color = if (excluded) MaterialTheme.colorScheme.onSurfaceVariant else tierColor(comp.score!!)
@@ -365,6 +410,11 @@ private fun ComponentRow(
             trackColor = MaterialTheme.colorScheme.outlineVariant,
             modifier = Modifier.fillMaxWidth().height(5.dp).clip(RoundedCornerShape(50)),
         )
+        // §2.6: streak evidence as calm supporting detail — always visible, not gated behind expand.
+        if (streakEvidence.isNotEmpty()) {
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+            streakEvidence.forEach { StreakEvidenceRow(it) }
+        }
         if (open && !excluded) {
             Spacer(Modifier.height(MaterialTheme.dimens.sm))
             Column(
@@ -393,25 +443,166 @@ private fun ComponentRow(
     }
 }
 
+// ── §3.5 Band-up nudge ──────────────────────────────────────────────────────────
+
 @Composable
-private fun TrendChip(delta: Int) {
-    val up = delta >= 0
+private fun BandUpPill(bandUp: BandUp) {
     Row(
         Modifier
             .clip(RoundedCornerShape(50))
-            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .background(wellbeingWarnContainer())
             .padding(horizontal = MaterialTheme.dimens.md, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.xs),
     ) {
+        Icon(
+            Icons.Filled.KeyboardArrowUp,
+            contentDescription = null,
+            tint = wellbeingWarnOn(),
+            modifier = Modifier.size(16.dp),
+        )
         Text(
-            (if (up) "▲ " else "▼ ") + kotlin.math.abs(delta),
+            pluralStringResource(
+                R.plurals.wellbeing_band_up, bandUp.pointsAway, bandUp.pointsAway, bandWord(bandUp.nextBand),
+            ),
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.Bold,
-            color = if (up) budgetGoodColor() else MaterialTheme.colorScheme.onSurfaceVariant,
+            color = wellbeingWarnOn(),
         )
-        Text(stringResource(R.string.wellbeing_vs_last_month), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
+}
+
+// ── §3.2 Trend sparkline ────────────────────────────────────────────────────────
+
+// Design-specific chart geometry (named like ScoreRing's own ratios / StreakMotif's segment sizes).
+private val SparklineHeight = 64.dp
+private val SparklineDotRadius = 3.dp
+private val SparklineGhostRadius = 3.5.dp
+private val SparklineStroke = 2.dp
+private const val GHOST_ALPHA = 0.45f
+
+/**
+ * The six-point trend sparkline (§3.2): the last CLOSED months as a solid `--primary` polyline + dots,
+ * then a dashed ghost segment to a hollow dot for the in-flight month. Calm — no gridlines, no axis
+ * clutter. Rendered only when [WellbeingTrend] is non-null (≥ 2 stored months); the caller shows nothing
+ * otherwise. [nowMonth] labels the ghost's x-position.
+ */
+@Composable
+internal fun TrendSparkline(trend: WellbeingTrend, nowMonth: YearMonth, modifier: Modifier = Modifier) {
+    val d = MaterialTheme.dimens
+    val line = MaterialTheme.colorScheme.primary
+    val surface = MaterialTheme.colorScheme.surfaceContainerLow
+    Column(
+        modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(d.radiusLg))
+            .background(surface)
+            .padding(d.md),
+    ) {
+        Text(
+            stringResource(R.string.wellbeing_trend_label),
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(d.sm))
+        SparklineCanvas(trend, line, surface, Modifier.fillMaxWidth().height(SparklineHeight))
+        Spacer(Modifier.height(d.sm))
+        val axis = MaterialTheme.typography.labelSmall
+        val axisColor = MaterialTheme.colorScheme.onSurfaceVariant
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(trend.firstMonth.shortMonth(), style = axis, color = axisColor)
+            val rightMonth = if (trend.liveScore != null) nowMonth else trend.closed.last().yearMonth
+            Text(rightMonth.shortMonth(), style = axis, color = axisColor)
+        }
+        Spacer(Modifier.height(d.xs))
+        Text(trendCaption(trend), style = MaterialTheme.typography.bodySmall, color = axisColor)
+    }
+}
+
+@Composable
+private fun SparklineCanvas(trend: WellbeingTrend, line: Color, surface: Color, modifier: Modifier) {
+    val ghost = line.copy(alpha = GHOST_ALPHA)
+    Canvas(modifier) {
+        val closed = trend.closed
+        val hasGhost = trend.liveScore != null
+        val scores = closed.map { it.score } + listOfNotNull(trend.liveScore)
+        val minS = scores.min().toFloat()
+        val range = (scores.max() - scores.min()).coerceAtLeast(1).toFloat()
+        val padX = SparklineGhostRadius.toPx() + SparklineStroke.toPx()
+        val padY = SparklineGhostRadius.toPx() + SparklineStroke.toPx()
+        val count = closed.size + if (hasGhost) 1 else 0
+        fun x(i: Int): Float = if (count <= 1) size.width / 2f else padX + (size.width - 2 * padX) * i / (count - 1)
+        fun y(s: Int): Float = size.height - padY - (s - minS) / range * (size.height - 2 * padY)
+
+        val stroke = SparklineStroke.toPx()
+        val path = Path()
+        closed.forEachIndexed { i, p -> if (i == 0) path.moveTo(x(i), y(p.score)) else path.lineTo(x(i), y(p.score)) }
+        drawPath(path, line, style = Stroke(width = stroke, cap = StrokeCap.Round, join = StrokeJoin.Round))
+
+        if (hasGhost) {
+            val last = Offset(x(closed.size - 1), y(closed.last().score))
+            val g = Offset(x(closed.size), y(trend.liveScore!!))
+            drawLine(
+                ghost, last, g, strokeWidth = stroke, cap = StrokeCap.Round,
+                pathEffect = PathEffect.dashPathEffect(floatArrayOf(stroke * 1.5f, stroke * 2f)),
+            )
+        }
+        closed.forEachIndexed { i, p -> drawCircle(line, SparklineDotRadius.toPx(), Offset(x(i), y(p.score))) }
+        if (hasGhost) {
+            val c = Offset(x(closed.size), y(trend.liveScore!!))
+            drawCircle(surface, SparklineGhostRadius.toPx(), c) // knock a hole so the ghost reads hollow
+            drawCircle(ghost, SparklineGhostRadius.toPx(), c, style = Stroke(width = SparklineStroke.toPx()))
+        }
+    }
+}
+
+@Composable
+private fun trendCaption(trend: WellbeingTrend): String {
+    val month = trend.firstMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())
+    return when {
+        trend.deltaSinceFirst > 0 -> stringResource(R.string.wellbeing_trend_up, trend.deltaSinceFirst, month)
+        trend.deltaSinceFirst < 0 -> stringResource(R.string.wellbeing_trend_down, -trend.deltaSinceFirst, month)
+        else -> stringResource(R.string.wellbeing_trend_flat, month)
+    }
+}
+
+private fun YearMonth.shortMonth(): String = month.getDisplayName(TextStyle.SHORT, Locale.getDefault())
+
+// ── §2.6 Streak evidence ────────────────────────────────────────────────────────
+
+@Composable
+private fun StreakEvidenceRow(streak: Streak) {
+    val scope = if (streak.label.isBlank()) stringResource(R.string.wellbeing_streak_scope_overall)
+    else categoryDisplayName(streak.label)
+    Row(
+        Modifier.fillMaxWidth().padding(vertical = 3.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+    ) {
+        StreakMotif(filledCount = streak.current, showLive = streak.liveOnTrack, maxSegments = 6)
+        Text(
+            pluralStringResource(R.plurals.wellbeing_streak_under, streak.current, scope, streak.current),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+// ── §3.3 Projected-gain pill ────────────────────────────────────────────────────
+
+@Composable
+private fun ProjectedGainPill(gain: Int) {
+    Text(
+        stringResource(R.string.wellbeing_projected_gain, gain),
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Bold,
+        color = budgetGoodColor(),
+        modifier = Modifier
+            .clip(RoundedCornerShape(50))
+            .background(wellbeingGoodContainer())
+            .padding(horizontal = MaterialTheme.dimens.sm, vertical = MaterialTheme.dimens.xs),
+    )
 }
 
 // ── Weekly ─────────────────────────────────────────────────────────────────────
@@ -567,7 +758,7 @@ private fun TipsFeed(
 }
 
 @Composable
-private fun TipCard(
+internal fun TipCard(
     tip: WellbeingTip,
     onDismiss: (String) -> Unit,
     onTipAct: (TipType) -> Unit,
@@ -588,6 +779,11 @@ private fun TipCard(
                         Text(tipTitle(tip), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         tipDetail(tip)?.let {
                             Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 2.dp))
+                        }
+                        // §3.3: the modelled "+N to your score" pill, shown only when it clears the floor.
+                        if (WellbeingEngine.showsProjectedGain(tip.projectedGain)) {
+                            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+                            ProjectedGainPill(tip.projectedGain ?: 0)
                         }
                     }
                 }
@@ -858,27 +1054,44 @@ private fun WellbeingHealthyPreview() {
 private fun previewNav() = WellbeingNav({}, {}, {}, {}, {}, {})
 
 private fun previewTips() = listOf(
-    WellbeingTip(TipType.CATEGORY_SPIKE, "spike:Dining", TipTone.CAUTION, amount = BigDecimal("182"), amount2 = BigDecimal("136"), percent = 34, label = "Dining"),
-    WellbeingTip(TipType.SUBSCRIPTION_COST, "subs_cost", TipTone.CAUTION, amount = BigDecimal("22"), count = 2, percent = 9),
+    WellbeingTip(
+        TipType.MISSING_BUDGET, "missing_budget:Dining", TipTone.OPPORTUNITY,
+        amount = BigDecimal("180"), label = "Dining", projectedGain = 6,
+    ),
+    WellbeingTip(
+        TipType.SUBSCRIPTION_COST, "subs_cost", TipTone.CAUTION,
+        amount = BigDecimal("22"), count = 2, percent = 9, projectedGain = 1,
+    ),
     WellbeingTip(TipType.SAVINGS_WIN, "savings_win", TipTone.WIN, percent = 18, amount = BigDecimal("432")),
 )
 
 private fun previewSummary(): WellbeingSummary {
     val comps = listOf(
         WellbeingComponent(WellbeingComponentKey.SAVINGS, 25, 78),
-        WellbeingComponent(WellbeingComponentKey.BUDGET, 25, 65),
-        WellbeingComponent(WellbeingComponentKey.TREND, 15, 80),
-        WellbeingComponent(WellbeingComponentKey.SUBSCRIPTIONS, 15, 55),
-        WellbeingComponent(WellbeingComponentKey.GOALS, 20, 70),
+        WellbeingComponent(WellbeingComponentKey.BUDGET, 25, 55),
+        WellbeingComponent(WellbeingComponentKey.TREND, 15, 62),
+        WellbeingComponent(WellbeingComponentKey.SUBSCRIPTIONS, 15, 45),
+        WellbeingComponent(WellbeingComponentKey.GOALS, 20, 50),
+    )
+    val trend = WellbeingTrend(
+        closed = listOf(49, 51, 52, 54, 55, 56)
+            .mapIndexed { i, s -> WellbeingTrendPoint(YearMonth.of(2026, 3 + i), s) },
+        liveScore = 57, deltaSinceFirst = 8, firstMonth = YearMonth.of(2026, 3),
     )
     return WellbeingSummary(
-        score = WellbeingScore(72, WellbeingBand.HEALTHY, comps, 4),
+        score = WellbeingScore(57, WellbeingBand.GETTING_THERE, comps, 4),
         monthlyTips = previewTips(),
         weekly = WeeklyPace(BigDecimal("210"), BigDecimal("300"), 0.7f, 0.71f, BigDecimal("90"), 2, -12, true),
         weeklyTips = emptyList(),
-        wins = listOf(WellbeingWin("🔥", TipType.SAVINGS_WIN, percent = 18)),
+        wins = listOf(WellbeingWin("📈", TipType.SAVINGS_WIN, percent = 18)),
         detail = emptyMap(),
-        receiptsLogged = 18, hasBudget = true, periodId = "2026-06",
-        monthYear = YearMonth.of(2026, 6), weekStart = LocalDate.of(2026, 6, 22), weekEnd = LocalDate.of(2026, 6, 28),
+        receiptsLogged = 18, hasBudget = true, periodId = "2026-09",
+        monthYear = YearMonth.of(2026, 9), weekStart = LocalDate.of(2026, 9, 21), weekEnd = LocalDate.of(2026, 9, 27),
+        trend = trend,
+        bandUp = BandUp(3, WellbeingBand.HEALTHY),
+        budgetStreaks = listOf(
+            Streak(StreakKind.BUDGET_MONTH, "Groceries", current = 4, best = 5, periodsChecked = 6, liveOnTrack = true),
+            Streak(StreakKind.BUDGET_MONTH, "Household", current = 2, best = 3, periodsChecked = 6, liveOnTrack = true),
+        ),
     )
 }

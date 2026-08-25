@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.data.settings.SettingsStore
+import com.budgetty.app.ui.streaks.StreakKind
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -53,4 +54,10 @@ class WellbeingViewModel(
 
     /** A tip's CTA was acted on (before it deep-links to the fix). */
     fun onTipActed(type: TipType) = analytics.logTipActed(type)
+
+    /** A tip's modelled "+N to your score" pill became visible (§3.3). Fired once per shown pill. */
+    fun onProjectedGainShown(type: TipType, gain: Int) = analytics.logTipProjectedGain(type, gain)
+
+    /** Budget-streak evidence became visible under the Budget component (§2.6). Fired once per shown streak. */
+    fun onStreakSurfaced(kind: StreakKind, length: Int) = analytics.logStreakSurfaced(kind, length)
 }

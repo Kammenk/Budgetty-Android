@@ -866,8 +866,21 @@
     <string name="wellbeing_built_from">CE QUI LE COMPOSE</string>
     <string name="wellbeing_renormalise_note">Une composante sans données n\'est pas encore comptée — votre score est pondéré sur les autres.</string>
     <string name="wellbeing_not_counted">Non compté</string>
-    <string name="wellbeing_vs_last_month">par rapport au mois dernier</string>
     <string name="wellbeing_vs_last_week">par rapport à la semaine dernière</string>
+    <string name="wellbeing_trend_label">SIX DERNIERS MOIS CLÔTURÉS</string>
+    <string name="wellbeing_trend_up">%1$d de plus depuis %2$s.</string>
+    <string name="wellbeing_trend_down">%1$d de moins depuis %2$s.</string>
+    <string name="wellbeing_trend_flat">Stable depuis %1$s.</string>
+    <string name="wellbeing_projected_gain">+%1$d pour votre score</string>
+    <string name="wellbeing_streak_scope_overall">Budget global</string>
+    <plurals name="wellbeing_band_up">
+        <item quantity="one">%1$d point avant %2$s</item>
+        <item quantity="other">%1$d points avant %2$s</item>
+    </plurals>
+    <plurals name="wellbeing_streak_under">
+        <item quantity="one">%1$s — %2$d mois dans le budget</item>
+        <item quantity="other">%1$s — %2$d mois dans le budget</item>
+    </plurals>
     <string name="wellbeing_this_week">Cette semaine</string>
     <string name="wellbeing_of_weekly_budget">de votre budget hebdomadaire de %1$s</string>
     <string name="wellbeing_left_days">%1$s restant · encore %2$d jours</string>

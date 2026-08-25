@@ -119,6 +119,12 @@ data class WellbeingScore(
 /**
  * One ranked tip. [type] selects the localized copy in the UI, [id] is the stable dismissal key,
  * and the loosely-typed payload carries the real figures the copy quotes.
+ *
+ * [projectedGain] (§3.3) is the modelled "+N to your score" — how much acting on this one tip would
+ * move the total, computed by [WellbeingEngine.projectedGain]. It is a MODELLED delta under an explicit
+ * assumption, NOT a promise, and it is only shown when it clears [WellbeingEngine.showsProjectedGain]
+ * (≥ [WellbeingEngine.MIN_PROJECTED_GAIN]); a non-positive value is never rendered. Null for tips with
+ * nothing to act on (win-tone) or for the weekly tactical tips.
  */
 data class WellbeingTip(
     val type: TipType,
@@ -129,4 +135,13 @@ data class WellbeingTip(
     val percent: Int? = null,
     val count: Int? = null,
     val label: String? = null,
+    val projectedGain: Int? = null,
 )
+
+/**
+ * The band-up nudge (§3.5): the score sits within [WellbeingEngine.BAND_UP_WINDOW] points below the
+ * next band boundary (40 / 60 / 80), so a concrete near-term target is worth showing — "3 points to
+ * Healthy". Null (no nudge) whenever the score isn't close to a boundary. Pure data; the surface
+ * renders it in the accessible warn tone (never the bright band hue) for legibility.
+ */
+data class BandUp(val pointsAway: Int, val nextBand: WellbeingBand)

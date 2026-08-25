@@ -1,6 +1,9 @@
 package com.budgetty.app.ui.wellbeing
 
+import com.budgetty.app.ui.streaks.Streak
+import com.budgetty.app.ui.streaks.StreakEngine
 import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -36,11 +39,31 @@ object WellbeingEngine {
     const val MONTHLY_TIP_CAP = 5
     const val WEEKLY_TIP_CAP = 3
 
+    /** How close (in points) to a band boundary the score must be for the band-up nudge to show (§3.5). */
+    const val BAND_UP_WINDOW = 3
+
+    /** Below this a modelled "+N to your score" is noise (or a renormalisation artefact) and is hidden (§3.3). */
+    const val MIN_PROJECTED_GAIN = 2
+
+    /** Up to this many budget streaks show as evidence under the Budget component (§2.6). */
+    const val MAX_STREAK_EVIDENCE = 2
+
+    private val BAND_BOUNDARIES = listOf(40, 60, 80)
+
     fun band(score: Int): WellbeingBand = when {
         score >= 80 -> WellbeingBand.THRIVING
         score >= 60 -> WellbeingBand.HEALTHY
         score >= 40 -> WellbeingBand.GETTING_THERE
         else -> WellbeingBand.NEEDS_WORK
+    }
+
+    /**
+     * The band-up nudge target (§3.5): the next band boundary (40 / 60 / 80) when the score sits within
+     * [BAND_UP_WINDOW] points below it, else null. "57 → 3 points to Healthy"; suppressed at e.g. 72.
+     */
+    fun bandUp(score: Int): BandUp? {
+        val boundary = BAND_BOUNDARIES.firstOrNull { it > score && it - score <= BAND_UP_WINDOW } ?: return null
+        return BandUp(pointsAway = boundary - score, nextBand = band(boundary))
     }
 
     /** Bar/label tier for a single component sub-score: ≥70 good, 40–69 careful, <40 over. */
@@ -149,15 +172,118 @@ object WellbeingEngine {
         )
     }
 
+    // ── Attributable tips: "what this is worth" (§3.3) ──────────────────────────────
+
+    /** The tip types with a modelled single-action projection (per the §3.3 table). Others get no pill. */
+    private val ACTIONABLE_PROJECTION = setOf(
+        TipType.MISSING_BUDGET, TipType.OVER_BUDGET, TipType.SUBSCRIPTION_COST,
+        TipType.NO_GOAL, TipType.GOAL_OFF_TRACK,
+    )
+
+    /**
+     * Whether a tip's [WellbeingTip.projectedGain] clears the display floor and its pill may be shown.
+     * Suppresses noise (< 2) AND — critically — any non-positive projection from the renormalisation
+     * trap (see [projectedGain]); a "+1", "+0" or "−N" pill is never rendered.
+     */
+    fun showsProjectedGain(gain: Int?): Boolean = gain != null && gain >= MIN_PROJECTED_GAIN
+
+    /**
+     * The modelled "+N to your score" for an actionable [tip] (§3.3): the delta if the user took exactly
+     * that one action, computed by re-running [aggregate] with the affected component's sub-score replaced
+     * by its post-action value (per the §3.3 table). Null for tips with nothing to act on (win-tone, and
+     * the alert/spike tips that have no clean single-component model), or when there is no current total
+     * to move against.
+     *
+     * This is a MODELLED delta under an EXPLICIT ASSUMPTION (the action lands exactly as described) — NOT
+     * a promise.
+     *
+     * ⚠️ Renormalisation trap: [aggregate] is a weight-renormalising mean, so an action that ADDS a
+     * previously-null component (NO_GOAL, or MISSING_BUDGET for a user with no budgets at all) shifts the
+     * denominator. When the entering component sits below the current renormalised mean, the total can
+     * move by nothing — or, in principle, DOWNWARD. The returned delta may therefore be zero or negative;
+     * callers MUST gate display through [showsProjectedGain], which drops everything below
+     * [MIN_PROJECTED_GAIN] so a "−N" is never shown next to correct advice.
+     */
+    fun projectedGain(inputs: WellbeingInputs, tip: WellbeingTip): Int? {
+        if (tip.type !in ACTIONABLE_PROJECTION) return null
+        val base = aggregate(components(inputs)) ?: return null
+        val projected = aggregate(projectedComponents(inputs, tip)) ?: return null
+        return projected - base
+    }
+
+    /** The component list after modelling [tip]'s single action (§3.3 table); unaffected components unchanged. */
+    private fun projectedComponents(inputs: WellbeingInputs, tip: WellbeingTip): List<WellbeingComponent> {
+        val comps = components(inputs).toMutableList()
+        fun replace(key: WellbeingComponentKey, newScore: Int) {
+            val i = comps.indexOfFirst { it.key == key }
+            if (i >= 0) comps[i] = comps[i].copy(score = newScore)
+        }
+        when (tip.type) {
+            // Add a budget for the named category, assumed within plan → budgetedCount + 1, overspend as-is.
+            TipType.MISSING_BUDGET -> {
+                val newBudget = tip.amount ?: BigDecimal.ZERO
+                replace(
+                    WellbeingComponentKey.BUDGET,
+                    budgetScore(
+                        inputs.budgetedCount + 1, inputs.overCount,
+                        inputs.overspendTotal, inputs.budgetedTotal + newBudget,
+                    ),
+                )
+            }
+            // Bring one over-budget scope back in line → overCount − 1 and its (average) overspend removed.
+            TipType.OVER_BUDGET -> if (inputs.overCount > 0) {
+                val perOver = inputs.overspendTotal.divide(BigDecimal(inputs.overCount), 2, RoundingMode.HALF_UP)
+                replace(
+                    WellbeingComponentKey.BUDGET,
+                    budgetScore(
+                        inputs.budgetedCount, inputs.overCount - 1,
+                        (inputs.overspendTotal - perOver).max(BigDecimal.ZERO), inputs.budgetedTotal,
+                    ),
+                )
+            }
+            // Cancel one subscription → the share falls proportionally (same spend denominator).
+            TipType.SUBSCRIPTION_COST -> inputs.subsSharePercent?.let { share ->
+                val count = inputs.subsCount.coerceAtLeast(1)
+                val newShare = (share.toDouble() * (count - 1) / count).roundToInt()
+                replace(WellbeingComponentKey.SUBSCRIPTIONS, subscriptionsScore(newShare))
+            }
+            // Create a goal, on pace → goals enters the mean at 100 (the renormalisation case).
+            TipType.NO_GOAL -> replace(WellbeingComponentKey.GOALS, 100)
+            // Bring the off-track goal back on pace → its mark 40 → 100.
+            TipType.GOAL_OFF_TRACK -> {
+                val fixed = inputs.goals.map {
+                    if (it.name == tip.label && it.behind && !it.reached) it.copy(behind = false) else it
+                }
+                goalsScore(fixed)?.let { replace(WellbeingComponentKey.GOALS, it) }
+            }
+            else -> Unit
+        }
+        return comps
+    }
+
+    /**
+     * The up-to-[MAX_STREAK_EVIDENCE] budget streaks to list as evidence under the Budget component
+     * (§2.6): only those already surfaced (current ≥ [StreakEngine.MIN_TO_SURFACE]), longest current run
+     * first. Keeps the "which streaks to show" decision in a pure, testable seam.
+     */
+    fun budgetStreakEvidence(streaks: List<Streak>): List<Streak> =
+        StreakEngine.surfaced(streaks).sortedByDescending { it.current }.take(MAX_STREAK_EVIDENCE)
+
     // ── Tips ────────────────────────────────────────────────────────────────────
 
     private val severity = mapOf(
         TipTone.ALERT to 0, TipTone.CAUTION to 1, TipTone.OPPORTUNITY to 2, TipTone.WIN to 3,
     )
 
-    /** Ranks candidates alert→caution→opportunity, caps the list, always keeping one win when available. */
+    /**
+     * Ranks candidates alert→caution→opportunity, caps the list, always keeping one win when available.
+     * Secondary key (§3.4): within the same tone, a larger modelled [WellbeingTip.projectedGain] leads,
+     * so the top tip is both important AND impactful. Tips with no gain sort as 0 (insertion order kept).
+     */
     fun rank(candidates: List<WellbeingTip>, cap: Int): List<WellbeingTip> {
-        val ordered = candidates.sortedBy { severity[it.tone] ?: 9 }
+        val ordered = candidates.sortedWith(
+            compareBy<WellbeingTip> { severity[it.tone] ?: 9 }.thenByDescending { it.projectedGain ?: 0 },
+        )
         val wins = ordered.filter { it.tone == TipTone.WIN }
         val others = ordered.filter { it.tone != TipTone.WIN }
         return when {
@@ -167,7 +293,15 @@ object WellbeingEngine {
         }
     }
 
-    fun tips(inputs: WellbeingInputs): List<WellbeingTip> = rank(monthlyCandidates(inputs), MONTHLY_TIP_CAP)
+    fun tips(inputs: WellbeingInputs): List<WellbeingTip> {
+        // A "+N to your score" pill only makes sense once there IS a score to move (§3.3); in the
+        // first-run "—" state (too few receipts / no scored component) no gain is attached.
+        val scored = inputs.receiptsLogged >= MIN_RECEIPTS_TO_SCORE && aggregate(components(inputs)) != null
+        val withGains = monthlyCandidates(inputs).map {
+            it.copy(projectedGain = if (scored) projectedGain(inputs, it) else null)
+        }
+        return rank(withGains, MONTHLY_TIP_CAP)
+    }
 
     fun weeklyTips(week: WeeklyInputs): List<WellbeingTip> = rank(weeklyCandidates(week), WEEKLY_TIP_CAP)
 
