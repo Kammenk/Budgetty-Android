@@ -13,6 +13,7 @@ import com.budgetty.app.data.remote.ReceiptApi
 import com.budgetty.app.data.repository.AuthRepository
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.BudgetRolloverRepository
+import com.budgetty.app.data.repository.BuyingLimitsRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
@@ -26,9 +27,14 @@ import com.budgetty.app.widget.WidgetUpdater
 import com.budgetty.app.ui.account.AccountViewModel
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.budget.BudgetViewModel
+import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
+import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
+import com.budgetty.app.ui.buyinglimits.BuyingLimitsViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
 import com.budgetty.app.ui.export.ExportViewModel
 import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
+import com.budgetty.app.ui.recap.RecapProvider
+import com.budgetty.app.ui.recap.RecapViewModel
 import com.budgetty.app.ui.wellbeing.WellbeingProvider
 import com.budgetty.app.ui.wellbeing.WellbeingViewModel
 import com.budgetty.app.ui.history.HistoryViewModel
@@ -68,9 +74,17 @@ val appModule = module {
     single { RecurringRepository(get()) }
     single { SavingsRepository(get()) }
     single { SubscriptionsRepository(get()) }
+    single { BuyingLimitsRepository(get()) }
+
+    // App-scoped hand-off for the buying-limit save-time nudge (Upload posts, Home observes).
+    single { BuyingLimitNudgeBus() }
+    single { BuyingLimitNudger(get(), get(), get(), get()) }
 
     // Wellbeing score + tips — shared by the Wellbeing screen, the Home banner and the Insights row.
     single { WellbeingProvider(get(), get(), get(), get(), get(), get(), get()) }
+
+    // End-of-period recap — builds the just-closed period's story from the same repositories.
+    single { RecapProvider(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
     // Backup / restore (import-export)
     single { BackupManager(get()) }
@@ -135,8 +149,12 @@ val appModule = module {
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { WellbeingViewModel(get(), get()) }
-    viewModel { UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { RecapViewModel(get(), get()) }
+    viewModel {
+        UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+    }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
+    viewModel { BuyingLimitsViewModel(get(), get(), get(), get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get()) }

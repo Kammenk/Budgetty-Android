@@ -34,11 +34,13 @@ import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Fingerprint
@@ -91,6 +93,7 @@ import com.budgetty.app.data.settings.AccentTheme
 import com.budgetty.app.data.settings.Currency
 import com.budgetty.app.data.settings.DateFormatOption
 import com.budgetty.app.data.settings.Language
+import com.budgetty.app.data.settings.RecapFrequency
 import com.budgetty.app.data.settings.ThemeMode
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.data.settings.AppSettings
@@ -98,11 +101,18 @@ import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.components.Avatar
+import com.budgetty.app.ui.components.SegmentedToggle
+import com.budgetty.app.ui.util.BuyingLimitCounter
+import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
+import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
 import com.budgetty.app.ui.util.resolveDisplayName
 import com.budgetty.app.ui.util.resolveInitials
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.OutlinedTextField
@@ -125,6 +135,7 @@ fun AccountScreen(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
@@ -145,11 +156,14 @@ fun AccountScreen(
         onOpenBudget = onOpenBudget,
         onOpenWidgets = onOpenWidgets,
         onOpenCategoryRules = onOpenCategoryRules,
+        onOpenBuyingLimits = onOpenBuyingLimits,
         onOpenManageCategories = onOpenManageCategories,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
         onSetAutoLock = accountViewModel::setAutoLockMinutes,
+        onSetRecapEnabled = accountViewModel::setRecapEnabled,
+        onSetRecapFrequency = accountViewModel::setRecapFrequency,
         onSetDisplayName = accountViewModel::setDisplayName,
         onSetThemeMode = { accountViewModel.setThemeMode(it) },
         onSetAccent = { accountViewModel.setAccent(it) },
@@ -176,11 +190,14 @@ private fun AccountScreenContent(
     onOpenBudget: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
     onSetAutoLock: (Int) -> Unit,
+    onSetRecapEnabled: (Boolean) -> Unit,
+    onSetRecapFrequency: (RecapFrequency) -> Unit,
     onSetDisplayName: (String) -> Unit,
     onSetThemeMode: (ThemeMode) -> Unit,
     onSetAccent: (AccentTheme) -> Unit,
@@ -262,6 +279,7 @@ private fun AccountScreenContent(
                 onExportData = { if (isPremium) exportOpen = true else onOpenPaywall() },
                 onOpenWidgets = onOpenWidgets,
                 onOpenCategoryRules = onOpenCategoryRules,
+                onOpenBuyingLimits = onOpenBuyingLimits,
                 onOpenManageCategories = onOpenManageCategories,
             )
         }
@@ -275,6 +293,29 @@ private fun AccountScreenContent(
                 onOpenPaywall = onOpenPaywall,
             )
         }
+    }
+    val recapSection: @Composable () -> Unit = {
+        AccountCard {
+            RecapSectionRows(
+                recapEnabled = settings.recapEnabled,
+                recapFrequency = settings.recapFrequency,
+                monthStartDay = settings.monthStartDay,
+                onSetEnabled = onSetRecapEnabled,
+                onSetFrequency = onSetRecapFrequency,
+            )
+        }
+        Text(
+            text = stringResource(
+                if (settings.recapEnabled) R.string.recap_footnote_on else R.string.recap_footnote_off,
+            ),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                start = MaterialTheme.dimens.sm,
+                end = MaterialTheme.dimens.sm,
+                top = MaterialTheme.dimens.sm,
+            ),
+        )
     }
     val biometricAvailable = remember(context) { BiometricAuth.isAvailable(context) }
     val securitySection: @Composable () -> Unit = {
@@ -378,6 +419,7 @@ private fun AccountScreenContent(
                         when (selectedSection) {
                             AccountSection.ACCOUNT -> accountSection()
                             AccountSection.PREFERENCES -> preferencesSection()
+                            AccountSection.RECAP -> recapSection()
                             AccountSection.SECURITY -> securitySection()
                             AccountSection.SUPPORT -> supportSection()
                         }
@@ -400,6 +442,9 @@ private fun AccountScreenContent(
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_preferences))
                 preferencesSection()
+                Spacer(Modifier.height(MaterialTheme.dimens.xxl))
+                SectionHeader(stringResource(R.string.section_recap))
+                recapSection()
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_security))
                 securitySection()
@@ -564,6 +609,7 @@ private fun AccountSectionRows(
     onExportData: () -> Unit,
     onOpenWidgets: () -> Unit,
     onOpenCategoryRules: () -> Unit,
+    onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
 ) {
     SettingRow(
@@ -576,6 +622,8 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.account_budget)) { onOpenBudget() }
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
+    RowDivider()
+    SettingRow(Icons.Filled.Equalizer, stringResource(R.string.account_buying_limits)) { onOpenBuyingLimits() }
     RowDivider()
     SettingRow(Icons.Filled.Category, stringResource(R.string.account_manage_categories)) { onOpenManageCategories() }
     RowDivider()
@@ -693,6 +741,68 @@ private fun SupportSectionRows(
         },
         onClick = { onSetCrashReporting(!crashReportingEnabled) },
     )
+}
+
+/**
+ * Rows of the "Recap" group. A master switch (default on) turns the end-of-period recap on/off; when
+ * on it reveals a Weekly | Monthly | Both selector, a hint naming when the next one lands, and (below
+ * the card) an honesty footnote. Modelled on the app-lock group's on/reveals-more shape. Turning it
+ * off keeps the stored cadence, so switching back on doesn't re-ask. Free feature.
+ */
+@Composable
+private fun RecapSectionRows(
+    recapEnabled: Boolean,
+    recapFrequency: RecapFrequency,
+    monthStartDay: Int,
+    onSetEnabled: (Boolean) -> Unit,
+    onSetFrequency: (RecapFrequency) -> Unit,
+) {
+    SettingRow(
+        icon = Icons.Filled.EventAvailable,
+        title = stringResource(R.string.recap_settings_title),
+        subtitle = stringResource(
+            if (recapEnabled) R.string.recap_settings_sub_on else R.string.recap_settings_sub_off,
+        ),
+        trailing = { Switch(checked = recapEnabled, onCheckedChange = null) },
+        onClick = { onSetEnabled(!recapEnabled) },
+    )
+    if (recapEnabled) {
+        RowDivider()
+        Column(
+            modifier = Modifier.padding(
+                horizontal = MaterialTheme.dimens.lg,
+                vertical = MaterialTheme.dimens.md,
+            ),
+        ) {
+            SegmentedToggle(
+                options = listOf(
+                    stringResource(R.string.budget_period_weekly),
+                    stringResource(R.string.budget_period_monthly),
+                    stringResource(R.string.recap_freq_both),
+                ),
+                selectedIndex = recapFrequency.ordinal,
+                onSelect = { onSetFrequency(RecapFrequency.entries[it]) },
+            )
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            Text(
+                text = recapHint(recapFrequency, monthStartDay),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/** The hint line under the cadence selector, naming when the next recap lands. */
+@Composable
+private fun recapHint(frequency: RecapFrequency, monthStartDay: Int): String {
+    val weekday = BuyingLimitCounter.localeFirstDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault())
+    val nextMonthly = PayCycle.month(LocalDate.now(), monthStartDay, offset = 1).first.formatDayMonth()
+    return when (frequency) {
+        RecapFrequency.WEEKLY -> stringResource(R.string.recap_hint_weekly, weekday)
+        RecapFrequency.MONTHLY -> stringResource(R.string.recap_hint_monthly, nextMonthly)
+        RecapFrequency.BOTH -> stringResource(R.string.recap_hint_both, weekday, nextMonthly)
+    }
 }
 
 /**
@@ -891,6 +1001,7 @@ private fun RowDivider() {
 private enum class AccountSection(val titleRes: Int, val icon: ImageVector) {
     ACCOUNT(R.string.nav_account, Icons.Filled.AccountBalanceWallet),
     PREFERENCES(R.string.section_preferences, Icons.Filled.Palette),
+    RECAP(R.string.section_recap, Icons.Filled.EventAvailable),
     SECURITY(R.string.section_security, Icons.Filled.Lock),
     SUPPORT(R.string.section_support, Icons.AutoMirrored.Filled.HelpOutline),
 }
@@ -1167,11 +1278,14 @@ private fun AccountScreenPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
             onSetAutoLock = {},
+            onSetRecapEnabled = {},
+            onSetRecapFrequency = {},
             onSetDisplayName = {},
             onSetThemeMode = {},
             onSetAccent = {},
@@ -1201,11 +1315,14 @@ private fun AccountScreenTabletPreview() {
             onOpenBudget = {},
             onOpenWidgets = {},
             onOpenCategoryRules = {},
+            onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
             onSetAutoLock = {},
+            onSetRecapEnabled = {},
+            onSetRecapFrequency = {},
             onSetDisplayName = {},
             onSetThemeMode = {},
             onSetAccent = {},

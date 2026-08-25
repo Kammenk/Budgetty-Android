@@ -99,6 +99,8 @@ import com.budgetty.app.category.Categories
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
+import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
+import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeCard
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.Avatar
 import com.budgetty.app.ui.components.PieSlice
@@ -143,43 +145,64 @@ fun HomeScreen(
     onNavigateToInsights: () -> Unit = {},
     onNavigateToAccount: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
+    onNavigateToBuyingLimits: () -> Unit = {},
     viewModel: HomeViewModel = koinViewModel(),
     authViewModel: AuthViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
+    buyingLimitNudgeBus: BuyingLimitNudgeBus = koinInject(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val recentReceipts by viewModel.recentReceipts.collectAsStateWithLifecycle()
     val authState by authViewModel.authState.collectAsStateWithLifecycle()
     val settings by settingsStore.settings.collectAsStateWithLifecycle()
+    val buyingLimitNudge by buyingLimitNudgeBus.nudge.collectAsStateWithLifecycle()
     val email = (authState as? AuthState.SignedIn)?.email
-    HomeScreenContent(
-        state = state,
-        recentReceipts = recentReceipts,
-        canScan = viewModel.canScan(),
-        scanRemaining = viewModel.scanRemaining(),
-        isPremium = viewModel.isPremium(),
-        isExpanded = isExpandedWidth(),
-        isWide = isWideWidth(),
-        initials = resolveInitials(settings.displayName, email),
-        hiddenSections = settings.hiddenHomeSections,
-        sectionOrder = settings.homeSectionOrder,
-        onToggleSection = { section, hidden -> settingsStore.setHomeSectionHidden(section.key, hidden) },
-        onReorderSections = { settingsStore.setHomeSectionOrder(it) },
-        onRevertSections = { settingsStore.resetHomeSections() },
-        onFilterSelected = viewModel::onFilterSelected,
-        onDeleteReceipt = viewModel::deleteReceipt,
-        onDeleteTransaction = viewModel::deleteTransaction,
-        onUndoLastDelete = viewModel::undoLastDelete,
-        onNavigateToUpload = onNavigateToUpload,
-        onNavigateToEdit = onNavigateToEdit,
-        onNavigateToBudget = onNavigateToBudget,
-        onNavigateToPaywall = onNavigateToPaywall,
-        onNavigateToHistory = onNavigateToHistory,
-        onNavigateToInsights = onNavigateToInsights,
-        onNavigateToAccount = onNavigateToAccount,
-        onNavigateToWellbeing = onNavigateToWellbeing,
-        modifier = modifier,
-    )
+    // The save-time buying-limit nudge floats over live Home (no scrim); hosted in the wrapper so the
+    // shared *Content stays unchanged. It only appears when a just-saved receipt hit a keyword cap.
+    Box(modifier = modifier.fillMaxSize()) {
+        HomeScreenContent(
+            state = state,
+            recentReceipts = recentReceipts,
+            canScan = viewModel.canScan(),
+            scanRemaining = viewModel.scanRemaining(),
+            isPremium = viewModel.isPremium(),
+            isExpanded = isExpandedWidth(),
+            isWide = isWideWidth(),
+            initials = resolveInitials(settings.displayName, email),
+            hiddenSections = settings.hiddenHomeSections,
+            sectionOrder = settings.homeSectionOrder,
+            onToggleSection = { section, hidden -> settingsStore.setHomeSectionHidden(section.key, hidden) },
+            onReorderSections = { settingsStore.setHomeSectionOrder(it) },
+            onRevertSections = { settingsStore.resetHomeSections() },
+            onFilterSelected = viewModel::onFilterSelected,
+            onDeleteReceipt = viewModel::deleteReceipt,
+            onDeleteTransaction = viewModel::deleteTransaction,
+            onUndoLastDelete = viewModel::undoLastDelete,
+            onNavigateToUpload = onNavigateToUpload,
+            onNavigateToEdit = onNavigateToEdit,
+            onNavigateToBudget = onNavigateToBudget,
+            onNavigateToPaywall = onNavigateToPaywall,
+            onNavigateToHistory = onNavigateToHistory,
+            onNavigateToInsights = onNavigateToInsights,
+            onNavigateToAccount = onNavigateToAccount,
+            onNavigateToWellbeing = onNavigateToWellbeing,
+        )
+        buyingLimitNudge?.let { nudge ->
+            BuyingLimitNudgeCard(
+                nudge = nudge,
+                monthStartDay = settings.monthStartDay,
+                onDismiss = { buyingLimitNudgeBus.clear() },
+                onView = {
+                    buyingLimitNudgeBus.clear()
+                    onNavigateToBuyingLimits()
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = MaterialTheme.dimens.md)
+                    .padding(bottom = MaterialTheme.dimens.md),
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

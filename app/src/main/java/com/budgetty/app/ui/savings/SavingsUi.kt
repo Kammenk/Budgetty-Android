@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetWarnColor
 import java.math.BigDecimal
@@ -79,13 +80,18 @@ fun SavingsRing(
     }
 }
 
-/** Small uppercase-ish field label used inside the savings sheets. */
+/**
+ * Small UPPERCASE overline field label shared by the bottom sheets (savings, subscriptions, export,
+ * buying limits) — matches the mockups' `text-transform:uppercase` section labels. Uppercasing is done
+ * here so callers pass normal title-case strings.
+ */
 @Composable
 fun SavingsSheetLabel(text: String) {
     Text(
-        text = text,
-        style = MaterialTheme.typography.labelMedium,
-        fontWeight = FontWeight.SemiBold,
+        text = text.uppercase(),
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.6.sp,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }

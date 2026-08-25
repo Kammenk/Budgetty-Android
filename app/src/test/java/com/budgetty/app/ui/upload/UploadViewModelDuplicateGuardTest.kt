@@ -10,12 +10,16 @@ import com.budgetty.app.data.local.UserDatabaseManager
 import com.budgetty.app.data.remote.RECEIPT_API_BASE_URL
 import com.budgetty.app.data.remote.ReceiptApi
 import com.budgetty.app.data.repository.BudgetRepository
+import com.budgetty.app.data.repository.BuyingLimitsRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TransactionRepository
+import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.data.quota.ScanQuota
+import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
+import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
 import com.google.common.truth.Truth.assertThat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -101,6 +105,12 @@ class UploadViewModelDuplicateGuardTest {
             BillingManager(context, auth),
             budgetRepo,
             ReviewTracker(context),
+            BuyingLimitNudger(
+                transactionRepo,
+                BuyingLimitsRepository(dbManager),
+                SettingsStore(context),
+                BuyingLimitNudgeBus(),
+            ),
         )
 
         // Land on the review screen with one filled-in row.

@@ -64,6 +64,7 @@ import com.android.billingclient.api.ProductDetails
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.quota.ScanQuota
+import com.budgetty.app.data.repository.BuyingLimitsRepository
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.util.isCompactHeight
@@ -121,6 +122,10 @@ private fun premiumBenefits(): List<PremiumBenefit> = listOf(
     PremiumBenefit(
         title = stringResource(R.string.paywall_benefit_widgets),
         detail = stringResource(R.string.paywall_benefit_widgets_detail, WidgetQuota.FREE_LIMIT),
+    ),
+    PremiumBenefit(
+        title = stringResource(R.string.paywall_benefit_limits),
+        detail = stringResource(R.string.paywall_benefit_limits_detail, BuyingLimitsRepository.FREE_LIMIT),
     ),
     PremiumBenefit(
         title = stringResource(R.string.paywall_benefit_themes),

@@ -72,6 +72,7 @@ import com.budgetty.app.ui.components.resolveSectionOrder
 import com.budgetty.app.ui.util.formatMoney
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.R
+import com.budgetty.app.ui.recap.RecapReopenRow
 import com.budgetty.app.ui.wellbeing.WellbeingInsightsRow
 import com.budgetty.app.ui.subscriptions.SubscriptionsInsightsCard
 import com.budgetty.app.category.Categories
@@ -99,6 +100,7 @@ fun InsightsScreen(
     onNavigateToSubscriptions: () -> Unit = {},
     onNavigateToPaywall: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
+    onNavigateToRecap: () -> Unit = {},
     viewModel: InsightsViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
@@ -112,6 +114,9 @@ fun InsightsScreen(
         onNavigateToSubscriptions = onNavigateToSubscriptions,
         onNavigateToPaywall = onNavigateToPaywall,
         onNavigateToWellbeing = onNavigateToWellbeing,
+        onNavigateToRecap = onNavigateToRecap,
+        // The re-open door only exists once a recap has actually been shown for a closed period.
+        showRecapEntry = settings.recapLastShownWeek.isNotEmpty() || settings.recapLastShownMonth.isNotEmpty(),
         hiddenSections = settings.hiddenInsightsSections,
         sectionOrder = settings.insightsSectionOrder,
         onToggleSection = { section, hidden -> settingsStore.setInsightsSectionHidden(section.key, hidden) },
@@ -134,6 +139,8 @@ private fun InsightsScreenContent(
     onNavigateToSubscriptions: () -> Unit = {},
     onNavigateToPaywall: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
+    onNavigateToRecap: () -> Unit = {},
+    showRecapEntry: Boolean = false,
     hiddenSections: Set<String>,
     sectionOrder: List<String>,
     onToggleSection: (InsightsSection, Boolean) -> Unit,
@@ -202,6 +209,8 @@ private fun InsightsScreenContent(
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
                 onNavigateToWellbeing = onNavigateToWellbeing,
+                onNavigateToRecap = onNavigateToRecap,
+                showRecapEntry = showRecapEntry,
             )
         } else {
             InsightsPhoneBody(
@@ -219,6 +228,8 @@ private fun InsightsScreenContent(
                 onNavigateToWellbeing = onNavigateToWellbeing,
                 onNavigateToSubscriptions = onNavigateToSubscriptions,
                 onNavigateToPaywall = onNavigateToPaywall,
+                onNavigateToRecap = onNavigateToRecap,
+                showRecapEntry = showRecapEntry,
             )
         }
     }
@@ -539,6 +550,8 @@ private fun InsightsPhoneBody(
     onNavigateToSubscriptions: () -> Unit = {},
     onNavigateToPaywall: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
+    onNavigateToRecap: () -> Unit = {},
+    showRecapEntry: Boolean = false,
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -580,6 +593,9 @@ private fun InsightsPhoneBody(
         // Pinned above Breakdown: a one-line door into the Wellbeing screen. Hidden via Customize sections.
         if (shows(InsightsSection.WELLBEING)) {
             state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
+        }
+        if (showRecapEntry) {
+            RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
         }
         ordered.forEach { section ->
             if (shows(section)) {
@@ -719,6 +735,8 @@ private fun InsightsTabletBody(
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
     onNavigateToWellbeing: () -> Unit = {},
+    onNavigateToRecap: () -> Unit = {},
+    showRecapEntry: Boolean = false,
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -823,6 +841,10 @@ private fun InsightsTabletBody(
                 state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
                 Spacer(Modifier.height(MaterialTheme.dimens.md))
             }
+            if (showRecapEntry) {
+                RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
+                Spacer(Modifier.height(MaterialTheme.dimens.md))
+            }
             if (!hasData) {
                 // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
                 if (state.isLoaded) {
@@ -878,6 +900,9 @@ private fun InsightsTabletBody(
             header()
             if (shows(InsightsSection.WELLBEING)) {
                 state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
+            }
+            if (showRecapEntry) {
+                RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
             }
             if (!hasData) {
                 // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
