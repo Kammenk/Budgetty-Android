@@ -34,7 +34,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -96,6 +99,8 @@ fun RecapStoryScreen(
     onClose: () -> Unit,
     onSeeDetails: () -> Unit,
     modifier: Modifier = Modifier,
+    onShown: (RecapKind) -> Unit = {},
+    onCompleted: (kind: RecapKind, cardsViewed: Int) -> Unit = { _, _ -> },
 ) {
     val cards = story.cards
     if (cards.isEmpty()) {
@@ -105,6 +110,16 @@ fun RecapStoryScreen(
     val pagerState = rememberPagerState(pageCount = { cards.size })
     val scope = rememberCoroutineScope()
     val current = pagerState.currentPage
+
+    // Analytics: count the story as shown once it appears, and — on any exit path (✕, Done, See
+    // details, back, or the gate un-mounting it after markShown) — report how far the user got as the
+    // highest card reached + 1, so a bare cover read (1) is distinguishable from a full read.
+    val highestCard = remember { mutableIntStateOf(0) }
+    LaunchedEffect(current) { if (current > highestCard.intValue) highestCard.intValue = current }
+    DisposableEffect(Unit) {
+        onShown(story.kind)
+        onDispose { onCompleted(story.kind, highestCard.intValue + 1) }
+    }
 
     BackHandler(onBack = onClose)
 

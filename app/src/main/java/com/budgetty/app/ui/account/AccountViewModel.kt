@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.budgetty.app.data.backup.BackupManager
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.local.UserDatabaseManager
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.quota.ScanQuota
 import com.budgetty.app.review.ReviewTracker
@@ -37,6 +38,7 @@ class AccountViewModel(
     private val databaseManager: UserDatabaseManager,
     private val reviewTracker: ReviewTracker,
     private val crashReporting: CrashReporting,
+    private val analytics: Analytics,
 ) : ViewModel() {
 
     val settings: StateFlow<AppSettings> = settingsStore.settings
@@ -54,6 +56,12 @@ class AccountViewModel(
     fun setCrashReporting(enabled: Boolean) {
         settingsStore.setCrashReportingEnabled(enabled)
         crashReporting.setEnabled(enabled)
+    }
+
+    /** Persist the analytics choice and apply it to the Analytics SDK immediately. */
+    fun setAnalytics(enabled: Boolean) {
+        settingsStore.setAnalyticsEnabled(enabled)
+        analytics.setEnabled(enabled)
     }
 
     // ── End-of-period recap ──

@@ -192,6 +192,8 @@ private fun RecapGate(
                         pendingStart = Routes.INSIGHTS
                         state.due?.let(recapViewModel::markShown)
                     },
+                    onShown = recapViewModel::onRecapShown,
+                    onCompleted = recapViewModel::onRecapCompleted,
                 )
                 return
             }

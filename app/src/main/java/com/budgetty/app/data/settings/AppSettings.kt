@@ -139,6 +139,12 @@ data class AppSettings(
     val recentSearches: List<String> = emptyList(),
     /** Whether Crashlytics crash collection is on. Default-on with an opt-out toggle in Account. */
     val crashReportingEnabled: Boolean = true,
+    /**
+     * Whether Firebase Analytics usage collection is on. Default-on with its own opt-out toggle in
+     * Account, separate from crash reporting. Device-global (like [crashReportingEnabled]): not reset
+     * on sign-out, since consent belongs to the device/person, not the account.
+     */
+    val analyticsEnabled: Boolean = true,
     // ── App lock ──
     /** Whether the PIN / biometric lock gate is on. */
     val appLockEnabled: Boolean = false,

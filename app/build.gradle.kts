@@ -237,6 +237,10 @@ dependencies {
     implementation(libs.firebase.auth)
     // Crash reporting. Collection is default-on with an opt-out toggle in Account (CrashReporting).
     implementation(libs.firebase.crashlytics)
+    // Product analytics (retention baseline). Collection is default-on with a separate opt-out toggle
+    // in Account (Analytics). Base artifact — the KTX API is merged in, and a -ktx artifact would trip
+    // the project's Kotlin-metadata pin (as it did for Billing).
+    implementation(libs.firebase.analytics)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)

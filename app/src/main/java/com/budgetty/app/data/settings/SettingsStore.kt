@@ -37,6 +37,7 @@ class SettingsStore(context: Context) {
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
         recentSearches = prefs.getString(KEY_RECENT_SEARCHES, null).toLines(),
         crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, true),
+        analyticsEnabled = prefs.getBoolean(KEY_ANALYTICS, true),
         appLockEnabled = prefs.getBoolean(KEY_APP_LOCK, false),
         pinHash = prefs.getString(KEY_PIN_HASH, "").orEmpty(),
         biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
@@ -157,6 +158,10 @@ class SettingsStore(context: Context) {
     /** Persists the crash-reporting opt-out. Applying it to the Crashlytics SDK is the caller's job. */
     fun setCrashReportingEnabled(value: Boolean) =
         save(KEY_CRASH_REPORTING, value) { it.copy(crashReportingEnabled = value) }
+
+    /** Persists the analytics opt-out. Applying it to the Analytics SDK is the caller's job. */
+    fun setAnalyticsEnabled(value: Boolean) =
+        save(KEY_ANALYTICS, value) { it.copy(analyticsEnabled = value) }
 
     // ── App lock ──
 
@@ -372,6 +377,7 @@ class SettingsStore(context: Context) {
         const val KEY_HISTORY_SORT = "history_sort"
         const val KEY_RECENT_SEARCHES = "recent_searches"
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"
+        const val KEY_ANALYTICS = "analytics_enabled"
         const val KEY_DISMISSED_TIPS = "dismissed_wellbeing_tips"
         const val KEY_RECAP_ENABLED = "recap_enabled"
         const val KEY_RECAP_FREQUENCY = "recap_frequency"

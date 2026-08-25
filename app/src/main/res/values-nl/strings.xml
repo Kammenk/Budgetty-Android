@@ -31,6 +31,8 @@
     <string name="account_privacy_policy">Privacybeleid</string>
     <string name="account_crash_reporting">Crashrapportage</string>
     <string name="account_crash_reporting_subtitle">Anonieme crashrapporten verzenden om bugs op te lossen</string>
+    <string name="account_analytics">Gebruiksanalyse</string>
+    <string name="account_analytics_sub">Help Budgetty te verbeteren met anonieme gebruiksgegevens · geen bonnen of bedragen</string>
     <string name="account_sign_out">Afmelden</string>
     <string name="account_delete">Account verwijderen</string>
     <string name="account_edit_name">Naam bewerken</string>

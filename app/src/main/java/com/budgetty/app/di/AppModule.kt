@@ -3,6 +3,7 @@ package com.budgetty.app.di
 import com.budgetty.app.data.backup.BackupManager
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.quota.ScanQuota
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.review.ReviewTracker
 import com.budgetty.app.data.ingest.HaikuReceiptExtractor
@@ -98,6 +99,9 @@ val appModule = module {
     // Crash reporting (Crashlytics collection control)
     single { CrashReporting() }
 
+    // Product analytics (Firebase Analytics collection control + typed event logging)
+    single { Analytics(androidContext()) }
+
     // Play Billing (subscriptions) + the server-granted account-comp entitlement
     single { BillingManager(androidContext(), get()) }
 
@@ -140,7 +144,7 @@ val appModule = module {
 
     // ViewModels
     viewModel { AuthViewModel(get(), get()) }
-    viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (goalId: Long) -> SavingsGoalViewModel(get(), get(), goalId) }
@@ -148,13 +152,13 @@ val appModule = module {
     viewModel { ExportViewModel(get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { WellbeingViewModel(get(), get()) }
-    viewModel { RecapViewModel(get(), get()) }
+    viewModel { WellbeingViewModel(get(), get(), get()) }
+    viewModel { RecapViewModel(get(), get(), get()) }
     viewModel {
         UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
-    viewModel { BuyingLimitsViewModel(get(), get(), get(), get()) }
+    viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
     viewModel { PaywallViewModel(get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get()) }
