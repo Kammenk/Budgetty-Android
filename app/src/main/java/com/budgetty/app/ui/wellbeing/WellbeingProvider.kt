@@ -6,6 +6,7 @@ import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.SavingsContributionEntity
 import com.budgetty.app.data.local.SavingsGoalEntity
 import com.budgetty.app.data.local.TransactionEntity
+import com.budgetty.app.data.local.WellbeingScoreEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.ReceiptRepository
@@ -13,6 +14,7 @@ import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
 import com.budgetty.app.data.repository.SubscriptionsRepository
 import com.budgetty.app.data.repository.TransactionRepository
+import com.budgetty.app.data.repository.WellbeingScoreRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.util.MerchantCharge
@@ -24,6 +26,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.DayOfWeek
@@ -48,6 +52,7 @@ class WellbeingProvider(
     private val savings: SavingsRepository,
     private val subscriptions: SubscriptionsRepository,
     private val settings: SettingsStore,
+    private val history: WellbeingScoreRepository,
     private val today: () -> LocalDate = { LocalDate.now() },
     private val zone: ZoneId = ZoneId.systemDefault(),
 ) {
@@ -65,6 +70,9 @@ class WellbeingProvider(
         val ignoredMerchants: Set<String>,
     )
 
+    /** The screen-facing summary plus the just-closed month's persistable snapshot (null when unscored). */
+    private data class Built(val summary: WellbeingSummary, val closedSnapshot: WellbeingScoreEntity?)
+
     fun summary(): Flow<WellbeingSummary> {
         val core = combine(
             transactions.getAll(), receipts.getAll(), budgets.budgets, recurring.items, settings.settings,
@@ -72,10 +80,16 @@ class WellbeingProvider(
         val extra = combine(
             savings.goals, savings.allContributions, subscriptions.ignored,
         ) { goals, contribs, ignored -> Extra(goals, contribs, ignored.map { it.merchant }.toSet()) }
-        return combine(core, extra) { c, e -> build(c, e) }.flowOn(Dispatchers.Default)
+        // Persisting the just-closed month's snapshot is a side effect of scoring it (§3.1). Idempotent
+        // (PK = periodId), so the repeated writes from re-emits and multiple collectors converge; the
+        // in-flight month is never in [Built.closedSnapshot], so it can never reach history.
+        return combine(core, extra) { c, e -> build(c, e) }
+            .onEach { built -> built.closedSnapshot?.let { history.upsert(it) } }
+            .map { it.summary }
+            .flowOn(Dispatchers.Default)
     }
 
-    private fun build(core: Core, extra: Extra): WellbeingSummary {
+    private fun build(core: Core, extra: Extra): Built {
         val now = today()
         val receiptsById = core.receipts.associateBy { it.timestamp }
         val monthsTracked = core.txns.map { YearMonth.from(Instant.ofEpochMilli(it.timestamp).atZone(zone)) }
@@ -185,7 +199,9 @@ class WellbeingProvider(
             )
         }
 
-        val previousScore = WellbeingEngine.score(inputsFor(-1, withDetail = false)).score
+        // The previous (just-closed) cycle is scored both for the trend chip and for history (§3.1).
+        val previousFull = WellbeingEngine.score(inputsFor(-1, withDetail = false))
+        val previousScore = previousFull.score
         val current = inputsFor(0, withDetail = true).copy(previousScore = previousScore)
         val score = WellbeingEngine.score(current)
         val monthlyTips = WellbeingEngine.tips(current)
@@ -249,11 +265,18 @@ class WellbeingProvider(
         )
 
         val monthYear = YearMonth.from(PayCycle.month(now, core.monthStartDay, 0).first)
-        return WellbeingSummary(
+        // §3.1: snapshot the just-closed cycle (offset -1) only — never the in-flight [monthYear].
+        val closedSnapshot = WellbeingHistory.closedSnapshot(
+            closedPeriodId = WellbeingHistory.periodId(now, core.monthStartDay, offset = -1),
+            closedScore = previousFull,
+            computedAt = System.currentTimeMillis(),
+        )
+        val summary = WellbeingSummary(
             score = score, monthlyTips = monthlyTips, weekly = weekly, weeklyTips = weeklyTips, wins = wins,
             detail = detail, receiptsLogged = core.receipts.size, hasBudget = current.hasAnyBudget,
             periodId = monthYear.toString(), monthYear = monthYear, weekStart = weekStart, weekEnd = weekEnd,
         )
+        return Built(summary, closedSnapshot)
     }
 
     private fun winEmoji(type: TipType): String = when (type) {

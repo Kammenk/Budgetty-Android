@@ -12,9 +12,9 @@ import com.budgetty.app.category.Categories
         TransactionEntity::class, CategoryEntity::class, BudgetEntity::class, ReceiptEntity::class,
         CategoryRuleEntity::class, RecurringEntity::class, BudgetRolloverEntity::class,
         SavingsGoalEntity::class, SavingsContributionEntity::class,
-        IgnoredSubscriptionEntity::class, BuyingLimitEntity::class,
+        IgnoredSubscriptionEntity::class, BuyingLimitEntity::class, WellbeingScoreEntity::class,
     ],
-    version = 25,
+    version = 26,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -29,6 +29,7 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun savingsDao(): SavingsDao
     abstract fun ignoredSubscriptionDao(): IgnoredSubscriptionDao
     abstract fun buyingLimitDao(): BuyingLimitDao
+    abstract fun wellbeingScoreDao(): WellbeingScoreDao
 }
 
 /** v2 adds the [TransactionEntity.category] column, defaulting existing rows to "Groceries". */
@@ -393,6 +394,23 @@ val MIGRATION_24_25 = object : Migration(24, 25) {
     }
 }
 
+/**
+ * v26 adds the wellbeing_scores table: one finalized [WellbeingScoreEntity] per CLOSED pay-cycle month
+ * (§3.1 retention spec) — the score, its band, and the per-component sub-scores as JSON. Column names,
+ * types and nullability mirror the entity so Room's schema validation passes; periodId ("yyyy-MM") is
+ * the primary key, so re-scoring the same closed month REPLACEs its row rather than duplicating.
+ */
+val MIGRATION_25_26 = object : Migration(25, 26) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `wellbeing_scores` (" +
+                "`periodId` TEXT NOT NULL, `score` INTEGER NOT NULL, " +
+                "`band` TEXT NOT NULL, `componentsJson` TEXT NOT NULL, " +
+                "`computedAt` INTEGER NOT NULL, PRIMARY KEY(`periodId`))",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -437,5 +455,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_10_11, MIGRATION_11_12, MIGRATION_12_13, MIGRATION_13_14,
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
-    MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25,
+    MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26,
 )
