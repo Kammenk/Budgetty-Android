@@ -1195,4 +1195,21 @@
     <string name="insights_overlay_nudge_text">Acasă numără și %1$s în facturi recurente în această perioadă. Suprapune-le aici ca strat planificat.</string>
     <string name="insights_overlay_nudge_action">Suprapune facturile</string>
     <string name="cd_insights_overlay_nudge_dismiss">Ignoră</string>
+    <string name="recap_streak_kicker">SERIE DE BUGET</string>
+    <string name="recap_streak_week_scope">%1$d săptămâni sub bugetul tău pentru %2$s</string>
+    <string name="recap_streak_week_all">%1$d săptămâni sub buget</string>
+    <string name="recap_streak_best_weeks">Cea mai bună serie: %1$d săptămâni</string>
+    <string name="recap_streak_best_months">Cea mai bună serie: %1$d luni</string>
+    <string name="recap_streak_week_counted">%1$d săptămâni încheiate luate în calcul.</string>
+    <string name="recap_streak_week_live">Săptămâna aceasta e pe drumul cel bun deocamdată.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · cel mai bun din ultimele 24 de săptămâni</string>
+    <string name="recap_streak_best_week_sub">Cel mai bun din ultimele 24 de săptămâni</string>
+    <string name="recap_streak_month_counted">%1$d luni încheiate</string>
+    <string name="recap_streak_month_live">%1$s pe drumul cel bun</string>
+    <string name="recap_streak_best_month_sub">Cel mai bun din ultimele 24 de luni</string>
+    <string name="recap_freq_row_label">Recapitulări săptămânale</string>
+    <string name="recap_freq_change">Modifică</string>
+    <string name="recap_freq_sheet_title">Frecvența recapitulărilor</string>
+    <string name="recap_freq_sheet_sub">Când îți arată Budgetty o recapitulare.</string>
+    <string name="recap_freq_off">Dezactivat</string>
 </resources>

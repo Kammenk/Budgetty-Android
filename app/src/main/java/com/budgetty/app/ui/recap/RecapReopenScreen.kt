@@ -45,12 +45,20 @@ fun RecapReopenScreen(
     viewModel: RecapViewModel = koinViewModel(),
 ) {
     val story by viewModel.reopen.collectAsStateWithLifecycle()
+    val prefs by viewModel.recapPrefs.collectAsStateWithLifecycle()
     val current = story
     if (current == null) {
         // Loading, or (defensively) none stored — Insights only offers the entry when one exists.
         RecapReopenEmpty(onNavigateBack)
     } else {
-        RecapStoryScreen(story = current, onClose = onNavigateBack, onSeeDetails = onNavigateBack)
+        RecapStoryScreen(
+            story = current,
+            onClose = onNavigateBack,
+            onSeeDetails = onNavigateBack,
+            recapEnabled = prefs.enabled,
+            recapFrequency = prefs.frequency,
+            onRecapFrequencyChange = viewModel::setRecapFrequencyChoice,
+        )
     }
 }
 

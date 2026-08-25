@@ -190,7 +190,10 @@ class RecapSchedulerTest {
     fun guard_underReceiptFloor_skips() {
         assertEquals(
             RecapGuard.Skip,
-            RecapDataGuard.evaluate(totalReceipts = 4, periodHasSpend = true, priorPeriodHasSpend = true),
+            RecapDataGuard.evaluate(
+                kind = RecapKind.MONTHLY, totalReceipts = 4, periodReceipts = 4,
+                periodHasSpend = true, priorPeriodHasSpend = true,
+            ),
         )
     }
 
@@ -198,7 +201,10 @@ class RecapSchedulerTest {
     fun guard_periodHadNoSpend_skips() {
         assertEquals(
             RecapGuard.Skip,
-            RecapDataGuard.evaluate(totalReceipts = 30, periodHasSpend = false, priorPeriodHasSpend = true),
+            RecapDataGuard.evaluate(
+                kind = RecapKind.MONTHLY, totalReceipts = 30, periodReceipts = 12,
+                periodHasSpend = false, priorPeriodHasSpend = true,
+            ),
         )
     }
 
@@ -206,7 +212,10 @@ class RecapSchedulerTest {
     fun guard_noPriorPeriod_showsPartial() {
         assertEquals(
             RecapGuard.Show(withComparison = false),
-            RecapDataGuard.evaluate(totalReceipts = 8, periodHasSpend = true, priorPeriodHasSpend = false),
+            RecapDataGuard.evaluate(
+                kind = RecapKind.MONTHLY, totalReceipts = 8, periodReceipts = 8,
+                periodHasSpend = true, priorPeriodHasSpend = false,
+            ),
         )
     }
 
@@ -214,7 +223,10 @@ class RecapSchedulerTest {
     fun guard_enoughDataWithPrior_showsFull() {
         assertEquals(
             RecapGuard.Show(withComparison = true),
-            RecapDataGuard.evaluate(totalReceipts = 40, periodHasSpend = true, priorPeriodHasSpend = true),
+            RecapDataGuard.evaluate(
+                kind = RecapKind.MONTHLY, totalReceipts = 40, periodReceipts = 15,
+                periodHasSpend = true, priorPeriodHasSpend = true,
+            ),
         )
     }
 
@@ -224,9 +236,58 @@ class RecapSchedulerTest {
         assertEquals(
             RecapGuard.Show(withComparison = true),
             RecapDataGuard.evaluate(
-                totalReceipts = RecapDataGuard.MIN_RECEIPTS,
-                periodHasSpend = true,
-                priorPeriodHasSpend = true,
+                kind = RecapKind.MONTHLY, totalReceipts = RecapDataGuard.MIN_RECEIPTS, periodReceipts = 5,
+                periodHasSpend = true, priorPeriodHasSpend = true,
+            ),
+        )
+    }
+
+    // ── Weekly data floor (§1.2) ─────────────────────────────────────────────────
+
+    @Test
+    fun guard_weekly_underWeekFloor_skips_evenWithLifetimeData() {
+        // Clears the lifetime floor and had spend, but only 2 receipts fell in the week → hollow, skip.
+        assertEquals(
+            RecapGuard.Skip,
+            RecapDataGuard.evaluate(
+                kind = RecapKind.WEEKLY, totalReceipts = 40,
+                periodReceipts = RecapDataGuard.MIN_WEEK_RECEIPTS - 1,
+                periodHasSpend = true, priorPeriodHasSpend = true,
+            ),
+        )
+    }
+
+    @Test
+    fun guard_weekly_atWeekFloor_shows() {
+        assertEquals(
+            RecapGuard.Show(withComparison = true),
+            RecapDataGuard.evaluate(
+                kind = RecapKind.WEEKLY, totalReceipts = 40,
+                periodReceipts = RecapDataGuard.MIN_WEEK_RECEIPTS,
+                periodHasSpend = true, priorPeriodHasSpend = true,
+            ),
+        )
+    }
+
+    @Test
+    fun guard_monthly_ignoresWeekFloor() {
+        // The same low period-receipt count that skips a weekly recap still shows the monthly report card.
+        assertEquals(
+            RecapGuard.Show(withComparison = true),
+            RecapDataGuard.evaluate(
+                kind = RecapKind.MONTHLY, totalReceipts = 40, periodReceipts = 1,
+                periodHasSpend = true, priorPeriodHasSpend = true,
+            ),
+        )
+    }
+
+    @Test
+    fun guard_weekly_belowLifetimeFloor_skips_regardlessOfWeekCount() {
+        assertEquals(
+            RecapGuard.Skip,
+            RecapDataGuard.evaluate(
+                kind = RecapKind.WEEKLY, totalReceipts = RecapDataGuard.MIN_RECEIPTS - 1, periodReceipts = 10,
+                periodHasSpend = true, priorPeriodHasSpend = true,
             ),
         )
     }

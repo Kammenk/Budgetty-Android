@@ -1181,4 +1181,21 @@
     <string name="insights_overlay_nudge_text">Koti laskee myös %1$s toistuvia laskuja tällä jaksolla. Aseta ne tähän suunniteltuna tasona.</string>
     <string name="insights_overlay_nudge_action">Aseta laskut päälle</string>
     <string name="cd_insights_overlay_nudge_dismiss">Ohita</string>
+    <string name="recap_streak_kicker">BUDJETTIPUTKI</string>
+    <string name="recap_streak_week_scope">%1$d viikkoa %2$s-budjetin rajoissa</string>
+    <string name="recap_streak_week_all">%1$d viikkoa budjetin rajoissa</string>
+    <string name="recap_streak_best_weeks">Paras putki: %1$d viikkoa</string>
+    <string name="recap_streak_best_months">Paras putki: %1$d kuukautta</string>
+    <string name="recap_streak_week_counted">%1$d päättynyttä viikkoa laskettu.</string>
+    <string name="recap_streak_week_live">Tämä viikko on toistaiseksi aikataulussa.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · paras viimeisen 24 viikon aikana</string>
+    <string name="recap_streak_best_week_sub">Paras viimeisen 24 viikon aikana</string>
+    <string name="recap_streak_month_counted">%1$d päättynyttä kuukautta</string>
+    <string name="recap_streak_month_live">%1$s on aikataulussa</string>
+    <string name="recap_streak_best_month_sub">Paras viimeisen 24 kuukauden aikana</string>
+    <string name="recap_freq_row_label">Viikoittaiset koosteet</string>
+    <string name="recap_freq_change">Muuta</string>
+    <string name="recap_freq_sheet_title">Koosteen tiheys</string>
+    <string name="recap_freq_sheet_sub">Milloin Budgetty näyttää koosteen.</string>
+    <string name="recap_freq_off">Pois</string>
 </resources>

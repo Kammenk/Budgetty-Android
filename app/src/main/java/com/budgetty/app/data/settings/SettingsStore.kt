@@ -44,7 +44,8 @@ class SettingsStore(context: Context) {
         autoLockMinutes = prefs.getInt(KEY_AUTO_LOCK, 1),
         dismissedWellbeingTips = prefs.getStringSet(KEY_DISMISSED_TIPS, emptySet()).orEmpty().toSet(),
         recapEnabled = prefs.getBoolean(KEY_RECAP_ENABLED, true),
-        recapFrequency = read(KEY_RECAP_FREQUENCY, RecapFrequency.MONTHLY),
+        // §1.1: default BOTH (weekly on) when the user never made an explicit choice.
+        recapFrequency = read(KEY_RECAP_FREQUENCY, RecapFrequency.BOTH),
         recapLastShownWeek = prefs.getString(KEY_RECAP_LAST_WEEK, "").orEmpty(),
         recapLastShownMonth = prefs.getString(KEY_RECAP_LAST_MONTH, "").orEmpty(),
     )

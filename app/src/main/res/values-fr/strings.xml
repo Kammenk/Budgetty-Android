@@ -1165,4 +1165,21 @@
     <string name="insights_overlay_nudge_text">Accueil compte aussi %1$s de factures récurrentes sur cette période. Superposez-les ici comme un calque prévu.</string>
     <string name="insights_overlay_nudge_action">Superposer les factures</string>
     <string name="cd_insights_overlay_nudge_dismiss">Ignorer</string>
+    <string name="recap_streak_kicker">SÉRIE DE BUDGET</string>
+    <string name="recap_streak_week_scope">%1$d semaines sous votre budget %2$s</string>
+    <string name="recap_streak_week_all">%1$d semaines sous le budget</string>
+    <string name="recap_streak_best_weeks">Meilleure série : %1$d semaines</string>
+    <string name="recap_streak_best_months">Meilleure série : %1$d mois</string>
+    <string name="recap_streak_week_counted">%1$d semaines terminées comptées.</string>
+    <string name="recap_streak_week_live">Cette semaine est sur la bonne voie.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · meilleur sur les 24 dernières semaines</string>
+    <string name="recap_streak_best_week_sub">Meilleur sur les 24 dernières semaines</string>
+    <string name="recap_streak_month_counted">%1$d mois terminés</string>
+    <string name="recap_streak_month_live">%1$s sur la bonne voie</string>
+    <string name="recap_streak_best_month_sub">Meilleur sur les 24 derniers mois</string>
+    <string name="recap_freq_row_label">Récaps hebdomadaires</string>
+    <string name="recap_freq_change">Modifier</string>
+    <string name="recap_freq_sheet_title">Fréquence des récaps</string>
+    <string name="recap_freq_sheet_sub">Quand Budgetty vous montre un récap.</string>
+    <string name="recap_freq_off">Désactivé</string>
 </resources>

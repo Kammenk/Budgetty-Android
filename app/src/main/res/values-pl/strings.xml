@@ -1201,4 +1201,21 @@
     <string name="insights_overlay_nudge_text">Główna w tym okresie liczy też %1$s rachunków cyklicznych. Nałóż je tutaj jako warstwę planowaną.</string>
     <string name="insights_overlay_nudge_action">Nałóż rachunki</string>
     <string name="cd_insights_overlay_nudge_dismiss">Odrzuć</string>
+    <string name="recap_streak_kicker">SERIA BUDŻETOWA</string>
+    <string name="recap_streak_week_scope">%1$d tygodni w ramach budżetu %2$s</string>
+    <string name="recap_streak_week_all">%1$d tygodni w ramach budżetu</string>
+    <string name="recap_streak_best_weeks">Najlepsza seria: %1$d tygodni</string>
+    <string name="recap_streak_best_months">Najlepsza seria: %1$d miesięcy</string>
+    <string name="recap_streak_week_counted">Policzono zakończonych tygodni: %1$d.</string>
+    <string name="recap_streak_week_live">Ten tydzień jak dotąd jest na dobrej drodze.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · najlepszy z ostatnich 24 tygodni</string>
+    <string name="recap_streak_best_week_sub">Najlepszy z ostatnich 24 tygodni</string>
+    <string name="recap_streak_month_counted">Zakończonych miesięcy: %1$d</string>
+    <string name="recap_streak_month_live">%1$s na dobrej drodze</string>
+    <string name="recap_streak_best_month_sub">Najlepszy z ostatnich 24 miesięcy</string>
+    <string name="recap_freq_row_label">Cotygodniowe podsumowania</string>
+    <string name="recap_freq_change">Zmień</string>
+    <string name="recap_freq_sheet_title">Częstotliwość podsumowań</string>
+    <string name="recap_freq_sheet_sub">Kiedy Budgetty pokazuje podsumowanie.</string>
+    <string name="recap_freq_off">Wył.</string>
 </resources>

@@ -25,6 +25,8 @@ import com.budgetty.app.ui.util.MerchantCharge
 import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.SavingsMath
 import com.budgetty.app.ui.streaks.BudgetStreakInput
+import com.budgetty.app.ui.streaks.LiveBudgetPeriod
+import com.budgetty.app.ui.streaks.Streak
 import com.budgetty.app.ui.streaks.StreakEngine
 import com.budgetty.app.ui.streaks.StreakKind
 import com.budgetty.app.ui.streaks.StreakTxn
@@ -156,6 +158,9 @@ class RecapProvider(
 
     private fun txnsIn(loaded: Loaded, w: LongRange) = loaded.txns.filter { it.timestamp in w }
 
+    /** Receipts logged within a period window — the period-scoped count for the weekly data floor (§1.2). */
+    private fun receiptsInWindow(loaded: Loaded, w: LongRange): Int = loaded.receipts.count { it.timestamp in w }
+
     private fun netSpend(list: List<TransactionEntity>): BigDecimal =
         list.fold(BigDecimal.ZERO) { a, t -> a + t.price.multiply(BigDecimal(t.quantity)) }
 
@@ -182,7 +187,13 @@ class RecapProvider(
         val spend = paidSpend(loaded, monthTxns)
         val prevSpend = paidSpend(loaded, prevTxns)
 
-        val guard = RecapDataGuard.evaluate(loaded.receipts.size, spend.signum() > 0, prevSpend.signum() > 0)
+        val guard = RecapDataGuard.evaluate(
+            kind = RecapKind.MONTHLY,
+            totalReceipts = loaded.receipts.size,
+            periodReceipts = receiptsInWindow(loaded, window),
+            periodHasSpend = spend.signum() > 0,
+            priorPeriodHasSpend = prevSpend.signum() > 0,
+        )
         if (guard is RecapGuard.Skip) return null
         val withComparison = (guard as RecapGuard.Show).withComparison
 
@@ -252,8 +263,10 @@ class RecapProvider(
             )
         }
         if (budget.hasBudget) {
+            val streak = monthStreak(loaded, now, offset)
             cards += RecapCard.BudgetStreak(
-                band = RecapBand.GREAT, streakMonths = streakMonths(loaded, now, offset),
+                band = RecapBand.GREAT, streakMonths = streak.current, best = streak.best,
+                liveOnTrack = streak.liveOnTrack,
                 underCount = budget.underCount, scopeCount = budget.scopeCount,
                 segments = budget.segments, safeToSpend = budget.safeToSpend,
             )
@@ -308,7 +321,13 @@ class RecapProvider(
         val spend = paidSpend(loaded, weekTxns)
         val prevSpend = paidSpend(loaded, txnsIn(loaded, prevWindow))
 
-        val guard = RecapDataGuard.evaluate(loaded.receipts.size, spend.signum() > 0, prevSpend.signum() > 0)
+        val guard = RecapDataGuard.evaluate(
+            kind = RecapKind.WEEKLY,
+            totalReceipts = loaded.receipts.size,
+            periodReceipts = receiptsInWindow(loaded, window),
+            periodHasSpend = spend.signum() > 0,
+            priorPeriodHasSpend = prevSpend.signum() > 0,
+        )
         if (guard is RecapGuard.Skip) return null
         val withComparison = (guard as RecapGuard.Show).withComparison
 
@@ -323,15 +342,30 @@ class RecapProvider(
         val onTrack = weeklyBudget == null || fractionUsed <= 1f
         val movers = if (withComparison) topMovers(loaded, weekTxns, txnsIn(loaded, prevWindow)) else emptyList()
 
-        val cards = listOf(
-            RecapCard.Cover(RecapBand.PRIMARY),
-            RecapCard.Pace(
-                band = if (onTrack) RecapBand.GOOD else RecapBand.WARN, spent = spend,
-                weeklyBudget = weeklyBudget, fractionUsed = fractionUsed, paceFraction = 1f,
-                remaining = remaining, deltaPercent = delta,
-            ),
-            RecapCard.Focus(RecapBand.SECONDARY, deriveWeeklyFocus(movers), isWeekly = true),
-        )
+        // §1.3: a fuller weekly story — Cover → Pace → Limits (if any) → Streak (if any) → Focus.
+        // Both the Limits and Streak cards drop out entirely when there's nothing to show, so a bare
+        // week stays Cover → Pace → Focus (3 cards) and never pads.
+        val cards = buildList {
+            add(RecapCard.Cover(RecapBand.PRIMARY))
+            add(
+                RecapCard.Pace(
+                    band = if (onTrack) RecapBand.GOOD else RecapBand.WARN, spent = spend,
+                    weeklyBudget = weeklyBudget, fractionUsed = fractionUsed, paceFraction = 1f,
+                    remaining = remaining, deltaPercent = delta,
+                ),
+            )
+            if (loaded.limits.isNotEmpty()) {
+                val outcome = limitOutcomes(loaded, window, weekly = true)
+                add(
+                    RecapCard.Limits(
+                        band = RecapBand.WARN, underCount = outcome.count { it.under },
+                        totalCount = outcome.size, chips = outcome,
+                    ),
+                )
+            }
+            weekStreak(loaded, now, offset)?.let { add(streakCard(it)) }
+            add(RecapCard.Focus(RecapBand.PRIMARY, deriveWeeklyFocus(movers), isWeekly = true))
+        }
         return RecapStory(
             kind = RecapKind.WEEKLY, monthYear = YearMonth.from(weekEnd),
             nextMonth = YearMonth.from(weekEnd), weekStart = weekStart, weekEnd = weekEnd, cards = cards,
@@ -383,8 +417,7 @@ class RecapProvider(
         monthTxns: List<TransactionEntity>,
         spend: BigDecimal,
     ): List<Triple<String, BigDecimal, BigDecimal>> {
-        val catBudgets = loaded.budgets.filterKeys { it.startsWith(BudgetRepository.CATEGORY_PREFIX) }
-            .mapKeys { it.key.removePrefix(BudgetRepository.CATEGORY_PREFIX) }
+        val catBudgets = categoryBudgetsOf(loaded)
         val monthlyBudget = loaded.budgets[BudgetRepository.MONTHLY]
         val catSpend = monthTxns.groupBy { it.category }.mapValues { netSpend(it.value) }
         return when {
@@ -422,52 +455,145 @@ class RecapProvider(
         else -> RecapSegStatus.GOOD
     }
 
+    private data class PeriodTagged(
+        val closed: List<StreakTxn>,
+        val adjustmentByPeriod: Map<Int, BigDecimal>,
+        val live: LiveBudgetPeriod,
+    )
+
     /**
-     * Consecutive closed months where EVERY budgeted scope stayed under, ending with the month at
-     * [endOffset]; 0 when that month wasn't all-under or there is no budget. Re-sourced from
-     * [StreakEngine] (§2.1) so there is a single streak implementation: each transaction is tagged with
-     * its pay-cycle-month index relative to [endOffset] (0 = that month, increasing into the past), the
-     * whole-budget paid adjustment is folded per period, and [StreakEngine.allScopesStreak] does the
-     * one-pass every-scope aggregate over [StreakEngine.MAX_STREAK] closed months.
+     * Tags every transaction with the streak period index its date falls in, via [periodIndexOf]:
+     * 0 = the just-closed period, positive into the past, and [LIVE_INDEX] (−1) = the current OPEN
+     * period. Closed periods (0 until [StreakEngine.MAX_STREAK]) become [StreakTxn]s carrying their
+     * per-period whole-budget paid adjustment; the open period becomes the [LiveBudgetPeriod] that only
+     * ever feeds [Streak.liveOnTrack] and is never counted in [Streak.current] (§2.3). Grouping happens
+     * exactly once so both month and week streaks are one-pass (§2.8).
      */
-    private fun streakMonths(loaded: Loaded, now: LocalDate, endOffset: Int): Int {
-        val endCycle = YearMonth.from(PayCycle.month(now, loaded.monthStartDay, endOffset).first)
-        val byPeriod = loaded.txns
+    private fun tagByPeriod(loaded: Loaded, periodIndexOf: (LocalDate) -> Int): PeriodTagged {
+        val byIndex = loaded.txns
             .mapNotNull { t ->
                 val date = Instant.ofEpochMilli(t.timestamp).atZone(zone).toLocalDate()
-                val txnCycle = YearMonth.from(PayCycle.month(date, loaded.monthStartDay).first)
-                val periodIndex = ChronoUnit.MONTHS.between(txnCycle, endCycle).toInt()
-                if (periodIndex in 0 until StreakEngine.MAX_STREAK) periodIndex to t else null
+                val idx = periodIndexOf(date)
+                if (idx == LIVE_INDEX || idx in 0 until StreakEngine.MAX_STREAK) idx to t else null
             }
             .groupBy({ it.first }, { it.second })
-        val streakTxns = byPeriod.flatMap { (periodIndex, list) ->
-            list.map { StreakTxn(periodIndex, it.category, it.price.multiply(BigDecimal(it.quantity))) }
+        val closedGroups = byIndex.filterKeys { it >= 0 }
+        val closed = closedGroups.flatMap { (idx, list) ->
+            list.map { StreakTxn(idx, it.category, it.price.multiply(BigDecimal(it.quantity))) }
         }
-        val monthlyAdjustment = byPeriod.mapValues { (_, list) -> paidAdjustmentOf(list, loaded.receiptsById) }
-        val catBudgets = loaded.budgets.filterKeys { it.startsWith(BudgetRepository.CATEGORY_PREFIX) }
+        val adjustment = closedGroups.mapValues { (_, list) -> paidAdjustmentOf(list, loaded.receiptsById) }
+        val liveList = byIndex[LIVE_INDEX].orEmpty()
+        val live = LiveBudgetPeriod(
+            transactions = liveList.map { StreakTxn(0, it.category, it.price.multiply(BigDecimal(it.quantity))) },
+            monthlyAdjustment = paidAdjustmentOf(liveList, loaded.receiptsById),
+        )
+        return PeriodTagged(closed, adjustment, live)
+    }
+
+    private fun categoryBudgetsOf(loaded: Loaded): Map<String, BigDecimal> =
+        loaded.budgets.filterKeys { it.startsWith(BudgetRepository.CATEGORY_PREFIX) }
             .mapKeys { it.key.removePrefix(BudgetRepository.CATEGORY_PREFIX) }
+
+    /**
+     * The all-scopes month streak (§2.1): consecutive CLOSED pay-cycle months where EVERY budgeted
+     * scope stayed under, ending with the month at [endOffset], plus its personal best and whether the
+     * current OPEN month is on track. Re-sourced from [StreakEngine.allScopesStreak] so there is a
+     * single streak implementation. Feeds the de-flamed monthly [RecapCard.BudgetStreak] (§2.4/§2.6).
+     */
+    private fun monthStreak(loaded: Loaded, now: LocalDate, endOffset: Int): Streak {
+        val endCycle = YearMonth.from(PayCycle.month(now, loaded.monthStartDay, endOffset).first)
+        val tagged = tagByPeriod(loaded) { date ->
+            val txnCycle = YearMonth.from(PayCycle.month(date, loaded.monthStartDay).first)
+            ChronoUnit.MONTHS.between(txnCycle, endCycle).toInt()
+        }
         return StreakEngine.allScopesStreak(
             BudgetStreakInput(
-                transactions = streakTxns,
-                categoryBudgets = catBudgets,
+                transactions = tagged.closed,
+                categoryBudgets = categoryBudgetsOf(loaded),
                 monthlyBudget = loaded.budgets[BudgetRepository.MONTHLY],
                 kind = StreakKind.BUDGET_MONTH,
                 monthlyLabel = BudgetRepository.MONTHLY,
-                monthlyAdjustmentByPeriod = monthlyAdjustment,
+                monthlyAdjustmentByPeriod = tagged.adjustmentByPeriod,
+                live = tagged.live,
             ),
-        ).current
+        )
     }
+
+    /**
+     * The best per-scope WEEK streak to surface on the weekly Streak card (§1.3), or null when there's
+     * nothing worth showing. Per-category when any category budget is set — each monthly category budget
+     * sliced to a week via [weeklyShareOf] — else the single whole-budget scope (an explicit WEEKLY
+     * budget as-is, or the monthly budget sliced). [pickWeekStreak] chooses one scope: a live
+     * current run first, else a best-run fallback, both gated at [StreakEngine.MIN_TO_SURFACE].
+     */
+    private fun weekStreak(loaded: Loaded, now: LocalDate, endOffset: Int): Streak? {
+        val catBudgets = categoryBudgetsOf(loaded)
+        val weeklyBudget = loaded.budgets[BudgetRepository.WEEKLY]
+        val monthlyBudget = loaded.budgets[BudgetRepository.MONTHLY]
+        val categoryBudgets: Map<String, BigDecimal>
+        val wholeBudget: BigDecimal?
+        when {
+            catBudgets.isNotEmpty() -> {
+                categoryBudgets = catBudgets.mapValues { weeklyShareOf(it.value) }
+                wholeBudget = null
+            }
+            weeklyBudget != null -> {
+                categoryBudgets = emptyMap()
+                wholeBudget = weeklyBudget
+            }
+            monthlyBudget != null -> {
+                categoryBudgets = emptyMap()
+                wholeBudget = weeklyShareOf(monthlyBudget)
+            }
+            else -> return null
+        }
+        val fdow = firstDayOfWeek()
+        val endWeekStart = now.with(TemporalAdjusters.previousOrSame(fdow)).plusWeeks(endOffset.toLong())
+        val tagged = tagByPeriod(loaded) { date ->
+            ChronoUnit.WEEKS.between(date.with(TemporalAdjusters.previousOrSame(fdow)), endWeekStart).toInt()
+        }
+        return pickWeekStreak(
+            StreakEngine.budgetStreaks(
+                BudgetStreakInput(
+                    transactions = tagged.closed,
+                    categoryBudgets = categoryBudgets,
+                    monthlyBudget = wholeBudget,
+                    kind = StreakKind.BUDGET_WEEK,
+                    monthlyLabel = "",
+                    monthlyAdjustmentByPeriod = tagged.adjustmentByPeriod,
+                    live = tagged.live,
+                ),
+            ),
+        )
+    }
+
+    /** Maps a chosen [Streak] to the calm secondary-band [RecapCard.Streak] (best-run when current < 2). */
+    private fun streakCard(streak: Streak): RecapCard.Streak = RecapCard.Streak(
+        band = RecapBand.SECONDARY,
+        kind = streak.kind,
+        scope = streak.label.ifBlank { null },
+        current = streak.current,
+        best = streak.best,
+        liveOnTrack = streak.liveOnTrack,
+        isBestRun = streak.current < StreakEngine.MIN_TO_SURFACE,
+    )
 
     // ── Buying-limits outcome ──────────────────────────────────────────────────────
 
-    private fun limitOutcomes(loaded: Loaded, monthWindow: LongRange): List<RecapLimitChip> {
+    /**
+     * The limit chips for a recap window. In a [weekly] story the window IS a single week, so every
+     * limit is simply counted within it against its cap (§1.3 — weekly limits pair naturally with the
+     * weekly recap). In the monthly story a monthly cap counts over the whole month, while a weekly cap
+     * asks "did you keep every week under it" via the worst week's count.
+     */
+    private fun limitOutcomes(loaded: Loaded, window: LongRange, weekly: Boolean = false): List<RecapLimitChip> {
         val items = loaded.txns.map { CountableItem(it.name, it.quantity, it.timestamp) }
         return loaded.limits.map { limit ->
-            val bought = when (limit.timeframe) {
-                BuyingLimitTimeframe.MONTHLY ->
-                    BuyingLimitCounter.countInWindow(items, limit.keywordList, monthWindow.first, monthWindow.last)
+            val bought = when {
+                weekly || limit.timeframe == BuyingLimitTimeframe.MONTHLY ->
+                    BuyingLimitCounter.countInWindow(items, limit.keywordList, window.first, window.last)
                 // A weekly cap over a month is "did you keep every week under it": the worst week's count.
-                BuyingLimitTimeframe.WEEKLY -> worstWeekCount(items, limit.keywordList, monthWindow)
+                else -> worstWeekCount(items, limit.keywordList, window)
             }
             RecapLimitChip(
                 emoji = limit.emoji.ifBlank { "🏷️" },
@@ -607,5 +733,37 @@ class RecapProvider(
         const val WARN_FRACTION = 0.9
         const val TRAILING_MONTHS = 6
         const val NICE_STEP = 10
+
+        /** Period index of the current OPEN period in [tagByPeriod] — feeds liveOnTrack only, never counted. */
+        const val LIVE_INDEX = -1
     }
+}
+
+private const val MONTHS_PER_YEAR = 12
+private const val WEEKS_PER_YEAR = 52
+private const val WEEK_SHARE_SCALE = 2
+
+/**
+ * A monthly budget amount sliced to one week for the weekly streak comparison (§1.3). Category and
+ * whole-budget amounts in Budgetty are monthly; a month is `52 ⁄ 12` weeks, so a week's allowance is
+ * `monthly × 12 ⁄ 52`. An explicitly-set WEEKLY budget is already per-week and is used as-is (never
+ * passed here). Kept a pure top-level function so it is JVM-unit-testable and ports 1:1 to iOS.
+ */
+internal fun weeklyShareOf(monthly: BigDecimal): BigDecimal =
+    monthly.multiply(BigDecimal(MONTHS_PER_YEAR))
+        .divide(BigDecimal(WEEKS_PER_YEAR), WEEK_SHARE_SCALE, RoundingMode.HALF_UP)
+
+/**
+ * Picks the single scope for the weekly Streak card (§1.3): the strongest live current run (highest
+ * [Streak.current], then [Streak.best]) among those clearing the [StreakEngine.MIN_TO_SURFACE] ≥2 floor;
+ * failing that, the strongest best-run fallback (highest [Streak.best] ≥ 2). Ties break on label for
+ * determinism. Null when nothing qualifies, so the card drops out. Pure + top-level for JVM testing.
+ */
+internal fun pickWeekStreak(streaks: List<Streak>): Streak? {
+    StreakEngine.surfaced(streaks)
+        .maxWithOrNull(compareBy({ it.current }, { it.best }, { it.label }))
+        ?.let { return it }
+    return streaks
+        .filter { it.best >= StreakEngine.MIN_TO_SURFACE }
+        .maxWithOrNull(compareBy({ it.best }, { it.label }))
 }

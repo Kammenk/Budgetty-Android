@@ -1211,4 +1211,21 @@
     <string name="insights_overlay_nudge_text">Domů v tomto období počítá také %1$s pravidelných účtů. Překryj je zde jako plánovanou vrstvu.</string>
     <string name="insights_overlay_nudge_action">Překrýt účty</string>
     <string name="cd_insights_overlay_nudge_dismiss">Skrýt</string>
+    <string name="recap_streak_kicker">SÉRIE ROZPOČTU</string>
+    <string name="recap_streak_week_scope">%1$d týdnů v rámci rozpočtu %2$s</string>
+    <string name="recap_streak_week_all">%1$d týdnů v rámci rozpočtu</string>
+    <string name="recap_streak_best_weeks">Nejlepší série: %1$d týdnů</string>
+    <string name="recap_streak_best_months">Nejlepší série: %1$d měsíců</string>
+    <string name="recap_streak_week_counted">Započteno uzavřených týdnů: %1$d.</string>
+    <string name="recap_streak_week_live">Tento týden zatím jde podle plánu.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · nejlepší za posledních 24 týdnů</string>
+    <string name="recap_streak_best_week_sub">Nejlepší za posledních 24 týdnů</string>
+    <string name="recap_streak_month_counted">Uzavřených měsíců: %1$d</string>
+    <string name="recap_streak_month_live">%1$s jde podle plánu</string>
+    <string name="recap_streak_best_month_sub">Nejlepší za posledních 24 měsíců</string>
+    <string name="recap_freq_row_label">Týdenní přehledy</string>
+    <string name="recap_freq_change">Změnit</string>
+    <string name="recap_freq_sheet_title">Četnost přehledů</string>
+    <string name="recap_freq_sheet_sub">Kdy vám Budgetty ukáže přehled.</string>
+    <string name="recap_freq_off">Vypnuto</string>
 </resources>

@@ -3,7 +3,9 @@ package com.budgetty.app.ui.recap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.data.settings.RecapFrequency
 import com.budgetty.app.data.settings.SettingsStore
+import com.budgetty.app.ui.streaks.StreakKind
 import com.budgetty.app.ui.util.BuyingLimitCounter
 import com.budgetty.app.ui.util.PayCycle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,6 +22,9 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
+
+/** Current recap on/off + cadence, for the in-story frequency control's marked selection (§1.4). */
+data class RecapPrefs(val enabled: Boolean, val frequency: RecapFrequency)
 
 /** State the recap gate observes (see [RecapViewModel.interstitial]). */
 data class RecapInterstitialState(
@@ -75,8 +80,37 @@ class RecapViewModel(
             }
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS), RecapInterstitialState())
 
+    /**
+     * Current recap on/off + cadence, so the re-opened story's frequency control (§1.4) can mark the
+     * live selection. Backed by the same [SettingsStore.settings] flow as Account → Recap, so the two
+     * always agree.
+     */
+    val recapPrefs: StateFlow<RecapPrefs> =
+        settings.settings
+            .map { RecapPrefs(it.recapEnabled, it.recapFrequency) }
+            .stateIn(
+                viewModelScope,
+                SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
+                RecapPrefs(true, RecapFrequency.BOTH),
+            )
+
     /** Stamps the due period(s) as shown. Both the close (Done / ✕) and the guard-skip call this. */
     fun markShown(due: RecapDue) = settings.setRecapShown(due.markWeek, due.markMonth)
+
+    /**
+     * Applies the in-story frequency control (§1.4): [enabled] false = Off (recap off, cadence
+     * remembered); the three cadences set enabled + that frequency. Writes straight to [SettingsStore],
+     * whose single [SettingsStore.settings] flow also backs Account → Recap, so the two stay in sync
+     * with no extra wiring. Applied for the NEXT open — the current story is latched by the gate so this
+     * never tears it down mid-read.
+     */
+    fun setRecapFrequencyChoice(enabled: Boolean, frequency: RecapFrequency) {
+        settings.setRecapEnabled(enabled)
+        if (enabled) settings.setRecapFrequency(frequency)
+    }
+
+    /** A streak card was surfaced in the story (fired once per surfaced streak when the story appears). */
+    fun onStreakSurfaced(kind: StreakKind, length: Int) = analytics.logStreakSurfaced(kind, length)
 
     /** A scheduled recap story became visible (fired once when the interstitial appears). */
     fun onRecapShown(kind: RecapKind) = analytics.logRecapShown(kind)

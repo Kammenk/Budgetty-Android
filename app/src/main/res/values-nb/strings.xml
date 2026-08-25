@@ -1180,4 +1180,21 @@
     <string name="insights_overlay_nudge_text">Hjem teller også %1$s i faste regninger denne perioden. Legg dem her som et planlagt lag.</string>
     <string name="insights_overlay_nudge_action">Legg regninger over</string>
     <string name="cd_insights_overlay_nudge_dismiss">Avvis</string>
+    <string name="recap_streak_kicker">BUDSJETTREKKE</string>
+    <string name="recap_streak_week_scope">%1$d uker under %2$s-budsjettet ditt</string>
+    <string name="recap_streak_week_all">%1$d uker under budsjett</string>
+    <string name="recap_streak_best_weeks">Beste rekke: %1$d uker</string>
+    <string name="recap_streak_best_months">Beste rekke: %1$d måneder</string>
+    <string name="recap_streak_week_counted">%1$d avsluttede uker telt.</string>
+    <string name="recap_streak_week_live">Denne uken er på rett spor så langt.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · best de siste 24 ukene</string>
+    <string name="recap_streak_best_week_sub">Best de siste 24 ukene</string>
+    <string name="recap_streak_month_counted">%1$d avsluttede måneder</string>
+    <string name="recap_streak_month_live">%1$s er på rett spor</string>
+    <string name="recap_streak_best_month_sub">Best de siste 24 månedene</string>
+    <string name="recap_freq_row_label">Ukentlige oppsummeringer</string>
+    <string name="recap_freq_change">Endre</string>
+    <string name="recap_freq_sheet_title">Hyppighet for oppsummering</string>
+    <string name="recap_freq_sheet_sub">Når Budgetty viser deg en oppsummering.</string>
+    <string name="recap_freq_off">Av</string>
 </resources>

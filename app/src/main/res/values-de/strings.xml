@@ -1166,4 +1166,21 @@
     <string name="insights_overlay_nudge_text">Start zählt in diesem Zeitraum ebenfalls %1$s an wiederkehrenden Rechnungen. Überlagere sie hier als geplante Ebene.</string>
     <string name="insights_overlay_nudge_action">Rechnungen überlagern</string>
     <string name="cd_insights_overlay_nudge_dismiss">Ausblenden</string>
+    <string name="recap_streak_kicker">BUDGET-SERIE</string>
+    <string name="recap_streak_week_scope">%1$d Wochen unter deinem %2$s-Budget</string>
+    <string name="recap_streak_week_all">%1$d Wochen unter dem Budget</string>
+    <string name="recap_streak_best_weeks">Beste Serie: %1$d Wochen</string>
+    <string name="recap_streak_best_months">Beste Serie: %1$d Monate</string>
+    <string name="recap_streak_week_counted">%1$d abgeschlossene Wochen gezählt.</string>
+    <string name="recap_streak_week_live">Diese Woche ist bisher auf Kurs.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · Bestwert der letzten 24 Wochen</string>
+    <string name="recap_streak_best_week_sub">Bestwert der letzten 24 Wochen</string>
+    <string name="recap_streak_month_counted">%1$d abgeschlossene Monate</string>
+    <string name="recap_streak_month_live">%1$s ist auf Kurs</string>
+    <string name="recap_streak_best_month_sub">Bestwert der letzten 24 Monate</string>
+    <string name="recap_freq_row_label">Wöchentliche Rückblicke</string>
+    <string name="recap_freq_change">Ändern</string>
+    <string name="recap_freq_sheet_title">Häufigkeit des Rückblicks</string>
+    <string name="recap_freq_sheet_sub">Wann Budgetty dir einen Rückblick zeigt.</string>
+    <string name="recap_freq_off">Aus</string>
 </resources>

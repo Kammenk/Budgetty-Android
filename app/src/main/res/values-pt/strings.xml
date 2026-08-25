@@ -1168,4 +1168,21 @@
     <string name="insights_overlay_nudge_text">Início também conta %1$s em contas recorrentes neste período. Sobreponha-as aqui como uma camada prevista.</string>
     <string name="insights_overlay_nudge_action">Sobrepor contas</string>
     <string name="cd_insights_overlay_nudge_dismiss">Dispensar</string>
+    <string name="recap_streak_kicker">SEQUÊNCIA DE ORÇAMENTO</string>
+    <string name="recap_streak_week_scope">%1$d semanas dentro do teu orçamento de %2$s</string>
+    <string name="recap_streak_week_all">%1$d semanas dentro do orçamento</string>
+    <string name="recap_streak_best_weeks">Melhor sequência: %1$d semanas</string>
+    <string name="recap_streak_best_months">Melhor sequência: %1$d meses</string>
+    <string name="recap_streak_week_counted">%1$d semanas fechadas contadas.</string>
+    <string name="recap_streak_week_live">Esta semana está no bom caminho.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · melhor nas últimas 24 semanas</string>
+    <string name="recap_streak_best_week_sub">Melhor nas últimas 24 semanas</string>
+    <string name="recap_streak_month_counted">%1$d meses fechados</string>
+    <string name="recap_streak_month_live">%1$s no bom caminho</string>
+    <string name="recap_streak_best_month_sub">Melhor nos últimos 24 meses</string>
+    <string name="recap_freq_row_label">Resumos semanais</string>
+    <string name="recap_freq_change">Alterar</string>
+    <string name="recap_freq_sheet_title">Frequência do resumo</string>
+    <string name="recap_freq_sheet_sub">Quando o Budgetty te mostra um resumo.</string>
+    <string name="recap_freq_off">Desligado</string>
 </resources>
