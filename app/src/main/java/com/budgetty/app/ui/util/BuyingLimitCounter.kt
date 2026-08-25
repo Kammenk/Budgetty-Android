@@ -1,6 +1,7 @@
 package com.budgetty.app.ui.util
 
 import com.budgetty.app.data.local.BuyingLimitTimeframe
+import com.budgetty.app.ui.streaks.LimitWindow
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.ZoneId
@@ -78,6 +79,60 @@ object BuyingLimitCounter {
                 weekStart to weekStart.plusDays(DAYS_IN_WEEK - 1L)
             }
         }
+        return millisRange(startDate, endInclusive, zone)
+    }
+
+    /**
+     * Inclusive [start, end] epoch-millis for the CLOSED [timeframe] window [closedIndex] periods back:
+     * index 0 = the most recent closed window (last week / last pay-cycle month), increasing into the
+     * past. The current OPEN window is [window]; this is only the finished ones.
+     */
+    fun closedWindow(
+        timeframe: BuyingLimitTimeframe,
+        closedIndex: Int,
+        today: LocalDate = LocalDate.now(),
+        monthStartDay: Int = 1,
+        firstDayOfWeek: DayOfWeek = localeFirstDayOfWeek(),
+        zone: ZoneId = ZoneId.systemDefault(),
+    ): Pair<Long, Long> {
+        val (startDate, endInclusive) = when (timeframe) {
+            BuyingLimitTimeframe.MONTHLY -> PayCycle.month(today, monthStartDay, offset = -(closedIndex + 1))
+            BuyingLimitTimeframe.WEEKLY -> {
+                val weekStart = today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+                    .minusWeeks((closedIndex + 1).toLong())
+                weekStart to weekStart.plusDays(DAYS_IN_WEEK - 1L)
+            }
+        }
+        return millisRange(startDate, endInclusive, zone)
+    }
+
+    /**
+     * The last [windowCount] CLOSED [timeframe] windows as [LimitWindow]s, MOST-RECENT FIRST (index 0 =
+     * the last closed window). Each carries the matched quantity in that window and whether the window
+     * held ANY receipts at all ([LimitWindow.hasData], any item — not just matching ones — so an empty
+     * window reads as "no data", never a met window). A single derivation feeds BOTH the history strip
+     * and [com.budgetty.app.ui.streaks.StreakEngine.limitStreak] (§4.3), so the two can never disagree.
+     * Pure/JVM-testable; ports 1:1 to iOS.
+     */
+    fun closedWindows(
+        allItems: List<CountableItem>,
+        keywords: List<String>,
+        timeframe: BuyingLimitTimeframe,
+        windowCount: Int,
+        today: LocalDate = LocalDate.now(),
+        monthStartDay: Int = 1,
+        firstDayOfWeek: DayOfWeek = localeFirstDayOfWeek(),
+        zone: ZoneId = ZoneId.systemDefault(),
+    ): List<LimitWindow> = (0 until windowCount).map { idx ->
+        val (start, end) = closedWindow(timeframe, idx, today, monthStartDay, firstDayOfWeek, zone)
+        LimitWindow(
+            count = countInWindow(allItems, keywords, start, end),
+            hasData = allItems.any { it.timestamp in start..end },
+        )
+    }
+
+    /** Inclusive [start, end] epoch-millis spanning [startDate] start-of-day through [endInclusive] end-of-day. */
+    private fun millisRange(startDate: LocalDate, endInclusive: LocalDate, zone: ZoneId): Pair<Long, Long> {
         val start = startDate.atStartOfDay(zone).toInstant().toEpochMilli()
         val end = endInclusive.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
         return start to end

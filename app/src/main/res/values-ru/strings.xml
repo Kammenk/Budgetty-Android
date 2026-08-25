@@ -1062,12 +1062,12 @@
     <string name="buying_limits_empty_title">Задайте лимит покупок</string>
     <string name="buying_limits_empty_body">Ограничьте, сколько чего-то покупаете — посчитаем по вашим чекам.</string>
     <string name="buying_limits_add">Добавить лимит</string>
-    <string name="buying_limits_free_hint">1 лимит бесплатно · без ограничений с Premium</string>
+    <string name="buying_limits_free_hint">%1$d лимита бесплатно · без ограничений с Premium</string>
     <string name="buying_limits_explainer">Лимит — это несколько ключевых слов, неделя или месяц и число.</string>
     <string name="buying_limits_explainer_example">не больше 1 колы в неделю</string>
     <string name="buying_limits_status_on_track">В норме</string>
     <string name="buying_limits_status_at_limit">На лимите</string>
-    <string name="buying_limits_status_over">Превышен</string>
+    <string name="buying_limits_status_over">Превышен на %1$d</string>
     <string name="buying_limits_weekly">Еженедельно</string>
     <string name="buying_limits_monthly">Ежемесячно</string>
     <string name="buying_limits_bought_of">Куплено %1$d из %2$d</string>
@@ -1075,7 +1075,7 @@
     <string name="buying_limits_resets">сброс %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Откройте безлимитные лимиты покупок</string>
-    <string name="buying_limits_unlock_body">Бесплатный план включает 1 лимит покупок. С Premium их сколько угодно — плюс безлимитные сканы и свои категории.</string>
+    <string name="buying_limits_unlock_body">Бесплатный план включает %1$d лимита покупок. С Premium их сколько угодно — плюс безлимитные сканы и свои категории.</string>
     <string name="buying_limits_used">Использовано %1$d из %2$d бесплатных лимитов</string>
     <string name="buying_limits_new_title">Новый лимит</string>
     <string name="buying_limits_edit_title">Изменить лимит</string>
@@ -1111,6 +1111,37 @@
     <string name="buying_limit_nudge_body">Чек сохранён. Ваш лимит для %1$s сбросится %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Понятно</string>
     <string name="buying_limit_nudge_view">Показать лимиты</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d неделя в лимите</item>
+        <item quantity="few">· %1$d недели в лимите</item>
+        <item quantity="many">· %1$d недель в лимите</item>
+        <item quantity="other">· %1$d недели в лимите</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d месяц в лимите</item>
+        <item quantity="few">· %1$d месяца в лимите</item>
+        <item quantity="many">· %1$d месяцев в лимите</item>
+        <item quantity="other">· %1$d месяца в лимите</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Лучшая серия: %1$d неделя</item>
+        <item quantity="few">Лучшая серия: %1$d недели</item>
+        <item quantity="many">Лучшая серия: %1$d недель</item>
+        <item quantity="other">Лучшая серия: %1$d недели</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Лучшая серия: %1$d месяц</item>
+        <item quantity="few">Лучшая серия: %1$d месяца</item>
+        <item quantity="many">Лучшая серия: %1$d месяцев</item>
+        <item quantity="other">Лучшая серия: %1$d месяца</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d из последних %2$d недель в лимите</string>
+    <string name="buying_limits_history_months">%1$d из последних %2$d месяцев в лимите</string>
+    <string name="buying_limits_suggest_title">Чаще всего покупаете</string>
+    <string name="buying_limits_suggest_subtitle">за 60 дней</string>
+    <string name="buying_limits_suggest_prompt">Вы купили %1$s %2$d× за месяц — ограничить?</string>
+    <string name="buying_limits_suggest_cap">Предложить %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Скрыть предложение</string>
     <string name="paywall_benefit_limits">Безлимитные лимиты покупок</string>
     <string name="paywall_benefit_limits_detail">На бесплатном плане — %1$d</string>
 

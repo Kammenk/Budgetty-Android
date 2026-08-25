@@ -19,6 +19,7 @@ import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -26,11 +27,19 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import com.budgetty.app.ui.savings.SavingsGoalCardUi
+import com.budgetty.app.ui.streaks.BudgetStreakInput
+import com.budgetty.app.ui.streaks.LiveBudgetPeriod
+import com.budgetty.app.ui.streaks.Streak
+import com.budgetty.app.ui.streaks.StreakEngine
+import com.budgetty.app.ui.streaks.StreakKind
+import com.budgetty.app.ui.streaks.StreakTxn
 import com.budgetty.app.ui.util.BudgetRollover
+import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.currentMonthRange
 import com.budgetty.app.ui.util.isAutoPayActive
 import com.budgetty.app.ui.util.isEffectivelyPaidThisCycle
@@ -38,8 +47,11 @@ import com.budgetty.app.ui.util.monthlyAmount
 import com.budgetty.app.ui.util.SavingsMath
 import java.math.BigDecimal
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 
 /** Income sources + recurring payments, split and summed to their monthly-equivalent totals. */
@@ -102,6 +114,24 @@ class BudgetViewModel(
     val categorySpending: StateFlow<Map<String, BigDecimal>> =
         monthlyTransactions
             .map { txns -> txns.groupBy { it.category }.mapValues { (_, items) -> items.spend() } }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
+
+    /**
+     * §2.6 the 4th streak surface: per-category monthly budget streaks (category name → surfaced
+     * [Streak]), so a category row can carry a quiet "· N months under" caption. Only surfaced runs
+     * (current ≥ 2, §2.7) are kept; a category with no run isn't in the map, so the row shows nothing.
+     * Per-category scopes use net line prices — the paid adjustment applies only to the whole-budget
+     * scope, which never captions a category row — so no receipts are needed. Computed off the main
+     * thread; re-sourced from [StreakEngine] like Recap/Wellbeing so there is one streak implementation.
+     */
+    val categoryStreaks: StateFlow<Map<String, Streak>> =
+        combine(
+            transactionRepository.getAll(),
+            repository.budgets,
+            settingsStore.settings.map { it.monthStartDay }.distinctUntilChanged(),
+        ) { txns, budgets, day ->
+            surfacedCategoryStreaks(txns, budgets, day)
+        }.flowOn(Dispatchers.Default)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
 
     // Period totals are adjusted to what was paid — on-top tax (tax-exclusive receipts) and extra
@@ -356,6 +386,50 @@ class BudgetViewModel(
     private fun String.toBigDecimalOrNull(): BigDecimal? =
         if (isBlank()) null else try { BigDecimal(this) } catch (e: NumberFormatException) { null }
 
+    /**
+     * §2.6: per-category monthly budget streaks that clear the surface bar (current ≥ 2), keyed by
+     * category name. Tags each transaction with the closed pay-cycle month index its date falls in
+     * (0 = the just-closed month, positive into the past; the current OPEN month feeds only
+     * [Streak.liveOnTrack]) — mirrors [com.budgetty.app.ui.recap.RecapProvider]/WellbeingProvider —
+     * then walks per-category via [StreakEngine]. Only category scopes are asked for (monthlyBudget =
+     * null), so the whole-budget scope never leaks onto a category row.
+     */
+    private fun surfacedCategoryStreaks(
+        txns: List<TransactionEntity>,
+        budgets: Map<String, BigDecimal>,
+        monthStartDay: Int,
+    ): Map<String, Streak> {
+        val catBudgets = budgets.filterKeys { it.startsWith(BudgetRepository.CATEGORY_PREFIX) }
+            .mapKeys { it.key.removePrefix(BudgetRepository.CATEGORY_PREFIX) }
+        if (catBudgets.isEmpty()) return emptyMap()
+        val zone = ZoneId.systemDefault()
+        val endCycle = YearMonth.from(PayCycle.month(LocalDate.now(), monthStartDay, -1).first)
+        val byIndex = txns
+            .mapNotNull { t ->
+                val date = Instant.ofEpochMilli(t.timestamp).atZone(zone).toLocalDate()
+                val txnCycle = YearMonth.from(PayCycle.month(date, monthStartDay, 0).first)
+                val idx = ChronoUnit.MONTHS.between(txnCycle, endCycle).toInt()
+                if (idx == LIVE_INDEX || idx in 0 until StreakEngine.MAX_STREAK) idx to t else null
+            }
+            .groupBy({ it.first }, { it.second })
+        val closed = byIndex.filterKeys { it >= 0 }.flatMap { (idx, list) ->
+            list.map { StreakTxn(idx, it.category, it.price.multiply(BigDecimal(it.quantity))) }
+        }
+        val liveList = byIndex[LIVE_INDEX].orEmpty()
+        val streaks = StreakEngine.budgetStreaks(
+            BudgetStreakInput(
+                transactions = closed,
+                categoryBudgets = catBudgets,
+                monthlyBudget = null,
+                kind = StreakKind.BUDGET_MONTH,
+                live = LiveBudgetPeriod(
+                    liveList.map { StreakTxn(0, it.category, it.price.multiply(BigDecimal(it.quantity))) },
+                ),
+            ),
+        )
+        return StreakEngine.surfaced(streaks).associateBy { it.label }
+    }
+
     /** Summed price × quantity across the transactions. */
     private fun List<TransactionEntity>.spend(): BigDecimal =
         fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
@@ -390,5 +464,10 @@ class BudgetViewModel(
         val start = weekStart.atStartOfDay(zone).toInstant().toEpochMilli()
         val end = weekStart.plusWeeks(1).atStartOfDay(zone).toInstant().toEpochMilli() - 1
         return start to end
+    }
+
+    private companion object {
+        /** Period index of the current OPEN pay-cycle month in the streak tagging (never counted; §2.3). */
+        const val LIVE_INDEX = -1
     }
 }

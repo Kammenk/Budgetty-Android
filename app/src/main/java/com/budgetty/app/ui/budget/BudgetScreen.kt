@@ -58,6 +58,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -73,6 +74,8 @@ import com.budgetty.app.ui.savings.SavingsGoalCardUi
 import com.budgetty.app.ui.savings.SavingsGoalEditSheet
 import com.budgetty.app.ui.savings.SavingsSection
 import com.budgetty.app.ui.components.SegmentedToggle
+import com.budgetty.app.ui.streaks.Streak
+import com.budgetty.app.ui.streaks.StreakMotif
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
@@ -125,6 +128,7 @@ fun BudgetScreen(
 ) {
     val budgets by viewModel.budgets.collectAsStateWithLifecycle()
     val spending by viewModel.categorySpending.collectAsStateWithLifecycle()
+    val categoryStreaks by viewModel.categoryStreaks.collectAsStateWithLifecycle()
     val monthlySpent by viewModel.monthlySpent.collectAsStateWithLifecycle()
     val weeklySpent by viewModel.weeklySpent.collectAsStateWithLifecycle()
     val recurring by viewModel.recurring.collectAsStateWithLifecycle()
@@ -136,6 +140,7 @@ fun BudgetScreen(
     BudgetScreenContent(
         budgets = budgets,
         spending = spending,
+        categoryStreaks = categoryStreaks,
         monthlySpent = monthlySpent,
         weeklySpent = weeklySpent,
         carried = carried,
@@ -181,6 +186,7 @@ private fun BudgetScreenContent(
     onNavigateBack: () -> Unit,
     onSetBudget: (String, String) -> Unit,
     onSaveSingleBudget: (Boolean, String) -> Unit,
+    categoryStreaks: Map<String, Streak> = emptyMap(),
     carried: Map<String, BigDecimal> = emptyMap(),
     rolloverEnabled: Boolean = false,
     onSetRolloverEnabled: (Boolean) -> Unit = {},
@@ -434,6 +440,7 @@ private fun BudgetScreenContent(
                         spendOf = { groupSpend(it) },
                         budgetOf = { groupBudget(it) },
                         carriedFor = ::carriedFor,
+                        streakOf = { categoryStreaks[it.name] },
                         onOpenGroup = { sheetGroup = it },
                     )
                 } else {
@@ -454,6 +461,7 @@ private fun BudgetScreenContent(
                                     spent = groupSpend(group),
                                     budget = effectiveBudget(groupKey, groupBudget(group)),
                                     carried = carriedFor(groupKey),
+                                    streak = categoryStreaks[group.name],
                                     activeSubCount = children.count {
                                         (budgets[BudgetRepository.categoryKey(it.name)]?.signum() ?: 0) > 0
                                     },
@@ -736,6 +744,7 @@ private fun CategoryGroupBox(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     carried: BigDecimal = BigDecimal.ZERO,
+    streak: Streak? = null,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Card(
@@ -809,6 +818,7 @@ private fun CategoryGroupBox(
                         maxLines = 1,
                     )
                 }
+                CategoryStreakCaption(streak)
             } else {
                 Spacer(Modifier.height(MaterialTheme.dimens.xs))
                 Text(
@@ -819,6 +829,28 @@ private fun CategoryGroupBox(
                 )
             }
         }
+    }
+}
+
+/**
+ * §2.6 the 4th streak surface: a quiet "· N months under" caption under a category's progress, shared
+ * by the phone [CategoryGroupBox] and the tablet [CategoryBudgetRow] so the two stay in parity. Renders
+ * nothing when there's no surfaced streak — it costs a row nothing when there's no run. No flames.
+ */
+@Composable
+private fun CategoryStreakCaption(streak: Streak?) {
+    if (streak == null) return
+    Spacer(Modifier.height(MaterialTheme.dimens.xs))
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+    ) {
+        StreakMotif(filledCount = streak.current, showLive = streak.liveOnTrack, maxSegments = 6)
+        Text(
+            text = pluralStringResource(R.plurals.streak_months_under, streak.current, streak.current),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
@@ -836,6 +868,7 @@ private fun CategoryBudgetList(
     carriedFor: (String) -> BigDecimal,
     onOpenGroup: (Categories.Predefined) -> Unit,
     modifier: Modifier = Modifier,
+    streakOf: (Categories.Predefined) -> Streak? = { null },
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
@@ -852,6 +885,7 @@ private fun CategoryBudgetList(
                 spent = spendOf(group),
                 budget = budgetOf(group)?.let { it + carried },
                 carried = carried,
+                streak = streakOf(group),
                 onClick = { onOpenGroup(group) },
             )
             if (index < groups.lastIndex) {
@@ -876,6 +910,7 @@ private fun CategoryBudgetRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     carried: BigDecimal = BigDecimal.ZERO,
+    streak: Streak? = null,
 ) {
     val hasBudget = budget != null && budget.signum() > 0
     Row(
@@ -924,6 +959,7 @@ private fun CategoryBudgetRow(
                         maxLines = 1,
                     )
                 }
+                CategoryStreakCaption(streak)
             }
         }
         Spacer(Modifier.width(MaterialTheme.dimens.md))

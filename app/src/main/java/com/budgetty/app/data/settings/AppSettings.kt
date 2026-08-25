@@ -162,6 +162,12 @@ data class AppSettings(
      * persistence the Wellbeing feature adds.
      */
     val dismissedWellbeingTips: Set<String> = emptySet(),
+    /**
+     * Normalized keyword keys of buying-limit suggestions the user has dismissed (the ✕ on a suggested
+     * limit, §4.4). A rejected suggestion never returns. Frequency-derived suggestions add no schema —
+     * this small per-user pref is the only state they persist.
+     */
+    val dismissedLimitSuggestions: Set<String> = emptySet(),
     // ── End-of-period recap ──
     /** Whether the end-of-period recap interstitial is shown at all. Default on. */
     val recapEnabled: Boolean = true,

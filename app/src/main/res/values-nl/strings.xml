@@ -1032,12 +1032,12 @@
     <string name="buying_limits_empty_title">Stel een kooplimiet in</string>
     <string name="buying_limits_empty_body">Beperk hoeveel je van iets koopt — we tellen het van je bonnen.</string>
     <string name="buying_limits_add">Limiet toevoegen</string>
-    <string name="buying_limits_free_hint">1 limiet gratis · onbeperkt met Premium</string>
+    <string name="buying_limits_free_hint">%1$d limieten gratis · onbeperkt met Premium</string>
     <string name="buying_limits_explainer">Een limiet is een paar trefwoorden, een week of een maand en een getal.</string>
     <string name="buying_limits_explainer_example">niet meer dan 1 cola per week</string>
     <string name="buying_limits_status_on_track">Op koers</string>
     <string name="buying_limits_status_at_limit">Op de limiet</string>
-    <string name="buying_limits_status_over">Overschreden</string>
+    <string name="buying_limits_status_over">Overschreden met %1$d</string>
     <string name="buying_limits_weekly">Wekelijks</string>
     <string name="buying_limits_monthly">Maandelijks</string>
     <string name="buying_limits_bought_of">%1$d van %2$d gekocht</string>
@@ -1045,7 +1045,7 @@
     <string name="buying_limits_resets">reset %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Ontgrendel onbeperkte kooplimieten</string>
-    <string name="buying_limits_unlock_body">De gratis versie bevat 1 kooplimiet. Premium voegt er zo veel toe als je wilt — plus onbeperkt scannen en eigen categorieën.</string>
+    <string name="buying_limits_unlock_body">De gratis versie bevat %1$d kooplimieten. Premium voegt er zo veel toe als je wilt — plus onbeperkt scannen en eigen categorieën.</string>
     <string name="buying_limits_used">%1$d van %2$d gratis limieten gebruikt</string>
     <string name="buying_limits_new_title">Nieuwe limiet</string>
     <string name="buying_limits_edit_title">Limiet bewerken</string>
@@ -1079,6 +1079,29 @@
     <string name="buying_limit_nudge_body">Bon opgeslagen. Je limiet voor %1$s reset %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Begrepen</string>
     <string name="buying_limit_nudge_view">Limieten bekijken</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d week onder de limiet</item>
+        <item quantity="other">· %1$d weken onder de limiet</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d maand onder de limiet</item>
+        <item quantity="other">· %1$d maanden onder de limiet</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Beste reeks: %1$d week</item>
+        <item quantity="other">Beste reeks: %1$d weken</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Beste reeks: %1$d maand</item>
+        <item quantity="other">Beste reeks: %1$d maanden</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d van de laatste %2$d weken onder limiet</string>
+    <string name="buying_limits_history_months">%1$d van de laatste %2$d maanden onder limiet</string>
+    <string name="buying_limits_suggest_title">Meest gekocht</string>
+    <string name="buying_limits_suggest_subtitle">laatste 60 dagen</string>
+    <string name="buying_limits_suggest_prompt">Je kocht %1$s %2$d× vorige maand — limiet instellen?</string>
+    <string name="buying_limits_suggest_cap">%1$d voorstellen</string>
+    <string name="buying_limits_suggest_dismiss">Suggestie negeren</string>
     <string name="paywall_benefit_limits">Onbeperkte kooplimieten</string>
     <string name="paywall_benefit_limits_detail">Gratis versie bevat er %1$d</string>
 

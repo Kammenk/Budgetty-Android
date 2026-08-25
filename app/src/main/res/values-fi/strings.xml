@@ -1045,12 +1045,12 @@
     <string name="buying_limits_empty_title">Aseta ostoraja</string>
     <string name="buying_limits_empty_body">Rajaa, kuinka paljon ostat jotakin — laskemme sen kuiteistasi.</string>
     <string name="buying_limits_add">Lisää raja</string>
-    <string name="buying_limits_free_hint">1 raja ilmaiseksi · rajattomasti Premiumilla</string>
+    <string name="buying_limits_free_hint">%1$d rajaa ilmaiseksi · rajattomasti Premiumilla</string>
     <string name="buying_limits_explainer">Raja on muutama avainsana, viikko tai kuukausi ja luku.</string>
     <string name="buying_limits_explainer_example">enintään 1 kola viikossa</string>
     <string name="buying_limits_status_on_track">Aikataulussa</string>
     <string name="buying_limits_status_at_limit">Rajalla</string>
-    <string name="buying_limits_status_over">Ylitetty</string>
+    <string name="buying_limits_status_over">%1$d yli</string>
     <string name="buying_limits_weekly">Viikoittain</string>
     <string name="buying_limits_monthly">Kuukausittain</string>
     <string name="buying_limits_bought_of">Ostettu %1$d / %2$d</string>
@@ -1058,7 +1058,7 @@
     <string name="buying_limits_resets">nollautuu %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Avaa rajattomat ostorajat</string>
-    <string name="buying_limits_unlock_body">Ilmaisversio sisältää 1 ostorajan. Premium lisää niitä niin monta kuin haluat — sekä rajattomat skannaukset ja omat kategoriat.</string>
+    <string name="buying_limits_unlock_body">Ilmaisversio sisältää %1$d ostorajaa. Premium lisää niitä niin monta kuin haluat — sekä rajattomat skannaukset ja omat kategoriat.</string>
     <string name="buying_limits_used">%1$d / %2$d ilmaista rajaa käytetty</string>
     <string name="buying_limits_new_title">Uusi raja</string>
     <string name="buying_limits_edit_title">Muokkaa rajaa</string>
@@ -1092,6 +1092,29 @@
     <string name="buying_limit_nudge_body">Kuitti tallennettu. Rajasi %1$s nollautuu %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Selvä</string>
     <string name="buying_limit_nudge_view">Näytä rajat</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d viikko rajoissa</item>
+        <item quantity="other">· %1$d viikkoa rajoissa</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d kuukausi rajoissa</item>
+        <item quantity="other">· %1$d kuukautta rajoissa</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Paras putki: %1$d viikko</item>
+        <item quantity="other">Paras putki: %1$d viikkoa</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Paras putki: %1$d kuukausi</item>
+        <item quantity="other">Paras putki: %1$d kuukautta</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d viimeisestä %2$d viikosta rajoissa</string>
+    <string name="buying_limits_history_months">%1$d viimeisestä %2$d kuukaudesta rajoissa</string>
+    <string name="buying_limits_suggest_title">Ostetuimmat</string>
+    <string name="buying_limits_suggest_subtitle">viimeiset 60 päivää</string>
+    <string name="buying_limits_suggest_prompt">Ostit %1$s %2$d× viime kuussa — asetetaanko raja?</string>
+    <string name="buying_limits_suggest_cap">Ehdota %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Hylkää ehdotus</string>
     <string name="paywall_benefit_limits">Rajattomat ostorajat</string>
     <string name="paywall_benefit_limits_detail">Ilmaisversiossa %1$d</string>
 

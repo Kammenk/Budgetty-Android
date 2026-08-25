@@ -1073,12 +1073,12 @@
     <string name="buying_limits_empty_title">Nastav limit nákupů</string>
     <string name="buying_limits_empty_body">Omez, jak často něco kupuješ — spočítáme to z tvých účtenek.</string>
     <string name="buying_limits_add">Přidat limit</string>
-    <string name="buying_limits_free_hint">1 limit zdarma · neomezeně s Premium</string>
+    <string name="buying_limits_free_hint">%1$d limity zdarma · neomezeně s Premium</string>
     <string name="buying_limits_explainer">Limit je pár klíčových slov, týden nebo měsíc a číslo.</string>
     <string name="buying_limits_explainer_example">nejvýše 1 kola týdně</string>
     <string name="buying_limits_status_on_track">V pořádku</string>
     <string name="buying_limits_status_at_limit">Na limitu</string>
-    <string name="buying_limits_status_over">Překročeno</string>
+    <string name="buying_limits_status_over">Překročeno o %1$d</string>
     <string name="buying_limits_weekly">Týdně</string>
     <string name="buying_limits_monthly">Měsíčně</string>
     <string name="buying_limits_bought_of">Koupeno %1$d z %2$d</string>
@@ -1086,7 +1086,7 @@
     <string name="buying_limits_resets">reset %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Odemkni neomezené limity nákupů</string>
-    <string name="buying_limits_unlock_body">Bezplatný plán obsahuje 1 limit nákupů. Premium přidá kolik chceš — plus neomezené skeny a vlastní kategorie.</string>
+    <string name="buying_limits_unlock_body">Bezplatný plán obsahuje %1$d limity nákupů. Premium přidá kolik chceš — plus neomezené skeny a vlastní kategorie.</string>
     <string name="buying_limits_used">Využito %1$d z %2$d limitů zdarma</string>
     <string name="buying_limits_new_title">Nový limit</string>
     <string name="buying_limits_edit_title">Upravit limit</string>
@@ -1122,6 +1122,37 @@
     <string name="buying_limit_nudge_body">Účtenka uložena. Tvůj limit pro %1$s se resetuje %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Rozumím</string>
     <string name="buying_limit_nudge_view">Zobrazit limity</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d týden v limitu</item>
+        <item quantity="few">· %1$d týdny v limitu</item>
+        <item quantity="many">· %1$d týdne v limitu</item>
+        <item quantity="other">· %1$d týdnů v limitu</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d měsíc v limitu</item>
+        <item quantity="few">· %1$d měsíce v limitu</item>
+        <item quantity="many">· %1$d měsíce v limitu</item>
+        <item quantity="other">· %1$d měsíců v limitu</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Nejlepší série: %1$d týden</item>
+        <item quantity="few">Nejlepší série: %1$d týdny</item>
+        <item quantity="many">Nejlepší série: %1$d týdne</item>
+        <item quantity="other">Nejlepší série: %1$d týdnů</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Nejlepší série: %1$d měsíc</item>
+        <item quantity="few">Nejlepší série: %1$d měsíce</item>
+        <item quantity="many">Nejlepší série: %1$d měsíce</item>
+        <item quantity="other">Nejlepší série: %1$d měsíců</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d z posledních %2$d týdnů v limitu</string>
+    <string name="buying_limits_history_months">%1$d z posledních %2$d měsíců v limitu</string>
+    <string name="buying_limits_suggest_title">Nejčastěji kupované</string>
+    <string name="buying_limits_suggest_subtitle">posledních 60 dní</string>
+    <string name="buying_limits_suggest_prompt">Koupil jsi %1$s %2$d× minulý měsíc — nastavit limit?</string>
+    <string name="buying_limits_suggest_cap">Navrhnout %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Zavřít návrh</string>
     <string name="paywall_benefit_limits">Neomezené limity nákupů</string>
     <string name="paywall_benefit_limits_detail">Bezplatný plán zahrnuje %1$d</string>
 

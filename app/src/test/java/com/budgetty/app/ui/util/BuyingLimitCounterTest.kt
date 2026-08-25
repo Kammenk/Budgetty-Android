@@ -1,6 +1,7 @@
 package com.budgetty.app.ui.util
 
 import com.budgetty.app.data.local.BuyingLimitTimeframe
+import com.budgetty.app.ui.streaks.LimitWindow
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -148,5 +149,55 @@ class BuyingLimitCounterTest {
             BuyingLimitTimeframe.MONTHLY, LocalDate.of(2026, 2, 15), monthStartDay = 25,
         )
         assertEquals("cycle Jan 25 to Feb 24 rolls over on Feb 25", LocalDate.of(2026, 2, 25), reset)
+    }
+
+    // closedWindows(): the last N CLOSED windows, most-recent first, each (matched count, hasData).
+    // This single derivation feeds both the §4.3 history strip and StreakEngine.limitStreak.
+
+    @Test
+    fun closedWindows_monthlyMetMissedNoData() {
+        // Today Apr 15; closed months (idx 0..3) = Mar, Feb, Jan, Dec 2025.
+        val today = LocalDate.of(2026, 4, 15)
+        val items = listOf(
+            item("Coke", 2, LocalDate.of(2026, 3, 10)), // March: 2 coke → met vs cap 2
+            item("Milk", 1, LocalDate.of(2026, 3, 2)), // March: a receipt (no-match) — still hasData
+            item("Coke", 5, LocalDate.of(2026, 1, 20)), // Jan: 5 coke → over cap → not-met
+        )
+        val windows = BuyingLimitCounter.closedWindows(
+            items, listOf("coke"), BuyingLimitTimeframe.MONTHLY, windowCount = 4, today = today, monthStartDay = 1,
+        )
+        assertEquals(4, windows.size)
+        assertEquals("Mar: 2 matched, had data", LimitWindow(count = 2, hasData = true), windows[0])
+        assertEquals("Feb: empty → no-data", LimitWindow(count = 0, hasData = false), windows[1])
+        assertEquals("Jan: 5 matched, had data", LimitWindow(count = 5, hasData = true), windows[2])
+        assertEquals("Dec: empty → no-data", LimitWindow(count = 0, hasData = false), windows[3])
+    }
+
+    @Test
+    fun closedWindows_windowWithReceiptButNoMatchIsDataNotMiss() {
+        // A closed window that held a receipt but nothing matching is (0, hasData=true) — the engine
+        // scores it MET (count 0 ≤ cap), never NO_DATA. This distinction must survive the derivation.
+        val today = LocalDate.of(2026, 4, 15)
+        val items = listOf(item("Bread", 1, LocalDate.of(2026, 3, 10)))
+        val windows = BuyingLimitCounter.closedWindows(
+            items, listOf("coke"), BuyingLimitTimeframe.MONTHLY, windowCount = 1, today = today, monthStartDay = 1,
+        )
+        assertEquals(LimitWindow(count = 0, hasData = true), windows[0])
+    }
+
+    @Test
+    fun closedWindows_weeklyMostRecentFirst() {
+        // Today Wed Apr 15 (Monday weeks): closed weeks idx0 = Apr 6–12, idx1 = Mar 30–Apr 5.
+        val today = LocalDate.of(2026, 4, 15)
+        val items = listOf(
+            item("Coke", 1, LocalDate.of(2026, 4, 8)), // last full week
+            item("Coke", 3, LocalDate.of(2026, 3, 31)), // the week before
+        )
+        val windows = BuyingLimitCounter.closedWindows(
+            items, listOf("coke"), BuyingLimitTimeframe.WEEKLY, windowCount = 2, today = today,
+            firstDayOfWeek = DayOfWeek.MONDAY,
+        )
+        assertEquals(LimitWindow(count = 1, hasData = true), windows[0])
+        assertEquals(LimitWindow(count = 3, hasData = true), windows[1])
     }
 }

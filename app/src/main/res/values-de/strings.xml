@@ -1030,12 +1030,12 @@
     <string name="buying_limits_empty_title">Kauf-Limit festlegen</string>
     <string name="buying_limits_empty_body">Begrenze, wie oft du etwas kaufst — wir zählen es von deinen Belegen.</string>
     <string name="buying_limits_add">Limit hinzufügen</string>
-    <string name="buying_limits_free_hint">1 Limit gratis · unbegrenzt mit Premium</string>
+    <string name="buying_limits_free_hint">%1$d Limits gratis · unbegrenzt mit Premium</string>
     <string name="buying_limits_explainer">Ein Limit besteht aus ein paar Stichwörtern, einer Woche oder einem Monat und einer Zahl.</string>
     <string name="buying_limits_explainer_example">höchstens 1 Cola pro Woche</string>
     <string name="buying_limits_status_on_track">Im Rahmen</string>
     <string name="buying_limits_status_at_limit">Am Limit</string>
-    <string name="buying_limits_status_over">Überschritten</string>
+    <string name="buying_limits_status_over">%1$d über Limit</string>
     <string name="buying_limits_weekly">Wöchentlich</string>
     <string name="buying_limits_monthly">Monatlich</string>
     <string name="buying_limits_bought_of">%1$d von %2$d gekauft</string>
@@ -1043,7 +1043,7 @@
     <string name="buying_limits_resets">neu ab %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Unbegrenzte Kauf-Limits freischalten</string>
-    <string name="buying_limits_unlock_body">Der kostenlose Plan enthält 1 Kauf-Limit. Mit Premium hast du so viele wie du möchtest — plus unbegrenzte Scans und eigene Kategorien.</string>
+    <string name="buying_limits_unlock_body">Der kostenlose Plan enthält %1$d Kauf-Limits. Mit Premium hast du so viele wie du möchtest — plus unbegrenzte Scans und eigene Kategorien.</string>
     <string name="buying_limits_used">%1$d von %2$d kostenlosen Limits genutzt</string>
     <string name="buying_limits_new_title">Neues Limit</string>
     <string name="buying_limits_edit_title">Limit bearbeiten</string>
@@ -1077,6 +1077,29 @@
     <string name="buying_limit_nudge_body">Beleg gespeichert. Dein Limit für %1$s startet %2$s neu.</string>
     <string name="buying_limit_nudge_dismiss">Verstanden</string>
     <string name="buying_limit_nudge_view">Limits ansehen</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d Woche im Limit</item>
+        <item quantity="other">· %1$d Wochen im Limit</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d Monat im Limit</item>
+        <item quantity="other">· %1$d Monate im Limit</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Beste Serie: %1$d Woche</item>
+        <item quantity="other">Beste Serie: %1$d Wochen</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Beste Serie: %1$d Monat</item>
+        <item quantity="other">Beste Serie: %1$d Monate</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d der letzten %2$d Wochen im Limit</string>
+    <string name="buying_limits_history_months">%1$d der letzten %2$d Monate im Limit</string>
+    <string name="buying_limits_suggest_title">Zuletzt am meisten gekauft</string>
+    <string name="buying_limits_suggest_subtitle">letzte 60 Tage</string>
+    <string name="buying_limits_suggest_prompt">Du hast %1$s letzten Monat %2$d× gekauft — begrenzen?</string>
+    <string name="buying_limits_suggest_cap">%1$d vorschlagen</string>
+    <string name="buying_limits_suggest_dismiss">Vorschlag verwerfen</string>
     <string name="paywall_benefit_limits">Unbegrenzte Kauf-Limits</string>
     <string name="paywall_benefit_limits_detail">Gratis-Tarif enthält %1$d</string>
 

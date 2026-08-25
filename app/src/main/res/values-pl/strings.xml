@@ -1063,12 +1063,12 @@
     <string name="buying_limits_empty_title">Ustaw limit zakupów</string>
     <string name="buying_limits_empty_body">Ogranicz, ile czegoś kupujesz — policzymy to z Twoich paragonów.</string>
     <string name="buying_limits_add">Dodaj limit</string>
-    <string name="buying_limits_free_hint">1 limit za darmo · bez ograniczeń z Premium</string>
+    <string name="buying_limits_free_hint">%1$d limity za darmo · bez ograniczeń z Premium</string>
     <string name="buying_limits_explainer">Limit to kilka słów kluczowych, tydzień lub miesiąc i liczba.</string>
     <string name="buying_limits_explainer_example">nie więcej niż 1 cola tygodniowo</string>
     <string name="buying_limits_status_on_track">W normie</string>
     <string name="buying_limits_status_at_limit">Na limicie</string>
-    <string name="buying_limits_status_over">Przekroczony</string>
+    <string name="buying_limits_status_over">Przekroczono o %1$d</string>
     <string name="buying_limits_weekly">Tygodniowo</string>
     <string name="buying_limits_monthly">Miesięcznie</string>
     <string name="buying_limits_bought_of">Kupiono %1$d z %2$d</string>
@@ -1076,7 +1076,7 @@
     <string name="buying_limits_resets">reset %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Odblokuj nielimitowane limity zakupów</string>
-    <string name="buying_limits_unlock_body">Plan darmowy obejmuje 1 limit zakupów. Premium dodaje ich tyle, ile chcesz — plus nieograniczone skany i własne kategorie.</string>
+    <string name="buying_limits_unlock_body">Plan darmowy obejmuje %1$d limity zakupów. Premium dodaje ich tyle, ile chcesz — plus nieograniczone skany i własne kategorie.</string>
     <string name="buying_limits_used">Wykorzystano %1$d z %2$d darmowych limitów</string>
     <string name="buying_limits_new_title">Nowy limit</string>
     <string name="buying_limits_edit_title">Edytuj limit</string>
@@ -1112,6 +1112,37 @@
     <string name="buying_limit_nudge_body">Paragon zapisany. Twój limit dla %1$s resetuje się %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Rozumiem</string>
     <string name="buying_limit_nudge_view">Zobacz limity</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d tydzień w limicie</item>
+        <item quantity="few">· %1$d tygodnie w limicie</item>
+        <item quantity="many">· %1$d tygodni w limicie</item>
+        <item quantity="other">· %1$d tygodnia w limicie</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d miesiąc w limicie</item>
+        <item quantity="few">· %1$d miesiące w limicie</item>
+        <item quantity="many">· %1$d miesięcy w limicie</item>
+        <item quantity="other">· %1$d miesiąca w limicie</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Najlepsza seria: %1$d tydzień</item>
+        <item quantity="few">Najlepsza seria: %1$d tygodnie</item>
+        <item quantity="many">Najlepsza seria: %1$d tygodni</item>
+        <item quantity="other">Najlepsza seria: %1$d tygodnia</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Najlepsza seria: %1$d miesiąc</item>
+        <item quantity="few">Najlepsza seria: %1$d miesiące</item>
+        <item quantity="many">Najlepsza seria: %1$d miesięcy</item>
+        <item quantity="other">Najlepsza seria: %1$d miesiąca</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d z ostatnich %2$d tygodni w limicie</string>
+    <string name="buying_limits_history_months">%1$d z ostatnich %2$d miesięcy w limicie</string>
+    <string name="buying_limits_suggest_title">Najczęściej kupowane</string>
+    <string name="buying_limits_suggest_subtitle">ostatnie 60 dni</string>
+    <string name="buying_limits_suggest_prompt">Kupiłeś %1$s %2$d× w zeszłym miesiącu — ustaw limit?</string>
+    <string name="buying_limits_suggest_cap">Zaproponuj %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Odrzuć sugestię</string>
     <string name="paywall_benefit_limits">Nielimitowane limity zakupów</string>
     <string name="paywall_benefit_limits_detail">Plan darmowy obejmuje %1$d</string>
 
