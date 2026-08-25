@@ -121,6 +121,8 @@
     <string name="account_privacy_policy">Privacy Policy</string>
     <string name="account_crash_reporting">Crash reporting</string>
     <string name="account_crash_reporting_subtitle">Send anonymous crash reports to help fix bugs</string>
+    <string name="account_analytics">Usage analytics</string>
+    <string name="account_analytics_sub">Help improve Budgetty with anonymous usage data · no receipts or amounts</string>
     <string name="account_sign_out">Sign out</string>
     <string name="account_delete">Delete account</string>
     <string name="account_edit_name">Edit name</string>

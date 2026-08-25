@@ -142,6 +142,7 @@ fun WellbeingScreen(
             open = open,
             onToggle = { key -> open = if (open == key) null else key },
             onDismiss = viewModel::dismiss,
+            onTipAct = viewModel::onTipActed,
             nav = nav,
             modifier = Modifier.padding(padding),
         )
@@ -156,6 +157,7 @@ private fun WellbeingContent(
     open: WellbeingComponentKey?,
     onToggle: (WellbeingComponentKey) -> Unit,
     onDismiss: (String) -> Unit,
+    onTipAct: (TipType) -> Unit,
     nav: WellbeingNav,
     modifier: Modifier = Modifier,
 ) {
@@ -190,16 +192,37 @@ private fun WellbeingContent(
             when {
                 firstRun -> {
                     FirstRunCard(summary, onSetBudget = nav.toBudget, onAddReceipt = nav.addReceipt)
-                    TipsFeed(state.monthlyTips, weekly = false, onDismiss = onDismiss, nav = nav, columns = cols)
+                    TipsFeed(
+                        state.monthlyTips,
+                        weekly = false,
+                        onDismiss = onDismiss,
+                        onTipAct = onTipAct,
+                        nav = nav,
+                        columns = cols,
+                    )
                 }
                 weekly -> {
                     WeeklyPaceCard(summary.weekly)
                     SecondaryScoreRow(summary)
-                    TipsFeed(state.weeklyTips, weekly = true, onDismiss = onDismiss, nav = nav, columns = cols)
+                    TipsFeed(
+                        state.weeklyTips,
+                        weekly = true,
+                        onDismiss = onDismiss,
+                        onTipAct = onTipAct,
+                        nav = nav,
+                        columns = cols,
+                    )
                 }
                 else -> {
                     ScoreCard(summary, open, onToggle, nav, twoUp = wide)
-                    TipsFeed(state.monthlyTips, weekly = false, onDismiss = onDismiss, nav = nav, columns = cols)
+                    TipsFeed(
+                        state.monthlyTips,
+                        weekly = false,
+                        onDismiss = onDismiss,
+                        onTipAct = onTipAct,
+                        nav = nav,
+                        columns = cols,
+                    )
                     if (summary.wins.isNotEmpty()) WinsStrip(summary.wins)
                     FocusCard(summary)
                 }
@@ -503,7 +526,14 @@ private fun SetupStep(done: Boolean, text: String) {
 // ── Tips ───────────────────────────────────────────────────────────────────────
 
 @Composable
-private fun TipsFeed(tips: List<WellbeingTip>, weekly: Boolean, onDismiss: (String) -> Unit, nav: WellbeingNav, columns: Int = 1) {
+private fun TipsFeed(
+    tips: List<WellbeingTip>,
+    weekly: Boolean,
+    onDismiss: (String) -> Unit,
+    onTipAct: (TipType) -> Unit,
+    nav: WellbeingNav,
+    columns: Int = 1,
+) {
     if (tips.isEmpty()) return
     Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm)) {
         Row(
@@ -526,18 +556,24 @@ private fun TipsFeed(tips: List<WellbeingTip>, weekly: Boolean, onDismiss: (Stri
             // Tablet: two-up so the wide column isn't left half-empty.
             tips.chunked(2).forEach { pair ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm)) {
-                    pair.forEach { TipCard(it, onDismiss, nav, Modifier.weight(1f)) }
+                    pair.forEach { TipCard(it, onDismiss, onTipAct, nav, Modifier.weight(1f)) }
                     if (pair.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
         } else {
-            tips.forEach { TipCard(it, onDismiss, nav) }
+            tips.forEach { TipCard(it, onDismiss, onTipAct, nav) }
         }
     }
 }
 
 @Composable
-private fun TipCard(tip: WellbeingTip, onDismiss: (String) -> Unit, nav: WellbeingNav, modifier: Modifier = Modifier) {
+private fun TipCard(
+    tip: WellbeingTip,
+    onDismiss: (String) -> Unit,
+    onTipAct: (TipType) -> Unit,
+    nav: WellbeingNav,
+    modifier: Modifier = Modifier,
+) {
     WellbeingCard(modifier = modifier, padding = MaterialTheme.dimens.md) {
         Box(Modifier.fillMaxWidth()) {
             Column {
@@ -564,7 +600,10 @@ private fun TipCard(tip: WellbeingTip, onDismiss: (String) -> Unit, nav: Wellbei
                         Modifier
                             .clip(RoundedCornerShape(50))
                             .background(MaterialTheme.colorScheme.secondaryContainer)
-                            .clickable { tipCta(tip.type, nav) }
+                            .clickable {
+                                onTipAct(tip.type)
+                                tipCta(tip.type, nav)
+                            }
                             .padding(horizontal = 15.dp, vertical = 9.dp),
                     ) {
                         Text(tipCtaLabel(tip.type), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
@@ -810,7 +849,7 @@ private fun WellbeingHealthyPreview() {
         WellbeingContent(
             state = WellbeingUiState(loaded = true, summary = previewSummary(), monthlyTips = previewTips()),
             mode = WellbeingMode.MONTHLY,
-            onModeChange = {}, open = null, onToggle = {}, onDismiss = {},
+            onModeChange = {}, open = null, onToggle = {}, onDismiss = {}, onTipAct = {},
             nav = previewNav(),
         )
     }

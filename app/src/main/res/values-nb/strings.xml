@@ -89,6 +89,8 @@
     <string name="account_privacy_policy">Personvernerklæring</string>
     <string name="account_crash_reporting">Krasjrapportering</string>
     <string name="account_crash_reporting_subtitle">Send anonyme krasjrapporter for å bidra til å rette feil</string>
+    <string name="account_analytics">Bruksanalyse</string>
+    <string name="account_analytics_sub">Bidra til å forbedre Budgetty med anonyme bruksdata · ingen kvitteringer eller beløp</string>
     <string name="account_sign_out">Logg ut</string>
     <string name="account_delete">Slett konto</string>
     <string name="account_edit_name">Rediger navn</string>

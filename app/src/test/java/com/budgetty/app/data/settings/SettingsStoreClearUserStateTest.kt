@@ -71,6 +71,25 @@ class SettingsStoreClearUserStateTest {
     }
 
     @Test
+    fun `analytics collection defaults to on`() {
+        assertThat(SettingsStore(context).settings.value.analyticsEnabled).isTrue()
+    }
+
+    @Test
+    fun `clearUserState keeps the device-global analytics opt-out`() {
+        // Analytics consent is device-global (like crash reporting): sign-out must NOT re-enable it.
+        val store = SettingsStore(context)
+        store.setAnalyticsEnabled(false)
+        seedUserState(store)
+
+        store.clearUserState()
+
+        assertThat(store.settings.value.analyticsEnabled).isFalse() // survived the wipe
+        // And it must survive a process restart (re-read from disk), not just the in-memory flow.
+        assertThat(SettingsStore(context).settings.value.analyticsEnabled).isFalse()
+    }
+
+    @Test
     fun `clearUserState persists to prefs, not just the in-memory flow`() {
         SettingsStore(context).apply {
             setThemeMode(ThemeMode.DARK)

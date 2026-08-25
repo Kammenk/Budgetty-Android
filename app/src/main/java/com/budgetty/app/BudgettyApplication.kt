@@ -1,6 +1,7 @@
 package com.budgetty.app
 
 import android.app.Application
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.category.Categories
 import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.repository.CategoryRepository
@@ -24,6 +25,9 @@ class BudgettyApplication : Application() {
         // preference (default-on, opt-out in Account) is the source of truth; SettingsStore loads it
         // synchronously from SharedPreferences, so it's ready immediately after Koin starts.
         koin.get<CrashReporting>().setEnabled(koin.get<SettingsStore>().settings.value.crashReportingEnabled)
+        // Same for product analytics: apply the persisted opt-out (separate toggle, default-on) to the
+        // Analytics SDK at startup so collection follows the user's choice before any event can fire.
+        koin.get<Analytics>().setEnabled(koin.get<SettingsStore>().settings.value.analyticsEnabled)
         // Keep the home-screen widgets in sync while the process is alive.
         koin.get<WidgetUpdater>().start()
         // Mirror user-created categories into the Categories cache so their emoji + color resolve

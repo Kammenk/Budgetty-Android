@@ -2,6 +2,7 @@ package com.budgetty.app.ui.recap
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.ui.util.BuyingLimitCounter
 import com.budgetty.app.ui.util.PayCycle
@@ -44,6 +45,7 @@ data class RecapInterstitialState(
 class RecapViewModel(
     private val provider: RecapProvider,
     private val settings: SettingsStore,
+    private val analytics: Analytics,
     private val today: () -> LocalDate = { LocalDate.now() },
     private val firstDayOfWeek: () -> DayOfWeek = { BuyingLimitCounter.localeFirstDayOfWeek() },
 ) : ViewModel() {
@@ -75,6 +77,15 @@ class RecapViewModel(
 
     /** Stamps the due period(s) as shown. Both the close (Done / ✕) and the guard-skip call this. */
     fun markShown(due: RecapDue) = settings.setRecapShown(due.markWeek, due.markMonth)
+
+    /** A scheduled recap story became visible (fired once when the interstitial appears). */
+    fun onRecapShown(kind: RecapKind) = analytics.logRecapShown(kind)
+
+    /**
+     * The recap story was closed. [cardsViewed] is the highest card index reached + 1, so a partial
+     * read is distinguishable from a full one.
+     */
+    fun onRecapCompleted(kind: RecapKind, cardsViewed: Int) = analytics.logRecapCompleted(kind, cardsViewed)
 
     /**
      * The last recap the user saw, recomputed on demand for the Insights re-open — null when none was

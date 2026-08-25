@@ -89,6 +89,8 @@
     <string name="account_privacy_policy">Tietosuojakäytäntö</string>
     <string name="account_crash_reporting">Kaatumisraportit</string>
     <string name="account_crash_reporting_subtitle">Lähetä nimettömiä kaatumisraportteja virheiden korjaamiseksi</string>
+    <string name="account_analytics">Käyttöanalytiikka</string>
+    <string name="account_analytics_sub">Auta parantamaan Budgettya anonyymeillä käyttötiedoilla · ei kuitteja tai summia</string>
     <string name="account_sign_out">Kirjaudu ulos</string>
     <string name="account_delete">Poista tili</string>
     <string name="account_edit_name">Muokkaa nimeä</string>

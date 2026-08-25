@@ -2,6 +2,8 @@ package com.budgetty.app.ui.buyinglimits
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.analytics.LimitSource
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.local.BuyingLimitEntity
 import com.budgetty.app.data.local.BuyingLimitTimeframe
@@ -59,6 +61,7 @@ class BuyingLimitsViewModel(
     transactionRepository: TransactionRepository,
     settingsStore: SettingsStore,
     billingManager: BillingManager,
+    private val analytics: Analytics,
 ) : ViewModel() {
 
     val uiState: StateFlow<BuyingLimitsUiState> = combine(
@@ -103,6 +106,7 @@ class BuyingLimitsViewModel(
     ) {
         val joined = BuyingLimitEntity.joinKeywords(keywords)
         if (joined.isEmpty()) return
+        val isNew = id == null
         viewModelScope.launch {
             val existing = id?.let { key -> uiState.value.limits.firstOrNull { it.limit.id == key }?.limit }
             repository.upsert(
@@ -116,6 +120,9 @@ class BuyingLimitsViewModel(
                     createdAt = existing?.createdAt ?: System.currentTimeMillis(),
                 ),
             )
+            // A brand-new limit (not an edit). The suggestion-sourced path arrives with §4.4; until
+            // then every create from the editor is manual.
+            if (isNew) analytics.logLimitCreated(LimitSource.MANUAL)
         }
     }
 

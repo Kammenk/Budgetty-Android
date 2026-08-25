@@ -89,6 +89,8 @@
     <string name="account_privacy_policy">Politica de confidențialitate</string>
     <string name="account_crash_reporting">Raportarea blocărilor</string>
     <string name="account_crash_reporting_subtitle">Trimite rapoarte anonime despre blocări pentru a ajuta la remedierea erorilor</string>
+    <string name="account_analytics">Analiză de utilizare</string>
+    <string name="account_analytics_sub">Ajută la îmbunătățirea Budgetty cu date de utilizare anonime · fără bonuri sau sume</string>
     <string name="account_sign_out">Deconectează-te</string>
     <string name="account_delete">Șterge contul</string>
     <string name="account_edit_name">Editează numele</string>

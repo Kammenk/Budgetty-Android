@@ -31,6 +31,8 @@
     <string name="account_privacy_policy">Политика конфиденциальности</string>
     <string name="account_crash_reporting">Отчёты о сбоях</string>
     <string name="account_crash_reporting_subtitle">Отправлять анонимные отчёты о сбоях, чтобы помогать исправлять ошибки</string>
+    <string name="account_analytics">Аналитика использования</string>
+    <string name="account_analytics_sub">Помогайте улучшать Budgetty анонимными данными об использовании · без чеков и сумм</string>
     <string name="account_sign_out">Выйти</string>
     <string name="account_delete">Удалить аккаунт</string>
     <string name="account_edit_name">Изменить имя</string>

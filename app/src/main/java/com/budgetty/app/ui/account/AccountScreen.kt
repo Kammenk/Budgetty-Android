@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
@@ -172,6 +173,7 @@ fun AccountScreen(
         onSetMonthStartDay = { accountViewModel.setMonthStartDay(it) },
         onSetLanguage = { accountViewModel.setLanguage(it) },
         onSetCrashReporting = accountViewModel::setCrashReporting,
+        onSetAnalytics = accountViewModel::setAnalytics,
         onBuildBackupJson = { accountViewModel.buildBackupJson() },
         onImportBackup = { json, replace, onResult -> accountViewModel.importBackup(json, replace, onResult) },
         onDeleteAccount = { onResult -> accountViewModel.deleteAccount(onResult) },
@@ -206,6 +208,7 @@ private fun AccountScreenContent(
     onSetMonthStartDay: (Int) -> Unit,
     onSetLanguage: (Language) -> Unit,
     onSetCrashReporting: (Boolean) -> Unit,
+    onSetAnalytics: (Boolean) -> Unit,
     onBuildBackupJson: suspend () -> String,
     onImportBackup: (String, Boolean, (Boolean) -> Unit) -> Unit,
     onDeleteAccount: ((DeleteAccountResult) -> Unit) -> Unit,
@@ -338,6 +341,8 @@ private fun AccountScreenContent(
                 context = context,
                 crashReportingEnabled = settings.crashReportingEnabled,
                 onSetCrashReporting = onSetCrashReporting,
+                analyticsEnabled = settings.analyticsEnabled,
+                onSetAnalytics = onSetAnalytics,
             )
         }
     }
@@ -711,6 +716,8 @@ private fun SupportSectionRows(
     context: Context,
     crashReportingEnabled: Boolean,
     onSetCrashReporting: (Boolean) -> Unit,
+    analyticsEnabled: Boolean,
+    onSetAnalytics: (Boolean) -> Unit,
 ) {
     // "Help & FAQ" used to lead here, pointing at budgetty-96a3d.web.app/#faq — an anchor that has
     // never existed on a page that is only a privacy policy, so the link silently dumped people at
@@ -740,6 +747,20 @@ private fun SupportSectionRows(
             )
         },
         onClick = { onSetCrashReporting(!crashReportingEnabled) },
+    )
+    RowDivider()
+    // Usage-analytics opt-out — a separate control from crash reporting, same row/switch pattern.
+    SettingRow(
+        icon = Icons.Filled.Analytics,
+        title = stringResource(R.string.account_analytics),
+        subtitle = stringResource(R.string.account_analytics_sub),
+        trailing = {
+            Switch(
+                checked = analyticsEnabled,
+                onCheckedChange = null,
+            )
+        },
+        onClick = { onSetAnalytics(!analyticsEnabled) },
     )
 }
 
@@ -1294,6 +1315,7 @@ private fun AccountScreenPreview() {
             onSetMonthStartDay = {},
             onSetLanguage = {},
             onSetCrashReporting = {},
+            onSetAnalytics = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},
@@ -1331,6 +1353,7 @@ private fun AccountScreenTabletPreview() {
             onSetMonthStartDay = {},
             onSetLanguage = {},
             onSetCrashReporting = {},
+            onSetAnalytics = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},

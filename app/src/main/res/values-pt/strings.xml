@@ -31,6 +31,8 @@
     <string name="account_privacy_policy">Política de Privacidade</string>
     <string name="account_crash_reporting">Relatórios de falhas</string>
     <string name="account_crash_reporting_subtitle">Enviar relatórios de falhas anónimos para ajudar a corrigir erros</string>
+    <string name="account_analytics">Análise de utilização</string>
+    <string name="account_analytics_sub">Ajude a melhorar o Budgetty com dados de utilização anónimos · sem recibos nem valores</string>
     <string name="account_sign_out">Sair</string>
     <string name="account_delete">Excluir conta</string>
     <string name="account_edit_name">Editar nome</string>

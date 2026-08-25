@@ -89,6 +89,8 @@
     <string name="account_privacy_policy">Zásady ochrany soukromí</string>
     <string name="account_crash_reporting">Hlášení pádů</string>
     <string name="account_crash_reporting_subtitle">Odesílat anonymní hlášení o pádech a pomáhat opravovat chyby</string>
+    <string name="account_analytics">Analýza používání</string>
+    <string name="account_analytics_sub">Pomozte vylepšit Budgetty pomocí anonymních údajů o používání · žádné účtenky ani částky</string>
     <string name="account_sign_out">Odhlásit se</string>
     <string name="account_delete">Smazat účet</string>
     <string name="account_edit_name">Upravit jméno</string>

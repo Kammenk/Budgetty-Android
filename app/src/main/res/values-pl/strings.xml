@@ -31,6 +31,8 @@
     <string name="account_privacy_policy">Polityka prywatności</string>
     <string name="account_crash_reporting">Raporty o awariach</string>
     <string name="account_crash_reporting_subtitle">Wysyłaj anonimowe raporty o awariach, aby pomóc naprawiać błędy</string>
+    <string name="account_analytics">Analiza użytkowania</string>
+    <string name="account_analytics_sub">Pomóż ulepszać Budgetty dzięki anonimowym danym o użytkowaniu · bez paragonów i kwot</string>
     <string name="account_sign_out">Wyloguj się</string>
     <string name="account_delete">Usuń konto</string>
     <string name="account_edit_name">Edytuj imię</string>

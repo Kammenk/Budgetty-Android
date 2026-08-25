@@ -31,6 +31,8 @@
     <string name="account_privacy_policy">Informativa sulla privacy</string>
     <string name="account_crash_reporting">Segnalazione arresti anomali</string>
     <string name="account_crash_reporting_subtitle">Invia rapporti anonimi sugli arresti anomali per aiutare a correggere i bug</string>
+    <string name="account_analytics">Analisi d\'uso</string>
+    <string name="account_analytics_sub">Aiuta a migliorare Budgetty con dati d\'uso anonimi · nessuno scontrino o importo</string>
     <string name="account_sign_out">Esci</string>
     <string name="account_delete">Elimina account</string>
     <string name="account_edit_name">Modifica nome</string>

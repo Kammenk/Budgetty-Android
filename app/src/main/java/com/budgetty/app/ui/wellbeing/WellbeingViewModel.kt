@@ -2,6 +2,7 @@ package com.budgetty.app.ui.wellbeing
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.data.settings.SettingsStore
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,6 +29,7 @@ data class WellbeingUiState(
 class WellbeingViewModel(
     provider: WellbeingProvider,
     private val settings: SettingsStore,
+    private val analytics: Analytics,
 ) : ViewModel() {
 
     val uiState: StateFlow<WellbeingUiState> =
@@ -48,4 +50,7 @@ class WellbeingViewModel(
         val periodId = uiState.value.summary?.periodId ?: return
         settings.dismissWellbeingTip("$periodId|$tipId")
     }
+
+    /** A tip's CTA was acted on (before it deep-links to the fix). */
+    fun onTipActed(type: TipType) = analytics.logTipActed(type)
 }

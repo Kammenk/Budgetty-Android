@@ -31,6 +31,8 @@
     <string name="account_privacy_policy">Политика за поверителност</string>
     <string name="account_crash_reporting">Докладване за сривове</string>
     <string name="account_crash_reporting_subtitle">Изпращане на анонимни отчети за сривове за отстраняване на грешки</string>
+    <string name="account_analytics">Анализ на употребата</string>
+    <string name="account_analytics_sub">Помогнете за подобряването на Budgetty с анонимни данни за употребата · без касови бележки или суми</string>
     <string name="account_sign_out">Изход</string>
     <string name="account_delete">Изтрий профила</string>
     <string name="account_edit_name">Редактирай името</string>
