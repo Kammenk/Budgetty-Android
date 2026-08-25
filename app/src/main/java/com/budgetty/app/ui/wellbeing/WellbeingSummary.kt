@@ -1,5 +1,6 @@
 package com.budgetty.app.ui.wellbeing
 
+import com.budgetty.app.ui.streaks.Streak
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.YearMonth
@@ -37,6 +38,23 @@ data class ComponentDetail(
 /** A wins-strip pill. Copy is localised in the UI from [type]; [emoji] is the leading glyph. */
 data class WellbeingWin(val emoji: String, val type: TipType, val label: String? = null, val percent: Int? = null)
 
+/** One plotted point on the trend sparkline: a CLOSED pay-cycle month and its finalized score. */
+data class WellbeingTrendPoint(val yearMonth: YearMonth, val score: Int)
+
+/**
+ * The trend-sparkline model (§3.2), built by [WellbeingHistory.trend] from the stored closed-month
+ * snapshots. Null (the surface renders NOTHING — no placeholder) below [WellbeingHistory.MIN_TREND_MONTHS]
+ * stored months. [closed] are the last up-to-six CLOSED months oldest→newest; [liveScore] is the
+ * in-flight month drawn as a dashed ghost / hollow dot (null omits the ghost); [deltaSinceFirst] and
+ * [firstMonth] back the "Up N since March." caption ("now" minus the first shown month).
+ */
+data class WellbeingTrend(
+    val closed: List<WellbeingTrendPoint>,
+    val liveScore: Int?,
+    val deltaSinceFirst: Int,
+    val firstMonth: YearMonth,
+)
+
 /**
  * Everything the Wellbeing screen, the Home banner and the Insights row read — computed once by
  * [WellbeingProvider] from the repositories. Tips here are ranked but NOT yet filtered by the user's
@@ -57,6 +75,12 @@ data class WellbeingSummary(
     val monthYear: YearMonth,
     val weekStart: LocalDate,
     val weekEnd: LocalDate,
+    /** Six-point trend sparkline (§3.2); null below two stored months → render nothing. */
+    val trend: WellbeingTrend? = null,
+    /** Band-up nudge (§3.5); null unless the score is within 3 of a band boundary. */
+    val bandUp: BandUp? = null,
+    /** Budget-adherence streak evidence (§2.6), already surfaced (current ≥ 2) and capped, longest first. */
+    val budgetStreaks: List<Streak> = emptyList(),
 ) {
     val hasScore: Boolean get() = score.hasScore
 }

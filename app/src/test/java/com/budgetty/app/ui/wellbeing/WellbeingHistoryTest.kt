@@ -1,8 +1,10 @@
 package com.budgetty.app.ui.wellbeing
 
+import com.budgetty.app.data.local.WellbeingScoreEntity
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import java.time.LocalDate
+import java.time.YearMonth
 
 /**
  * Pins the pure history-snapshot logic (§3.1): the closed-vs-in-flight month decision, the "yyyy-MM"
@@ -109,5 +111,44 @@ class WellbeingHistoryTest {
     @Test
     fun `decodeComponents tolerates a malformed payload`() {
         assertThat(WellbeingHistory.decodeComponents("not json")).isEmpty()
+    }
+
+    // ── §3.2 trend sparkline model ────────────────────────────────────────────────
+
+    private fun entity(periodId: String, score: Int) = WellbeingScoreEntity(
+        periodId = periodId, score = score, band = WellbeingEngine.band(score).name,
+        componentsJson = "{}", computedAt = 0L,
+    )
+
+    @Test
+    fun `trend renders nothing below two stored months`() {
+        // The whole point of the thin-data state: one point (or none) is not a trend → null (no card).
+        assertThat(WellbeingHistory.trend(emptyList(), liveScore = 57)).isNull()
+        assertThat(WellbeingHistory.trend(listOf(entity("2026-03", 49)), liveScore = 57)).isNull()
+    }
+
+    @Test
+    fun `trend builds from stored months and anchors the delta on the live ghost`() {
+        val stored = listOf(entity("2026-03", 49), entity("2026-04", 52), entity("2026-05", 55))
+        val trend = requireNotNull(WellbeingHistory.trend(stored, liveScore = 57))
+        assertThat(trend.closed.map { it.score }).containsExactly(49, 52, 55).inOrder()
+        assertThat(trend.closed.first().yearMonth).isEqualTo(YearMonth.of(2026, 3))
+        assertThat(trend.firstMonth).isEqualTo(YearMonth.of(2026, 3))
+        assertThat(trend.liveScore).isEqualTo(57)
+        assertThat(trend.deltaSinceFirst).isEqualTo(8) // "now" (live 57) − first shown (49)
+    }
+
+    @Test
+    fun `trend delta falls back to the last closed month when there is no live score`() {
+        val stored = listOf(entity("2026-03", 49), entity("2026-04", 60))
+        val trend = requireNotNull(WellbeingHistory.trend(stored, liveScore = null))
+        assertThat(trend.liveScore).isNull()
+        assertThat(trend.deltaSinceFirst).isEqualTo(11) // last closed (60) − first (49)
+    }
+
+    @Test
+    fun `trend drops a malformed periodId and still requires two valid months`() {
+        val mixed = listOf(entity("2026-03", 49), entity("bogus", 50))
+        assertThat(WellbeingHistory.trend(mixed, liveScore = 57)).isNull() // only one usable point left
     }
 }

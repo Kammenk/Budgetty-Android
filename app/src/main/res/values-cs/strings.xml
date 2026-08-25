@@ -896,8 +896,25 @@
     <string name="wellbeing_built_from">Z ČEHO SE SKLÁDÁ</string>
     <string name="wellbeing_renormalise_note">Složka, která zatím nemá data, se nepočítá — vaše skóre se rozloží mezi ostatní.</string>
     <string name="wellbeing_not_counted">Nepočítá se</string>
-    <string name="wellbeing_vs_last_month">oproti minulému měsíci</string>
     <string name="wellbeing_vs_last_week">oproti minulému týdnu</string>
+    <string name="wellbeing_trend_label">POSLEDNÍCH ŠEST UZAVŘENÝCH MĚSÍCŮ</string>
+    <string name="wellbeing_trend_up">o %1$d více od %2$s.</string>
+    <string name="wellbeing_trend_down">o %1$d méně od %2$s.</string>
+    <string name="wellbeing_trend_flat">Beze změny od %1$s.</string>
+    <string name="wellbeing_projected_gain">+%1$d k vašemu skóre</string>
+    <string name="wellbeing_streak_scope_overall">Celkový rozpočet</string>
+    <plurals name="wellbeing_band_up">
+        <item quantity="one">%1$d bod do %2$s</item>
+        <item quantity="few">%1$d body do %2$s</item>
+        <item quantity="many">%1$d bodu do %2$s</item>
+        <item quantity="other">%1$d bodů do %2$s</item>
+    </plurals>
+    <plurals name="wellbeing_streak_under">
+        <item quantity="one">%1$s — %2$d měsíc v rozpočtu</item>
+        <item quantity="few">%1$s — %2$d měsíce v rozpočtu</item>
+        <item quantity="many">%1$s — %2$d měsíce v rozpočtu</item>
+        <item quantity="other">%1$s — %2$d měsíců v rozpočtu</item>
+    </plurals>
     <string name="wellbeing_this_week">Tento týden</string>
     <string name="wellbeing_of_weekly_budget">z vašeho týdenního rozpočtu %1$s</string>
     <string name="wellbeing_left_days">Zbývá %1$s · ještě %2$d dní</string>

@@ -26,6 +26,34 @@ object WellbeingHistory {
     private val decoder: Gson = Gson()
     private val mapType = object : TypeToken<Map<String, Int?>>() {}.type
 
+    /** Below this many STORED closed months the sparkline renders nothing at all — no placeholder (§3.2). */
+    const val MIN_TREND_MONTHS = 2
+
+    /**
+     * The trend-sparkline model (§3.2) from the stored closed months [recentClosed] (oldest→newest, as
+     * [com.budgetty.app.data.local.WellbeingScoreDao.getRecent] returns them) plus the in-flight
+     * [liveScore], which becomes the dashed ghost / hollow dot at the end.
+     *
+     * Returns null below [MIN_TREND_MONTHS] stored months — one point isn't a trend, so the caller
+     * renders NOTHING (no placeholder, no "not enough data yet" card; the sparkline simply grows in over
+     * time as months close). The caption delta is "now" (the live score, or the last closed month when
+     * there is no live score) minus the first shown month, so "Up 8 since March." reads honestly.
+     */
+    fun trend(recentClosed: List<WellbeingScoreEntity>, liveScore: Int?): WellbeingTrend? {
+        val points = recentClosed.mapNotNull { e ->
+            runCatching { WellbeingTrendPoint(YearMonth.parse(e.periodId), e.score) }.getOrNull()
+        }
+        if (points.size < MIN_TREND_MONTHS) return null
+        val first = points.first()
+        val now = liveScore ?: points.last().score
+        return WellbeingTrend(
+            closed = points,
+            liveScore = liveScore,
+            deltaSinceFirst = now - first.score,
+            firstMonth = first.yearMonth,
+        )
+    }
+
     /**
      * The "yyyy-MM" id of the pay-cycle month at [offset] from [today] (0 = current, -1 = just-closed).
      * Uses the same [PayCycle] anchoring as the rest of the app, so it matches

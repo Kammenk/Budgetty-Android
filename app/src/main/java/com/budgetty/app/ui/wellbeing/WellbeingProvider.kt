@@ -17,6 +17,12 @@ import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.repository.WellbeingScoreRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
+import com.budgetty.app.ui.streaks.BudgetStreakInput
+import com.budgetty.app.ui.streaks.LiveBudgetPeriod
+import com.budgetty.app.ui.streaks.Streak
+import com.budgetty.app.ui.streaks.StreakEngine
+import com.budgetty.app.ui.streaks.StreakKind
+import com.budgetty.app.ui.streaks.StreakTxn
 import com.budgetty.app.ui.util.MerchantCharge
 import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.SavingsMath
@@ -35,6 +41,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import kotlin.math.roundToInt
 
@@ -83,9 +90,15 @@ class WellbeingProvider(
         // Persisting the just-closed month's snapshot is a side effect of scoring it (§3.1). Idempotent
         // (PK = periodId), so the repeated writes from re-emits and multiple collectors converge; the
         // in-flight month is never in [Built.closedSnapshot], so it can never reach history.
+        //
+        // The trend sparkline (§3.2) reads back the stored history AFTER the just-closed upsert (so it
+        // includes the newest closed month) and pairs it with the in-flight score as the ghost point.
         return combine(core, extra) { c, e -> build(c, e) }
             .onEach { built -> built.closedSnapshot?.let { history.upsert(it) } }
-            .map { it.summary }
+            .map { built ->
+                val recent = history.getRecent(TREND_MONTHS)
+                built.summary.copy(trend = WellbeingHistory.trend(recent, built.summary.score.score))
+            }
             .flowOn(Dispatchers.Default)
     }
 
@@ -271,16 +284,64 @@ class WellbeingProvider(
             closedScore = previousFull,
             computedAt = System.currentTimeMillis(),
         )
+        // §3.5 band-up nudge + §2.6 budget-adherence streak evidence (both derived, no new persistence).
+        val bandUp = score.score?.let { WellbeingEngine.bandUp(it) }
+        val budgetStreaks = WellbeingEngine.budgetStreakEvidence(budgetMonthStreaks(core, now, receiptsById))
+
         val summary = WellbeingSummary(
             score = score, monthlyTips = monthlyTips, weekly = weekly, weeklyTips = weeklyTips, wins = wins,
             detail = detail, receiptsLogged = core.receipts.size, hasBudget = current.hasAnyBudget,
             periodId = monthYear.toString(), monthYear = monthYear, weekStart = weekStart, weekEnd = weekEnd,
+            bandUp = bandUp, budgetStreaks = budgetStreaks,
         )
         return Built(summary, closedSnapshot)
     }
 
+    /**
+     * Per-scope monthly budget streaks for the Wellbeing evidence (§2.6), computed by [StreakEngine] in
+     * one pass. Tags each transaction with the closed pay-cycle month index its date falls in (0 = the
+     * just-closed month, positive into the past; the current OPEN month becomes the live period that only
+     * feeds [Streak.liveOnTrack]) — mirrors [com.budgetty.app.ui.recap.RecapProvider.tagByPeriod]. The
+     * caller surfaces/caps via [WellbeingEngine.budgetStreakEvidence].
+     */
+    private fun budgetMonthStreaks(core: Core, now: LocalDate, receiptsById: Map<Long, ReceiptEntity>): List<Streak> {
+        val endCycle = YearMonth.from(PayCycle.month(now, core.monthStartDay, -1).first)
+        val byIndex = core.txns
+            .mapNotNull { t ->
+                val date = Instant.ofEpochMilli(t.timestamp).atZone(zone).toLocalDate()
+                val txnCycle = YearMonth.from(PayCycle.month(date, core.monthStartDay, 0).first)
+                val idx = ChronoUnit.MONTHS.between(txnCycle, endCycle).toInt()
+                if (idx == LIVE_INDEX || idx in 0 until StreakEngine.MAX_STREAK) idx to t else null
+            }
+            .groupBy({ it.first }, { it.second })
+        val closedGroups = byIndex.filterKeys { it >= 0 }
+        val closed = closedGroups.flatMap { (idx, list) ->
+            list.map { StreakTxn(idx, it.category, it.price.multiply(BigDecimal(it.quantity))) }
+        }
+        val adjustment = closedGroups.mapValues { (_, list) -> paidAdjustmentOf(list, receiptsById) }
+        val liveList = byIndex[LIVE_INDEX].orEmpty()
+        val live = LiveBudgetPeriod(
+            transactions = liveList.map { StreakTxn(0, it.category, it.price.multiply(BigDecimal(it.quantity))) },
+            monthlyAdjustment = paidAdjustmentOf(liveList, receiptsById),
+        )
+        val catBudgets = core.budgets.filterKeys { it.startsWith(BudgetRepository.CATEGORY_PREFIX) }
+            .mapKeys { it.key.removePrefix(BudgetRepository.CATEGORY_PREFIX) }
+        return StreakEngine.budgetStreaks(
+            BudgetStreakInput(
+                transactions = closed,
+                categoryBudgets = catBudgets,
+                monthlyBudget = core.budgets[BudgetRepository.MONTHLY],
+                kind = StreakKind.BUDGET_MONTH,
+                monthlyLabel = "", // blank → the surface shows a localized "Overall budget" label
+                monthlyAdjustmentByPeriod = adjustment,
+                live = live,
+            ),
+        )
+    }
+
     private fun winEmoji(type: TipType): String = when (type) {
-        TipType.SAVINGS_WIN -> "🔥"
+        // §2.4 no-flames: the saving win used a 🔥; a calm 📈 keeps it a win, not a loss-framed streak.
+        TipType.SAVINGS_WIN -> "📈"
         TipType.CATEGORY_IMPROVED -> "📉"
         TipType.UNDER_PACE_WIN -> "🎉"
         else -> "✅"
@@ -306,4 +367,12 @@ class WellbeingProvider(
                 dateMillis = group.firstOrNull()?.timestamp ?: receiptId,
             )
         }
+
+    private companion object {
+        /** Period index of the current OPEN pay-cycle month in the streak tagging (never counted; §2.3). */
+        const val LIVE_INDEX = -1
+
+        /** How many stored closed months the trend sparkline reads back (§3.2). */
+        const val TREND_MONTHS = 6
+    }
 }
