@@ -1168,4 +1168,21 @@
     <string name="insights_overlay_nudge_text">Home telt deze periode ook %1$s aan terugkerende rekeningen. Leg ze hier als geplande laag eroverheen.</string>
     <string name="insights_overlay_nudge_action">Rekeningen overlappen</string>
     <string name="cd_insights_overlay_nudge_dismiss">Sluiten</string>
+    <string name="recap_streak_kicker">BUDGETREEKS</string>
+    <string name="recap_streak_week_scope">%1$d weken binnen je %2$s-budget</string>
+    <string name="recap_streak_week_all">%1$d weken binnen budget</string>
+    <string name="recap_streak_best_weeks">Beste reeks: %1$d weken</string>
+    <string name="recap_streak_best_months">Beste reeks: %1$d maanden</string>
+    <string name="recap_streak_week_counted">%1$d afgesloten weken geteld.</string>
+    <string name="recap_streak_week_live">Deze week ligt tot nu toe op koers.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · beste in de afgelopen 24 weken</string>
+    <string name="recap_streak_best_week_sub">Beste in de afgelopen 24 weken</string>
+    <string name="recap_streak_month_counted">%1$d afgesloten maanden</string>
+    <string name="recap_streak_month_live">%1$s ligt op koers</string>
+    <string name="recap_streak_best_month_sub">Beste in de afgelopen 24 maanden</string>
+    <string name="recap_freq_row_label">Wekelijkse overzichten</string>
+    <string name="recap_freq_change">Wijzigen</string>
+    <string name="recap_freq_sheet_title">Frequentie van overzicht</string>
+    <string name="recap_freq_sheet_sub">Wanneer Budgetty je een overzicht toont.</string>
+    <string name="recap_freq_off">Uit</string>
 </resources>

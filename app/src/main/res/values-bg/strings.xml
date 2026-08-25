@@ -1168,4 +1168,21 @@
     <string name="insights_overlay_nudge_text">Начало също отчита %1$s редовни сметки този период. Наслагвай ги тук като планиран слой.</string>
     <string name="insights_overlay_nudge_action">Наслагвай сметките</string>
     <string name="cd_insights_overlay_nudge_dismiss">Скрий</string>
+    <string name="recap_streak_kicker">СЕРИЯ ПО БЮДЖЕТ</string>
+    <string name="recap_streak_week_scope">%1$d седмици в рамките на бюджета за %2$s</string>
+    <string name="recap_streak_week_all">%1$d седмици в рамките на бюджета</string>
+    <string name="recap_streak_best_weeks">Най-добра серия: %1$d седмици</string>
+    <string name="recap_streak_best_months">Най-добра серия: %1$d месеца</string>
+    <string name="recap_streak_week_counted">Отчетени приключени седмици: %1$d.</string>
+    <string name="recap_streak_week_live">Тази седмица засега е в план.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · най-добро за последните 24 седмици</string>
+    <string name="recap_streak_best_week_sub">Най-добро за последните 24 седмици</string>
+    <string name="recap_streak_month_counted">Приключени месеца: %1$d</string>
+    <string name="recap_streak_month_live">%1$s е в план</string>
+    <string name="recap_streak_best_month_sub">Най-добро за последните 24 месеца</string>
+    <string name="recap_freq_row_label">Седмични обобщения</string>
+    <string name="recap_freq_change">Промяна</string>
+    <string name="recap_freq_sheet_title">Честота на обобщенията</string>
+    <string name="recap_freq_sheet_sub">Кога Budgetty ви показва обобщение.</string>
+    <string name="recap_freq_off">Изкл.</string>
 </resources>

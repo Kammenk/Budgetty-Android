@@ -52,6 +52,11 @@ object RecapScheduler {
      * Start date (ISO yyyy-MM-dd) of the week that has just closed as of [today] — the week before the
      * one containing today, anchored on the locale's [firstDayOfWeek]. Its stability across a whole
      * week is what makes it a per-week key.
+     *
+     * **No backfill, by design (§1.5).** This returns exactly ONE id — the single most-recently-closed
+     * week. A user who doesn't open Budgetty for three weeks sees ONE weekly recap (that last week),
+     * never a queue of three. Do NOT "improve" this into a list/backlog of missed weeks: the recap is a
+     * light momentum check, not a ledger, and a stack of stale interstitials would be an anti-feature.
      */
     fun justClosedWeekId(today: LocalDate, firstDayOfWeek: DayOfWeek): String {
         val currentWeekStart = today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
@@ -104,14 +109,34 @@ sealed interface RecapGuard {
  * floor ([WellbeingEngine.MIN_RECEIPTS_TO_SCORE] = 5 receipts), or when the just-closed period itself
  * had no spend, the recap is skipped (and marked shown so it isn't re-checked every open). With data
  * but no prior period to compare, a partial recap is shown that drops the comparison cards.
+ *
+ * A weekly recap adds a period-scoped floor ([MIN_WEEK_RECEIPTS], §1.2): a week that clears the
+ * lifetime floor but holds only one or two receipts produces a hollow story that trains reflex-dismiss,
+ * so it is [RecapGuard.Skip]-ped — and, like any skip, marked shown, so it isn't re-checked on every
+ * open for the rest of that week. Monthly behaviour is unchanged (the fuller monthly report card is
+ * worth showing even in a quiet month).
  */
 object RecapDataGuard {
 
     /** Kept in step with the wellbeing score's first-run floor so the two features agree. */
     const val MIN_RECEIPTS: Int = WellbeingEngine.MIN_RECEIPTS_TO_SCORE
 
-    fun evaluate(totalReceipts: Int, periodHasSpend: Boolean, priorPeriodHasSpend: Boolean): RecapGuard {
+    /** A weekly recap needs at least this many receipts *within the week* to be worth an interstitial (§1.2). */
+    const val MIN_WEEK_RECEIPTS: Int = 3
+
+    /**
+     * [periodReceipts] is the receipt count *within the just-closed period* (only consulted for the
+     * weekly floor; the monthly path ignores it). [totalReceipts] is the lifetime count.
+     */
+    fun evaluate(
+        kind: RecapKind,
+        totalReceipts: Int,
+        periodReceipts: Int,
+        periodHasSpend: Boolean,
+        priorPeriodHasSpend: Boolean,
+    ): RecapGuard {
         if (totalReceipts < MIN_RECEIPTS || !periodHasSpend) return RecapGuard.Skip
+        if (kind == RecapKind.WEEKLY && periodReceipts < MIN_WEEK_RECEIPTS) return RecapGuard.Skip
         return RecapGuard.Show(withComparison = priorPeriodHasSpend)
     }
 }

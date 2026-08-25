@@ -1167,4 +1167,21 @@
     <string name="insights_overlay_nudge_text">Home conta anche %1$s di spese ricorrenti in questo periodo. Sovrapponile qui come livello previsto.</string>
     <string name="insights_overlay_nudge_action">Sovrapponi le spese</string>
     <string name="cd_insights_overlay_nudge_dismiss">Ignora</string>
+    <string name="recap_streak_kicker">SERIE DI BUDGET</string>
+    <string name="recap_streak_week_scope">%1$d settimane sotto il tuo budget %2$s</string>
+    <string name="recap_streak_week_all">%1$d settimane sotto il budget</string>
+    <string name="recap_streak_best_weeks">Serie migliore: %1$d settimane</string>
+    <string name="recap_streak_best_months">Serie migliore: %1$d mesi</string>
+    <string name="recap_streak_week_counted">%1$d settimane chiuse conteggiate.</string>
+    <string name="recap_streak_week_live">Questa settimana è sulla buona strada.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · migliore nelle ultime 24 settimane</string>
+    <string name="recap_streak_best_week_sub">Migliore nelle ultime 24 settimane</string>
+    <string name="recap_streak_month_counted">%1$d mesi chiusi</string>
+    <string name="recap_streak_month_live">%1$s sulla buona strada</string>
+    <string name="recap_streak_best_month_sub">Migliore negli ultimi 24 mesi</string>
+    <string name="recap_freq_row_label">Riepiloghi settimanali</string>
+    <string name="recap_freq_change">Modifica</string>
+    <string name="recap_freq_sheet_title">Frequenza del riepilogo</string>
+    <string name="recap_freq_sheet_sub">Quando Budgetty ti mostra un riepilogo.</string>
+    <string name="recap_freq_off">Off</string>
 </resources>

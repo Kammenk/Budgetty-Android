@@ -49,9 +49,11 @@ import androidx.navigation.navArgument
 import com.budgetty.app.data.settings.AppSettings
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.debug.DebugAuth
+import com.budgetty.app.ui.recap.RecapDue
 import com.budgetty.app.ui.recap.RecapLoadingBackdrop
 import com.budgetty.app.ui.recap.RecapReopenScreen
 import com.budgetty.app.ui.recap.RecapScheduler
+import com.budgetty.app.ui.recap.RecapStory
 import com.budgetty.app.ui.recap.RecapStoryScreen
 import com.budgetty.app.ui.recap.RecapViewModel
 import com.budgetty.app.ui.util.BuyingLimitCounter
@@ -154,13 +156,11 @@ private fun RecapGate(
         onStartRouteHandled()
     }
 
-    val maybeDue = remember(
-        settings.recapEnabled,
-        settings.recapFrequency,
-        settings.recapLastShownWeek,
-        settings.recapLastShownMonth,
-        settings.monthStartDay,
-    ) {
+    // Frozen once per open (rememberSaveable, not reactive to settings): whether to run the recap path
+    // at all. Kept frozen so the in-story frequency control (§1.4) can write recapEnabled/recapFrequency
+    // without re-running the scheduler and tearing down the story the user is mid-read of — the new
+    // cadence applies on the NEXT open.
+    val runRecapPath = rememberSaveable {
         RecapScheduler.due(
             enabled = settings.recapEnabled,
             frequency = settings.recapFrequency,
@@ -174,30 +174,49 @@ private fun RecapGate(
 
     // When a boundary is due, load + show the story (or a neutral hold); the guard-skip path falls
     // through to the single MainScaffold call below, so closing the recap never recreates the NavHost.
-    if (maybeDue) {
+    if (runRecapPath) {
         val recapViewModel: RecapViewModel = koinViewModel()
         val state by recapViewModel.interstitial.collectAsStateWithLifecycle()
-        val story = state.story
+        var closed by rememberSaveable { mutableStateOf(false) }
+        // Latch the first built story + its due decision for this open. A mid-story settings edit
+        // (the §1.4 control) re-emits the interstitial, so without this latch the story could be
+        // swapped or dropped under the user's finger; latching freezes it until they close it.
+        val locked = remember { mutableStateOf<Pair<RecapDue, RecapStory>?>(null) }
+        if (locked.value == null) {
+            val due = state.due
+            val story = state.story
+            if (due != null && story != null) locked.value = due to story
+        }
+        val shown = locked.value
         when {
+            closed -> Unit // closed by the user → fall through to MainScaffold below
+            shown != null -> {
+                RecapStoryScreen(
+                    story = shown.second,
+                    onClose = {
+                        recapViewModel.markShown(shown.first)
+                        closed = true
+                    },
+                    onSeeDetails = {
+                        pendingStart = Routes.INSIGHTS
+                        recapViewModel.markShown(shown.first)
+                        closed = true
+                    },
+                    onShown = recapViewModel::onRecapShown,
+                    onCompleted = recapViewModel::onRecapCompleted,
+                    onStreakSurfaced = recapViewModel::onStreakSurfaced,
+                    recapEnabled = settings.recapEnabled,
+                    recapFrequency = settings.recapFrequency,
+                    onRecapFrequencyChange = recapViewModel::setRecapFrequencyChoice,
+                )
+                return
+            }
             // Rare hold on the one due open, until the DB loads + the guard runs — never flashes Home.
             !state.isLoaded -> {
                 RecapLoadingBackdrop()
                 return
             }
-            story != null -> {
-                RecapStoryScreen(
-                    story = story,
-                    onClose = { state.due?.let(recapViewModel::markShown) },
-                    onSeeDetails = {
-                        pendingStart = Routes.INSIGHTS
-                        state.due?.let(recapViewModel::markShown)
-                    },
-                    onShown = recapViewModel::onRecapShown,
-                    onCompleted = recapViewModel::onRecapCompleted,
-                )
-                return
-            }
-            // Guard skipped (first-run / no data): stamp the period(s) and fall through to the app.
+            // Guard skipped (first-run / no data / weekly under floor): stamp the period(s) and fall through.
             else -> LaunchedEffect(state.due) { state.due?.let(recapViewModel::markShown) }
         }
     }

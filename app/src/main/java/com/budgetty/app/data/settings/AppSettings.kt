@@ -9,7 +9,9 @@ enum class ThemeMode(val label: String) {
 /**
  * How often the end-of-period recap interstitial appears. The 0–100 wellbeing score is a monthly
  * measure, so [WEEKLY] is a lighter momentum check with no score; [MONTHLY] is the full report card;
- * [BOTH] shows each on its own boundary. Default is [MONTHLY] (weekly off).
+ * [BOTH] shows each on its own boundary. Default is [BOTH] (§1.1): the weekly recap is the app's
+ * strongest retention asset, so it runs by default — made safe by the in-story frequency control
+ * (§1.4) that puts its own off-switch on the very first weekly recap a user sees.
  */
 enum class RecapFrequency { WEEKLY, MONTHLY, BOTH }
 
@@ -163,8 +165,11 @@ data class AppSettings(
     // ── End-of-period recap ──
     /** Whether the end-of-period recap interstitial is shown at all. Default on. */
     val recapEnabled: Boolean = true,
-    /** Which period(s) trigger a recap. Default [RecapFrequency.MONTHLY] (weekly off). */
-    val recapFrequency: RecapFrequency = RecapFrequency.MONTHLY,
+    /**
+     * Which period(s) trigger a recap. Default [RecapFrequency.BOTH] (§1.1) — weekly on by default,
+     * dismissible in two taps from the first weekly recap itself (the in-story control, §1.4).
+     */
+    val recapFrequency: RecapFrequency = RecapFrequency.BOTH,
     /**
      * ISO date (yyyy-MM-dd) of the start of the last weekly recap already shown; empty = none yet.
      * The interstitial writes it after showing so a week's recap fires at most once.

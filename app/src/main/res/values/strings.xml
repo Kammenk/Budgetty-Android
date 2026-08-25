@@ -1240,4 +1240,21 @@
     <string name="recap_pace_left">%1$s left</string>
     <string name="recap_pace_over">%1$s over budget</string>
     <string name="recap_pace_nobudget">No weekly budget set</string>
+    <string name="recap_streak_kicker">BUDGET STREAK</string>
+    <string name="recap_streak_week_scope">%1$d weeks under your %2$s budget</string>
+    <string name="recap_streak_week_all">%1$d weeks under budget</string>
+    <string name="recap_streak_best_weeks">Best run: %1$d weeks</string>
+    <string name="recap_streak_best_months">Best run: %1$d months</string>
+    <string name="recap_streak_week_counted">%1$d closed weeks counted.</string>
+    <string name="recap_streak_week_live">This week is on track so far.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · best in the last 24 weeks</string>
+    <string name="recap_streak_best_week_sub">Best in the last 24 weeks</string>
+    <string name="recap_streak_month_counted">%1$d closed months</string>
+    <string name="recap_streak_month_live">%1$s on track so far</string>
+    <string name="recap_streak_best_month_sub">Best in the last 24 months</string>
+    <string name="recap_freq_row_label">Weekly recaps</string>
+    <string name="recap_freq_change">Change</string>
+    <string name="recap_freq_sheet_title">Recap frequency</string>
+    <string name="recap_freq_sheet_sub">When Budgetty shows you a recap.</string>
+    <string name="recap_freq_off">Off</string>
 </resources>

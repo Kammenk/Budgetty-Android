@@ -1,5 +1,6 @@
 package com.budgetty.app.ui.recap
 
+import com.budgetty.app.ui.streaks.StreakKind
 import com.budgetty.app.ui.wellbeing.WellbeingBand
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -19,9 +20,14 @@ enum class RecapPillTone { GOOD, WARN, NEUTRAL }
 /** Traffic-light state of one budget scope, for the budget card's segment bar. */
 enum class RecapSegStatus { GOOD, WARN, BAD }
 
-/** One buying-limit outcome chip: emoji + label + how many were bought against the [cap]. */
+/**
+ * One buying-limit outcome chip: emoji + label + how many were bought against the [cap]. [under] is
+ * STRICTLY under the cap (green + counted in "stayed under N of M"); at or over the cap is the warm
+ * "reached" state (never red, never counted) — matching the mockup, where 4-of-4 reads as warn, not
+ * as a kept limit (§1.3 / no-loss-framing).
+ */
 data class RecapLimitChip(val emoji: String, val label: String, val bought: Int, val cap: Int) {
-    val under: Boolean get() = bought <= cap
+    val under: Boolean get() = bought < cap
 }
 
 /** The second-biggest category mover, shown as a trailing clause on the mover card. */
@@ -92,12 +98,43 @@ sealed interface RecapCard {
     /** Budget adherence + streak, with the per-scope segment bar and safe-to-spend at the close. */
     data class BudgetStreak(
         override val band: RecapBand,
-        /** Consecutive closed months under budget, ending with this one (≥ 1 on this card). */
+        /**
+         * Consecutive CLOSED months where every budgeted scope stayed under, ending with the just-closed
+         * one; 0 when the just-closed month wasn't all-under. The hero de-flames per §2.4 (no 🔥) and
+         * shows the streak [motif][com.budgetty.app.ui.streaks.StreakMotif] once this is ≥ 2 (§2.7).
+         */
         val streakMonths: Int,
+        /** Personal best all-under run within the 24-month window; drives the best-run fallback (§2.5). */
+        val best: Int,
+        /** True when the current open month is on track to extend the run — the motif's ghost segment. */
+        val liveOnTrack: Boolean,
         val underCount: Int,
         val scopeCount: Int,
         val segments: List<RecapSegStatus>,
         val safeToSpend: BigDecimal,
+    ) : RecapCard
+
+    /**
+     * Outcome-streak card (§1.3 / §2): one scope's run of consecutive CLOSED periods met, on the calm
+     * secondary band. Sourced from [com.budgetty.app.ui.streaks.StreakEngine]; only ever built when
+     * there is something worth showing — a current run ([current] ≥ 2, [isBestRun] = false) or, when the
+     * current run is 0, the personal-best fallback ([best] ≥ 2, [isBestRun] = true). Never padded: when
+     * neither holds the card is dropped entirely (a bare week stays Cover → Pace → Focus).
+     */
+    data class Streak(
+        override val band: RecapBand,
+        /** Cadence of the run — drives the weeks/months copy and the analytics kind. */
+        val kind: StreakKind,
+        /** Category name for a per-category run, or null for the whole-budget scope ("under budget"). */
+        val scope: String?,
+        /** Consecutive closed periods met (≥ 2 for a current run; 0 when showing the best-run fallback). */
+        val current: Int,
+        /** Personal best within the 24-period window (labelled "best in the last 24 …"). */
+        val best: Int,
+        /** Whether the open period is on track to extend the run — the motif's dotted ghost segment. */
+        val liveOnTrack: Boolean,
+        /** True = render the "Best run: N weeks" fallback instead of a live current run. */
+        val isBestRun: Boolean,
     ) : RecapCard
 
     /** Buying-limits outcome: how many limits stayed under, plus a chip per limit. Dropped when the

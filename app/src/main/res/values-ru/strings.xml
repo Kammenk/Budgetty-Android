@@ -1200,4 +1200,21 @@
     <string name="insights_overlay_nudge_text">Главная тоже учитывает %1$s регулярных счетов в этом периоде. Наложите их здесь плановым слоем.</string>
     <string name="insights_overlay_nudge_action">Наложить счета</string>
     <string name="cd_insights_overlay_nudge_dismiss">Скрыть</string>
+    <string name="recap_streak_kicker">СЕРИЯ ПО БЮДЖЕТУ</string>
+    <string name="recap_streak_week_scope">%1$d недель в рамках бюджета «%2$s»</string>
+    <string name="recap_streak_week_all">%1$d недель в рамках бюджета</string>
+    <string name="recap_streak_best_weeks">Лучшая серия: %1$d недель</string>
+    <string name="recap_streak_best_months">Лучшая серия: %1$d месяцев</string>
+    <string name="recap_streak_week_counted">Учтено закрытых недель: %1$d.</string>
+    <string name="recap_streak_week_live">Эта неделя пока идёт по плану.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · лучший результат за последние 24 недели</string>
+    <string name="recap_streak_best_week_sub">Лучший результат за последние 24 недели</string>
+    <string name="recap_streak_month_counted">Закрытых месяцев: %1$d</string>
+    <string name="recap_streak_month_live">%1$s идёт по плану</string>
+    <string name="recap_streak_best_month_sub">Лучший результат за последние 24 месяца</string>
+    <string name="recap_freq_row_label">Еженедельные сводки</string>
+    <string name="recap_freq_change">Изменить</string>
+    <string name="recap_freq_sheet_title">Частота сводок</string>
+    <string name="recap_freq_sheet_sub">Когда Budgetty показывает сводку.</string>
+    <string name="recap_freq_off">Выкл.</string>
 </resources>

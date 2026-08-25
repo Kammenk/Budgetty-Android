@@ -1180,4 +1180,21 @@
     <string name="insights_overlay_nudge_text">Hem räknar också %1$s i återkommande räkningar den här perioden. Lägg dem här som ett planerat lager.</string>
     <string name="insights_overlay_nudge_action">Lägg räkningar över</string>
     <string name="cd_insights_overlay_nudge_dismiss">Stäng</string>
+    <string name="recap_streak_kicker">BUDGETSVIT</string>
+    <string name="recap_streak_week_scope">%1$d veckor under din %2$s-budget</string>
+    <string name="recap_streak_week_all">%1$d veckor under budgeten</string>
+    <string name="recap_streak_best_weeks">Bästa svit: %1$d veckor</string>
+    <string name="recap_streak_best_months">Bästa svit: %1$d månader</string>
+    <string name="recap_streak_week_counted">%1$d avslutade veckor räknade.</string>
+    <string name="recap_streak_week_live">Den här veckan är på rätt spår hittills.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · bäst de senaste 24 veckorna</string>
+    <string name="recap_streak_best_week_sub">Bäst de senaste 24 veckorna</string>
+    <string name="recap_streak_month_counted">%1$d avslutade månader</string>
+    <string name="recap_streak_month_live">%1$s är på rätt spår</string>
+    <string name="recap_streak_best_month_sub">Bäst de senaste 24 månaderna</string>
+    <string name="recap_freq_row_label">Veckovisa sammanfattningar</string>
+    <string name="recap_freq_change">Ändra</string>
+    <string name="recap_freq_sheet_title">Sammanfattningens frekvens</string>
+    <string name="recap_freq_sheet_sub">När Budgetty visar en sammanfattning.</string>
+    <string name="recap_freq_off">Av</string>
 </resources>

@@ -28,9 +28,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -38,8 +40,10 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,17 +51,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.budgetty.app.R
+import com.budgetty.app.data.settings.RecapFrequency
+import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.ScoreRing
+import com.budgetty.app.ui.streaks.StreakEngine
+import com.budgetty.app.ui.streaks.StreakKind
+import com.budgetty.app.ui.streaks.StreakMotif
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetGreatColor
 import com.budgetty.app.ui.theme.budgetWarnColor
 import com.budgetty.app.ui.theme.dimens
-import com.budgetty.app.ui.theme.wellbeingBadContainer
 import com.budgetty.app.ui.theme.wellbeingGoodContainer
 import com.budgetty.app.ui.theme.wellbeingGreatContainer
 import com.budgetty.app.ui.theme.wellbeingWarnContainer
@@ -101,6 +110,10 @@ fun RecapStoryScreen(
     modifier: Modifier = Modifier,
     onShown: (RecapKind) -> Unit = {},
     onCompleted: (kind: RecapKind, cardsViewed: Int) -> Unit = { _, _ -> },
+    onStreakSurfaced: (StreakKind, Int) -> Unit = { _, _ -> },
+    recapEnabled: Boolean = true,
+    recapFrequency: RecapFrequency = RecapFrequency.BOTH,
+    onRecapFrequencyChange: (enabled: Boolean, frequency: RecapFrequency) -> Unit = { _, _ -> },
 ) {
     val cards = story.cards
     if (cards.isEmpty()) {
@@ -113,11 +126,13 @@ fun RecapStoryScreen(
 
     // Analytics: count the story as shown once it appears, and — on any exit path (✕, Done, See
     // details, back, or the gate un-mounting it after markShown) — report how far the user got as the
-    // highest card reached + 1, so a bare cover read (1) is distinguishable from a full read.
+    // highest card reached + 1, so a bare cover read (1) is distinguishable from a full read. Any
+    // surfaced streak card also fires streak_surfaced once here (§0 event set).
     val highestCard = remember { mutableIntStateOf(0) }
     LaunchedEffect(current) { if (current > highestCard.intValue) highestCard.intValue = current }
     DisposableEffect(Unit) {
         onShown(story.kind)
+        cards.forEach { card -> streakSurfaceOf(card)?.let { (kind, length) -> onStreakSurfaced(kind, length) } }
         onDispose { onCompleted(story.kind, highestCard.intValue + 1) }
     }
 
@@ -129,7 +144,13 @@ fun RecapStoryScreen(
             .background(MaterialTheme.colorScheme.background),
     ) {
         HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
-            RecapCardPage(story = story, card = cards[page])
+            RecapCardPage(
+                story = story,
+                card = cards[page],
+                recapEnabled = recapEnabled,
+                recapFrequency = recapFrequency,
+                onRecapFrequencyChange = onRecapFrequencyChange,
+            )
         }
 
         // Tap zones: left third goes back, right two-thirds advances. Ripple-less; horizontal drags
@@ -252,7 +273,13 @@ private fun RecapActions(onDone: () -> Unit, onSeeDetails: () -> Unit, modifier:
 }
 
 @Composable
-private fun RecapCardPage(story: RecapStory, card: RecapCard) {
+internal fun RecapCardPage(
+    story: RecapStory,
+    card: RecapCard,
+    recapEnabled: Boolean = true,
+    recapFrequency: RecapFrequency = RecapFrequency.BOTH,
+    onRecapFrequencyChange: (enabled: Boolean, frequency: RecapFrequency) -> Unit = { _, _ -> },
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -273,10 +300,14 @@ private fun RecapCardPage(story: RecapStory, card: RecapCard) {
                 is RecapCard.Total -> TotalCardBody(story, card)
                 is RecapCard.Score -> ScoreCardBody(card)
                 is RecapCard.Mover -> MoverCardBody(card)
-                is RecapCard.BudgetStreak -> BudgetStreakCardBody(card)
+                is RecapCard.BudgetStreak -> BudgetStreakCardBody(story, card)
+                is RecapCard.Streak -> StreakCardBody(card)
                 is RecapCard.Limits -> LimitsCardBody(card)
                 is RecapCard.Pace -> PaceCardBody(card)
-                is RecapCard.Focus -> FocusCardBody(story, card)
+                is RecapCard.Focus -> FocusCardBody(
+                    story = story, card = card, recapEnabled = recapEnabled,
+                    recapFrequency = recapFrequency, onRecapFrequencyChange = onRecapFrequencyChange,
+                )
             }
         }
     }
@@ -445,15 +476,20 @@ private fun moverSubtitle(card: RecapCard.Mover, drop: Boolean): String {
 }
 
 @Composable
-private fun BudgetStreakCardBody(card: RecapCard.BudgetStreak) {
+private fun BudgetStreakCardBody(story: RecapStory, card: RecapCard.BudgetStreak) {
     val on = bandOnColor(card.band)
+    // §2.4/§2.6: de-flamed. A live current run (≥ 2) shows the motif + a "closed months · this month on
+    // track" caption; when the run is 0 but a past run exists, the muted best-run fallback shows instead;
+    // below that the report-card panel (under-count, segment bar, safe-to-spend) is unchanged.
+    val showCurrent = card.streakMonths >= StreakEngine.MIN_TO_SURFACE
+    val showBest = !showCurrent && card.best >= StreakEngine.MIN_TO_SURFACE
     Kicker(stringResource(R.string.recap_budget_kicker), on)
     Spacer(Modifier.height(MaterialTheme.dimens.md))
     Text(
-        text = if (card.streakMonths > 1) {
-            stringResource(R.string.recap_budget_streak_many, card.streakMonths) + " 🔥"
-        } else {
-            stringResource(R.string.recap_budget_streak_one)
+        text = when {
+            showCurrent -> stringResource(R.string.recap_budget_streak_many, card.streakMonths)
+            showBest -> stringResource(R.string.recap_streak_best_months, card.best)
+            else -> stringResource(R.string.recap_budget_streak_one)
         },
         fontSize = BudgetTitleSize,
         lineHeight = BudgetTitleSize,
@@ -461,6 +497,30 @@ private fun BudgetStreakCardBody(card: RecapCard.BudgetStreak) {
         color = on,
         textAlign = TextAlign.Center,
     )
+    if (showCurrent || showBest) {
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        StreakMotif(
+            filledCount = if (showCurrent) card.streakMonths else card.best,
+            showLive = showCurrent && card.liveOnTrack,
+            muted = showBest,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        Text(
+            text = if (showCurrent) {
+                val counted = stringResource(R.string.recap_streak_month_counted, card.streakMonths)
+                if (card.liveOnTrack) {
+                    counted + " · " + stringResource(R.string.recap_streak_month_live, monthName(story.nextMonth))
+                } else {
+                    counted
+                }
+            } else {
+                stringResource(R.string.recap_streak_best_month_sub)
+            },
+            style = MaterialTheme.typography.labelMedium,
+            color = on.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center,
+        )
+    }
     Spacer(Modifier.height(MaterialTheme.dimens.xl))
     Column(
         modifier = Modifier
@@ -493,6 +553,63 @@ private fun BudgetStreakCardBody(card: RecapCard.BudgetStreak) {
 }
 
 @Composable
+private fun StreakCardBody(card: RecapCard.Streak) {
+    val on = bandOnColor(card.band)
+    Kicker(stringResource(R.string.recap_streak_kicker), on)
+    Spacer(Modifier.height(MaterialTheme.dimens.md))
+    Text(
+        text = streakTitle(card),
+        fontSize = BudgetTitleSize,
+        lineHeight = BudgetTitleSize,
+        fontWeight = FontWeight.ExtraBold,
+        color = on,
+        textAlign = TextAlign.Center,
+    )
+    Spacer(Modifier.height(MaterialTheme.dimens.xl))
+    StreakMotif(
+        filledCount = if (card.isBestRun) card.best else card.current,
+        showLive = !card.isBestRun && card.liveOnTrack,
+        muted = card.isBestRun,
+    )
+    Spacer(Modifier.height(MaterialTheme.dimens.xl))
+    Text(
+        text = streakSub(card),
+        style = MaterialTheme.typography.bodyLarge,
+        color = on.copy(alpha = 0.72f),
+        textAlign = TextAlign.Center,
+    )
+}
+
+@Composable
+private fun streakTitle(card: RecapCard.Streak): String {
+    val weeks = card.kind == StreakKind.BUDGET_WEEK
+    return when {
+        card.isBestRun -> stringResource(
+            if (weeks) R.string.recap_streak_best_weeks else R.string.recap_streak_best_months, card.best,
+        )
+        weeks && card.scope != null -> stringResource(R.string.recap_streak_week_scope, card.current, card.scope)
+        weeks -> stringResource(R.string.recap_streak_week_all, card.current)
+        else -> stringResource(R.string.recap_budget_streak_many, card.current)
+    }
+}
+
+@Composable
+private fun streakSub(card: RecapCard.Streak): String {
+    val weeks = card.kind == StreakKind.BUDGET_WEEK
+    return when {
+        card.isBestRun && weeks && card.scope != null ->
+            stringResource(R.string.recap_streak_best_week_scope_sub, card.scope)
+        card.isBestRun && weeks -> stringResource(R.string.recap_streak_best_week_sub)
+        card.isBestRun -> stringResource(R.string.recap_streak_best_month_sub)
+        weeks -> {
+            val counted = stringResource(R.string.recap_streak_week_counted, card.current)
+            if (card.liveOnTrack) counted + " " + stringResource(R.string.recap_streak_week_live) else counted
+        }
+        else -> stringResource(R.string.recap_streak_month_counted, card.current)
+    }
+}
+
+@Composable
 private fun LimitsCardBody(card: RecapCard.Limits) {
     val on = bandOnColor(card.band)
     Kicker(stringResource(R.string.recap_limits_kicker), on)
@@ -516,12 +633,15 @@ private fun LimitsCardBody(card: RecapCard.Limits) {
 
 @Composable
 private fun LimitChipRow(chip: RecapLimitChip) {
-    val bg = if (chip.under) wellbeingGoodContainer() else wellbeingBadContainer()
+    // §1.3 / no-loss-framing: under cap = good (green); AT or over cap = warm amber, never red — the
+    // state is "reached", not "failed" (the user set this number themselves). A neutral chip surface
+    // keeps it legible on the WARN band, with the good/warn accent carried by the label.
+    val accent = if (chip.under) budgetGoodColor() else budgetWarnColor()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
-            .background(bg)
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.55f))
             .padding(horizontal = MaterialTheme.dimens.md, vertical = MaterialTheme.dimens.sm),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -530,8 +650,8 @@ private fun LimitChipRow(chip: RecapLimitChip) {
         Text(
             stringResource(R.string.recap_limits_chip, chip.label, chip.bought, chip.cap),
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+            color = accent,
         )
     }
 }
@@ -591,7 +711,13 @@ private fun PaceCardBody(card: RecapCard.Pace) {
 }
 
 @Composable
-private fun FocusCardBody(story: RecapStory, card: RecapCard.Focus) {
+private fun FocusCardBody(
+    story: RecapStory,
+    card: RecapCard.Focus,
+    recapEnabled: Boolean = true,
+    recapFrequency: RecapFrequency = RecapFrequency.BOTH,
+    onRecapFrequencyChange: (enabled: Boolean, frequency: RecapFrequency) -> Unit = { _, _ -> },
+) {
     val on = bandOnColor(card.band)
     Kicker(
         text = if (card.isWeekly) {
@@ -618,9 +744,145 @@ private fun FocusCardBody(story: RecapStory, card: RecapCard.Focus) {
             color = on.copy(alpha = 0.75f),
             textAlign = TextAlign.Center,
         )
+        // §1.4: the in-story off-switch that makes weekly-by-default safe — low-emphasis, weekly only,
+        // NEVER on the monthly story. Writes settings immediately (see [RecapFrequencyRow]).
+        Spacer(Modifier.height(MaterialTheme.dimens.xl))
+        RecapFrequencyRow(
+            onColor = on,
+            recapEnabled = recapEnabled,
+            recapFrequency = recapFrequency,
+            onChange = onRecapFrequencyChange,
+        )
     }
     // Leaves room above the fixed Done / See details actions.
     Spacer(Modifier.height(MaterialTheme.dimens.xxxl))
+}
+
+/**
+ * §1.4 in-story frequency control: a low-emphasis "Weekly recaps · Change" row on the weekly Focus
+ * card. Tapping it opens the [AdaptiveSheet] frequency picker (a centred dialog on tablet). Choices
+ * are written immediately via [onChange]; the gate latches the current story so this can't tear it
+ * down mid-read. Discoverable but never shouty.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RecapFrequencyRow(
+    onColor: Color,
+    recapEnabled: Boolean,
+    recapFrequency: RecapFrequency,
+    onChange: (enabled: Boolean, frequency: RecapFrequency) -> Unit,
+) {
+    var open by remember { mutableStateOf(false) }
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusSm))
+            .clickable { open = true }
+            .padding(horizontal = MaterialTheme.dimens.sm, vertical = MaterialTheme.dimens.xs),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            stringResource(R.string.recap_freq_row_label),
+            style = MaterialTheme.typography.labelLarge,
+            color = onColor.copy(alpha = 0.6f),
+        )
+        Text(
+            " · ",
+            style = MaterialTheme.typography.labelLarge,
+            color = onColor.copy(alpha = 0.35f),
+        )
+        Text(
+            stringResource(R.string.recap_freq_change),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = onColor.copy(alpha = 0.9f),
+            textDecoration = TextDecoration.Underline,
+        )
+    }
+    if (open) {
+        AdaptiveSheet(onDismiss = { open = false }) {
+            RecapFrequencySheetContent(
+                recapEnabled = recapEnabled,
+                recapFrequency = recapFrequency,
+                onSelect = { enabled, frequency ->
+                    onChange(enabled, frequency)
+                    open = false
+                },
+            )
+        }
+    }
+}
+
+/**
+ * The four-option recap-frequency picker body (Weekly / Monthly / Both / Off), shown inside an
+ * [AdaptiveSheet]. Stateless: [recapEnabled] + [recapFrequency] mark the current selection (Off when
+ * disabled), and [onSelect] hands back the (enabled, frequency) to persist — Off keeps the remembered
+ * cadence and just turns the recap off. Extracted so it renders standalone for screenshot goldens.
+ */
+@Composable
+internal fun RecapFrequencySheetContent(
+    recapEnabled: Boolean,
+    recapFrequency: RecapFrequency,
+    onSelect: (enabled: Boolean, frequency: RecapFrequency) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = MaterialTheme.dimens.xl, vertical = MaterialTheme.dimens.md),
+    ) {
+        Text(
+            stringResource(R.string.recap_freq_sheet_title),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.xs))
+        Text(
+            stringResource(R.string.recap_freq_sheet_sub),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        RecapFrequencyOption(
+            label = stringResource(R.string.budget_period_weekly),
+            selected = recapEnabled && recapFrequency == RecapFrequency.WEEKLY,
+            onClick = { onSelect(true, RecapFrequency.WEEKLY) },
+        )
+        RecapFrequencyOption(
+            label = stringResource(R.string.budget_period_monthly),
+            selected = recapEnabled && recapFrequency == RecapFrequency.MONTHLY,
+            onClick = { onSelect(true, RecapFrequency.MONTHLY) },
+        )
+        RecapFrequencyOption(
+            label = stringResource(R.string.recap_freq_both),
+            selected = recapEnabled && recapFrequency == RecapFrequency.BOTH,
+            onClick = { onSelect(true, RecapFrequency.BOTH) },
+        )
+        RecapFrequencyOption(
+            label = stringResource(R.string.recap_freq_off),
+            selected = !recapEnabled,
+            onClick = { onSelect(false, recapFrequency) },
+        )
+    }
+}
+
+@Composable
+private fun RecapFrequencyOption(label: String, selected: Boolean, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
+            .clickable(onClick = onClick)
+            .padding(vertical = MaterialTheme.dimens.xs),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(selected = selected, onClick = onClick)
+        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+        Text(
+            label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+    }
 }
 
 @Composable
@@ -765,6 +1027,21 @@ private fun recapTagRes(kind: RecapKind): Int =
 
 private fun monthName(ym: YearMonth): String = ym.month.getDisplayName(TextStyle.FULL, Locale.getDefault())
 
+/**
+ * The (kind, length) to log for a surfaced streak card, or null when the card isn't a streak surfacing.
+ * The weekly [RecapCard.Streak] always counts (its best when it's a best-run fallback); the monthly
+ * [RecapCard.BudgetStreak] counts only once its run — or its personal best — clears the ≥2 bar (§2.7).
+ */
+private fun streakSurfaceOf(card: RecapCard): Pair<StreakKind, Int>? = when (card) {
+    is RecapCard.Streak -> card.kind to if (card.isBestRun) card.best else card.current
+    is RecapCard.BudgetStreak -> when {
+        card.streakMonths >= StreakEngine.MIN_TO_SURFACE -> StreakKind.BUDGET_MONTH to card.streakMonths
+        card.best >= StreakEngine.MIN_TO_SURFACE -> StreakKind.BUDGET_MONTH to card.best
+        else -> null
+    }
+    else -> null
+}
+
 /** Neutral full-screen hold shown by the gate while the story loads, so Home never flashes first. */
 @Composable
 fun RecapLoadingBackdrop(modifier: Modifier = Modifier) {
@@ -798,12 +1075,13 @@ private fun previewMonthly(): RecapStory = RecapStory(
             BigDecimal("120"), BigDecimal("80"), RecapSecondMover("Groceries", BigDecimal("25")),
         ),
         RecapCard.BudgetStreak(
-            RecapBand.GREAT, 3, 5, 6,
-            listOf(
+            band = RecapBand.GREAT, streakMonths = 3, best = 6, liveOnTrack = true,
+            underCount = 5, scopeCount = 6,
+            segments = listOf(
                 RecapSegStatus.GOOD, RecapSegStatus.GOOD, RecapSegStatus.WARN,
                 RecapSegStatus.GOOD, RecapSegStatus.GOOD, RecapSegStatus.BAD,
             ),
-            BigDecimal("60"),
+            safeToSpend = BigDecimal("60"),
         ),
         RecapCard.Limits(
             RecapBand.WARN, 3, 4,
@@ -837,7 +1115,15 @@ private fun RecapWeeklyPreview() {
         cards = listOf(
             RecapCard.Cover(RecapBand.PRIMARY),
             RecapCard.Pace(RecapBand.GOOD, BigDecimal("280"), BigDecimal("300"), 0.93f, 1f, BigDecimal("20"), -8),
-            RecapCard.Focus(RecapBand.SECONDARY, RecapFocus.WatchCategory("Dining"), isWeekly = true),
+            RecapCard.Limits(
+                RecapBand.WARN, 3, 4,
+                listOf(RecapLimitChip("🥤", "Coke", 2, 4), RecapLimitChip("🍕", "Takeaway", 4, 4)),
+            ),
+            RecapCard.Streak(
+                band = RecapBand.SECONDARY, kind = StreakKind.BUDGET_WEEK, scope = "Groceries",
+                current = 3, best = 4, liveOnTrack = true, isBestRun = false,
+            ),
+            RecapCard.Focus(RecapBand.PRIMARY, RecapFocus.WatchCategory("Dining"), isWeekly = true),
         ),
     )
     BudgettyTheme { RecapStoryScreen(story = story, onClose = {}, onSeeDetails = {}) }
