@@ -26,7 +26,12 @@ class BuyingLimitsRepository(
     suspend fun delete(id: Long) = dao.delete(id)
 
     companion object {
-        /** Buying limits allowed on the free tier; Premium is unlimited. */
-        const val FREE_LIMIT = 1
+        /**
+         * Buying limits allowed on the free tier; Premium is unlimited. Raised 1 → 3 (§4.5): one limit
+         * is too tight to build a habit portfolio, and the retention value outweighs the conversion
+         * value of the 2nd/3rd. Loosening a gate never needs a migration — existing free users silently
+         * gain capacity. Every quoted number derives from this constant (count pill, hints, paywall).
+         */
+        const val FREE_LIMIT = 3
     }
 }

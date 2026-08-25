@@ -1058,12 +1058,12 @@
     <string name="buying_limits_empty_title">Setează o limită de cumpărare</string>
     <string name="buying_limits_empty_body">Limitează cât cumperi din ceva — o numărăm de pe bonurile tale.</string>
     <string name="buying_limits_add">Adaugă limită</string>
-    <string name="buying_limits_free_hint">1 limită gratis · nelimitat cu Premium</string>
+    <string name="buying_limits_free_hint">%1$d limite gratis · nelimitat cu Premium</string>
     <string name="buying_limits_explainer">O limită înseamnă câteva cuvinte-cheie, o săptămână sau o lună și un număr.</string>
     <string name="buying_limits_explainer_example">cel mult 1 cola pe săptămână</string>
     <string name="buying_limits_status_on_track">În regulă</string>
     <string name="buying_limits_status_at_limit">La limită</string>
-    <string name="buying_limits_status_over">Depășită</string>
+    <string name="buying_limits_status_over">Depășit cu %1$d</string>
     <string name="buying_limits_weekly">Săptămânal</string>
     <string name="buying_limits_monthly">Lunar</string>
     <string name="buying_limits_bought_of">Cumpărate %1$d din %2$d</string>
@@ -1071,7 +1071,7 @@
     <string name="buying_limits_resets">se resetează %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Deblochează limite de cumpărare nelimitate</string>
-    <string name="buying_limits_unlock_body">Planul gratuit include 1 limită de cumpărare. Premium adaugă câte vrei — plus scanări nelimitate și categorii proprii.</string>
+    <string name="buying_limits_unlock_body">Planul gratuit include %1$d limite de cumpărare. Premium adaugă câte vrei — plus scanări nelimitate și categorii proprii.</string>
     <string name="buying_limits_used">%1$d din %2$d limite gratuite folosite</string>
     <string name="buying_limits_new_title">Limită nouă</string>
     <string name="buying_limits_edit_title">Editează limita</string>
@@ -1106,6 +1106,33 @@
     <string name="buying_limit_nudge_body">Bon salvat. Limita ta pentru %1$s se resetează %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Am înțeles</string>
     <string name="buying_limit_nudge_view">Vezi limitele</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d săptămână sub limită</item>
+        <item quantity="few">· %1$d săptămâni sub limită</item>
+        <item quantity="other">· %1$d de săptămâni sub limită</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d lună sub limită</item>
+        <item quantity="few">· %1$d luni sub limită</item>
+        <item quantity="other">· %1$d de luni sub limită</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Cea mai bună serie: %1$d săptămână</item>
+        <item quantity="few">Cea mai bună serie: %1$d săptămâni</item>
+        <item quantity="other">Cea mai bună serie: %1$d de săptămâni</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Cea mai bună serie: %1$d lună</item>
+        <item quantity="few">Cea mai bună serie: %1$d luni</item>
+        <item quantity="other">Cea mai bună serie: %1$d de luni</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d din ultimele %2$d săptămâni sub limită</string>
+    <string name="buying_limits_history_months">%1$d din ultimele %2$d luni sub limită</string>
+    <string name="buying_limits_suggest_title">Cele mai cumpărate</string>
+    <string name="buying_limits_suggest_subtitle">ultimele 60 de zile</string>
+    <string name="buying_limits_suggest_prompt">Ai cumpărat %1$s %2$d× luna trecută — pui o limită?</string>
+    <string name="buying_limits_suggest_cap">Sugerează %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Respinge sugestia</string>
     <string name="paywall_benefit_limits">Limite de cumpărare nelimitate</string>
     <string name="paywall_benefit_limits_detail">Planul gratuit include %1$d</string>
 

@@ -1044,12 +1044,12 @@
     <string name="buying_limits_empty_title">Sätt en köpgräns</string>
     <string name="buying_limits_empty_body">Begränsa hur mycket du köper av något — vi räknar det från dina kvitton.</string>
     <string name="buying_limits_add">Lägg till gräns</string>
-    <string name="buying_limits_free_hint">1 gräns gratis · obegränsat med Premium</string>
+    <string name="buying_limits_free_hint">%1$d gränser gratis · obegränsat med Premium</string>
     <string name="buying_limits_explainer">En gräns är några nyckelord, en vecka eller en månad och ett tal.</string>
     <string name="buying_limits_explainer_example">högst 1 läsk i veckan</string>
     <string name="buying_limits_status_on_track">På rätt spår</string>
     <string name="buying_limits_status_at_limit">Vid gränsen</string>
-    <string name="buying_limits_status_over">Överskriden</string>
+    <string name="buying_limits_status_over">Överskriden med %1$d</string>
     <string name="buying_limits_weekly">Veckovis</string>
     <string name="buying_limits_monthly">Månadsvis</string>
     <string name="buying_limits_bought_of">Köpt %1$d av %2$d</string>
@@ -1057,7 +1057,7 @@
     <string name="buying_limits_resets">återställs %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Lås upp obegränsade köpgränser</string>
-    <string name="buying_limits_unlock_body">Gratisplanen innehåller 1 köpgräns. Premium ger dig så många du vill — plus obegränsade skanningar och egna kategorier.</string>
+    <string name="buying_limits_unlock_body">Gratisplanen innehåller %1$d köpgränser. Premium ger dig så många du vill — plus obegränsade skanningar och egna kategorier.</string>
     <string name="buying_limits_used">%1$d av %2$d gratis gränser använda</string>
     <string name="buying_limits_new_title">Ny gräns</string>
     <string name="buying_limits_edit_title">Redigera gräns</string>
@@ -1091,6 +1091,29 @@
     <string name="buying_limit_nudge_body">Kvitto sparat. Din gräns för %1$s återställs %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Uppfattat</string>
     <string name="buying_limit_nudge_view">Visa gränser</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d vecka under gränsen</item>
+        <item quantity="other">· %1$d veckor under gränsen</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d månad under gränsen</item>
+        <item quantity="other">· %1$d månader under gränsen</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Bästa svit: %1$d vecka</item>
+        <item quantity="other">Bästa svit: %1$d veckor</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Bästa svit: %1$d månad</item>
+        <item quantity="other">Bästa svit: %1$d månader</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d av de senaste %2$d veckorna under</string>
+    <string name="buying_limits_history_months">%1$d av de senaste %2$d månaderna under</string>
+    <string name="buying_limits_suggest_title">Mest köpt</string>
+    <string name="buying_limits_suggest_subtitle">senaste 60 dagarna</string>
+    <string name="buying_limits_suggest_prompt">Du köpte %1$s %2$d× förra månaden — sätta en gräns?</string>
+    <string name="buying_limits_suggest_cap">Föreslå %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Avfärda förslag</string>
     <string name="paywall_benefit_limits">Obegränsade köpgränser</string>
     <string name="paywall_benefit_limits_detail">Gratisplanen innehåller %1$d</string>
 

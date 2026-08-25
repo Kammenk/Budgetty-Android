@@ -1147,12 +1147,12 @@
     <string name="buying_limits_empty_title">Set a buying limit</string>
     <string name="buying_limits_empty_body">Cap how many of something you buy — we\'ll count it off your receipts.</string>
     <string name="buying_limits_add">Add limit</string>
-    <string name="buying_limits_free_hint">1 limit free · unlimited with Premium</string>
+    <string name="buying_limits_free_hint">%1$d limits free · unlimited with Premium</string>
     <string name="buying_limits_explainer">A limit is a few keywords, a week or a month, and a number.</string>
     <string name="buying_limits_explainer_example">no more than 1 Coke a week</string>
     <string name="buying_limits_status_on_track">On track</string>
     <string name="buying_limits_status_at_limit">At limit</string>
-    <string name="buying_limits_status_over">Over</string>
+    <string name="buying_limits_status_over">Over by %1$d</string>
     <string name="buying_limits_weekly">Weekly</string>
     <string name="buying_limits_monthly">Monthly</string>
     <string name="buying_limits_bought_of">Bought %1$d of %2$d</string>
@@ -1160,7 +1160,7 @@
     <string name="buying_limits_resets">resets %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Unlock unlimited buying limits</string>
-    <string name="buying_limits_unlock_body">The free plan includes 1 buying limit. Premium adds as many as you like — plus unlimited scans and custom categories.</string>
+    <string name="buying_limits_unlock_body">The free plan includes %1$d buying limits. Premium adds as many as you like — plus unlimited scans and custom categories.</string>
     <string name="buying_limits_used">%1$d of %2$d free limits used</string>
     <string name="buying_limits_new_title">New limit</string>
     <string name="buying_limits_edit_title">Edit limit</string>
@@ -1194,6 +1194,32 @@
     <string name="buying_limit_nudge_body">Receipt saved. Your %1$s limit resets %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Got it</string>
     <string name="buying_limit_nudge_view">View limits</string>
+    <!-- Buying-limit / budget streak captions (§2.6, §4.2). Shared calm streak language, no flames. -->
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d week under</item>
+        <item quantity="other">· %1$d weeks under</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d month under</item>
+        <item quantity="other">· %1$d months under</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Best run: %1$d week</item>
+        <item quantity="other">Best run: %1$d weeks</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Best run: %1$d month</item>
+        <item quantity="other">Best run: %1$d months</item>
+    </plurals>
+    <!-- History strip (§4.3): met windows out of the last N. -->
+    <string name="buying_limits_history_weeks">%1$d of the last %2$d weeks met</string>
+    <string name="buying_limits_history_months">%1$d of the last %2$d months met</string>
+    <!-- Suggested limits (§4.4). -->
+    <string name="buying_limits_suggest_title">Most bought lately</string>
+    <string name="buying_limits_suggest_subtitle">last 60 days</string>
+    <string name="buying_limits_suggest_prompt">You bought %1$s %2$d× last month — cap it?</string>
+    <string name="buying_limits_suggest_cap">Suggest %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Dismiss suggestion</string>
     <string name="paywall_benefit_limits">Unlimited buying limits</string>
     <string name="paywall_benefit_limits_detail">Free plan includes %1$d</string>
 

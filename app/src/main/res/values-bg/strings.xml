@@ -1032,12 +1032,12 @@
     <string name="buying_limits_empty_title">Задай лимит за покупки</string>
     <string name="buying_limits_empty_body">Ограничи колко често купуваш нещо — ще го броим от бележките ти.</string>
     <string name="buying_limits_add">Добави лимит</string>
-    <string name="buying_limits_free_hint">1 лимит безплатно · неограничено с Premium</string>
+    <string name="buying_limits_free_hint">%1$d лимита безплатно · неограничено с Premium</string>
     <string name="buying_limits_explainer">Лимитът е няколко ключови думи, седмица или месец и число.</string>
     <string name="buying_limits_explainer_example">не повече от 1 кола на седмица</string>
     <string name="buying_limits_status_on_track">В норма</string>
     <string name="buying_limits_status_at_limit">На лимита</string>
-    <string name="buying_limits_status_over">Надвишен</string>
+    <string name="buying_limits_status_over">Надвишен с %1$d</string>
     <string name="buying_limits_weekly">Седмично</string>
     <string name="buying_limits_monthly">Месечно</string>
     <string name="buying_limits_bought_of">Купени %1$d от %2$d</string>
@@ -1045,7 +1045,7 @@
     <string name="buying_limits_resets">нулиране %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Отключи неограничени лимити за покупки</string>
-    <string name="buying_limits_unlock_body">Безплатният план включва 1 лимит за покупки. Premium добавя колкото искаш — плюс неограничени сканирания и собствени категории.</string>
+    <string name="buying_limits_unlock_body">Безплатният план включва %1$d лимита за покупки. Premium добавя колкото искаш — плюс неограничени сканирания и собствени категории.</string>
     <string name="buying_limits_used">Използвани %1$d от %2$d безплатни лимита</string>
     <string name="buying_limits_new_title">Нов лимит</string>
     <string name="buying_limits_edit_title">Редактирай лимит</string>
@@ -1079,6 +1079,29 @@
     <string name="buying_limit_nudge_body">Бележката е запазена. Лимитът ти за %1$s се нулира %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Разбрах</string>
     <string name="buying_limit_nudge_view">Виж лимитите</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d седмица в лимита</item>
+        <item quantity="other">· %1$d седмици в лимита</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d месец в лимита</item>
+        <item quantity="other">· %1$d месеца в лимита</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Най-добра серия: %1$d седмица</item>
+        <item quantity="other">Най-добра серия: %1$d седмици</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Най-добра серия: %1$d месец</item>
+        <item quantity="other">Най-добра серия: %1$d месеца</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d от последните %2$d седмици в лимита</string>
+    <string name="buying_limits_history_months">%1$d от последните %2$d месеца в лимита</string>
+    <string name="buying_limits_suggest_title">Най-купувани</string>
+    <string name="buying_limits_suggest_subtitle">последните 60 дни</string>
+    <string name="buying_limits_suggest_prompt">Купи %1$s %2$d× миналия месец — да сложим лимит?</string>
+    <string name="buying_limits_suggest_cap">Предложи %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Отхвърли предложението</string>
     <string name="paywall_benefit_limits">Неограничени лимити за покупки</string>
     <string name="paywall_benefit_limits_detail">Безплатният план включва %1$d</string>
 

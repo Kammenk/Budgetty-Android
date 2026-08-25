@@ -1032,12 +1032,12 @@
     <string name="buying_limits_empty_title">Define um limite de compra</string>
     <string name="buying_limits_empty_body">Limita quanto compras de algo — contamos a partir dos teus recibos.</string>
     <string name="buying_limits_add">Adicionar limite</string>
-    <string name="buying_limits_free_hint">1 limite grátis · ilimitados com Premium</string>
+    <string name="buying_limits_free_hint">%1$d limites grátis · ilimitados com Premium</string>
     <string name="buying_limits_explainer">Um limite é umas palavras-chave, uma semana ou um mês e um número.</string>
     <string name="buying_limits_explainer_example">no máximo 1 refrigerante por semana</string>
     <string name="buying_limits_status_on_track">Em dia</string>
     <string name="buying_limits_status_at_limit">No limite</string>
-    <string name="buying_limits_status_over">Ultrapassado</string>
+    <string name="buying_limits_status_over">Ultrapassado em %1$d</string>
     <string name="buying_limits_weekly">Semanal</string>
     <string name="buying_limits_monthly">Mensal</string>
     <string name="buying_limits_bought_of">Comprados %1$d de %2$d</string>
@@ -1045,7 +1045,7 @@
     <string name="buying_limits_resets">reinicia %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Desbloqueia limites de compra ilimitados</string>
-    <string name="buying_limits_unlock_body">O plano gratuito inclui 1 limite de compra. O Premium adiciona quantos quiseres — mais digitalizações ilimitadas e categorias próprias.</string>
+    <string name="buying_limits_unlock_body">O plano gratuito inclui %1$d limites de compra. O Premium adiciona quantos quiseres — mais digitalizações ilimitadas e categorias próprias.</string>
     <string name="buying_limits_used">%1$d de %2$d limites gratuitos usados</string>
     <string name="buying_limits_new_title">Novo limite</string>
     <string name="buying_limits_edit_title">Editar limite</string>
@@ -1079,6 +1079,29 @@
     <string name="buying_limit_nudge_body">Recibo guardado. O teu limite de %1$s reinicia %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Entendido</string>
     <string name="buying_limit_nudge_view">Ver limites</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d semana dentro do limite</item>
+        <item quantity="other">· %1$d semanas dentro do limite</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d mês dentro do limite</item>
+        <item quantity="other">· %1$d meses dentro do limite</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Melhor sequência: %1$d semana</item>
+        <item quantity="other">Melhor sequência: %1$d semanas</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Melhor sequência: %1$d mês</item>
+        <item quantity="other">Melhor sequência: %1$d meses</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d das últimas %2$d semanas dentro</string>
+    <string name="buying_limits_history_months">%1$d dos últimos %2$d meses dentro</string>
+    <string name="buying_limits_suggest_title">Mais comprados</string>
+    <string name="buying_limits_suggest_subtitle">últimos 60 dias</string>
+    <string name="buying_limits_suggest_prompt">Compraste %1$s %2$d× no mês passado — limitar?</string>
+    <string name="buying_limits_suggest_cap">Sugerir %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Dispensar sugestão</string>
     <string name="paywall_benefit_limits">Limites de compra ilimitados</string>
     <string name="paywall_benefit_limits_detail">O plano gratuito inclui %1$d</string>
 

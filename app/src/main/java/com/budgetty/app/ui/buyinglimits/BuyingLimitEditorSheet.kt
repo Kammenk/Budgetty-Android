@@ -105,10 +105,15 @@ fun BuyingLimitEditorSheet(
     onSave: (emoji: String, label: String, keywords: List<String>, timeframe: BuyingLimitTimeframe, count: Int) -> Unit,
     onDelete: (() -> Unit)?,
     onDismiss: () -> Unit,
+    // Whether the sheet edits an existing limit (title + delete) vs creates one. Defaults to "editing
+    // when a subject was passed", but a suggestion pre-fills [initial] for a NEW limit (§4.4), so it
+    // can be overridden false to keep the "New limit" title and hide delete.
+    isEditing: Boolean = initial != null,
 ) {
     AdaptiveSheet(onDismiss = onDismiss) {
         BuyingLimitEditorBody(
             initial = initial,
+            isEditing = isEditing,
             items = items,
             monthStartDay = monthStartDay,
             onSave = onSave,
@@ -132,6 +137,7 @@ internal fun ColumnScope.BuyingLimitEditorBody(
     onSave: (emoji: String, label: String, keywords: List<String>, timeframe: BuyingLimitTimeframe, count: Int) -> Unit,
     onDelete: (() -> Unit)?,
     onDismiss: () -> Unit,
+    isEditing: Boolean = initial != null,
 ) {
     var emoji by remember { mutableStateOf(initial?.emoji.orEmpty()) }
     var showEmojiPicker by remember { mutableStateOf(false) }
@@ -155,7 +161,7 @@ internal fun ColumnScope.BuyingLimitEditorBody(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = MaterialTheme.dimens.xl),
     ) {
-        EditorHeader(isEditing = initial != null, onDelete = onDelete)
+        EditorHeader(isEditing = isEditing, onDelete = onDelete)
         Spacer(Modifier.height(MaterialTheme.dimens.md))
 
         EmojiAndLabel(

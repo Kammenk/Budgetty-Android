@@ -1029,12 +1029,12 @@
     <string name="buying_limits_empty_title">Définir une limite d\'achat</string>
     <string name="buying_limits_empty_body">Limite la quantité que tu achètes — on la compte sur tes tickets.</string>
     <string name="buying_limits_add">Ajouter une limite</string>
-    <string name="buying_limits_free_hint">1 limite gratuite · illimité avec Premium</string>
+    <string name="buying_limits_free_hint">%1$d limites gratuites · illimité avec Premium</string>
     <string name="buying_limits_explainer">Une limite, c\'est quelques mots-clés, une semaine ou un mois, et un nombre.</string>
     <string name="buying_limits_explainer_example">pas plus d\'1 soda par semaine</string>
     <string name="buying_limits_status_on_track">Dans les clous</string>
     <string name="buying_limits_status_at_limit">À la limite</string>
-    <string name="buying_limits_status_over">Dépassée</string>
+    <string name="buying_limits_status_over">Dépassée de %1$d</string>
     <string name="buying_limits_weekly">Hebdomadaire</string>
     <string name="buying_limits_monthly">Mensuelle</string>
     <string name="buying_limits_bought_of">Acheté %1$d sur %2$d</string>
@@ -1042,7 +1042,7 @@
     <string name="buying_limits_resets">réinitialisée %1$s</string>
     <string name="buying_limits_cap_pill">%1$d / %2$d</string>
     <string name="buying_limits_unlock_title">Débloque les limites d\'achat illimitées</string>
-    <string name="buying_limits_unlock_body">L\'offre gratuite inclut 1 limite d\'achat. Premium en ajoute autant que tu veux — plus des scans illimités et des catégories personnalisées.</string>
+    <string name="buying_limits_unlock_body">L\'offre gratuite inclut %1$d limites d\'achat. Premium en ajoute autant que tu veux — plus des scans illimités et des catégories personnalisées.</string>
     <string name="buying_limits_used">%1$d limite(s) gratuite(s) sur %2$d utilisée(s)</string>
     <string name="buying_limits_new_title">Nouvelle limite</string>
     <string name="buying_limits_edit_title">Modifier la limite</string>
@@ -1076,6 +1076,29 @@
     <string name="buying_limit_nudge_body">Ticket enregistré. Ta limite %1$s se réinitialise %2$s.</string>
     <string name="buying_limit_nudge_dismiss">Compris</string>
     <string name="buying_limit_nudge_view">Voir les limites</string>
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d semaine sous la limite</item>
+        <item quantity="other">· %1$d semaines sous la limite</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d mois sous la limite</item>
+        <item quantity="other">· %1$d mois sous la limite</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Meilleure série : %1$d semaine</item>
+        <item quantity="other">Meilleure série : %1$d semaines</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Meilleure série : %1$d mois</item>
+        <item quantity="other">Meilleure série : %1$d mois</item>
+    </plurals>
+    <string name="buying_limits_history_weeks">%1$d des %2$d dernières semaines respectées</string>
+    <string name="buying_limits_history_months">%1$d des %2$d derniers mois respectés</string>
+    <string name="buying_limits_suggest_title">Le plus acheté</string>
+    <string name="buying_limits_suggest_subtitle">60 derniers jours</string>
+    <string name="buying_limits_suggest_prompt">Tu as acheté %1$s %2$d× le mois dernier — le limiter ?</string>
+    <string name="buying_limits_suggest_cap">Suggérer %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Ignorer la suggestion</string>
     <string name="paywall_benefit_limits">Limites d\'achat illimitées</string>
     <string name="paywall_benefit_limits_detail">L\'offre gratuite en inclut %1$d</string>
 

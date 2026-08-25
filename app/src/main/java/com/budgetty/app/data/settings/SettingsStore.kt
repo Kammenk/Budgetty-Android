@@ -43,6 +43,7 @@ class SettingsStore(context: Context) {
         biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
         autoLockMinutes = prefs.getInt(KEY_AUTO_LOCK, 1),
         dismissedWellbeingTips = prefs.getStringSet(KEY_DISMISSED_TIPS, emptySet()).orEmpty().toSet(),
+        dismissedLimitSuggestions = prefs.getStringSet(KEY_DISMISSED_LIMIT_SUGGESTIONS, emptySet()).orEmpty().toSet(),
         recapEnabled = prefs.getBoolean(KEY_RECAP_ENABLED, true),
         // §1.1: default BOTH (weekly on) when the user never made an explicit choice.
         recapFrequency = read(KEY_RECAP_FREQUENCY, RecapFrequency.BOTH),
@@ -247,6 +248,15 @@ class SettingsStore(context: Context) {
         _settings.update { it.copy(dismissedWellbeingTips = updated) }
     }
 
+    /** Records a buying-limit suggestion as dismissed by its normalized [keyword]; it never returns (§4.4). */
+    fun dismissLimitSuggestion(keyword: String) {
+        val key = keyword.trim().lowercase()
+        if (key.isEmpty()) return
+        val updated = _settings.value.dismissedLimitSuggestions + key
+        prefs.edit().putStringSet(KEY_DISMISSED_LIMIT_SUGGESTIONS, updated).apply()
+        _settings.update { it.copy(dismissedLimitSuggestions = updated) }
+    }
+
     /**
      * Wipes every setting tied to the signed-in user — identity, search history, app-lock PIN +
      * biometric, the setup questionnaire, dismissed tips, and personal section layout — while
@@ -268,6 +278,7 @@ class SettingsStore(context: Context) {
             .remove(KEY_QUIZ_PENDING)
             .remove(KEY_QUIZ_ANSWERS)
             .remove(KEY_DISMISSED_TIPS)
+            .remove(KEY_DISMISSED_LIMIT_SUGGESTIONS)
             .remove(KEY_HIDDEN_HOME)
             .remove(KEY_HIDDEN_INSIGHTS)
             .remove(KEY_ORDER_HOME)
@@ -288,6 +299,7 @@ class SettingsStore(context: Context) {
                 biometricEnabled = false,
                 insightsQuizPending = false,
                 dismissedWellbeingTips = emptySet(),
+                dismissedLimitSuggestions = emptySet(),
                 hiddenHomeSections = emptySet(),
                 hiddenInsightsSections = emptySet(),
                 homeSectionOrder = emptyList(),
@@ -380,6 +392,7 @@ class SettingsStore(context: Context) {
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"
         const val KEY_ANALYTICS = "analytics_enabled"
         const val KEY_DISMISSED_TIPS = "dismissed_wellbeing_tips"
+        const val KEY_DISMISSED_LIMIT_SUGGESTIONS = "dismissed_limit_suggestions"
         const val KEY_RECAP_ENABLED = "recap_enabled"
         const val KEY_RECAP_FREQUENCY = "recap_frequency"
         const val KEY_RECAP_LAST_WEEK = "recap_last_shown_week"
