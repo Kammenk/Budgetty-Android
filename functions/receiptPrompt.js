@@ -50,7 +50,11 @@ const RECORD_RECEIPT_TOOL = {
       },
       date: {
         type: "string",
-        description: "Receipt date as YYYY-MM-DD. Empty string if not printed.",
+        description:
+          "The PURCHASE date as YYYY-MM-DD — the date the sale was rung up, printed next to the " +
+          "transaction time or on the fiscal/register line. NOT a copyright/footer year, an " +
+          "'established/member since' or loyalty date, a card expiry, a VAT/company-registration " +
+          "date, or a coupon/offer validity date. Empty string if no sale date is printed.",
       },
       discount: {
         type: "number",
@@ -165,12 +169,22 @@ const PROMPT =
   "nothing fits. For a fuel/petrol receipt, output ONE line item for the fuel whose price is the TOTAL amount " +
   "paid for it — the fuel total / amount due (e.g. MONTANT, MONTANT REEL, TOTAL), which is the litres times the " +
   "price per litre. Never use the number of litres or the price-per-litre as the price, and set its quantity to 1. " +
-  "Also capture: the store/merchant name from the header; the receipt date as YYYY-MM-DD " +
-  "(empty string if not printed); and the total discount/savings as a number (0 if none) — include every " +
+  "Also capture: the store/merchant name from the header; the PURCHASE date (see RECEIPT DATE below); " +
+  "and the total discount/savings as a number (0 if none) — include every " +
   "reduction you can see: per-line markdowns (e.g. 'Positionsrabatt', 'Reduced to Clear'), multibuy savings " +
   "and coupons. A reduction line (e.g. ОТСТЪПКА / ОТСТЪПКИ, отстъпка, Rabatt, XTRA) can appear BETWEEN " +
   "product rows; it is a discount, never a product, and its amount must NOT be attached to a neighbouring " +
   "product — sum it into the discount instead. " +
+  "RECEIPT DATE (IMPORTANT): `date` is the PURCHASE date — the calendar date the sale was rung up. It is " +
+  "printed next to the transaction TIME or on the fiscal/register line (near ДАТА/ЧАС, DATE, Datum, Data, " +
+  "FECHA, and the HH:MM time). Use THAT date. A receipt usually also shows unrelated dates/years that are " +
+  "NOT the purchase date and are often years old — do NOT use any of these: a copyright or footer year " +
+  "('© 2016'), a store 'established/since' year, a 'member/customer since' or loyalty-enrolment date, a " +
+  "payment-card expiry, a VAT/company-registration or fiscal-device installation date, or a coupon/offer/" +
+  "return-by validity date. When several dates appear, pick the one adjacent to the time of sale; the " +
+  "purchase date is almost always recent (on or shortly before today), so a date years in the past is a " +
+  "sign you picked the wrong one. Output YYYY-MM-DD; if only a 2-digit year is printed, expand it to the " +
+  "most recent plausible 20YY. Empty string ONLY if no sale date is printed at all. " +
   "ALWAYS read the receipt's printed GRAND TOTAL — the final amount due / actually paid (e.g. TOTAL, " +
   "ОБЩА СУМА, ZU ZAHLEN, SUMME, MONTANT, סה\"כ) — into the `total` field whenever any grand total is " +
   "printed. On a Bulgarian euro receipt that prints the total in BOTH euros and leva, the grand total to use " +
