@@ -175,6 +175,13 @@ const PROMPT =
   "and coupons. A reduction line (e.g. ОТСТЪПКА / ОТСТЪПКИ, отстъпка, Rabatt, XTRA) can appear BETWEEN " +
   "product rows; it is a discount, never a product, and its amount must NOT be attached to a neighbouring " +
   "product — sum it into the discount instead. " +
+  "A LINE'S PRICE ITSELF SIGNALS A REDUCTION, independently of its wording: any line whose amount is " +
+  "NEGATIVE or printed with a minus sign (e.g. '-0.92', '−0,92', '0.92-', a trailing/leading minus, or a " +
+  "value in parentheses like '(0.92)') is a SAVING, never a product — even when its label reads like a " +
+  "product or a promotion (e.g. 'FROZEN 2 FOR £5', 'MULTIBUY', 'MEAL DEAL', '3 FOR 2', 'BUY 1 GET 1', a " +
+  "loyalty/clubcard line). Do NOT create a line item for it, do NOT drop the minus sign and turn it into a " +
+  "positive price, and do NOT attach it to a neighbouring product; add its absolute value into the discount " +
+  "total instead. Lines with a positive price stay products as normal. " +
   "RECEIPT DATE (IMPORTANT): `date` is the PURCHASE date — the calendar date the sale was rung up. It is " +
   "printed next to the transaction TIME or on the fiscal/register line (near ДАТА/ЧАС, DATE, Datum, Data, " +
   "FECHA, and the HH:MM time). Use THAT date. A receipt usually also shows unrelated dates/years that are " +
