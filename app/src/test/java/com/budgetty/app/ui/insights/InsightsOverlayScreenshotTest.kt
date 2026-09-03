@@ -94,8 +94,10 @@ class InsightsOverlayScreenshotTest {
     // The user-reported stress case: a tiny spend under a mountain of bills — €49.90 actual spend
     // against €790.49 planned, so the category arcs compress into ~6% of the ring (49.90 / 840.39).
     // Before the fix, all six %-labels bunched into that 6% wedge at 12 o'clock and overprinted each
-    // other ("29%29%…", exactly what the tester saw). With the overlay on we now omit the on-ring
-    // labels (the legend below keeps every category's %). Regression golden for that exact scenario.
+    // other ("29%29%…", exactly what the tester saw). The spend slices own only ~6% of the ring —
+    // well under the quarter-of-the-ring threshold — so the on-ring labels are dropped and the legend
+    // carries every category's %. (A roomier overlay month keeps its labels; see breakdown_on_light,
+    // where spend is ~half the ring.) Regression golden for that exact scenario.
     private val billsHeavySlices = listOf(
         PieSlice("Personal Care", BigDecimal("14.61"), Color(0xFFB7B052)),
         PieSlice("Meat & Poultry", BigDecimal("14.49"), Color(0xFFB79552)),

@@ -120,6 +120,11 @@ private val LEADER_GAP: Dp = 2.dp
 private val LEADER_LEN: Dp = 5.dp
 private val LABEL_GAP: Dp = 3.dp
 
+/** With the planned overlay on, the spend slices are compressed into their share of the ring; they
+ *  keep their outside % labels only while that share stays above this fraction. Below it the arcs are
+ *  too thin to label without the percentages overprinting, so the % drops to the legend only. */
+private const val LABEL_MIN_SPEND_FRACTION = 0.25f
+
 /** Layout for one ring segment: its start angle and sweep, in degrees clockwise from
  *  12 o'clock. Slices tile the circle; the visual gap between them is carved at draw time. */
 private data class ArcSpec(
@@ -428,13 +433,14 @@ fun PieChart(
                         gap = gap,
                         color = if (dimmed) slice.color.copy(alpha = 0.25f) else slice.color,
                     )
-                    // Outside % labels are drawn only when the planned overlay is OFF. With the overlay
-                    // on, the category arcs are compressed into a small `spendFraction` wedge, so every
-                    // slice's mid-angle bunches up near 12 o'clock and the labels pile on top of each
-                    // other ("29%29%…"). The legend below still shows each category's %, so drop the
-                    // on-ring labels here — matching iOS, whose donut never draws them.
+                    // Outside % labels appear only when the spend slices own more than a quarter of the
+                    // ring. With the planned overlay on, the category arcs are compressed into the spend
+                    // share (spendFraction); once that share falls to a quarter or less the arcs are too
+                    // thin, so every slice's mid-angle bunches near 12 o'clock and the labels overprint
+                    // ("29%29%…"). Below the threshold the legend carries the %; a roomier overlay month
+                    // (and the un-compressed ring off the overlay, spendFraction null) keeps its labels.
                     val pct = donutPercents[index]
-                    if (pct >= 1 && planned == null) {
+                    if (pct >= 1 && (spendFraction == null || spendFraction > LABEL_MIN_SPEND_FRACTION)) {
                         drawSliceLabel(
                             center = center,
                             outerRadius = outerRadius,
