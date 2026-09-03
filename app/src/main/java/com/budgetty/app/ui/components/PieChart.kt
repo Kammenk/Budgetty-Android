@@ -428,8 +428,13 @@ fun PieChart(
                         gap = gap,
                         color = if (dimmed) slice.color.copy(alpha = 0.25f) else slice.color,
                     )
+                    // Outside % labels are drawn only when the planned overlay is OFF. With the overlay
+                    // on, the category arcs are compressed into a small `spendFraction` wedge, so every
+                    // slice's mid-angle bunches up near 12 o'clock and the labels pile on top of each
+                    // other ("29%29%…"). The legend below still shows each category's %, so drop the
+                    // on-ring labels here — matching iOS, whose donut never draws them.
                     val pct = donutPercents[index]
-                    if (pct >= 1) {
+                    if (pct >= 1 && planned == null) {
                         drawSliceLabel(
                             center = center,
                             outerRadius = outerRadius,

@@ -91,6 +91,32 @@ class InsightsOverlayScreenshotTest {
     private fun planned(label: String, amount: String) =
         PlannedBillLine(label = label, category = "", amount = BigDecimal(amount), matchAmount = BigDecimal(amount))
 
+    // The user-reported stress case: a tiny spend under a mountain of bills — €49.90 actual spend
+    // against €790.49 planned, so the category arcs compress into ~6% of the ring (49.90 / 840.39).
+    // Before the fix, all six %-labels bunched into that 6% wedge at 12 o'clock and overprinted each
+    // other ("29%29%…", exactly what the tester saw). With the overlay on we now omit the on-ring
+    // labels (the legend below keeps every category's %). Regression golden for that exact scenario.
+    private val billsHeavySlices = listOf(
+        PieSlice("Personal Care", BigDecimal("14.61"), Color(0xFFB7B052)),
+        PieSlice("Meat & Poultry", BigDecimal("14.49"), Color(0xFFB79552)),
+        PieSlice("Health & Pharmacy", BigDecimal("8.00"), Color(0xFF9B52B7)),
+        PieSlice("Dairy", BigDecimal("6.00"), Color(0xFFB75285)),
+        PieSlice("Snacks & Sweets", BigDecimal("4.00"), Color(0xFF52B770)),
+        PieSlice("Other", BigDecimal("2.80"), Color(0xFF9B97A1)),
+    )
+    private val billsHeavyOverlay = PlannedOverlay(
+        plannedTotal = BigDecimal("790.49"),
+        bills = listOf(
+            planned("Rent", "650"),
+            planned("Insurance", "60"),
+            planned("Internet", "39"),
+            planned("Gym", "20"),
+            planned("Phone", "15"),
+            planned("Netflix", "6.49"),
+        ),
+        matched = emptyList(),
+    )
+
     // Dec 2025 → Jun 2026: bills were created in February, so Dec/Jan carry no planned cap
     // (no back-projection); Feb–Jun each carry the flat €967 monthly rate.
     private val trend = TrendData(
@@ -150,6 +176,18 @@ class InsightsOverlayScreenshotTest {
     @Test fun breakdown_on_light() = breakdown(includeBills = true)
 
     @Test fun breakdown_on_dark() = breakdown(includeBills = true, dark = true)
+
+    @Test fun breakdown_billsHeavy_on_light() = capture {
+        BreakdownCard(
+            slices = billsHeavySlices,
+            total = BigDecimal("49.90"),
+            periodLabel = "This month",
+            onSliceClick = {},
+            includeBills = true,
+            plannedOverlay = billsHeavyOverlay,
+            modifier = Modifier.width(360.dp).padding(16.dp),
+        )
+    }
 
     @Test fun trend_off_light() = trendCard(includeBills = false)
 
