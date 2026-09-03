@@ -190,7 +190,16 @@ const PROMPT =
   "payment-card expiry, a VAT/company-registration or fiscal-device installation date, or a coupon/offer/" +
   "return-by validity date. When several dates appear, pick the one adjacent to the time of sale; the " +
   "purchase date is almost always recent (on or shortly before today), so a date years in the past is a " +
-  "sign you picked the wrong one. Output YYYY-MM-DD; if only a 2-digit year is printed, expand it to the " +
+  "sign you picked the wrong one. " +
+  "DATE ORDER (IMPORTANT): numeric dates on these receipts are DAY-FIRST — DD/MM/YYYY or DD.MM.YY, the " +
+  "European/Bulgarian convention — NEVER US month-first MM/DD. Read the FIRST number as the day and the " +
+  "SECOND as the month: '01/09/2026' is 1 September 2026 (day 01, month 09), NOT 9 January, and " +
+  "'03/09/2026' is 3 September 2026, NOT 9 March. This holds the same with '.' or '-' separators and a " +
+  "2-digit year (e.g. '01.09.26' is 1 September). Only these signals override day-first: a first number " +
+  "above 12 is unambiguously the day; a second number above 12 cannot be a month, so THEN read that one " +
+  "date month-first; and a spelled-out or abbreviated month name (Sep, септ., септември) fixes which " +
+  "field is the month whatever its position. " +
+  "Output YYYY-MM-DD; if only a 2-digit year is printed, expand it to the " +
   "most recent plausible 20YY. Empty string ONLY if no sale date is printed at all. " +
   "ALWAYS read the receipt's printed GRAND TOTAL — the final amount due / actually paid (e.g. TOTAL, " +
   "ОБЩА СУМА, ZU ZAHLEN, SUMME, MONTANT, סה\"כ) — into the `total` field whenever any grand total is " +
