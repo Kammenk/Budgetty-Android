@@ -118,6 +118,7 @@ import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.CategoryPickerScreen
 import com.budgetty.app.ui.components.CustomCategoryActions
+import com.budgetty.app.ui.util.formatDate
 import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
 import com.budgetty.app.ui.util.isExpandedWidth
@@ -132,6 +133,7 @@ import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
 
@@ -1038,11 +1040,20 @@ private fun StoreCard(
  * day + month (no year, e.g. "24 Jun"). Tapping anywhere on the card opens the Material date picker —
  * there's no separate edit affordance. The picker works in UTC, so we convert to/from the device's
  * local calendar day to keep the chosen date stable across time zones.
+ *
+ * A just-scanned receipt's purchase date is almost always the current year; when the extracted year is
+ * different it's usually a misread (the model picked a copyright/loyalty/expiry year off the receipt),
+ * so we surface the FULL date — including the year — in the attention colour to prompt the user to
+ * check it before saving. A current-year date keeps the clean year-less form.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateCard(date: Long, onDateChange: (Long) -> Unit, modifier: Modifier = Modifier) {
     var showPicker by remember { mutableStateOf(false) }
+    val offYear = remember(date) {
+        Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate().year != LocalDate.now().year
+    }
+    val accent = if (offYear) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(MaterialTheme.dimens.radiusXl),
@@ -1064,15 +1075,15 @@ private fun DateCard(date: Long, onDateChange: (Long) -> Unit, modifier: Modifie
                 Icon(
                     Icons.Filled.CalendarMonth,
                     contentDescription = stringResource(R.string.cd_edit_date),
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = accent,
                 )
             }
             Spacer(Modifier.width(MaterialTheme.dimens.md))
             Text(
-                text = date.formatDayMonth(),
+                text = if (offYear) date.formatDate() else date.formatDayMonth(),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = if (offYear) accent else MaterialTheme.colorScheme.onSurface,
             )
         }
     }
