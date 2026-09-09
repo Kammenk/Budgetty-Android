@@ -123,6 +123,7 @@ import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
+import com.budgetty.app.ui.util.receiptDateNeedsReview
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
@@ -133,7 +134,6 @@ import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.Instant
-import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZoneOffset
 
@@ -1041,19 +1041,19 @@ private fun StoreCard(
  * there's no separate edit affordance. The picker works in UTC, so we convert to/from the device's
  * local calendar day to keep the chosen date stable across time zones.
  *
- * A just-scanned receipt's purchase date is almost always the current year; when the extracted year is
- * different it's usually a misread (the model picked a copyright/loyalty/expiry year off the receipt),
- * so we surface the FULL date — including the year — in the attention colour to prompt the user to
- * check it before saving. A current-year date keeps the clean year-less form.
+ * A just-scanned receipt's purchase date is almost always within the last few weeks. When the extracted
+ * date instead lands in the future or well in the past ([receiptDateNeedsReview]) it's usually a
+ * misread — a wrong month, or a year/other date lifted off the receipt (copyright, loyalty, expiry) —
+ * so we surface the FULL date, including the year, in the attention colour to prompt the user to check
+ * it before saving. A plausible recent date keeps the clean year-less form. This only highlights the
+ * date for review; it never rewrites it.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DateCard(date: Long, onDateChange: (Long) -> Unit, modifier: Modifier = Modifier) {
     var showPicker by remember { mutableStateOf(false) }
-    val offYear = remember(date) {
-        Instant.ofEpochMilli(date).atZone(ZoneId.systemDefault()).toLocalDate().year != LocalDate.now().year
-    }
-    val accent = if (offYear) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
+    val needsReview = remember(date) { receiptDateNeedsReview(date) }
+    val accent = if (needsReview) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(MaterialTheme.dimens.radiusXl),
@@ -1080,10 +1080,10 @@ private fun DateCard(date: Long, onDateChange: (Long) -> Unit, modifier: Modifie
             }
             Spacer(Modifier.width(MaterialTheme.dimens.md))
             Text(
-                text = if (offYear) date.formatDate() else date.formatDayMonth(),
+                text = if (needsReview) date.formatDate() else date.formatDayMonth(),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = if (offYear) accent else MaterialTheme.colorScheme.onSurface,
+                color = if (needsReview) accent else MaterialTheme.colorScheme.onSurface,
             )
         }
     }
