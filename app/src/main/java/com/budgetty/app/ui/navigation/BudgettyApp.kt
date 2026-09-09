@@ -239,19 +239,24 @@ private fun MainScaffold(
     onStartRouteHandled: () -> Unit = {},
 ) {
     val navController = rememberNavController()
+    val expanded = isExpandedWidth()
 
     // A widget tap launches the app with a target route; navigate to it once, then clear it.
     LaunchedEffect(startRoute) {
         val route = startRoute ?: return@LaunchedEffect
-        // Tabs switch via navigateToTab; pushed destinations (Budget, the scan/upload flow) navigate directly.
-        if (route == Routes.BUDGET || route.startsWith("upload/")) navController.navigate(route)
-        else navController.navigateToTab(route)
+        // Tabs switch via navigateToTab. Budget is a rail tab on tablet but a pushed screen on the
+        // phone, so it follows the same rule as the rail (navigateToBudget); the scan/upload flow is
+        // always a pushed destination.
+        when {
+            route == Routes.BUDGET -> navController.navigateToBudget(asTab = expanded)
+            route.startsWith("upload/") -> navController.navigate(route)
+            else -> navController.navigateToTab(route)
+        }
         onStartRouteHandled()
     }
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
-    val expanded = isExpandedWidth()
 
     // Upload and Paywall are immersive full-screen flows on every form factor. Budget is immersive
     // on the phone (no bottom bar), but on a tablet it's a primary rail destination, so the rail
@@ -296,6 +301,7 @@ private fun MainScaffold(
                 navController = navController,
                 currentRoute = currentRoute,
                 padding = padding,
+                budgetIsTab = expanded,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
@@ -354,6 +360,7 @@ private fun BudgettyNavHost(
     navController: NavHostController,
     currentRoute: String?,
     padding: PaddingValues,
+    budgetIsTab: Boolean,
     modifier: Modifier = Modifier,
 ) {
     // Paywall draws its gradient hero edge-to-edge (behind the status bar), so it manages its own
@@ -373,7 +380,7 @@ private fun BudgettyNavHost(
             HomeScreen(
                 onNavigateToUpload = { source -> navController.navigate(Routes.upload(source)) },
                 onNavigateToEdit = { receiptId -> navController.navigate(Routes.editReceipt(receiptId)) },
-                onNavigateToBudget = { navController.navigate(Routes.BUDGET) },
+                onNavigateToBudget = { navController.navigateToBudget(budgetIsTab) },
                 onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
                 onNavigateToHistory = { navController.navigateToTab(Routes.HISTORY) },
                 onNavigateToInsights = { navController.navigateToTab(Routes.INSIGHTS) },
@@ -384,7 +391,7 @@ private fun BudgettyNavHost(
         }
         composable(Routes.INSIGHTS) {
             InsightsScreen(
-                onNavigateToBudget = { navController.navigate(Routes.BUDGET) },
+                onNavigateToBudget = { navController.navigateToBudget(budgetIsTab) },
                 onNavigateToSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) },
                 onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
                 onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
@@ -398,9 +405,9 @@ private fun BudgettyNavHost(
             WellbeingScreen(
                 onNavigateBack = { navController.popBackStack() },
                 nav = WellbeingNav(
-                    toBudget = { navController.navigate(Routes.BUDGET) },
+                    toBudget = { navController.navigateToBudget(budgetIsTab) },
                     toSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) },
-                    toGoals = { navController.navigate(Routes.BUDGET) },
+                    toGoals = { navController.navigateToBudget(budgetIsTab) },
                     toInsights = { navController.navigateToTab(Routes.INSIGHTS) },
                     toHistory = { navController.navigateToTab(Routes.HISTORY) },
                     addReceipt = { navController.navigate(Routes.upload("camera")) },
@@ -410,7 +417,7 @@ private fun BudgettyNavHost(
         composable(Routes.ACCOUNT) {
             AccountScreen(
                 onOpenPaywall = { navController.navigate(Routes.PAYWALL) },
-                onOpenBudget = { navController.navigate(Routes.BUDGET) },
+                onOpenBudget = { navController.navigateToBudget(budgetIsTab) },
                 onOpenWidgets = { navController.navigate(Routes.WIDGETS) },
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
                 onOpenBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
@@ -466,7 +473,7 @@ private fun BudgettyNavHost(
         composable(Routes.HISTORY) {
             HistoryScreen(
                 onNavigateToReceipt = { navController.navigate(Routes.editReceipt(it)) },
-                onNavigateToBudget = { navController.navigate(Routes.BUDGET) },
+                onNavigateToBudget = { navController.navigateToBudget(budgetIsTab) },
             )
         }
         composable(Routes.WIDGETS) {
@@ -500,4 +507,15 @@ private fun NavHostController.navigateToTab(route: String) {
         launchSingleTop = true
         restoreState = true
     }
+}
+
+/**
+ * Navigates to the Budget screen, which is a primary rail tab on tablet but a pushed detail screen on
+ * the phone. On tablet it must use the same save/restore + single-top contract as the rail
+ * ([navigateToTab]); pushing it as an ordinary child (on top of Home) instead corrupts the Home tab's
+ * saved back stack, after which re-selecting the Home rail item does nothing. On the phone Budget is
+ * genuinely a pushed screen, so a plain [navigate] (with its back arrow) is correct.
+ */
+private fun NavHostController.navigateToBudget(asTab: Boolean) {
+    if (asTab) navigateToTab(Routes.BUDGET) else navigate(Routes.BUDGET)
 }
