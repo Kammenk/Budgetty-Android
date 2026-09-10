@@ -29,15 +29,36 @@
     <string name="account_contact_subtitle">Signalez un problème, proposez une fonctionnalité ou dites simplement bonjour</string>
     <string name="account_rate">Noter Budgetty</string>
     <string name="account_privacy_policy">Politique de confidentialité</string>
-    <string name="account_crash_reporting">Rapports de plantage</string>
-    <string name="account_crash_reporting_subtitle">Envoyer des rapports de plantage anonymes pour aider à corriger les bugs</string>
-    <string name="account_analytics">Analyse d\'utilisation</string>
-    <string name="account_analytics_sub">Aidez à améliorer Budgetty avec des données d\'utilisation anonymes · aucun reçu ni montant</string>
     <string name="account_sign_out">Se déconnecter</string>
     <string name="account_delete">Supprimer le compte</string>
     <string name="account_edit_name">Modifier le nom</string>
     <string name="account_save_name">Enregistrer le nom</string>
     <string name="account_discard_name">Annuler les modifications</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Aidez à améliorer Budgetty</string>
+    <string name="consent_subtitle">Deux choses que vous pouvez partager, si vous le souhaitez. Les deux sont désactivées tant que vous ne les activez pas.</string>
+    <string name="consent_analytics_label">Analyse d\'utilisation</string>
+    <string name="consent_analytics_desc">Des données anonymes sur les fonctionnalités que vous utilisez, afin d\'améliorer Budgetty. Jamais vos reçus, vos montants ni vos informations personnelles.</string>
+    <string name="consent_crash_label">Plantages et diagnostics</string>
+    <string name="consent_crash_desc">Rapports de plantage automatiques et données de performance pour corriger les problèmes plus vite.</string>
+    <string name="consent_detail_toggle">Ce que nous collectons, et jamais</string>
+    <string name="consent_collected_header">Collecté</string>
+    <string name="consent_never_header">Jamais</string>
+    <string name="consent_collected_1">Les écrans que vous ouvrez</string>
+    <string name="consent_collected_2">Les fonctionnalités que vous utilisez</string>
+    <string name="consent_collected_3">Rapports de plantage</string>
+    <string name="consent_collected_4">Vitesse et erreurs de l\'app</string>
+    <string name="consent_collected_5">Modèle de l\'appareil, version de l\'OS</string>
+    <string name="consent_never_1">Vos reçus</string>
+    <string name="consent_never_2">Aucun montant</string>
+    <string name="consent_never_3">Vos revenus</string>
+    <string name="consent_never_4">Vos catégories</string>
+    <string name="consent_never_5">Votre identité</string>
+    <string name="consent_detail_footnote">Les rapports sont liés à un identifiant aléatoire, pas à vous ni à votre compte, et vous pouvez désactiver l\'un ou l\'autre à tout moment dans Compte.</string>
+    <string name="consent_reassurance">Aucune donnée financière ne quitte jamais votre appareil.</string>
+    <string name="consent_continue">Continuer</string>
+    <string name="consent_not_now">Pas maintenant</string>
 
     <string name="import_title">Importer une sauvegarde</string>
     <string name="import_message">Fusionnez cette sauvegarde avec vos données actuelles, ou remplacez tout.</string>

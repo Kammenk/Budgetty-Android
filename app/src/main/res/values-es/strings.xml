@@ -29,15 +29,36 @@
     <string name="account_contact_subtitle">Informa de un problema, sugiere una función o solo saluda</string>
     <string name="account_rate">Valorar Budgetty</string>
     <string name="account_privacy_policy">Política de privacidad</string>
-    <string name="account_crash_reporting">Informes de fallos</string>
-    <string name="account_crash_reporting_subtitle">Enviar informes de fallos anónimos para ayudar a corregir errores</string>
-    <string name="account_analytics">Análisis de uso</string>
-    <string name="account_analytics_sub">Ayuda a mejorar Budgetty con datos de uso anónimos · sin recibos ni importes</string>
     <string name="account_sign_out">Cerrar sesión</string>
     <string name="account_delete">Eliminar cuenta</string>
     <string name="account_edit_name">Editar nombre</string>
     <string name="account_save_name">Guardar nombre</string>
     <string name="account_discard_name">Descartar cambios</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Ayuda a mejorar Budgetty</string>
+    <string name="consent_subtitle">Dos cosas que puedes compartir, si quieres. Ambas están desactivadas hasta que las actives.</string>
+    <string name="consent_analytics_label">Análisis de uso</string>
+    <string name="consent_analytics_desc">Datos anónimos sobre qué funciones usas, para que podamos mejorar Budgetty. Nunca tus recibos, importes ni datos personales.</string>
+    <string name="consent_crash_label">Fallos y diagnóstico</string>
+    <string name="consent_crash_desc">Informes de fallos automáticos y datos de rendimiento para solucionar problemas más rápido.</string>
+    <string name="consent_detail_toggle">Qué recopilamos y qué no</string>
+    <string name="consent_collected_header">Se recopila</string>
+    <string name="consent_never_header">Nunca</string>
+    <string name="consent_collected_1">Qué pantallas abres</string>
+    <string name="consent_collected_2">Qué funciones usas</string>
+    <string name="consent_collected_3">Informes de fallos</string>
+    <string name="consent_collected_4">Velocidad y errores de la app</string>
+    <string name="consent_collected_5">Modelo del dispositivo, versión del SO</string>
+    <string name="consent_never_1">Tus recibos</string>
+    <string name="consent_never_2">Ningún importe</string>
+    <string name="consent_never_3">Tus ingresos</string>
+    <string name="consent_never_4">Tus categorías</string>
+    <string name="consent_never_5">Tu identidad</string>
+    <string name="consent_detail_footnote">Los informes se vinculan a un ID aleatorio, no a ti ni a tu cuenta, y puedes desactivar cualquiera de las dos opciones en cualquier momento en Cuenta.</string>
+    <string name="consent_reassurance">Ningún dato financiero sale nunca de tu dispositivo.</string>
+    <string name="consent_continue">Continuar</string>
+    <string name="consent_not_now">Ahora no</string>
 
     <string name="import_title">Importar copia de seguridad</string>
     <string name="import_message">Combina esta copia con tus datos actuales o reemplázalo todo.</string>

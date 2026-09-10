@@ -29,15 +29,36 @@
     <string name="account_contact_subtitle">Съобщи за проблем, предложи функция или просто кажи здравей</string>
     <string name="account_rate">Оцени Budgetty</string>
     <string name="account_privacy_policy">Политика за поверителност</string>
-    <string name="account_crash_reporting">Докладване за сривове</string>
-    <string name="account_crash_reporting_subtitle">Изпращане на анонимни отчети за сривове за отстраняване на грешки</string>
-    <string name="account_analytics">Анализ на употребата</string>
-    <string name="account_analytics_sub">Помогнете за подобряването на Budgetty с анонимни данни за употребата · без касови бележки или суми</string>
     <string name="account_sign_out">Изход</string>
     <string name="account_delete">Изтрий профила</string>
     <string name="account_edit_name">Редактирай името</string>
     <string name="account_save_name">Запази името</string>
     <string name="account_discard_name">Отхвърли промените</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Помогни да подобрим Budgetty</string>
+    <string name="consent_subtitle">Две неща, които можеш да споделиш, ако искаш. И двете са изключени, докато не ги включиш.</string>
+    <string name="consent_analytics_label">Анализ на употребата</string>
+    <string name="consent_analytics_desc">Анонимни данни за това кои функции използваш, за да можем да подобряваме Budgetty. Никога твоите бележки, суми или лични данни.</string>
+    <string name="consent_crash_label">Сривове и диагностика</string>
+    <string name="consent_crash_desc">Автоматични отчети за сривове и данни за производителността, за да отстраняваме проблемите по-бързо.</string>
+    <string name="consent_detail_toggle">Какво събираме и какво никога</string>
+    <string name="consent_collected_header">Събира се</string>
+    <string name="consent_never_header">Никога</string>
+    <string name="consent_collected_1">Кои екрани отваряш</string>
+    <string name="consent_collected_2">Кои функции използваш</string>
+    <string name="consent_collected_3">Отчети за сривове</string>
+    <string name="consent_collected_4">Скорост на приложението и грешки</string>
+    <string name="consent_collected_5">Модел на устройството, версия на ОС</string>
+    <string name="consent_never_1">Твоите бележки</string>
+    <string name="consent_never_2">Никакви суми</string>
+    <string name="consent_never_3">Твоя доход</string>
+    <string name="consent_never_4">Твоите категории</string>
+    <string name="consent_never_5">Твоята самоличност</string>
+    <string name="consent_detail_footnote">Отчетите са свързани със случаен идентификатор, а не с теб или профила ти, и можеш да изключиш всяко от двете по всяко време в Профил.</string>
+    <string name="consent_reassurance">Никакви финансови данни никога не напускат устройството ти.</string>
+    <string name="consent_continue">Продължи</string>
+    <string name="consent_not_now">Не сега</string>
 
     <string name="import_title">Импорт на резервно копие</string>
     <string name="import_message">Обедини това резервно копие с текущите данни или замени всичко.</string>

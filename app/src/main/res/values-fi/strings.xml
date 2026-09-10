@@ -87,15 +87,36 @@
     <string name="account_contact_subtitle">Ilmoita ongelmasta, ehdota ominaisuutta tai sano vain moi</string>
     <string name="account_rate">Arvioi Budgetty</string>
     <string name="account_privacy_policy">Tietosuojakäytäntö</string>
-    <string name="account_crash_reporting">Kaatumisraportit</string>
-    <string name="account_crash_reporting_subtitle">Lähetä nimettömiä kaatumisraportteja virheiden korjaamiseksi</string>
-    <string name="account_analytics">Käyttöanalytiikka</string>
-    <string name="account_analytics_sub">Auta parantamaan Budgettya anonyymeillä käyttötiedoilla · ei kuitteja tai summia</string>
     <string name="account_sign_out">Kirjaudu ulos</string>
     <string name="account_delete">Poista tili</string>
     <string name="account_edit_name">Muokkaa nimeä</string>
     <string name="account_save_name">Tallenna nimi</string>
     <string name="account_discard_name">Hylkää muutokset</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Auta parantamaan Budgettya</string>
+    <string name="consent_subtitle">Kaksi asiaa, jotka voit jakaa halutessasi. Molemmat ovat pois päältä, kunnes otat ne käyttöön.</string>
+    <string name="consent_analytics_label">Käyttöanalytiikka</string>
+    <string name="consent_analytics_desc">Anonyymejä tietoja siitä, mitä ominaisuuksia käytät, jotta voimme parantaa Budgettya. Ei koskaan kuittejasi, summiasi tai henkilötietojasi.</string>
+    <string name="consent_crash_label">Kaatumiset ja diagnostiikka</string>
+    <string name="consent_crash_desc">Automaattiset kaatumisraportit ja suorituskykytiedot, jotta voimme korjata ongelmat nopeammin.</string>
+    <string name="consent_detail_toggle">Mitä keräämme ja mitä emme</string>
+    <string name="consent_collected_header">Kerätään</string>
+    <string name="consent_never_header">Ei koskaan</string>
+    <string name="consent_collected_1">Mitä näyttöjä avaat</string>
+    <string name="consent_collected_2">Mitä ominaisuuksia käytät</string>
+    <string name="consent_collected_3">Kaatumisraportit</string>
+    <string name="consent_collected_4">Sovelluksen nopeus ja virheet</string>
+    <string name="consent_collected_5">Laitteen malli, käyttöjärjestelmän versio</string>
+    <string name="consent_never_1">Kuittisi</string>
+    <string name="consent_never_2">Mitkään summat</string>
+    <string name="consent_never_3">Tulosi</string>
+    <string name="consent_never_4">Kategoriasi</string>
+    <string name="consent_never_5">Henkilöllisyytesi</string>
+    <string name="consent_detail_footnote">Raportit on liitetty satunnaiseen tunnisteeseen, ei sinuun tai tiliisi, ja voit poistaa kumman tahansa käytöstä milloin tahansa Tili-kohdassa.</string>
+    <string name="consent_reassurance">Mitkään taloustiedot eivät koskaan poistu laitteeltasi.</string>
+    <string name="consent_continue">Jatka</string>
+    <string name="consent_not_now">Ei nyt</string>
 
     <string name="import_title">Tuo varmuuskopio</string>
     <string name="import_message">Yhdistä tämä varmuuskopio nykyisiin tietoihisi tai korvaa kaikki.</string>

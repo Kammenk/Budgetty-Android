@@ -29,15 +29,36 @@
     <string name="account_contact_subtitle">Meld een probleem, stel een functie voor of zeg gewoon hallo</string>
     <string name="account_rate">Budgetty beoordelen</string>
     <string name="account_privacy_policy">Privacybeleid</string>
-    <string name="account_crash_reporting">Crashrapportage</string>
-    <string name="account_crash_reporting_subtitle">Anonieme crashrapporten verzenden om bugs op te lossen</string>
-    <string name="account_analytics">Gebruiksanalyse</string>
-    <string name="account_analytics_sub">Help Budgetty te verbeteren met anonieme gebruiksgegevens · geen bonnen of bedragen</string>
     <string name="account_sign_out">Afmelden</string>
     <string name="account_delete">Account verwijderen</string>
     <string name="account_edit_name">Naam bewerken</string>
     <string name="account_save_name">Naam opslaan</string>
     <string name="account_discard_name">Wijzigingen negeren</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Help Budgetty verbeteren</string>
+    <string name="consent_subtitle">Twee dingen die je kunt delen, als je wilt. Beide staan uit totdat je ze aanzet.</string>
+    <string name="consent_analytics_label">Gebruiksanalyse</string>
+    <string name="consent_analytics_desc">Anonieme gegevens over welke functies je gebruikt, zodat we Budgetty kunnen verbeteren. Nooit je bonnen, bedragen of persoonlijke gegevens.</string>
+    <string name="consent_crash_label">Crashes en diagnostiek</string>
+    <string name="consent_crash_desc">Automatische crashrapporten en prestatiegegevens zodat we problemen sneller kunnen oplossen.</string>
+    <string name="consent_detail_toggle">Wat we verzamelen, en nooit</string>
+    <string name="consent_collected_header">Verzameld</string>
+    <string name="consent_never_header">Nooit</string>
+    <string name="consent_collected_1">Welke schermen je opent</string>
+    <string name="consent_collected_2">Welke functies je gebruikt</string>
+    <string name="consent_collected_3">Crashrapporten</string>
+    <string name="consent_collected_4">Appsnelheid en fouten</string>
+    <string name="consent_collected_5">Apparaatmodel, OS-versie</string>
+    <string name="consent_never_1">Je bonnen</string>
+    <string name="consent_never_2">Geen bedragen</string>
+    <string name="consent_never_3">Je inkomen</string>
+    <string name="consent_never_4">Je categorieën</string>
+    <string name="consent_never_5">Je identiteit</string>
+    <string name="consent_detail_footnote">Rapporten zijn gekoppeld aan een willekeurige ID, niet aan jou of je account, en je kunt beide op elk moment uitschakelen bij Account.</string>
+    <string name="consent_reassurance">Er verlaten nooit financiële gegevens je apparaat.</string>
+    <string name="consent_continue">Doorgaan</string>
+    <string name="consent_not_now">Niet nu</string>
 
     <string name="import_title">Back-up importeren</string>
     <string name="import_message">Voeg deze back-up samen met je huidige gegevens of vervang alles.</string>
