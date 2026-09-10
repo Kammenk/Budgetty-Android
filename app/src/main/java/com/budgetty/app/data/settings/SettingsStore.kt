@@ -36,8 +36,9 @@ class SettingsStore(context: Context) {
         budgetRolloverEnabled = prefs.getBoolean(KEY_BUDGET_ROLLOVER, false),
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
         recentSearches = prefs.getString(KEY_RECENT_SEARCHES, null).toLines(),
-        crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, true),
-        analyticsEnabled = prefs.getBoolean(KEY_ANALYTICS, true),
+        crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, false),
+        analyticsEnabled = prefs.getBoolean(KEY_ANALYTICS, false),
+        analyticsConsentDecided = prefs.getBoolean(KEY_CONSENT_DECIDED, false),
         appLockEnabled = prefs.getBoolean(KEY_APP_LOCK, false),
         pinHash = prefs.getString(KEY_PIN_HASH, "").orEmpty(),
         biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
@@ -176,6 +177,27 @@ class SettingsStore(context: Context) {
     /** Persists the analytics opt-out. Applying it to the Analytics SDK is the caller's job. */
     fun setAnalyticsEnabled(value: Boolean) =
         save(KEY_ANALYTICS, value) { it.copy(analyticsEnabled = value) }
+
+    /**
+     * Records the one-time first-run consent decision: the two opt-in choices plus the "decided" flag,
+     * written together so a process death between them can't leave collection half-armed. Applying the
+     * choices to the two SDKs is the caller's job (the consent screen does it immediately; startup
+     * re-applies from these values gated by the decided flag).
+     */
+    fun setAnalyticsConsent(analyticsEnabled: Boolean, crashReportingEnabled: Boolean) {
+        prefs.edit()
+            .putBoolean(KEY_ANALYTICS, analyticsEnabled)
+            .putBoolean(KEY_CRASH_REPORTING, crashReportingEnabled)
+            .putBoolean(KEY_CONSENT_DECIDED, true)
+            .apply()
+        _settings.update {
+            it.copy(
+                analyticsEnabled = analyticsEnabled,
+                crashReportingEnabled = crashReportingEnabled,
+                analyticsConsentDecided = true,
+            )
+        }
+    }
 
     // ── App lock ──
 
@@ -403,6 +425,7 @@ class SettingsStore(context: Context) {
         const val KEY_RECENT_SEARCHES = "recent_searches"
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"
         const val KEY_ANALYTICS = "analytics_enabled"
+        const val KEY_CONSENT_DECIDED = "analytics_consent_decided"
         const val KEY_DISMISSED_TIPS = "dismissed_wellbeing_tips"
         const val KEY_DISMISSED_LIMIT_SUGGESTIONS = "dismissed_limit_suggestions"
         const val KEY_RECAP_ENABLED = "recap_enabled"

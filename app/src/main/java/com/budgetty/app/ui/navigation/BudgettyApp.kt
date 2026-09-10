@@ -67,6 +67,7 @@ import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
 import com.budgetty.app.ui.budget.BudgetScreen
 import com.budgetty.app.ui.buyinglimits.BuyingLimitsScreen
+import com.budgetty.app.ui.consent.AnalyticsConsentScreen
 import com.budgetty.app.ui.savings.SavingsGoalDetailScreen
 import com.budgetty.app.ui.lock.SetPinScreen
 import com.budgetty.app.ui.subscriptions.SubscriptionsScreen
@@ -112,6 +113,27 @@ fun BudgettyApp(
             analytics.logOnboardingCompleted()
             settingsStore.setOnboardingSeen()
         })
+        return
+    }
+
+    // One-time telemetry consent, gated right after onboarding and before auth. Until the user
+    // decides, BudgettyApplication forces both SDKs off at startup regardless of the stored flags;
+    // each choice here is applied to its SDK immediately and persisted with decided=true, so this
+    // never shows again (an upgrading user on the old default-on behaviour is re-asked here too).
+    if (!settings.analyticsConsentDecided) {
+        val crashReporting = koinInject<CrashReporting>()
+        AnalyticsConsentScreen(
+            onContinue = { analyticsOn, crashOn ->
+                settingsStore.setAnalyticsConsent(analyticsOn, crashOn)
+                analytics.setEnabled(analyticsOn)
+                crashReporting.setEnabled(crashOn)
+            },
+            onNotNow = {
+                settingsStore.setAnalyticsConsent(analyticsEnabled = false, crashReportingEnabled = false)
+                analytics.setEnabled(false)
+                crashReporting.setEnabled(false)
+            },
+        )
         return
     }
 

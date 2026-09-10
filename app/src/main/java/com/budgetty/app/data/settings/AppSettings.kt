@@ -143,14 +143,25 @@ data class AppSettings(
     val historySort: String = "NEWEST",
     /** Recent History search terms, most-recent first (capped); powers the search quick-find. */
     val recentSearches: List<String> = emptyList(),
-    /** Whether Crashlytics crash collection is on. Default-on with an opt-out toggle in Account. */
-    val crashReportingEnabled: Boolean = true,
     /**
-     * Whether Firebase Analytics usage collection is on. Default-on with its own opt-out toggle in
-     * Account, separate from crash reporting. Device-global (like [crashReportingEnabled]): not reset
-     * on sign-out, since consent belongs to the device/person, not the account.
+     * Whether the user has made the one-time first-run telemetry choice (the analytics consent screen).
+     * False until then; while false both SDKs are forced off at startup regardless of the flags below,
+     * and the consent screen gates the app after onboarding — so an upgrading user who was on the old
+     * default-on behaviour is also held off until they decide. Device-global (belongs to the
+     * device/person, not the account): not reset on sign-out.
      */
-    val analyticsEnabled: Boolean = true,
+    val analyticsConsentDecided: Boolean = false,
+    /**
+     * Whether Crashlytics crash collection is on. Opt-in: default off, only meaningful once
+     * [analyticsConsentDecided]. The consent screen and the Account toggle both set it.
+     */
+    val crashReportingEnabled: Boolean = false,
+    /**
+     * Whether Firebase Analytics usage collection is on. Opt-in: default off, gated by
+     * [analyticsConsentDecided]; its own toggle in Account, separate from crash reporting. Device-global
+     * (like [crashReportingEnabled] / [analyticsConsentDecided]): not reset on sign-out.
+     */
+    val analyticsEnabled: Boolean = false,
     // ── App lock ──
     /** Whether the PIN / biometric lock gate is on. */
     val appLockEnabled: Boolean = false,

@@ -129,6 +129,31 @@
     <string name="account_save_name">Save name</string>
     <string name="account_discard_name">Discard changes</string>
 
+    <!-- First-run analytics / crash consent screen (also reused by the Account "Data & privacy" rows) -->
+    <string name="consent_title">Help improve Budgetty</string>
+    <string name="consent_subtitle">Two things you can share, if you want to. Both are off until you turn them on.</string>
+    <string name="consent_analytics_label">Usage analytics</string>
+    <string name="consent_analytics_desc">Anonymous data about which features you use, so we can improve Budgetty. Never your receipts, amounts, or personal info.</string>
+    <string name="consent_crash_label">Crash &amp; diagnostics</string>
+    <string name="consent_crash_desc">Automatic crash reports and performance data so we can fix problems faster.</string>
+    <string name="consent_detail_toggle">What we collect, and never</string>
+    <string name="consent_collected_header">Collected</string>
+    <string name="consent_never_header">Never</string>
+    <string name="consent_collected_1">Which screens you open</string>
+    <string name="consent_collected_2">Which features you use</string>
+    <string name="consent_collected_3">Crash reports</string>
+    <string name="consent_collected_4">App speed and errors</string>
+    <string name="consent_collected_5">Device model, OS version</string>
+    <string name="consent_never_1">Your receipts</string>
+    <string name="consent_never_2">Any amounts</string>
+    <string name="consent_never_3">Your income</string>
+    <string name="consent_never_4">Your categories</string>
+    <string name="consent_never_5">Your identity</string>
+    <string name="consent_detail_footnote">Reports are tied to a random ID, not to you or your account, and you can turn either one off at any time in Account.</string>
+    <string name="consent_reassurance">No financial data ever leaves your device.</string>
+    <string name="consent_continue">Continue</string>
+    <string name="consent_not_now">Not now</string>
+
     <!-- Import backup dialog -->
     <string name="import_title">Import backup</string>
     <string name="import_message">Merge this backup on top of your current data, or replace everything.</string>

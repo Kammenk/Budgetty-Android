@@ -71,22 +71,34 @@ class SettingsStoreClearUserStateTest {
     }
 
     @Test
-    fun `analytics collection defaults to on`() {
-        assertThat(SettingsStore(context).settings.value.analyticsEnabled).isTrue()
+    fun `analytics and crash collection default to off, pending consent`() {
+        // Telemetry is opt-in: a fresh install collects nothing until the first-run consent screen
+        // records a choice (analyticsConsentDecided), so both flags start off.
+        val s = SettingsStore(context).settings.value
+        assertThat(s.analyticsConsentDecided).isFalse()
+        assertThat(s.analyticsEnabled).isFalse()
+        assertThat(s.crashReportingEnabled).isFalse()
     }
 
     @Test
-    fun `clearUserState keeps the device-global analytics opt-out`() {
-        // Analytics consent is device-global (like crash reporting): sign-out must NOT re-enable it.
+    fun `clearUserState keeps the device-global telemetry consent`() {
+        // Consent is device-global (belongs to the device/person, not the account): sign-out must
+        // neither re-ask nor flip it. Record a decided "analytics on, crash on" choice, then wipe user
+        // state and confirm all three fields survive — in memory and re-read from disk.
         val store = SettingsStore(context)
-        store.setAnalyticsEnabled(false)
+        store.setAnalyticsConsent(analyticsEnabled = true, crashReportingEnabled = true)
         seedUserState(store)
 
         store.clearUserState()
 
-        assertThat(store.settings.value.analyticsEnabled).isFalse() // survived the wipe
-        // And it must survive a process restart (re-read from disk), not just the in-memory flow.
-        assertThat(SettingsStore(context).settings.value.analyticsEnabled).isFalse()
+        val s = store.settings.value
+        assertThat(s.analyticsConsentDecided).isTrue()
+        assertThat(s.analyticsEnabled).isTrue()
+        assertThat(s.crashReportingEnabled).isTrue()
+        // Survives a process restart (re-read from disk), not just the in-memory flow.
+        val reloaded = SettingsStore(context).settings.value
+        assertThat(reloaded.analyticsConsentDecided).isTrue()
+        assertThat(reloaded.analyticsEnabled).isTrue()
     }
 
     @Test

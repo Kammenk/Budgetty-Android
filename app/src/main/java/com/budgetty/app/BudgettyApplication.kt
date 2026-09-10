@@ -27,16 +27,18 @@ class BudgettyApplication : Application() {
             androidContext(this@BudgettyApplication)
             modules(appModule)
         }.koin
-        // Apply the persisted crash-reporting choice to Crashlytics before anything can crash. The
-        // preference (default-on, opt-out in Account) is the source of truth; SettingsStore loads it
-        // synchronously from SharedPreferences, so it's ready immediately after Koin starts.
-        koin.get<CrashReporting>().setEnabled(koin.get<SettingsStore>().settings.value.crashReportingEnabled)
+        // Telemetry is opt-in: nothing collects until the user makes the first-run choice on the
+        // consent screen (analyticsConsentDecided). Until then both SDKs stay off regardless of the
+        // stored flags — so an upgrading user who was on the old default-on behaviour is also held off
+        // until they decide. SettingsStore loads synchronously from SharedPreferences, so the choice is
+        // ready immediately after Koin starts; the consent screen and Account toggles keep it in sync.
+        val settings = koin.get<SettingsStore>().settings.value
+        val consented = settings.analyticsConsentDecided
+        koin.get<CrashReporting>().setEnabled(consented && settings.crashReportingEnabled)
         // Static crash key: the Room schema version, so a crash report names the DB version it hit
         // (see CrashReporting.setDatabaseVersion / BudgettyDatabase.VERSION).
         koin.get<CrashReporting>().setDatabaseVersion(BudgettyDatabase.VERSION)
-        // Same for product analytics: apply the persisted opt-out (separate toggle, default-on) to the
-        // Analytics SDK at startup so collection follows the user's choice before any event can fire.
-        koin.get<Analytics>().setEnabled(koin.get<SettingsStore>().settings.value.analyticsEnabled)
+        koin.get<Analytics>().setEnabled(consented && settings.analyticsEnabled)
         // Keep the home-screen widgets in sync while the process is alive.
         koin.get<WidgetUpdater>().start()
         // Mirror user-created categories into the Categories cache so their emoji + color resolve
