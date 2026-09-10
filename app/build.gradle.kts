@@ -241,6 +241,14 @@ dependencies {
     // in Account (Analytics). Base artifact — the KTX API is merged in, and a -ktx artifact would trip
     // the project's Kotlin-metadata pin (as it did for Billing).
     implementation(libs.firebase.analytics)
+    // Firebase App Check — attaches Play Integrity attestation tokens to requests against the shared
+    // Firebase project so it can (once per-service enforcement is switched on in the console) reject
+    // off-app / bot traffic. Client-side + monitor mode here: purely additive and non-breaking until
+    // enforcement is enabled. Version is BoM-managed.
+    implementation(libs.firebase.appcheck.playintegrity)
+    // Debug/emulator builds can't pass Play Integrity, so they attest with the Firebase debug provider
+    // (a local token registered once in the console). debugImplementation only — never ships in release.
+    debugImplementation(libs.firebase.appcheck.debug)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
