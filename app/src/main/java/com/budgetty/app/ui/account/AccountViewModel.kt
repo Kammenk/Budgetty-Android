@@ -74,7 +74,12 @@ class AccountViewModel(
     fun setAutoLockMinutes(value: Int) = settingsStore.setAutoLockMinutes(value)
 
     /** Builds the JSON backup of all local data. */
-    suspend fun buildBackupJson(): String = backupManager.exportJson()
+    suspend fun buildBackupJson(): String {
+        val json = backupManager.exportJson()
+        // Logged only when the export above succeeds (a real backup file was produced); no data.
+        analytics.logBackupCreated()
+        return json
+    }
 
     /** Imports a backup (merge on top, or full replace); reports success via [onResult]. */
     fun importBackup(json: String, replace: Boolean, onResult: (Boolean) -> Unit) {
@@ -83,6 +88,8 @@ class AccountViewModel(
                 backupManager.import(json, replace)
                 true
             } catch (e: Exception) {
+                // Surface the swallowed import failure (throwable + fixed tag, no backup contents).
+                crashReporting.recordException(e, "backup import failed")
                 false
             }
             onResult(ok)
@@ -111,8 +118,10 @@ class AccountViewModel(
                 settingsStore.clearUserState()
                 DeleteAccountResult.SUCCESS
             } catch (e: FirebaseAuthRecentLoginRequiredException) {
+                // Expected outcome (needs a fresh sign-in), not a fault — don't record it.
                 DeleteAccountResult.REQUIRES_REAUTH
             } catch (e: Exception) {
+                crashReporting.recordException(e, "account delete failed")
                 DeleteAccountResult.ERROR
             }
             withContext(Dispatchers.Main) { onResult(result) }

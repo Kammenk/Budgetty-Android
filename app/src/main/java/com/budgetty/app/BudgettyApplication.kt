@@ -5,6 +5,7 @@ import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.appcheck.installAppCheck
 import com.budgetty.app.category.Categories
 import com.budgetty.app.crash.CrashReporting
+import com.budgetty.app.data.local.BudgettyDatabase
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.di.appModule
@@ -30,6 +31,9 @@ class BudgettyApplication : Application() {
         // preference (default-on, opt-out in Account) is the source of truth; SettingsStore loads it
         // synchronously from SharedPreferences, so it's ready immediately after Koin starts.
         koin.get<CrashReporting>().setEnabled(koin.get<SettingsStore>().settings.value.crashReportingEnabled)
+        // Static crash key: the Room schema version, so a crash report names the DB version it hit
+        // (see CrashReporting.setDatabaseVersion / BudgettyDatabase.VERSION).
+        koin.get<CrashReporting>().setDatabaseVersion(BudgettyDatabase.VERSION)
         // Same for product analytics: apply the persisted opt-out (separate toggle, default-on) to the
         // Analytics SDK at startup so collection follows the user's choice before any event can fire.
         koin.get<Analytics>().setEnabled(koin.get<SettingsStore>().settings.value.analyticsEnabled)

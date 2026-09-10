@@ -64,7 +64,7 @@ import java.util.concurrent.TimeUnit
 val appModule = module {
     // Database: one file per signed-in account, so accounts never see each other's data.
     // Repositories resolve their DAOs through the manager on every use (no DAO singletons).
-    single { UserDatabaseManager(androidContext(), get()) }
+    single { UserDatabaseManager(androidContext(), get(), get()) }
 
     // Repository
     single { TransactionRepository(get()) }
@@ -106,7 +106,7 @@ val appModule = module {
     single { Analytics(androidContext()) }
 
     // Play Billing (subscriptions) + the server-granted account-comp entitlement
-    single { BillingManager(androidContext(), get()) }
+    single { BillingManager(androidContext(), get(), get(), get()) }
 
     // App settings (theme / currency / date format)
     single { SettingsStore(androidContext()) }
@@ -146,24 +146,24 @@ val appModule = module {
     single { HaikuReceiptExtractor(androidContext(), get(), get()) }
 
     // ViewModels
-    viewModel { AuthViewModel(get(), get()) }
+    viewModel { AuthViewModel(get(), get(), get()) }
     viewModel { AccountViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { HomeViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { BudgetViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { (goalId: Long) -> SavingsGoalViewModel(get(), get(), goalId) }
     viewModel { SubscriptionsViewModel(get(), get(), get(), get(), get()) }
-    viewModel { ExportViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ExportViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { WellbeingViewModel(get(), get(), get()) }
     viewModel { RecapViewModel(get(), get(), get()) }
     viewModel {
-        UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+        UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
-    viewModel { PaywallViewModel(get()) }
-    viewModel { InsightsQuizViewModel(get(), get(), get()) }
+    viewModel { PaywallViewModel(get(), get()) }
+    viewModel { InsightsQuizViewModel(get(), get(), get(), get()) }
     viewModel { AppLockViewModel(get(), get()) }
 }

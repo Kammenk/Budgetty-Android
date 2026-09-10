@@ -14,7 +14,7 @@ import com.budgetty.app.category.Categories
         SavingsGoalEntity::class, SavingsContributionEntity::class,
         IgnoredSubscriptionEntity::class, BuyingLimitEntity::class, WellbeingScoreEntity::class,
     ],
-    version = 26,
+    version = BudgettyDatabase.VERSION,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -30,6 +30,13 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun ignoredSubscriptionDao(): IgnoredSubscriptionDao
     abstract fun buyingLimitDao(): BuyingLimitDao
     abstract fun wellbeingScoreDao(): WellbeingScoreDao
+
+    companion object {
+        // The Room schema version — single source of truth. Used by the @Database annotation above
+        // and reported to Crashlytics (see CrashReporting.setDatabaseVersion) so a crash names the
+        // schema it hit; sharing one const keeps the annotation and the reported value from drifting.
+        const val VERSION = 26
+    }
 }
 
 /** v2 adds the [TransactionEntity.category] column, defaulting existing rows to "Groceries". */

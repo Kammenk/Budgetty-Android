@@ -2,6 +2,8 @@ package com.budgetty.app.ui.export
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.analytics.ExportFormat
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.export.DataExporter
 import com.budgetty.app.data.export.ExportBuilder
@@ -31,6 +33,7 @@ class ExportViewModel(
     recurringRepository: RecurringRepository,
     settingsStore: SettingsStore,
     billingManager: BillingManager,
+    private val analytics: Analytics,
 ) : ViewModel() {
 
     val isPremium: StateFlow<Boolean> = billingManager.isPremium
@@ -87,7 +90,11 @@ class ExportViewModel(
             }
             _exporting.value = false
             result.fold(
-                onSuccess = { (file, mime) -> onReady(file, mime) },
+                onSuccess = { (file, mime) ->
+                    // Fire-and-forget: which format was produced (no filename, no data).
+                    analytics.logExportRun(if (isPdf) ExportFormat.PDF else ExportFormat.CSV)
+                    onReady(file, mime)
+                },
                 onFailure = { onError() },
             )
         }

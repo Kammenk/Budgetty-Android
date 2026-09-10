@@ -70,6 +70,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.ui.theme.BudgettyTheme
@@ -97,6 +98,7 @@ fun WidgetsScreen(
     onNavigateBack: () -> Unit,
     onNavigateToPaywall: () -> Unit,
     billingManager: BillingManager = koinInject(),
+    analytics: Analytics = koinInject(),
     modifier: Modifier = Modifier,
 ) {
     val isPremium by billingManager.isPremium.collectAsStateWithLifecycle()
@@ -104,6 +106,9 @@ fun WidgetsScreen(
         onNavigateBack = onNavigateBack,
         onNavigateToPaywall = onNavigateToPaywall,
         isPremium = isPremium,
+        // Fire-and-forget: a widget was actually placed (confirmed on resume). Injected here in the
+        // stateful wrapper so the stateless *Content stays preview-renderable (no Koin in @Preview).
+        onWidgetPlaced = { analytics.logWidgetPlaced() },
         modifier = modifier,
     )
 }
@@ -114,6 +119,7 @@ private fun WidgetsScreenContent(
     onNavigateBack: () -> Unit,
     onNavigateToPaywall: () -> Unit,
     isPremium: Boolean,
+    onWidgetPlaced: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -179,6 +185,7 @@ private fun WidgetsScreenContent(
                         refreshKey = refreshKey,
                         canAdd = canAdd,
                         onNavigateToPaywall = onNavigateToPaywall,
+                        onWidgetPlaced = onWidgetPlaced,
                     )
                     Spacer(Modifier.height(MaterialTheme.dimens.lg))
                 }
@@ -272,6 +279,7 @@ private fun WidgetTypeCard(
     refreshKey: Int,
     canAdd: Boolean,
     onNavigateToPaywall: () -> Unit,
+    onWidgetPlaced: () -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -294,7 +302,11 @@ private fun WidgetTypeCard(
     LaunchedEffect(refreshKey) {
         if (pendingAdd) {
             pendingAdd = false
-            if (added) activity?.moveTaskToBack(true)
+            if (added) {
+                // The widget we were waiting on is now placed → the user confirmed the pin.
+                onWidgetPlaced()
+                activity?.moveTaskToBack(true)
+            }
         }
     }
 

@@ -3,6 +3,10 @@ package com.budgetty.app.data.billing
 import android.app.Activity
 import android.content.Context
 import com.budgetty.app.BuildConfig
+import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.analytics.PurchaseFailReason
+import com.budgetty.app.analytics.SubPlan
+import com.budgetty.app.crash.CrashReporting
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -34,7 +38,12 @@ import kotlin.coroutines.resume
  * Inert until the subscription products exist in the Play Console and the app is installed from a
  * test track — until then [products] is empty and [isPremium] stays false.
  */
-class BillingManager(context: Context, private val auth: FirebaseAuth) {
+class BillingManager(
+    context: Context,
+    private val auth: FirebaseAuth,
+    private val analytics: Analytics,
+    private val crashReporting: CrashReporting,
+) {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
@@ -63,8 +72,20 @@ class BillingManager(context: Context, private val auth: FirebaseAuth) {
     val products: StateFlow<List<ProductDetails>> = _products.asStateFlow()
 
     private val purchasesListener = PurchasesUpdatedListener { result, purchases ->
-        if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+        val code = result.responseCode
+        if (code == BillingClient.BillingResponseCode.OK && purchases != null) {
             scope.launch { purchases.forEach { handlePurchase(it) } }
+        } else {
+            // The flow ended without a purchase to hand off. USER_CANCELED is an ordinary dismissal
+            // (analytics only); any other code is a genuine failure, also recorded as a non-fatal.
+            val cancelled = code == BillingClient.BillingResponseCode.USER_CANCELED
+            analytics.logPurchaseFailed(if (cancelled) PurchaseFailReason.CANCELLED else PurchaseFailReason.ERROR)
+            if (!cancelled) {
+                crashReporting.recordException(
+                    RuntimeException("billing responseCode=$code"),
+                    "billing purchase error",
+                )
+            }
         }
     }
 
@@ -82,6 +103,8 @@ class BillingManager(context: Context, private val auth: FirebaseAuth) {
             override fun onBillingSetupFinished(result: BillingResult) {
                 if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                     scope.launch { refreshInternal() }
+                } else {
+                    crashReporting.leaveBreadcrumb("billing setup failed: ${result.responseCode}")
                 }
             }
 
@@ -115,6 +138,7 @@ class BillingManager(context: Context, private val auth: FirebaseAuth) {
                 prefs.edit().putBoolean(KEY_COMP, granted).apply()
             }
             recompute()
+            crashReporting.setPremium(isPremium.value)
         }
     }
 
@@ -150,6 +174,8 @@ class BillingManager(context: Context, private val auth: FirebaseAuth) {
             // A product the Play Console doesn't serve yet no longer vanishes silently — it comes
             // back in `unfetchedProductList` with a status code instead of being omitted.
             _products.value = details.productDetailsList
+        } else {
+            crashReporting.leaveBreadcrumb("billing product query failed: ${result.responseCode}")
         }
     }
 
@@ -160,6 +186,7 @@ class BillingManager(context: Context, private val auth: FirebaseAuth) {
         val purchases = queryPurchases(params)
         subscribed = purchases.any { it.purchaseState == Purchase.PurchaseState.PURCHASED }
         recompute()
+        crashReporting.setPremium(isPremium.value)
         purchases.forEach { acknowledge(it) }
     }
 
@@ -167,6 +194,8 @@ class BillingManager(context: Context, private val auth: FirebaseAuth) {
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             subscribed = true
             recompute()
+            crashReporting.setPremium(isPremium.value)
+            analytics.logPurchaseCompleted(planOf(purchase.products.firstOrNull()))
             acknowledge(purchase)
         }
     }
@@ -214,7 +243,17 @@ class BillingManager(context: Context, private val auth: FirebaseAuth) {
                 ),
             )
             .build()
+        // Log the launch keyed to the plan (no price/token) — the flow's outcome is reported by the
+        // PurchasesUpdatedListener (completed / failed / cancelled).
+        analytics.logPurchaseStarted(planOf(productId))
         client.launchBillingFlow(activity, params)
+    }
+
+    /** Maps a Play product id to the analytics [SubPlan]; an unknown/absent id is [SubPlan.UNKNOWN]. */
+    private fun planOf(productId: String?): SubPlan = when (productId) {
+        MONTHLY -> SubPlan.MONTHLY
+        YEARLY -> SubPlan.YEARLY
+        else -> SubPlan.UNKNOWN
     }
 
     companion object {

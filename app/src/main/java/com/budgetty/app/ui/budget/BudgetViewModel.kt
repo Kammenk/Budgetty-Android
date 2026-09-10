@@ -2,6 +2,7 @@ package com.budgetty.app.ui.budget
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.local.BudgetRolloverEntity
@@ -76,6 +77,7 @@ class BudgetViewModel(
     private val settingsStore: SettingsStore,
     private val rolloverRepository: BudgetRolloverRepository,
     private val savingsRepository: SavingsRepository,
+    private val analytics: Analytics,
 ) : ViewModel() {
 
     /** Saved budgets as key -> amount (keys from [BudgetRepository]). */
@@ -184,6 +186,9 @@ class BudgetViewModel(
      * so only one of [BudgetRepository.MONTHLY]/[BudgetRepository.WEEKLY] is ever set at a time.
      */
     fun saveSingleBudget(monthly: Boolean, text: String) {
+        // Fire-and-forget: the user tapped Save on the main budget (the one amount that needs an
+        // explicit save). No amount is logged — the event carries no params.
+        analytics.logBudgetSaved()
         val amount = text.replace(',', '.').trim().toBigDecimalOrNull()
         val (activeKey, otherKey) =
             if (monthly) BudgetRepository.MONTHLY to BudgetRepository.WEEKLY
