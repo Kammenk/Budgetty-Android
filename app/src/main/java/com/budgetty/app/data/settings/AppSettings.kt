@@ -24,10 +24,12 @@ enum class AccentTheme(val label: String) {
 }
 
 /**
- * Currencies for the Europe-only release. [symbol] is appended after the amount. Trimmed from a
- * global set on 2026-07-16: kept EUR/GBP/CHF/SEK/NOK and added the home currencies of the other
- * supported markets (DKK/PLN/CZK/RON) so every kept [Language]'s country can pick its own. Bulgaria
- * uses EUR (eurozone since 2026). A removed currency saved by an existing user falls back to EUR.
+ * Currencies for the European release. [symbol] is appended after the amount. Trimmed from a global
+ * set on 2026-07-16 to the home currencies of supported markets, then extended on 2026-09-09 with
+ * ISK and HUF so every country in the Play production footprint (32 countries/regions) can pick its
+ * own: Iceland and Hungary are distributed to but have no localized [Language], so they were
+ * previously stuck on the EUR fallback. Bulgaria uses EUR (eurozone since 2026). A removed currency
+ * saved by an existing user falls back to EUR.
  */
 enum class Currency(val code: String, val symbol: String) {
     EUR("EUR", "€"),
@@ -36,9 +38,11 @@ enum class Currency(val code: String, val symbol: String) {
     SEK("SEK", "kr"),
     NOK("NOK", "kr"),
     DKK("DKK", "kr"),
+    ISK("ISK", "kr"),
     PLN("PLN", "zł"),
     CZK("CZK", "Kč"),
     RON("RON", "lei"),
+    HUF("HUF", "Ft"),
 }
 
 /**
