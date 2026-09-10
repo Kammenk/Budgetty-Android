@@ -89,8 +89,9 @@ val appModule = module {
     // End-of-period recap — builds the just-closed period's story from the same repositories.
     single { RecapProvider(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
 
-    // Backup / restore (import-export)
-    single { BackupManager(get()) }
+    // Backup / restore (import-export). Takes SettingsStore too, so a full restore round-trips the
+    // user's display / data-interpretation preferences (currency, date format, …), not just data.
+    single { BackupManager(get(), get()) }
 
     // Free-tier scan quota
     single { ScanQuota(androidContext()) }

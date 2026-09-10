@@ -118,6 +118,18 @@ class SettingsStore(context: Context) {
         _settings.update { it.copy(insightsSectionOrder = order) }
     }
 
+    /** Replaces the whole set of hidden Home section keys at once (used by backup restore). */
+    fun setHiddenHomeSections(keys: Set<String>) {
+        prefs.edit().putStringSet(KEY_HIDDEN_HOME, keys).apply()
+        _settings.update { it.copy(hiddenHomeSections = keys) }
+    }
+
+    /** Replaces the whole set of hidden Insights section keys at once (used by backup restore). */
+    fun setHiddenInsightsSections(keys: Set<String>) {
+        prefs.edit().putStringSet(KEY_HIDDEN_INSIGHTS, keys).apply()
+        _settings.update { it.copy(hiddenInsightsSections = keys) }
+    }
+
     /** Restores the Home sections to their default state: all shown, in their natural order. */
     fun resetHomeSections() {
         prefs.edit().remove(KEY_HIDDEN_HOME).remove(KEY_ORDER_HOME).apply()

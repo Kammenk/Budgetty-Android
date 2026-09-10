@@ -2,6 +2,13 @@ package com.budgetty.app.data.backup
 
 import androidx.room.withTransaction
 import com.budgetty.app.data.local.UserDatabaseManager
+import com.budgetty.app.data.settings.AccentTheme
+import com.budgetty.app.data.settings.Currency
+import com.budgetty.app.data.settings.DateFormatOption
+import com.budgetty.app.data.settings.Language
+import com.budgetty.app.data.settings.RecapFrequency
+import com.budgetty.app.data.settings.SettingsStore
+import com.budgetty.app.data.settings.ThemeMode
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 import java.math.BigDecimal
@@ -9,6 +16,7 @@ import java.math.BigDecimal
 /** Exports the active account's local data to a JSON backup and restores it (merge or full replace). */
 class BackupManager(
     private val db: UserDatabaseManager,
+    private val settingsStore: SettingsStore,
 ) {
     private val transactionDao get() = db.database.transactionDao()
     private val categoryDao get() = db.database.categoryDao()
@@ -35,6 +43,7 @@ class BackupManager(
             savingsContributions = savingsDao.getAllContributions().first(),
             buyingLimits = buyingLimitDao.getAll().first(),
             wellbeingScores = wellbeingScoreDao.getAll().first(),
+            settings = currentBackupSettings(),
         )
         return gson.toJson(data)
     }
@@ -60,7 +69,6 @@ class BackupManager(
                 budgetDao.clearAll()
                 receiptDao.clearAll()
                 categoryRuleDao.clearAll()
-                recurringDao.clearAll()
                 // Child before parent (the goal→contribution CASCADE would cover it too).
                 savingsDao.clearContributions()
                 savingsDao.clearGoals()
@@ -97,6 +105,60 @@ class BackupManager(
             // snapshot rather than letting the backup rewrite a month's finalized score (§3.1).
             wellbeingScoreDao.insertAll(data.wellbeingScores.orEmpty())
         }
+
+        // Preferences live outside Room (a device-global SharedPreferences store), so they're applied
+        // after the data transaction commits — and only on a full replace. A merge adds a backup's
+        // data on top of the current account, so it must not overwrite the device's current display
+        // preferences. A pre-settings backup has settings == null and skips this entirely.
+        if (replace) data.settings?.let { applySettings(it) }
+    }
+
+    /** Snapshots the current display / data-interpretation preferences for an export. */
+    private fun currentBackupSettings(): BackupSettings {
+        val s = settingsStore.settings.value
+        return BackupSettings(
+            currency = s.currency.name,
+            dateFormat = s.dateFormat.name,
+            language = s.language.name,
+            themeMode = s.themeMode.name,
+            accent = s.accent.name,
+            monthStartDay = s.monthStartDay,
+            budgetRolloverEnabled = s.budgetRolloverEnabled,
+            hiddenHomeSections = s.hiddenHomeSections.toList(),
+            hiddenInsightsSections = s.hiddenInsightsSections.toList(),
+            homeSectionOrder = s.homeSectionOrder,
+            insightsSectionOrder = s.insightsSectionOrder,
+            recapEnabled = s.recapEnabled,
+            recapFrequency = s.recapFrequency.name,
+        )
+    }
+
+    /**
+     * Applies the preferences from a restored backup. Every field is optional (an older or
+     * cross-platform backup may omit some) and an unrecognized enum name is skipped, so the current
+     * on-device value is kept rather than reset to a default. Security, consent and transient-gate
+     * settings are intentionally absent from [BackupSettings] and so can never be restored.
+     */
+    private fun applySettings(s: BackupSettings) {
+        applyEnum<Currency>(s.currency, settingsStore::setCurrency)
+        applyEnum<DateFormatOption>(s.dateFormat, settingsStore::setDateFormat)
+        applyEnum<Language>(s.language, settingsStore::setLanguage)
+        applyEnum<ThemeMode>(s.themeMode, settingsStore::setThemeMode)
+        applyEnum<AccentTheme>(s.accent, settingsStore::setAccent)
+        applyEnum<RecapFrequency>(s.recapFrequency, settingsStore::setRecapFrequency)
+        s.monthStartDay?.let(settingsStore::setMonthStartDay)
+        s.budgetRolloverEnabled?.let(settingsStore::setBudgetRolloverEnabled)
+        s.recapEnabled?.let(settingsStore::setRecapEnabled)
+        s.hiddenHomeSections?.let { settingsStore.setHiddenHomeSections(it.toSet()) }
+        s.hiddenInsightsSections?.let { settingsStore.setHiddenInsightsSections(it.toSet()) }
+        s.homeSectionOrder?.let(settingsStore::setHomeSectionOrder)
+        s.insightsSectionOrder?.let(settingsStore::setInsightsSectionOrder)
+    }
+
+    /** Parses [name] to an enum of type [T] and applies it via [set]; a null or unknown name is a no-op. */
+    private inline fun <reified T : Enum<T>> applyEnum(name: String?, set: (T) -> Unit) {
+        val value = name?.let { runCatching { enumValueOf<T>(it) }.getOrNull() } ?: return
+        set(value)
     }
 }
 
