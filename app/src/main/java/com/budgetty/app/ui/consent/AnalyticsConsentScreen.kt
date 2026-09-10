@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -64,6 +65,7 @@ import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.dimens
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
+import com.budgetty.app.ui.util.isExpandedWidth
 
 /**
  * First-run telemetry consent screen. Gated after onboarding and before auth (see
@@ -99,10 +101,58 @@ private fun AnalyticsConsentContent(
     modifier: Modifier = Modifier,
 ) {
     // Local, never seeded from stored settings: the screen must never show a pre-ticked opt-in.
+    // Hoisted here so the phone and tablet layouts share the exact same state, defaults and contract;
+    // only the presentation differs below.
     var analyticsOn by remember { mutableStateOf(false) }
     var crashOn by remember { mutableStateOf(false) }
     var detailExpanded by remember { mutableStateOf(false) }
 
+    if (isExpandedWidth()) {
+        TabletConsentLayout(
+            analyticsOn = analyticsOn,
+            onAnalyticsChange = { analyticsOn = it },
+            crashOn = crashOn,
+            onCrashChange = { crashOn = it },
+            detailExpanded = detailExpanded,
+            onDetailToggle = { detailExpanded = !detailExpanded },
+            onContinue = { onContinue(analyticsOn, crashOn) },
+            onNotNow = onNotNow,
+            onPrivacyPolicy = onPrivacyPolicy,
+            modifier = modifier,
+        )
+    } else {
+        PhoneConsentLayout(
+            analyticsOn = analyticsOn,
+            onAnalyticsChange = { analyticsOn = it },
+            crashOn = crashOn,
+            onCrashChange = { crashOn = it },
+            detailExpanded = detailExpanded,
+            onDetailToggle = { detailExpanded = !detailExpanded },
+            onContinue = { onContinue(analyticsOn, crashOn) },
+            onNotNow = onNotNow,
+            onPrivacyPolicy = onPrivacyPolicy,
+            modifier = modifier,
+        )
+    }
+}
+
+/**
+ * Phone / compact-width presentation: a centered single column that scrolls above a fixed footer.
+ * Unchanged from the original screen; only the state is now hoisted into [AnalyticsConsentContent].
+ */
+@Composable
+private fun PhoneConsentLayout(
+    analyticsOn: Boolean,
+    onAnalyticsChange: (Boolean) -> Unit,
+    crashOn: Boolean,
+    onCrashChange: (Boolean) -> Unit,
+    detailExpanded: Boolean,
+    onDetailToggle: () -> Unit,
+    onContinue: () -> Unit,
+    onNotNow: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -128,7 +178,7 @@ private fun AnalyticsConsentContent(
                 title = stringResource(R.string.consent_analytics_label),
                 subtitle = stringResource(R.string.consent_analytics_desc),
                 checked = analyticsOn,
-                onCheckedChange = { analyticsOn = it },
+                onCheckedChange = onAnalyticsChange,
             )
             Spacer(Modifier.height(MaterialTheme.dimens.md))
             ConsentToggleCard(
@@ -136,12 +186,12 @@ private fun AnalyticsConsentContent(
                 title = stringResource(R.string.consent_crash_label),
                 subtitle = stringResource(R.string.consent_crash_desc),
                 checked = crashOn,
-                onCheckedChange = { crashOn = it },
+                onCheckedChange = onCrashChange,
             )
             Spacer(Modifier.height(MaterialTheme.dimens.md))
             CollectAndNeverCard(
                 expanded = detailExpanded,
-                onToggle = { detailExpanded = !detailExpanded },
+                onToggle = onDetailToggle,
             )
             Spacer(Modifier.height(MaterialTheme.dimens.lg))
         }
@@ -155,10 +205,170 @@ private fun AnalyticsConsentContent(
                 .padding(top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.lg),
         ) {
             ConsentFooter(
-                onContinue = { onContinue(analyticsOn, crashOn) },
+                onContinue = onContinue,
                 onNotNow = onNotNow,
                 onPrivacyPolicy = onPrivacyPolicy,
             )
+        }
+    }
+}
+
+/**
+ * Tablet / expanded-width presentation: the whole window is the background, with a single centered
+ * elevated card (capped at [SinglePaneMaxWidth]). The card wraps its content and is vertically
+ * centered; on a short tablet the card itself scrolls, so the actions need not be a pinned footer.
+ * All state, defaults and the [onContinue]/[onNotNow]/[onPrivacyPolicy] contract are identical to the
+ * phone layout — only the composition differs.
+ */
+@Composable
+private fun TabletConsentLayout(
+    analyticsOn: Boolean,
+    onAnalyticsChange: (Boolean) -> Unit,
+    crashOn: Boolean,
+    onCrashChange: (Boolean) -> Unit,
+    detailExpanded: Boolean,
+    onDetailToggle: () -> Unit,
+    onContinue: () -> Unit,
+    onNotNow: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val cardShape = RoundedCornerShape(MaterialTheme.dimens.radiusXxl)
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .safeDrawingPadding()
+            .padding(MaterialTheme.dimens.xxl),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = SinglePaneMaxWidth)
+                .fillMaxWidth()
+                .shadow(elevation = MaterialTheme.dimens.sm, shape = cardShape)
+                .clip(cardShape)
+                .background(MaterialTheme.colorScheme.surfaceContainer)
+                // Wraps content and centers in the window; scrolls within the card if a short
+                // tablet can't fit it, rather than pushing the actions off-screen.
+                .verticalScroll(rememberScrollState())
+                .padding(MaterialTheme.dimens.xxl),
+        ) {
+            TabletConsentHeader()
+            Spacer(Modifier.height(MaterialTheme.dimens.xxl))
+            // Toggle cards sit ON the surfaceContainer card, so their surface is `background` for
+            // contrast (mirrors the mockup); same icon/label/subline/Switch idiom as the phone.
+            ConsentToggleCard(
+                icon = Icons.Filled.BarChart,
+                title = stringResource(R.string.consent_analytics_label),
+                subtitle = stringResource(R.string.consent_analytics_desc),
+                checked = analyticsOn,
+                onCheckedChange = onAnalyticsChange,
+                containerColor = MaterialTheme.colorScheme.background,
+            )
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            ConsentToggleCard(
+                icon = Icons.Filled.Warning,
+                title = stringResource(R.string.consent_crash_label),
+                subtitle = stringResource(R.string.consent_crash_desc),
+                checked = crashOn,
+                onCheckedChange = onCrashChange,
+                containerColor = MaterialTheme.colorScheme.background,
+            )
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            CollectAndNeverCard(
+                expanded = detailExpanded,
+                onToggle = onDetailToggle,
+            )
+            Spacer(Modifier.height(MaterialTheme.dimens.lg))
+            TabletConsentActions(
+                onContinue = onContinue,
+                onNotNow = onNotNow,
+                onPrivacyPolicy = onPrivacyPolicy,
+            )
+        }
+    }
+}
+
+/** Tablet header: brand tile on the LEFT, title + subtitle stacked to its right (not centered). */
+@Composable
+private fun TabletConsentHeader() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .clip(RoundedCornerShape(18.dp))
+                .background(MaterialTheme.colorScheme.primary),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Receipt,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(32.dp),
+            )
+        }
+        Spacer(Modifier.width(MaterialTheme.dimens.lg))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(R.string.consent_title),
+                fontSize = 25.sp,
+                fontWeight = FontWeight.ExtraBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(Modifier.height(MaterialTheme.dimens.xs))
+            Text(
+                text = stringResource(R.string.consent_subtitle),
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+/**
+ * Tablet actions: the full-width reassurance band with the Privacy Policy link inline at its right
+ * edge, then a right-aligned action row — quiet **Not now** then filled **Continue** pill (the
+ * tablet-dialog convention), instead of the phone's stacked full-width buttons.
+ */
+@Composable
+private fun TabletConsentActions(
+    onContinue: () -> Unit,
+    onNotNow: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
+) {
+    ReassuranceBand(
+        trailing = {
+            TextButton(onClick = onPrivacyPolicy) {
+                Text(
+                    text = stringResource(R.string.account_privacy_policy),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        },
+    )
+    Spacer(Modifier.height(MaterialTheme.dimens.lg))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TextButton(onClick = onNotNow) {
+            Text(
+                text = stringResource(R.string.consent_not_now),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+        Button(
+            onClick = onContinue,
+            modifier = Modifier.height(MaterialTheme.dimens.buttonHeight),
+        ) {
+            Text(stringResource(R.string.consent_continue))
         }
     }
 }
@@ -215,12 +425,15 @@ private fun ConsentToggleCard(
     subtitle: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
+    // Defaults to `surfaceContainer` (the phone treatment). The tablet passes `background` because
+    // these cards sit ON the surfaceContainer card and need the extra contrast.
+    containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(MaterialTheme.dimens.radiusXl))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .background(containerColor)
             .clickable { onCheckedChange(!checked) }
             .padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -387,15 +600,19 @@ private fun DetailColumn(
     }
 }
 
-/** Reassurance band, privacy-policy link, and the Continue / Not-now actions. Does not scroll. */
+/**
+ * The "no financial data" reassurance strip (secondaryContainer + shield), shared by both layouts.
+ * On the phone it stands alone and the Privacy Policy link sits below it; on the tablet the caller
+ * passes a [trailing] slot so the Privacy Policy link sits inline at the band's right edge. The
+ * default (no trailing) reproduces the phone band exactly — the label keeps its intrinsic width.
+ */
 @Composable
-private fun ColumnScope.ConsentFooter(
-    onContinue: () -> Unit,
-    onNotNow: () -> Unit,
-    onPrivacyPolicy: () -> Unit,
+private fun ReassuranceBand(
+    modifier: Modifier = Modifier,
+    trailing: (@Composable () -> Unit)? = null,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(MaterialTheme.dimens.radiusLg))
             .background(MaterialTheme.colorScheme.secondaryContainer)
@@ -414,8 +631,23 @@ private fun ColumnScope.ConsentFooter(
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = if (trailing != null) Modifier.weight(1f) else Modifier,
         )
+        if (trailing != null) {
+            Spacer(Modifier.width(MaterialTheme.dimens.md))
+            trailing()
+        }
     }
+}
+
+/** Reassurance band, privacy-policy link, and the Continue / Not-now actions. Does not scroll. */
+@Composable
+private fun ColumnScope.ConsentFooter(
+    onContinue: () -> Unit,
+    onNotNow: () -> Unit,
+    onPrivacyPolicy: () -> Unit,
+) {
+    ReassuranceBand()
     Spacer(Modifier.height(MaterialTheme.dimens.md))
     TextButton(
         onClick = onPrivacyPolicy,
@@ -473,6 +705,22 @@ private fun AnalyticsConsentPreviewLight() {
 @Preview(name = "Consent · dark", showBackground = true, heightDp = 900)
 @Composable
 private fun AnalyticsConsentPreviewDark() {
+    BudgettyTheme(darkTheme = true) {
+        AnalyticsConsentContent(onContinue = { _, _ -> }, onNotNow = {}, onPrivacyPolicy = {})
+    }
+}
+
+@Preview(name = "Consent · tablet light", showBackground = true, widthDp = 900, heightDp = 800)
+@Composable
+private fun AnalyticsConsentTabletPreviewLight() {
+    BudgettyTheme {
+        AnalyticsConsentContent(onContinue = { _, _ -> }, onNotNow = {}, onPrivacyPolicy = {})
+    }
+}
+
+@Preview(name = "Consent · tablet dark", showBackground = true, widthDp = 900, heightDp = 800)
+@Composable
+private fun AnalyticsConsentTabletPreviewDark() {
     BudgettyTheme(darkTheme = true) {
         AnalyticsConsentContent(onContinue = { _, _ -> }, onNotNow = {}, onPrivacyPolicy = {})
     }
