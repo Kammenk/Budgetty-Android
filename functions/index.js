@@ -81,7 +81,7 @@ exports.extractReceipt = onRequest(
       // One structured line per scan. In Cloud Logging, filter by jsonPayload.event="scan_result".
       // `outcome != "ok"` is exactly the set the app rejects on-device. `model`/`escalated` measure the
       // Haiku-first tier live: jsonPayload.escalated=true is the Haiku-miss rate, jsonPayload.model the
-      // serving mix. `cost` is the per-scan USD at list rates. No product names or image are logged.
+      // serving mix. `cost` is the per-scan USD at list rates. No product names, store, or amounts are logged.
       const scanLog = {
         event: "scan_result",
         mimeType,

@@ -41,8 +41,8 @@ function countUnits(items) {
  * Distills a scan into a compact, queryable diagnostic. `outcome` names the single on-device gate the
  * app would reject on (in the client's check order) or "ok" when it passes — so the logs classify
  * failures exactly as the user experiences them, and the tier escalates exactly when the app would balk.
- * Deliberately carries NO product names and no image: only counts, the receipt's own totals, the store,
- * and the model's self-assessment.
+ * Deliberately carries NO product names, NO store, and NO receipt amounts — only counts, the model's
+ * self-assessment, and the reconciliation deltas — so the scan log holds no financial data.
  */
 function scanDiagnostics(input) {
   const items = Array.isArray(input.items) ? input.items : [];
@@ -80,16 +80,13 @@ function scanDiagnostics(input) {
     readable: input.readable !== false,
     confidence: typeof input.confidence === "number" ? input.confidence : null,
     lowConfidenceFields: Array.isArray(input.lowConfidenceFields) ? input.lowConfidenceFields : [],
-    storeName: input.storeName || "",
     itemCount,
     unitCount,
     printedItemCount,
     countMismatch,
-    total,
-    subtotal: Number(input.subtotal) || 0,
-    tax: Number(input.tax) || 0,
-    discount,
-    grossItems: round2(grossItems),
+    // Reconciliation delta only (≈0 on a clean read) — the overshoot-guard signal, NOT the basket value.
+    // Deliberately no store name and no receipt amounts (total / subtotal / tax / discount / gross): keeps
+    // the scan log free of financial data, matching the app's "Financial info not collected" declaration.
     overshoot: round2(overshoot),
     overshootTrips,
   };
