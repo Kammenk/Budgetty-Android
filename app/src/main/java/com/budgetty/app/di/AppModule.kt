@@ -154,7 +154,7 @@ val appModule = module {
     viewModel { SubscriptionsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ExportViewModel(get(), get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get()) }
-    viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { WellbeingViewModel(get(), get(), get()) }
     viewModel { RecapViewModel(get(), get(), get()) }
     viewModel {

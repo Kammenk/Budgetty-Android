@@ -263,6 +263,34 @@
     <string name="insights_upcoming_bills">Facturi viitoare</string>
     <string name="insights_income_by_source">Venit după sursă</string>
     <string name="insights_go_to_budget">Mergi la Buget</string>
+    <!-- Insights: Nevoi / Dorințe / Economii (regula 50/30/20) -->
+    <string name="insights_needs_wants_savings">Nevoi · Dorințe · Economii</string>
+    <string name="insights_nws_needs">Nevoi</string>
+    <string name="insights_nws_wants">Dorințe</string>
+    <string name="insights_nws_savings">Economii</string>
+    <string name="insights_nws_saved">Economisit</string>
+    <string name="insights_nws_income_subtitle">Parte din venitul tău de %1$s</string>
+    <string name="insights_nws_targets_caption">Marcajele arată țintele 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · țintă %2$d%%</string>
+    <string name="insights_nws_on_target">la țintă</string>
+    <string name="insights_nws_under">%1$d sub țintă</string>
+    <string name="insights_nws_summary_balanced">Frumos echilibrat — toate trei la mai puțin de un punct față de regulă.</string>
+    <string name="insights_nws_summary_wants_over">Luna aceasta Dorințele au depășit ținta cu %1$d puncte, iar Economiile au acoperit diferența.</string>
+    <string name="insights_nws_summary_needs_over">Luna aceasta Nevoile au depășit ținta cu %1$d puncte — adesea chiria sau facturile care cad într-o singură perioadă.</string>
+    <string name="insights_nws_summary_under_saving">Luna aceasta Economiile sunt cu %1$d puncte sub 20%%. Aproximativ %2$s din Dorințe ar acoperi diferența.</string>
+    <string name="insights_nws_trend_title">Împărțirea ta în timp</string>
+    <string name="insights_nws_trend_delta">%1$s pct</string>
+    <string name="insights_nws_trend_footer">Cota ta de economii a trecut de la %1$d%% la %2$d%% în ultimele %3$d luni.</string>
+    <string name="insights_nws_setup_subtitle">Regula 50/30/20, din propriile tale categorii</string>
+    <string name="insights_nws_setup_title">Vezi împărțirea ta 50/30/20</string>
+    <string name="insights_nws_setup_body">Adaugă-ți venitul și Budgetty îți împarte cheltuielile în Nevoi, Dorințe și Economii — categoriile predefinite sunt deja etichetate.</string>
+    <string name="insights_nws_setup_cta">Configurează venitul</string>
+    <string name="insights_nws_setup_note">Calculat pe dispozitivul tău — nimic nu se trimite nicăieri.</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d lună încheiată</item>
+        <item quantity="few">%1$d luni încheiate</item>
+        <item quantity="other">%1$d de luni încheiate</item>
+    </plurals>
     <string name="insights_income_in">Intrări</string>
     <string name="insights_income_out">Ieșiri</string>
     <string name="insights_income_net">Net</string>
@@ -1031,6 +1059,9 @@
     <string name="manage_unlimited_premium">Nelimitate cu Premium</string>
     <string name="manage_in_group">În grupul %1$s</string>
     <string name="manage_top_level">Nivel principal</string>
+    <string name="manage_bucket_need">Nevoie</string>
+    <string name="manage_bucket_want">Dorință</string>
+    <string name="manage_bucket_savings">Economii</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d subcategorie</item>
         <item quantity="few">%1$d subcategorii</item>

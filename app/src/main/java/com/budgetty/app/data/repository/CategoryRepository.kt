@@ -1,6 +1,7 @@
 package com.budgetty.app.data.repository
 
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.CategoryBucket
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.UserDatabaseManager
 import kotlinx.coroutines.flow.Flow
@@ -43,6 +44,23 @@ class CategoryRepository(
             listOf(CategoryEntity(name = name, colorArgb = Categories.colorOf(name), icon = Categories.emojiOf(name))),
         )
         dao.setParent(name, parent)
+    }
+
+    /**
+     * Tags [name] with a Needs/Wants/Savings [bucket] (null clears the tag, reverting to the code
+     * default). A built-in may have no stored row yet, so — like [setParent] — this inserts one
+     * (carrying its predefined color/emoji) before setting the bucket, so the tag sticks even for a
+     * category that was previously code-only.
+     */
+    suspend fun setBucket(name: String, bucket: CategoryBucket?) {
+        if (!Categories.isPredefined(name)) {
+            dao.setBucket(name, bucket)
+            return
+        }
+        dao.insertOrIgnore(
+            listOf(CategoryEntity(name = name, colorArgb = Categories.colorOf(name), icon = Categories.emojiOf(name))),
+        )
+        dao.setBucket(name, bucket)
     }
 
     /** Promotes every child of [parent] to top-level — used when a parent category is deleted. */

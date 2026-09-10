@@ -83,6 +83,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.CategoryBucket
 import com.budgetty.app.category.EmojiCatalog
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.ui.theme.BudgettyTheme
@@ -101,6 +102,9 @@ data class CustomCategoryActions(
     val onDelete: (name: String) -> Unit = {},
     /** Re-homes [name] under a parent (null = top-level) — the picker's "Move to group" / re-parent. */
     val onReparent: (name: String, parent: String?) -> Unit = { _, _ -> },
+    /** Tags [name] with a Needs/Wants/Savings bucket (null clears it back to the code default) —
+     *  the Manage categories bucket toggle. */
+    val onUpdateBucket: (name: String, bucket: CategoryBucket?) -> Unit = { _, _ -> },
     val onCountTransactions: suspend (String) -> Int = { 0 },
     val onOpenPaywall: () -> Unit = {},
 )

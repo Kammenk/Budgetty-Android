@@ -289,6 +289,35 @@ class MigrationTest {
     }
 
     /**
+     * [MIGRATION_26_27] adds categories.bucket (the Needs/Wants/Savings tag). A pure nullable ADD
+     * COLUMN, so opening with Room afterwards validates the column against [CategoryEntity]; the
+     * round-trip below proves the column is present, defaults an upgraded row to NULL (derive from
+     * code, not stored), and round-trips an explicit tag through the [Converters].
+     */
+    @Test
+    fun migration26To27AddsCategoryBucketColumn() {
+        openRawAtV1().use { db ->
+            ALL_MIGRATIONS.filter { it.endVersion <= 26 }.forEach { it.migrate(db) }
+            db.execSQL("INSERT OR REPLACE INTO categories (name, colorArgb) VALUES (?, ?)", arrayOf<Any>("Rent", 1))
+            db.version = 26
+        }
+
+        openWithRoom().useSqlite { db ->
+            // An upgraded row stores no explicit bucket — NULL means "derive the bucket from code".
+            db.query("SELECT bucket FROM categories WHERE name = 'Rent'").use { c ->
+                assertTrue(c.moveToFirst())
+                assertTrue("an upgraded category defaults to NULL (no stored bucket)", c.isNull(0))
+            }
+            // A user's explicit tag round-trips through the new column.
+            db.execSQL("UPDATE categories SET bucket = 'NEED' WHERE name = 'Rent'")
+            db.query("SELECT bucket FROM categories WHERE name = 'Rent'").use { c ->
+                assertTrue(c.moveToFirst())
+                assertEquals("a stored bucket tag round-trips", "NEED", c.getString(0))
+            }
+        }
+    }
+
+    /**
      * Opens [TEST_DB] with the schema as it stood at v1: transactions only, before
      * [MIGRATION_1_2] added category and [MIGRATION_6_7] added receiptId.
      */

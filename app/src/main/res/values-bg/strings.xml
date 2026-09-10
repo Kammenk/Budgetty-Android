@@ -532,6 +532,33 @@
     <string name="insights_upcoming_bills">Предстоящи сметки</string>
     <string name="insights_income_by_source">Доход по източник</string>
     <string name="insights_go_to_budget">Към Бюджет</string>
+    <!-- Insights: Нужди / Желания / Спестявания (правилото 50/30/20) -->
+    <string name="insights_needs_wants_savings">Нужди · Желания · Спестявания</string>
+    <string name="insights_nws_needs">Нужди</string>
+    <string name="insights_nws_wants">Желания</string>
+    <string name="insights_nws_savings">Спестявания</string>
+    <string name="insights_nws_saved">Спестено</string>
+    <string name="insights_nws_income_subtitle">Дял от дохода — %1$s</string>
+    <string name="insights_nws_targets_caption">Маркерите показват целите 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · цел %2$d%%</string>
+    <string name="insights_nws_on_target">по план</string>
+    <string name="insights_nws_under">%1$d под целта</string>
+    <string name="insights_nws_summary_balanced">Добре балансирано — и трите са на по-малко от пункт от правилото.</string>
+    <string name="insights_nws_summary_wants_over">Този месец Желанията надхвърлиха целта с %1$d пункта, а Спестяванията поеха разликата.</string>
+    <string name="insights_nws_summary_needs_over">Този месец Нуждите надхвърлиха целта с %1$d пункта — често наем или сметки, попаднали в един период.</string>
+    <string name="insights_nws_summary_under_saving">Този месец Спестяванията са %1$d пункта под 20%%. Около %2$s от Желанията биха покрили разликата.</string>
+    <string name="insights_nws_trend_title">Разпределението ти във времето</string>
+    <string name="insights_nws_trend_delta">%1$s п.</string>
+    <string name="insights_nws_trend_footer">Делът на спестяванията ти се промени от %1$d%% на %2$d%% за последните %3$d месеца.</string>
+    <string name="insights_nws_setup_subtitle">Правилото 50/30/20 — от собствените ти категории</string>
+    <string name="insights_nws_setup_title">Виж своето разпределение 50/30/20</string>
+    <string name="insights_nws_setup_body">Добави дохода си и Budgetty ще разпредели разходите ти по Нужди, Желания и Спестявания — вградените категории вече са маркирани.</string>
+    <string name="insights_nws_setup_cta">Настрой дохода</string>
+    <string name="insights_nws_setup_note">Изчислено на устройството ти — нищо не се изпраща никъде.</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d приключен месец</item>
+        <item quantity="other">%1$d приключени месеца</item>
+    </plurals>
     <string name="insights_income_in">Вход</string>
     <string name="insights_income_out">Изход</string>
     <string name="insights_income_net">Нето</string>
@@ -1006,6 +1033,9 @@
     <string name="manage_unlimited_premium">Неограничено с Premium</string>
     <string name="manage_in_group">В група %1$s</string>
     <string name="manage_top_level">Най-горно ниво</string>
+    <string name="manage_bucket_need">Нужда</string>
+    <string name="manage_bucket_want">Желание</string>
+    <string name="manage_bucket_savings">Спестявания</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d подкатегория</item>
         <item quantity="other">%1$d подкатегории</item>

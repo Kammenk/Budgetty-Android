@@ -263,6 +263,35 @@
     <string name="insights_upcoming_bills">Nadcházející účty</string>
     <string name="insights_income_by_source">Příjmy podle zdroje</string>
     <string name="insights_go_to_budget">Přejít na rozpočet</string>
+    <!-- Insights: Potřeby / Přání / Úspory (pravidlo 50/30/20) -->
+    <string name="insights_needs_wants_savings">Potřeby · Přání · Úspory</string>
+    <string name="insights_nws_needs">Potřeby</string>
+    <string name="insights_nws_wants">Přání</string>
+    <string name="insights_nws_savings">Úspory</string>
+    <string name="insights_nws_saved">Uspořeno</string>
+    <string name="insights_nws_income_subtitle">Podíl z vašeho příjmu %1$s</string>
+    <string name="insights_nws_targets_caption">Značky ukazují cíle 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · cíl %2$d%%</string>
+    <string name="insights_nws_on_target">podle plánu</string>
+    <string name="insights_nws_under">%1$d pod cílem</string>
+    <string name="insights_nws_summary_balanced">Pěkně vyvážené — všechny tři do jednoho bodu od pravidla.</string>
+    <string name="insights_nws_summary_wants_over">Přání tento měsíc překročila cíl o %1$d bodů a rozdíl pokryly Úspory.</string>
+    <string name="insights_nws_summary_needs_over">Potřeby tento měsíc překročily cíl o %1$d bodů — často nájem nebo účty spadající do jednoho období.</string>
+    <string name="insights_nws_summary_under_saving">Úspory jsou tento měsíc %1$d bodů pod 20%%. Mezeru by zaplnilo přibližně %2$s z Přání.</string>
+    <string name="insights_nws_trend_title">Vaše rozdělení v čase</string>
+    <string name="insights_nws_trend_delta">%1$s b.</string>
+    <string name="insights_nws_trend_footer">Váš podíl úspor se změnil z %1$d%% na %2$d%% za posledních %3$d měsíců.</string>
+    <string name="insights_nws_setup_subtitle">Pravidlo 50/30/20, z vašich vlastních kategorií</string>
+    <string name="insights_nws_setup_title">Podívejte se na své rozdělení 50/30/20</string>
+    <string name="insights_nws_setup_body">Přidejte svůj příjem a Budgetty roztřídí vaše výdaje na Potřeby, Přání a Úspory — vestavěné kategorie jsou už předem označené.</string>
+    <string name="insights_nws_setup_cta">Nastavit příjem</string>
+    <string name="insights_nws_setup_note">Vypočítáno na vašem zařízení — nikam se nic neodesílá.</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d uzavřený měsíc</item>
+        <item quantity="few">%1$d uzavřené měsíce</item>
+        <item quantity="many">%1$d uzavřeného měsíce</item>
+        <item quantity="other">%1$d uzavřených měsíců</item>
+    </plurals>
     <string name="insights_income_in">Příjem</string>
     <string name="insights_income_out">Výdej</string>
     <string name="insights_income_net">Netto</string>
@@ -1045,6 +1074,9 @@
     <string name="manage_unlimited_premium">Neomezeně s Premium</string>
     <string name="manage_in_group">Ve skupině %1$s</string>
     <string name="manage_top_level">Nejvyšší úroveň</string>
+    <string name="manage_bucket_need">Potřeba</string>
+    <string name="manage_bucket_want">Přání</string>
+    <string name="manage_bucket_savings">Úspory</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d podkategorie</item>
         <item quantity="few">%1$d podkategorie</item>

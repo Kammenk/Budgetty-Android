@@ -3,6 +3,7 @@ package com.budgetty.app.data.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.budgetty.app.category.CategoryBucket
 
 /**
  * A spending category and how it renders across the app.
@@ -37,4 +38,15 @@ data class CategoryEntity(
      */
     @ColumnInfo(defaultValue = "NULL")
     val parent: String? = null,
+    /**
+     * The Needs / Wants / Savings bucket this category's spend counts toward in the Insights 50/30/20
+     * split. NULL means "use the default": a built-in resolves to [Categories.defaultBucketOf] (its
+     * group's bucket, with a handful of per-category exceptions) and a sub-category inherits its
+     * parent's; a non-null value is the user's explicit choice in Manage categories. Like [parent] it
+     * is user-editable, so the partial seed insert and [MIGRATION_26_27] leave it NULL and the onOpen
+     * re-seed never rewrites it. The effective bucket is derived live, so re-tagging a category
+     * reclassifies its past months too.
+     */
+    @ColumnInfo(defaultValue = "NULL")
+    val bucket: CategoryBucket? = null,
 )

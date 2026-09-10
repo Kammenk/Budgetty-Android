@@ -3,8 +3,11 @@ package com.budgetty.app.ui.insights
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.category.CategoryBucket
+import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.RecurringEntity
+import com.budgetty.app.data.local.SavingsContributionEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.repository.BudgetRepository
@@ -12,6 +15,7 @@ import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
+import com.budgetty.app.data.repository.SavingsRepository
 import com.budgetty.app.ui.wellbeing.WellbeingProvider
 import com.budgetty.app.ui.wellbeing.WellbeingSummary
 import com.budgetty.app.data.repository.TransactionRepository
@@ -23,6 +27,7 @@ import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.MatchedBillLine
 import com.budgetty.app.ui.util.PlannedBillLine
 import com.budgetty.app.ui.util.ReceiptCharge
+import com.budgetty.app.ui.util.effectiveBucketOf
 import com.budgetty.app.ui.util.splitPlannedBills
 import com.budgetty.app.ui.util.windowAmount
 import kotlinx.coroutines.Dispatchers
@@ -161,6 +166,76 @@ data class TrendData(
     val hasData: Boolean get() = buckets.any { it.total.signum() > 0 }
 }
 
+// ── Needs / Wants / Savings (the 50/30/20 split) ──────────────────────────────────────────────────
+/** Target share of income for each bucket — the 50/30/20 rule. */
+private const val NEEDS_TARGET_PERCENT = 50
+private const val WANTS_TARGET_PERCENT = 30
+private const val SAVINGS_TARGET_PERCENT = 20
+
+/** A bucket within this many points of its target reads as "on target" rather than over/under. */
+private const val BUCKET_ON_TARGET_TOLERANCE = 2
+
+/** How many closed pay-cycle months the split trend plots at most. */
+private const val BUCKET_TREND_MONTHS = 6
+
+/** The split trend is hidden until at least this many closed months are available. */
+private const val MIN_BUCKET_TREND_MONTHS = 2
+
+/** Which way the split leans this period — drives the one-line summary under the card. */
+enum class SplitTone { BALANCED, NEEDS_OVER, WANTS_OVER, UNDER_SAVING }
+
+/**
+ * How a bucket sits against its target, which drives its delta pill's colour and wording. Within
+ * tolerance is [ON_TARGET] (good). Over on Needs/Wants ([OVER_WARN]) and under on Savings
+ * ([UNDER_WARN]) use the warn pair; under on Needs/Wants is neutral ([UNDER_NEUTRAL]) — spending
+ * less than the rule allows isn't a warning; over on Savings is the one other good case ([OVER_GOOD]).
+ */
+enum class BucketDeltaStatus { ON_TARGET, OVER_WARN, UNDER_NEUTRAL, UNDER_WARN, OVER_GOOD }
+
+/** One bucket's share of income for the Needs/Wants/Savings card. */
+data class BucketShare(
+    val bucket: CategoryBucket,
+    val amount: BigDecimal,
+    /** amount / income, 0..1+ (unclamped — the bar clamps; the rows show [percent]). */
+    val fraction: Float,
+    /** Rounded whole-percent of income, for the headline number and the delta pill. */
+    val percent: Int,
+    /** This bucket's 50 / 30 / 20 target. */
+    val targetPercent: Int,
+    /** How [percent] sits against [targetPercent] — the delta pill's colour/wording. */
+    val status: BucketDeltaStatus,
+) {
+    /** Signed distance from target in whole points (positive = over target). */
+    val deltaPoints: Int get() = percent - targetPercent
+}
+
+/**
+ * The Needs/Wants/Savings 50/30/20 split for the selected period, on an income basis (each share is
+ * of income, so the rule is comparable month to month even when spending swings). Null → the setup
+ * state, shown when there's no income to measure against. Needs/Wants come from category-tagged
+ * spend; Savings is net savings-goal contributions in the period plus spend on Savings-tagged
+ * categories.
+ */
+data class NeedsWantsSplit(
+    val income: BigDecimal,
+    val needs: BucketShare,
+    val wants: BucketShare,
+    val savings: BucketShare,
+    /** Income not accounted for by the three buckets, as a 0..1 fraction — the bar's empty track. */
+    val leftoverFraction: Float,
+    val tone: SplitTone,
+)
+
+/** One closed month in the split trend (the card plots these oldest-first); shares are whole-percent
+ *  of that month's income. */
+data class BucketMonth(
+    /** Short month label under the column, e.g. "Sep". */
+    val axisLabel: String,
+    val needsPercent: Int,
+    val wantsPercent: Int,
+    val savingsPercent: Int,
+)
+
 // The trend's day labels follow the user's date-format preference (day/month order); rebuilt per
 // use since the preference can change at runtime.
 private val DAY_FULL_FORMAT: DateTimeFormatter
@@ -230,7 +305,17 @@ data class InsightsUiState(
     val includeRecurringBills: Boolean = false,
     /** The planned-bills overlay for the selected period; empty/zero unless [includeRecurringBills]. */
     val plannedOverlay: PlannedOverlay = PlannedOverlay.EMPTY,
-)
+    /** The Needs/Wants/Savings 50/30/20 split for the selected period; null → the setup state (no
+     *  income to measure against). Surfaced via [InsightsSection.NEEDS_WANTS_SAVINGS]. */
+    val needsWantsSplit: NeedsWantsSplit? = null,
+    /** The split across the last closed pay-cycle months (oldest first), independent of the selected
+     *  period; the trend card stays hidden until [MIN_BUCKET_TREND_MONTHS] are present. */
+    val bucketTrend: List<BucketMonth> = emptyList(),
+) {
+    /** The split trend card renders only beneath a populated split and with enough closed months. */
+    val showsBucketTrend: Boolean
+        get() = needsWantsSplit != null && bucketTrend.size >= MIN_BUCKET_TREND_MONTHS
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class InsightsViewModel(
@@ -239,6 +324,7 @@ class InsightsViewModel(
     receiptRepository: ReceiptRepository,
     budgetRepository: BudgetRepository,
     recurringRepository: RecurringRepository,
+    savingsRepository: SavingsRepository,
     private val settingsStore: SettingsStore,
     rolloverRepository: BudgetRolloverRepository,
     wellbeingProvider: WellbeingProvider,
@@ -284,6 +370,29 @@ class InsightsViewModel(
         settingsStore.settings.map { it.insightsIncludeRecurringBills }.distinctUntilChanged(),
     ) { (period, day), txns, receipts, recurring, include ->
         computePlannedOverlay(period, day, txns, receipts, recurring, include)
+    }
+
+    // The 50/30/20 split across the last closed pay-cycle months — the emotional hook of the feature,
+    // and deliberately independent of the selected period (it shows history regardless of which period
+    // is on screen). Loads the trailing window once, then buckets it per pay-cycle month; the current
+    // (open) month is never plotted, and the run stops at the first month before any income plan
+    // existed so the chart never shows a misleading income-less gap.
+    private val bucketTrend: Flow<List<BucketMonth>> = combine(
+        monthStartDay,
+        categoryRepository.categories,
+        savingsRepository.allContributions,
+        recurringRepository.items,
+    ) { day, categories, contributions, recurring ->
+        BucketTrendInputs(day, categories, contributions, recurring)
+    }.flatMapLatest { (day, categories, contributions, recurring) ->
+        val months = (1..BUCKET_TREND_MONTHS).map {
+            InsightsPeriod.Stepped(PeriodUnit.MONTH, offset = -it).toRange(monthStartDay = day)
+        }
+        val windowStart = months.minOf { it.first }
+        val windowEnd = months.maxOf { it.second }
+        repository.getBetween(windowStart, windowEnd).map { txns ->
+            computeBucketTrend(day, txns, categories, contributions, recurring)
+        }
     }
 
     val uiState: StateFlow<InsightsUiState> =
@@ -373,6 +482,23 @@ class InsightsViewModel(
                     hasBills = ri.hasBills,
                 )
             }
+            // The split needs the just-computed periodIncome (denominator) plus the category rows (for
+            // bucket resolution) and savings contributions, so it folds in after the recurring stage.
+            .combine(
+                combine(categoryRepository.categories, savingsRepository.allContributions) { c, s -> c to s },
+            ) { state, (categories, contributions) ->
+                state.copy(
+                    needsWantsSplit = computeSplit(
+                        period = state.period,
+                        monthStartDay = state.monthStartDay,
+                        txns = state.transactions,
+                        categories = categories,
+                        contributions = contributions,
+                        income = state.periodIncome,
+                    ),
+                )
+            }
+            .combine(bucketTrend) { state, trend -> state.copy(bucketTrend = trend) }
             .combine(repository.earliestTimestamp()) { state, earliest ->
                 state.copy(
                     earliestDate = earliest?.let {
@@ -687,6 +813,132 @@ class InsightsViewModel(
             hasBills = billEntities.isNotEmpty(),
         )
     }
+
+    /** The four flows the [bucketTrend] combine carries, packed so it reads as one slot. */
+    private data class BucketTrendInputs(
+        val monthStartDay: Int,
+        val categories: List<CategoryEntity>,
+        val contributions: List<SavingsContributionEntity>,
+        val recurring: List<RecurringEntity>,
+    )
+
+    /** Category-tagged spend split into the three buckets for a set of transactions. */
+    private data class BucketSpend(val needs: BigDecimal, val wants: BigDecimal, val savings: BigDecimal)
+
+    /**
+     * The Needs/Wants/Savings split for [period] on an income basis: each bucket's spend (Needs/Wants
+     * from category tags, Savings from Savings-tagged spend plus net savings-goal contributions in the
+     * window) as a share of [income]. Null when [income] is zero — there's nothing to measure 50/30/20
+     * against, so the card shows its setup state instead.
+     */
+    private fun computeSplit(
+        period: InsightsPeriod,
+        monthStartDay: Int,
+        txns: List<TransactionEntity>,
+        categories: List<CategoryEntity>,
+        contributions: List<SavingsContributionEntity>,
+        income: BigDecimal,
+    ): NeedsWantsSplit? {
+        if (income.signum() <= 0) return null
+        val byName = categories.associateBy { it.name.lowercase() }
+        val spend = bucketSpend(txns, byName)
+        val (start, end) = period.toRange(monthStartDay = monthStartDay)
+        val contribNet = contributions
+            .filter { it.date in start..end }
+            .fold(BigDecimal.ZERO) { acc, c -> acc + c.amount }
+        val savingsAmount = (spend.savings + contribNet).max(BigDecimal.ZERO)
+
+        val needs = bucketShare(CategoryBucket.NEED, spend.needs, NEEDS_TARGET_PERCENT, income)
+        val wants = bucketShare(CategoryBucket.WANT, spend.wants, WANTS_TARGET_PERCENT, income)
+        val savings = bucketShare(CategoryBucket.SAVINGS, savingsAmount, SAVINGS_TARGET_PERCENT, income)
+        val leftover = (1f - needs.fraction - wants.fraction - savings.fraction).coerceIn(0f, 1f)
+        val tone = when {
+            savings.percent < SAVINGS_TARGET_PERCENT - BUCKET_ON_TARGET_TOLERANCE -> SplitTone.UNDER_SAVING
+            wants.percent > WANTS_TARGET_PERCENT + BUCKET_ON_TARGET_TOLERANCE -> SplitTone.WANTS_OVER
+            needs.percent > NEEDS_TARGET_PERCENT + BUCKET_ON_TARGET_TOLERANCE -> SplitTone.NEEDS_OVER
+            else -> SplitTone.BALANCED
+        }
+        return NeedsWantsSplit(income.setScale(2, RoundingMode.HALF_UP), needs, wants, savings, leftover, tone)
+    }
+
+    /**
+     * Buckets a set of transactions into Needs/Wants/Savings totals by each category's effective
+     * bucket. Savings here is only Savings-tagged category spend; the caller adds goal contributions.
+     */
+    private fun bucketSpend(txns: List<TransactionEntity>, byName: Map<String, CategoryEntity>): BucketSpend {
+        var needs = BigDecimal.ZERO
+        var wants = BigDecimal.ZERO
+        var savings = BigDecimal.ZERO
+        txns.groupBy { it.category }.forEach { (category, list) ->
+            val amount = list.sumOfSpend()
+            when (effectiveBucketOf(category, byName)) {
+                CategoryBucket.NEED -> needs += amount
+                CategoryBucket.WANT -> wants += amount
+                CategoryBucket.SAVINGS -> savings += amount
+            }
+        }
+        return BucketSpend(needs, wants, savings)
+    }
+
+    private fun bucketShare(bucket: CategoryBucket, amount: BigDecimal, target: Int, income: BigDecimal): BucketShare {
+        val percent = pctOf(amount, income)
+        val delta = percent - target
+        val status = when {
+            kotlin.math.abs(delta) <= BUCKET_ON_TARGET_TOLERANCE -> BucketDeltaStatus.ON_TARGET
+            bucket == CategoryBucket.SAVINGS ->
+                if (delta > 0) BucketDeltaStatus.OVER_GOOD else BucketDeltaStatus.UNDER_WARN
+            else -> if (delta > 0) BucketDeltaStatus.OVER_WARN else BucketDeltaStatus.UNDER_NEUTRAL
+        }
+        return BucketShare(
+            bucket = bucket,
+            amount = amount.setScale(2, RoundingMode.HALF_UP),
+            fraction = (amount.toDouble() / income.toDouble()).toFloat().coerceAtLeast(0f),
+            percent = percent,
+            targetPercent = target,
+            status = status,
+        )
+    }
+
+    /**
+     * The split for each of the last [BUCKET_TREND_MONTHS] closed pay-cycle months (current month
+     * excluded), oldest first. Walks back month by month and stops at the first month with no income
+     * plan, so the returned run is contiguous and never shows an income-less gap.
+     */
+    private fun computeBucketTrend(
+        monthStartDay: Int,
+        trailingTxns: List<TransactionEntity>,
+        categories: List<CategoryEntity>,
+        contributions: List<SavingsContributionEntity>,
+        recurring: List<RecurringEntity>,
+    ): List<BucketMonth> {
+        val zone = ZoneId.systemDefault()
+        val byName = categories.associateBy { it.name.lowercase() }
+        val incomeEntities = recurring.filter { it.isIncome }
+        val months = ArrayDeque<BucketMonth>()
+        for (monthsBack in 1..BUCKET_TREND_MONTHS) {
+            val (start, end) = InsightsPeriod.Stepped(PeriodUnit.MONTH, offset = -monthsBack)
+                .toRange(monthStartDay = monthStartDay)
+            val income = incomeEntities.fold(BigDecimal.ZERO) { acc, e -> acc + e.windowAmount(start, end) }
+            if (income.signum() <= 0) break
+            val spend = bucketSpend(trailingTxns.filter { it.timestamp in start..end }, byName)
+            val contribNet = contributions
+                .filter { it.date in start..end }
+                .fold(BigDecimal.ZERO) { acc, c -> acc + c.amount }
+            val savings = (spend.savings + contribNet).max(BigDecimal.ZERO)
+            months.addFirst(
+                BucketMonth(
+                    axisLabel = YearMonth.from(Instant.ofEpochMilli(start).atZone(zone)).format(MONTH_AXIS_FORMAT),
+                    needsPercent = pctOf(spend.needs, income),
+                    wantsPercent = pctOf(spend.wants, income),
+                    savingsPercent = pctOf(savings, income),
+                ),
+            )
+        }
+        return months.toList()
+    }
+
+    private fun pctOf(amount: BigDecimal, income: BigDecimal): Int =
+        if (income.signum() <= 0) 0 else (amount.toDouble() / income.toDouble() * 100).roundToInt()
 
     /** The overlay bundle folded onto the main state: whether it's on, the period overlay itself, and
      *  the per-calendar-month planned caps for the trend (empty when off). */

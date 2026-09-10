@@ -532,6 +532,34 @@
     <string name="insights_upcoming_bills">Aankomende rekeningen</string>
     <string name="insights_income_by_source">Inkomen per bron</string>
     <string name="insights_go_to_budget">Naar Budget</string>
+
+    <!-- Insights: Needs / Wants / Savings (de 50/30/20-verdeling) -->
+    <string name="insights_needs_wants_savings">Behoeften · Wensen · Sparen</string>
+    <string name="insights_nws_needs">Behoeften</string>
+    <string name="insights_nws_wants">Wensen</string>
+    <string name="insights_nws_savings">Sparen</string>
+    <string name="insights_nws_saved">Gespaard</string>
+    <string name="insights_nws_income_subtitle">Aandeel van %1$s inkomen</string>
+    <string name="insights_nws_targets_caption">Markeringen tonen de doelen 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · doel %2$d%%</string>
+    <string name="insights_nws_on_target">op doel</string>
+    <string name="insights_nws_under">%1$d eronder</string>
+    <string name="insights_nws_summary_balanced">Mooi in balans — alle drie binnen één punt van de regel.</string>
+    <string name="insights_nws_summary_wants_over">Wensen zaten deze maand %1$d punten boven het doel en Sparen ving het verschil op.</string>
+    <string name="insights_nws_summary_needs_over">Behoeften zaten deze maand %1$d punten boven het doel — vaak vallen huur of vaste lasten in één periode.</string>
+    <string name="insights_nws_summary_under_saving">Sparen zit deze maand %1$d punten onder 20%%. Ongeveer %2$s aan Wensen zou het gat dichten.</string>
+    <string name="insights_nws_trend_title">Je verdeling in de loop van de tijd</string>
+    <string name="insights_nws_trend_delta">%1$s ptn</string>
+    <string name="insights_nws_trend_footer">Je spaaraandeel ging de afgelopen %3$d maanden van %1$d%% naar %2$d%%.</string>
+    <string name="insights_nws_setup_subtitle">De 50/30/20-regel, op basis van je eigen categorieën</string>
+    <string name="insights_nws_setup_title">Bekijk je 50/30/20-verdeling</string>
+    <string name="insights_nws_setup_body">Voeg je inkomen toe en Budgetty verdeelt je uitgaven over Behoeften, Wensen en Sparen — de ingebouwde categorieën zijn al ingedeeld.</string>
+    <string name="insights_nws_setup_cta">Inkomen instellen</string>
+    <string name="insights_nws_setup_note">Berekend op je apparaat — er wordt niets verzonden.</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d afgesloten maand</item>
+        <item quantity="other">%1$d afgesloten maanden</item>
+    </plurals>
     <string name="insights_income_in">Erin</string>
     <string name="insights_income_out">Eruit</string>
     <string name="insights_income_net">Netto</string>
@@ -1006,6 +1034,10 @@
     <string name="manage_unlimited_premium">Onbeperkt met Premium</string>
     <string name="manage_in_group">In %1$s</string>
     <string name="manage_top_level">Hoofdniveau</string>
+    <!-- Needs/Wants/Savings-schakelaar onder elke categorierij (Categorieën beheren) -->
+    <string name="manage_bucket_need">Behoefte</string>
+    <string name="manage_bucket_want">Wens</string>
+    <string name="manage_bucket_savings">Sparen</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d subcategorie</item>
         <item quantity="other">%1$d subcategorieën</item>

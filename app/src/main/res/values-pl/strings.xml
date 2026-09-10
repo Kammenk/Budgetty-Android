@@ -532,6 +532,35 @@
     <string name="insights_upcoming_bills">Nadchodzące rachunki</string>
     <string name="insights_income_by_source">Dochody według źródła</string>
     <string name="insights_go_to_budget">Przejdź do Budżetu</string>
+    <!-- Insights: Potrzeby / Zachcianki / Oszczędności (zasada 50/30/20) -->
+    <string name="insights_needs_wants_savings">Potrzeby · Zachcianki · Oszczędności</string>
+    <string name="insights_nws_needs">Potrzeby</string>
+    <string name="insights_nws_wants">Zachcianki</string>
+    <string name="insights_nws_savings">Oszczędności</string>
+    <string name="insights_nws_saved">Zaoszczędzono</string>
+    <string name="insights_nws_income_subtitle">Udział w przychodzie %1$s</string>
+    <string name="insights_nws_targets_caption">Znaczniki pokazują cele 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · cel %2$d%%</string>
+    <string name="insights_nws_on_target">zgodnie z planem</string>
+    <string name="insights_nws_under">%1$d poniżej celu</string>
+    <string name="insights_nws_summary_balanced">Ładnie zrównoważone — wszystkie trzy w granicach punktu od reguły.</string>
+    <string name="insights_nws_summary_wants_over">W tym miesiącu Zachcianki przekroczyły cel o %1$d punktów, a różnicę pokryły Oszczędności.</string>
+    <string name="insights_nws_summary_needs_over">W tym miesiącu Potrzeby przekroczyły cel o %1$d punktów — często czynsz lub rachunki przypadające na jeden okres.</string>
+    <string name="insights_nws_summary_under_saving">W tym miesiącu Oszczędności są %1$d punktów poniżej 20%%. Około %2$s z Zachcianek pokryłoby różnicę.</string>
+    <string name="insights_nws_trend_title">Twój podział w czasie</string>
+    <string name="insights_nws_trend_delta">%1$s pkt</string>
+    <string name="insights_nws_trend_footer">Twój udział oszczędności zmienił się z %1$d%% na %2$d%% w ciągu ostatnich %3$d miesięcy.</string>
+    <string name="insights_nws_setup_subtitle">Zasada 50/30/20, z Twoich własnych kategorii</string>
+    <string name="insights_nws_setup_title">Zobacz swój podział 50/30/20</string>
+    <string name="insights_nws_setup_body">Dodaj swój przychód, a Budgetty podzieli Twoje wydatki na Potrzeby, Zachcianki i Oszczędności — wbudowane kategorie są już oznaczone.</string>
+    <string name="insights_nws_setup_cta">Ustaw przychód</string>
+    <string name="insights_nws_setup_note">Obliczane na Twoim urządzeniu — nic nigdzie nie jest wysyłane.</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d zamknięty miesiąc</item>
+        <item quantity="few">%1$d zamknięte miesiące</item>
+        <item quantity="many">%1$d zamkniętych miesięcy</item>
+        <item quantity="other">%1$d zamkniętego miesiąca</item>
+    </plurals>
     <string name="insights_income_in">Wpływy</string>
     <string name="insights_income_out">Wydatki</string>
     <string name="insights_income_net">Netto</string>
@@ -1035,6 +1064,9 @@
     <string name="manage_unlimited_premium">Bez limitu z Premium</string>
     <string name="manage_in_group">W grupie %1$s</string>
     <string name="manage_top_level">Najwyższy poziom</string>
+    <string name="manage_bucket_need">Potrzeba</string>
+    <string name="manage_bucket_want">Zachcianka</string>
+    <string name="manage_bucket_savings">Oszczędności</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d subkategoria</item>
         <item quantity="few">%1$d subkategorie</item>

@@ -532,6 +532,34 @@
     <string name="insights_upcoming_bills">Próximos pagos</string>
     <string name="insights_income_by_source">Ingresos por fuente</string>
     <string name="insights_go_to_budget">Ir a Presupuesto</string>
+
+    <!-- Insights: Needs / Wants / Savings (el reparto 50/30/20) -->
+    <string name="insights_needs_wants_savings">Necesidades · Deseos · Ahorro</string>
+    <string name="insights_nws_needs">Necesidades</string>
+    <string name="insights_nws_wants">Deseos</string>
+    <string name="insights_nws_savings">Ahorro</string>
+    <string name="insights_nws_saved">Ahorrado</string>
+    <string name="insights_nws_income_subtitle">Parte de los ingresos de %1$s</string>
+    <string name="insights_nws_targets_caption">Las marcas muestran los objetivos 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · objetivo %2$d%%</string>
+    <string name="insights_nws_on_target">en objetivo</string>
+    <string name="insights_nws_under">%1$d por debajo</string>
+    <string name="insights_nws_summary_balanced">Bien equilibrado — los tres a menos de un punto de la regla.</string>
+    <string name="insights_nws_summary_wants_over">Los deseos superaron el objetivo en %1$d puntos este mes, y el ahorro asumió la diferencia.</string>
+    <string name="insights_nws_summary_needs_over">Las necesidades superaron el objetivo en %1$d puntos este mes — a menudo el alquiler o los suministros caen en un mismo periodo.</string>
+    <string name="insights_nws_summary_under_saving">El ahorro está %1$d puntos por debajo del 20%% este mes. Unos %2$s de deseos cerrarían la diferencia.</string>
+    <string name="insights_nws_trend_title">Tu reparto a lo largo del tiempo</string>
+    <string name="insights_nws_trend_delta">%1$s pts</string>
+    <string name="insights_nws_trend_footer">Tu proporción de ahorro pasó del %1$d%% al %2$d%% en los últimos %3$d meses.</string>
+    <string name="insights_nws_setup_subtitle">La regla 50/30/20, a partir de tus propias categorías</string>
+    <string name="insights_nws_setup_title">Consulta tu reparto 50/30/20</string>
+    <string name="insights_nws_setup_body">Añade tus ingresos y Budgetty clasifica tus gastos en Necesidades, Deseos y Ahorro — las categorías integradas ya vienen etiquetadas.</string>
+    <string name="insights_nws_setup_cta">Configurar ingresos</string>
+    <string name="insights_nws_setup_note">Calculado en tu dispositivo — no se envía nada a ningún sitio.</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d mes cerrado</item>
+        <item quantity="other">%1$d meses cerrados</item>
+    </plurals>
     <string name="insights_income_in">Entra</string>
     <string name="insights_income_out">Sale</string>
     <string name="insights_income_net">Neto</string>
@@ -1003,6 +1031,10 @@
     <string name="manage_unlimited_premium">Ilimitadas con Premium</string>
     <string name="manage_in_group">En %1$s</string>
     <string name="manage_top_level">Nivel superior</string>
+    <!-- Selector Needs/Wants/Savings bajo cada fila de categoría (Gestionar categorías) -->
+    <string name="manage_bucket_need">Necesidad</string>
+    <string name="manage_bucket_want">Deseo</string>
+    <string name="manage_bucket_savings">Ahorro</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d subcategoría</item>
         <item quantity="other">%1$d subcategorías</item>

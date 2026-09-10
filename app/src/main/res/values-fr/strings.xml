@@ -532,6 +532,34 @@
     <string name="insights_upcoming_bills">Prochaines factures</string>
     <string name="insights_income_by_source">Revenus par source</string>
     <string name="insights_go_to_budget">Aller au budget</string>
+
+    <!-- Insights: Needs / Wants / Savings (la répartition 50/30/20) -->
+    <string name="insights_needs_wants_savings">Besoins · Envies · Épargne</string>
+    <string name="insights_nws_needs">Besoins</string>
+    <string name="insights_nws_wants">Envies</string>
+    <string name="insights_nws_savings">Épargne</string>
+    <string name="insights_nws_saved">Épargné</string>
+    <string name="insights_nws_income_subtitle">Part des revenus de %1$s</string>
+    <string name="insights_nws_targets_caption">Les repères indiquent les objectifs 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · objectif %2$d%%</string>
+    <string name="insights_nws_on_target">dans l\'objectif</string>
+    <string name="insights_nws_under">%1$d en dessous</string>
+    <string name="insights_nws_summary_balanced">Bel équilibre — les trois sont à moins d\'un point de la règle.</string>
+    <string name="insights_nws_summary_wants_over">Les envies ont dépassé l\'objectif de %1$d points ce mois-ci, et l\'épargne a absorbé la différence.</string>
+    <string name="insights_nws_summary_needs_over">Les besoins ont dépassé l\'objectif de %1$d points ce mois-ci — souvent un loyer ou des charges qui tombent sur une seule période.</string>
+    <string name="insights_nws_summary_under_saving">L\'épargne est %1$d points sous les 20%% ce mois-ci. Environ %2$s d\'envies suffiraient à combler l\'écart.</string>
+    <string name="insights_nws_trend_title">Votre répartition dans le temps</string>
+    <string name="insights_nws_trend_delta">%1$s pts</string>
+    <string name="insights_nws_trend_footer">Votre part d\'épargne est passée de %1$d%% à %2$d%% ces %3$d derniers mois.</string>
+    <string name="insights_nws_setup_subtitle">La règle 50/30/20, à partir de vos propres catégories</string>
+    <string name="insights_nws_setup_title">Voyez votre répartition 50/30/20</string>
+    <string name="insights_nws_setup_body">Ajoutez vos revenus et Budgetty répartit vos dépenses entre Besoins, Envies et Épargne — les catégories intégrées sont déjà étiquetées.</string>
+    <string name="insights_nws_setup_cta">Configurer les revenus</string>
+    <string name="insights_nws_setup_note">Calculé sur votre appareil — rien n\'est envoyé nulle part.</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d mois clôturé</item>
+        <item quantity="other">%1$d mois clôturés</item>
+    </plurals>
     <string name="insights_income_in">Entrées</string>
     <string name="insights_income_out">Sorties</string>
     <string name="insights_income_net">Net</string>
@@ -1003,6 +1031,10 @@
     <string name="manage_unlimited_premium">Illimitées avec Premium</string>
     <string name="manage_in_group">Dans %1$s</string>
     <string name="manage_top_level">Niveau supérieur</string>
+    <!-- Sélecteur Needs/Wants/Savings sous chaque ligne de catégorie (Gérer les catégories) -->
+    <string name="manage_bucket_need">Besoin</string>
+    <string name="manage_bucket_want">Envie</string>
+    <string name="manage_bucket_savings">Épargne</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d sous-catégorie</item>
         <item quantity="other">%1$d sous-catégories</item>

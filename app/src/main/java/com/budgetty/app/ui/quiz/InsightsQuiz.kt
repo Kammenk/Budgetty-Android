@@ -148,9 +148,8 @@ object InsightsQuiz {
             add(InsightsSection.INCOME_SPENDING.key)
             add(InsightsSection.SAVINGS_RATE.key)
             add(InsightsSection.INCOME_BY_SOURCE.key)
-        }
-        if (answers[BILLS] == "no") {
-            add(InsightsSection.FIXED_FLEXIBLE.key)
+            // The 50/30/20 split is measured against income, so it has nothing to show without one.
+            add(InsightsSection.NEEDS_WANTS_SAVINGS.key)
         }
         if (answers[DETAIL] == "big") {
             add(InsightsSection.TOP_STORES.key)
@@ -170,8 +169,8 @@ object InsightsQuiz {
             // Budget and upcoming bills are no longer Insights sections (budget lives on the Budget
             // screen, bills on Home); boost the remaining goal-adjacent insight instead.
             "budget" -> listOf(InsightsSection.PERIOD_COMPARISON)
-            "bills" -> listOf(InsightsSection.FIXED_FLEXIBLE)
-            "savings" -> listOf(InsightsSection.SAVINGS_RATE, InsightsSection.INCOME_SPENDING)
+            "bills" -> listOf(InsightsSection.NEEDS_WANTS_SAVINGS)
+            "savings" -> listOf(InsightsSection.SAVINGS_RATE, InsightsSection.NEEDS_WANTS_SAVINGS)
             else -> return emptyList()
         }.map { it.key }
         val head = listOf(InsightsSection.BREAKDOWN.key) + boosted
