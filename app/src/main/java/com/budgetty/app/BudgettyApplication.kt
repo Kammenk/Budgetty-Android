@@ -2,6 +2,7 @@ package com.budgetty.app
 
 import android.app.Application
 import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.appcheck.installAppCheck
 import com.budgetty.app.category.Categories
 import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.repository.CategoryRepository
@@ -17,6 +18,10 @@ import org.koin.core.context.startKoin
 class BudgettyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        // Harden access to the shared Firebase backend before Koin starts or any Firebase request
+        // fires: attach App Check attestation tokens (monitor mode — non-enforcing until the console
+        // turns on per-service enforcement, so this is behaviour-neutral today).
+        installAppCheck(this)
         val koin = startKoin {
             androidContext(this@BudgettyApplication)
             modules(appModule)
