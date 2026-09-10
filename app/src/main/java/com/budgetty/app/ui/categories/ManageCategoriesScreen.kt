@@ -56,12 +56,15 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.CategoryBucket
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.ui.components.CategoryEditorScreen
 import com.budgetty.app.ui.components.CustomCategoryActions
+import com.budgetty.app.ui.components.SegmentedToggle
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
 import com.budgetty.app.ui.util.categoryDisplayName
+import com.budgetty.app.ui.util.effectiveBucketOf
 import com.budgetty.app.ui.util.isExpandedWidth
 import org.koin.androidx.compose.koinViewModel
 
@@ -78,6 +81,7 @@ fun ManageCategoriesScreen(
         onSave = viewModel::saveCustomCategory,
         onDelete = viewModel::deleteCustomCategory,
         onReparent = viewModel::setCategoryParent,
+        onUpdateBucket = viewModel::updateBucket,
         onCountTransactions = viewModel::transactionCount,
         onOpenPaywall = onOpenPaywall,
     )
@@ -115,6 +119,8 @@ fun ManageCategoriesContent(
     modifier: Modifier = Modifier,
 ) {
     val customs = remember(categories) { categories.filter { it.isCustom }.sortedBy { it.createdAt } }
+    // Lower-cased lookup for resolving each row's effective bucket (own tag → parent's tag → default).
+    val byName = remember(categories) { categories.associateBy { it.name.lowercase() } }
     val order = remember(categories) {
         Categories.predefined.withIndex().associate { (i, c) -> c.name to i }
     }
@@ -186,7 +192,12 @@ fun ManageCategoriesContent(
                     item { EmptyYoursHint() }
                 } else {
                     items(customs, key = { "cust:${it.name}" }) { cat ->
-                        CustomCategoryRow(cat = cat, onEdit = { openEdit(cat) })
+                        CustomCategoryRow(
+                            cat = cat,
+                            bucket = effectiveBucketOf(cat.name, byName),
+                            onUpdateBucket = actions.onUpdateBucket,
+                            onEdit = { openEdit(cat) },
+                        )
                         Spacer(Modifier.size(7.dp))
                     }
                 }
@@ -200,6 +211,8 @@ fun ManageCategoriesContent(
                 }
                 builtInGroups(
                     groupViews = groupViews,
+                    byName = byName,
+                    onUpdateBucket = actions.onUpdateBucket,
                     expanded = expanded,
                     onToggle = { name -> expanded = if (name in expanded) expanded - name else expanded + name },
                     onMove = { movingName = it },
@@ -231,6 +244,8 @@ fun ManageCategoriesContent(
  *  from [ManageCategoriesContent] so that function stays within the method-length limit. */
 private fun LazyListScope.builtInGroups(
     groupViews: List<GroupView>,
+    byName: Map<String, CategoryEntity>,
+    onUpdateBucket: (String, CategoryBucket?) -> Unit,
     expanded: Set<String>,
     onToggle: (String) -> Unit,
     onMove: (String) -> Unit,
@@ -238,7 +253,13 @@ private fun LazyListScope.builtInGroups(
     groupViews.forEach { gv ->
         val isOpen = gv.name in expanded
         item(key = "grp:${gv.name}") {
-            GroupRow(group = gv, expanded = isOpen, onToggle = { onToggle(gv.name) })
+            GroupRow(
+                group = gv,
+                bucket = effectiveBucketOf(gv.name, byName),
+                onUpdateBucket = onUpdateBucket,
+                expanded = isOpen,
+                onToggle = { onToggle(gv.name) },
+            )
             Spacer(Modifier.size(7.dp))
         }
         if (isOpen) {
@@ -258,6 +279,8 @@ private fun LazyListScope.builtInGroups(
                     gv.subs.forEach { sub ->
                         SubCategoryRow(
                             cat = sub,
+                            bucket = effectiveBucketOf(sub.name, byName),
+                            onUpdateBucket = onUpdateBucket,
                             movable = gv.name != Categories.OTHER,
                             onMove = { onMove(sub.name) },
                         )
@@ -326,127 +349,182 @@ private fun SectionHeaderRow(title: String, trailing: String, accent: Boolean = 
     }
 }
 
-/** A user's custom category: tap anywhere (or the pencil) to edit; its group shows on the sub-line. */
+/** A user's custom category: tap the header (or the pencil) to edit; its group shows on the sub-line,
+ *  and a bucket toggle underneath tags it for the Insights 50/30/20 split. */
 @Composable
-private fun CustomCategoryRow(cat: CategoryEntity, onEdit: () -> Unit) {
+private fun CustomCategoryRow(
+    cat: CategoryEntity,
+    bucket: CategoryBucket,
+    onUpdateBucket: (String, CategoryBucket?) -> Unit,
+    onEdit: () -> Unit,
+) {
     val parent = effectiveParent(cat)
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(13.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable(onClick = onEdit)
             .padding(horizontal = 10.dp, vertical = 9.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(11.dp),
+        verticalArrangement = Arrangement.spacedBy(9.dp),
     ) {
-        CategoryTile(Categories.colorOf(cat.name), Categories.emojiOf(cat.name), tile = 30, corner = 9, glyph = 16)
-        Column(Modifier.weight(1f)) {
-            Text(
-                text = categoryDisplayName(cat.name),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Text(
-                text = if (parent != null) {
-                    stringResource(R.string.manage_in_group, categoryDisplayName(parent))
-                } else {
-                    stringResource(R.string.manage_top_level)
-                },
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        Box(
-            modifier = Modifier
-                .size(28.dp)
-                .clip(RoundedCornerShape(50))
-                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                .clickable(onClick = onEdit),
-            contentAlignment = Alignment.Center,
+        Row(
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onEdit),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(11.dp),
         ) {
-            Icon(
-                Icons.Filled.Edit,
-                contentDescription = stringResource(R.string.cd_edit_category, categoryDisplayName(cat.name)),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(15.dp),
-            )
+            CategoryTile(Categories.colorOf(cat.name), Categories.emojiOf(cat.name), tile = 30, corner = 9, glyph = 16)
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = categoryDisplayName(cat.name),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = if (parent != null) {
+                        stringResource(R.string.manage_in_group, categoryDisplayName(parent))
+                    } else {
+                        stringResource(R.string.manage_top_level)
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                    .clickable(onClick = onEdit),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    Icons.Filled.Edit,
+                    contentDescription = stringResource(R.string.cd_edit_category, categoryDisplayName(cat.name)),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(15.dp),
+                )
+            }
         }
+        CategoryBucketToggle(cat.name, bucket, onUpdateBucket)
     }
+}
+
+/** The Needs / Wants / Savings tagging control beneath a category row — the shared SegmentedToggle
+ *  preselected to the category's effective [bucket]; picking a segment stores an explicit override
+ *  (a sub-category with no tag of its own follows its group until one is set). */
+@Composable
+private fun CategoryBucketToggle(
+    name: String,
+    bucket: CategoryBucket,
+    onUpdateBucket: (String, CategoryBucket?) -> Unit,
+) {
+    SegmentedToggle(
+        options = listOf(
+            stringResource(R.string.manage_bucket_need),
+            stringResource(R.string.manage_bucket_want),
+            stringResource(R.string.manage_bucket_savings),
+        ),
+        selectedIndex = bucket.ordinal,
+        onSelect = { onUpdateBucket(name, CategoryBucket.entries[it]) },
+    )
 }
 
 /** A built-in top-level group: tap to expand its sub-categories; the count notes how many are the
  *  user's own ("· N yours"). */
 @Composable
-private fun GroupRow(group: GroupView, expanded: Boolean, onToggle: () -> Unit) {
-    Row(
+private fun GroupRow(
+    group: GroupView,
+    bucket: CategoryBucket,
+    onUpdateBucket: (String, CategoryBucket?) -> Unit,
+    expanded: Boolean,
+    onToggle: () -> Unit,
+) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(13.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable(onClick = onToggle)
             .padding(horizontal = 10.dp, vertical = 9.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(11.dp),
+        verticalArrangement = Arrangement.spacedBy(9.dp),
     ) {
-        CategoryTile(Categories.colorOf(group.name), Categories.emojiOf(group.name), tile = 30, corner = 9, glyph = 16)
-        Column(Modifier.weight(1f)) {
-            Text(
-                text = categoryDisplayName(group.name),
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            val subCount = pluralStringResource(R.plurals.manage_sub_count, group.subs.size, group.subs.size)
-            val yours = if (group.customCount > 0) {
-                stringResource(R.string.manage_yours_suffix, group.customCount)
-            } else {
-                ""
+        Row(
+            modifier = Modifier.fillMaxWidth().clickable(onClick = onToggle),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(11.dp),
+        ) {
+            CategoryTile(Categories.colorOf(group.name), Categories.emojiOf(group.name), tile = 30, corner = 9, glyph = 16)
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = categoryDisplayName(group.name),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                val subCount = pluralStringResource(R.plurals.manage_sub_count, group.subs.size, group.subs.size)
+                val yours = if (group.customCount > 0) {
+                    stringResource(R.string.manage_yours_suffix, group.customCount)
+                } else {
+                    ""
+                }
+                Text(
+                    text = subCount + yours,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
-            Text(
-                text = subCount + yours,
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            Icon(
+                if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Icon(
-            if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+        CategoryBucketToggle(group.name, bucket, onUpdateBucket)
     }
 }
 
-/** An indented built-in sub-category. Its one action is the folder button → the Move dialog. */
+/** An indented built-in sub-category: the folder button re-homes it, and the bucket toggle beneath
+ *  tags it (it follows its group's bucket until tagged individually). */
 @Composable
-private fun SubCategoryRow(cat: CategoryEntity, movable: Boolean, onMove: () -> Unit) {
-    Row(
+private fun SubCategoryRow(
+    cat: CategoryEntity,
+    bucket: CategoryBucket,
+    onUpdateBucket: (String, CategoryBucket?) -> Unit,
+    movable: Boolean,
+    onMove: () -> Unit,
+) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
             .padding(horizontal = 8.dp, vertical = 5.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(7.dp),
     ) {
-        CategoryTile(Categories.colorOf(cat.name), Categories.emojiOf(cat.name), tile = 26, corner = 8, glyph = 14)
-        Text(
-            text = categoryDisplayName(cat.name),
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f),
-        )
-        if (movable) {
-            IconButton(onClick = onMove, modifier = Modifier.size(30.dp)) {
-                Icon(
-                    Icons.Filled.Folder,
-                    contentDescription = stringResource(R.string.manage_move_cd, categoryDisplayName(cat.name)),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(16.dp),
-                )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            CategoryTile(Categories.colorOf(cat.name), Categories.emojiOf(cat.name), tile = 26, corner = 8, glyph = 14)
+            Text(
+                text = categoryDisplayName(cat.name),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f),
+            )
+            if (movable) {
+                IconButton(onClick = onMove, modifier = Modifier.size(30.dp)) {
+                    Icon(
+                        Icons.Filled.Folder,
+                        contentDescription = stringResource(R.string.manage_move_cd, categoryDisplayName(cat.name)),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp),
+                    )
+                }
             }
         }
+        CategoryBucketToggle(cat.name, bucket, onUpdateBucket)
     }
 }
 

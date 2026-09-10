@@ -435,6 +435,10 @@
     <string name="manage_unlimited_premium">Unlimited with Premium</string>
     <string name="manage_in_group">In %1$s</string>
     <string name="manage_top_level">Top level</string>
+    <!-- Needs/Wants/Savings bucket toggle under each category row (Manage categories) -->
+    <string name="manage_bucket_need">Need</string>
+    <string name="manage_bucket_want">Want</string>
+    <string name="manage_bucket_savings">Savings</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d sub-category</item>
         <item quantity="other">%1$d sub-categories</item>
@@ -461,6 +465,69 @@
     <string name="insights_upcoming_bills">Upcoming bills</string>
     <string name="insights_income_by_source">Income by source</string>
     <string name="insights_go_to_budget">Go to Budget</string>
+
+    <!-- Insights: Needs / Wants / Savings (the 50/30/20 split) -->
+    <string name="insights_needs_wants_savings">Needs · Wants · Savings</string>
+    <string name="insights_nws_needs">Needs</string>
+    <string name="insights_nws_wants">Wants</string>
+    <string name="insights_nws_savings">Savings</string>
+    <string name="insights_nws_saved">Saved</string>
+    <!-- %1$s = total income for the period, e.g. "€2,400" -->
+    <string name="insights_nws_income_subtitle">Share of %1$s income</string>
+    <string name="insights_nws_targets_caption">Marks show the 50 / 30 / 20 targets</string>
+    <!-- %1$s = amount in this bucket, %2$d = its target percentage, e.g. "€1,176 · target 50%" -->
+    <string name="insights_nws_row_sub">%1$s · target %2$d%%</string>
+    <string name="insights_nws_on_target">on target</string>
+    <!-- %1$d = points this bucket is below its target (Needs/Wants only), e.g. "5 under" -->
+    <string name="insights_nws_under">%1$d under</string>
+    <string name="insights_nws_summary_balanced">Nicely balanced — all three within a point of the rule.</string>
+    <!-- %1$d = points Wants is over its 30% target -->
+    <string name="insights_nws_summary_wants_over">Wants ran %1$d points over this month, and Savings took the difference.</string>
+    <!-- %1$d = points Needs is over its 50% target -->
+    <string name="insights_nws_summary_needs_over">Needs ran %1$d points over this month — often rent or utilities landing in one period.</string>
+    <!-- %1$d = points Savings is under 20%, %2$s = the amount of Wants that would close the gap -->
+    <string name="insights_nws_summary_under_saving">Savings is %1$d points under 20%% this month. Around %2$s of Wants would close the gap.</string>
+    <string name="insights_nws_trend_title">Your split over time</string>
+    <!-- %1$s = signed change in savings share over the window, e.g. "+10" -->
+    <string name="insights_nws_trend_delta">%1$s pts</string>
+    <!-- %1$d = savings share in the earliest month, %2$d = latest month, %3$d = number of months -->
+    <string name="insights_nws_trend_footer">Your savings share went from %1$d%% to %2$d%% over the last %3$d months.</string>
+    <string name="insights_nws_setup_subtitle">The 50/30/20 rule, from your own categories</string>
+    <string name="insights_nws_setup_title">See your 50/30/20 split</string>
+    <string name="insights_nws_setup_body">Add your income and Budgetty sorts your spending into Needs, Wants and Savings — your built-in categories come pre-tagged.</string>
+    <string name="insights_nws_setup_cta">Set up income</string>
+    <string name="insights_nws_setup_note">Worked out on your device — nothing is sent anywhere.</string>
+
+    <!-- Insights: the one-time "what counts as Savings?" ask + its Customize-sheet toggle -->
+    <string name="insights_nws_ask_title">Does money you simply keep count as Savings?</string>
+    <string name="insights_nws_ask_subtitle">Pick the one that matches how you think. Changeable later.</string>
+    <string name="insights_nws_ask_keep">Count what I keep</string>
+    <string name="insights_nws_ask_keep_desc">Anything left after Needs and Wants is money you saved.</string>
+    <string name="insights_nws_ask_aside">Only money I set aside</string>
+    <string name="insights_nws_ask_aside_desc">Goal transfers and Savings categories only. The rest stays unspent.</string>
+    <!-- %1$s = the leftover amount, e.g. "€1,824" -->
+    <string name="insights_nws_bar_unspent">%1$s of your income is not spent yet</string>
+    <string name="insights_nws_bar_leftover">Grey is income you have not spent or set aside</string>
+    <!-- %1$s = the amount kept back -->
+    <string name="insights_nws_savings_waiting">%1$s left · waiting on your answer</string>
+    <string name="insights_nws_leftover">Left over</string>
+    <!-- %1$s = the leftover amount -->
+    <string name="insights_nws_leftover_sub">%1$s · not counted as Savings</string>
+    <!-- %1$s = amount kept, %2$s = income for the month -->
+    <string name="insights_nws_summary_kept">You kept %1$s of your %2$s income this month.</string>
+    <string name="insights_nws_cta_keep_title">Give it a goal</string>
+    <string name="insights_nws_cta_keep_sub">Name what you are keeping it for</string>
+    <string name="insights_nws_cta_aside_title">Set a savings goal</string>
+    <string name="insights_nws_cta_aside_sub">A goal transfer counts toward Savings</string>
+    <string name="insights_nws_footer_keep">Counting everything you keep. Change in Customize sections.</string>
+    <string name="insights_nws_footer_aside">Counting money you set aside. Change in Customize sections.</string>
+    <string name="insights_nws_alloc_header">Savings</string>
+    <string name="insights_nws_alloc_desc">How Savings is counted in your 50/30/20 split.</string>
+    <string name="insights_nws_alloc_keep_desc">Income minus Needs and Wants counts as saved.</string>
+    <string name="insights_nws_alloc_aside_desc">Goal transfers and Savings categories only.</string>
+    <string name="insights_nws_alloc_footer">Applies to past months too, so your trend stays consistent.</string>
+    <string name="insights_nws_new">New</string>
+
     <!-- Money in vs. out -->
     <string name="insights_income_in">In</string>
     <string name="insights_income_out">Out</string>
@@ -500,6 +567,11 @@
     <plurals name="insights_budget_days_left">
         <item quantity="one">%1$d day left</item>
         <item quantity="other">%1$d days left</item>
+    </plurals>
+    <!-- Needs/Wants/Savings trend subtitle: %1$d = number of closed months plotted -->
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d closed month</item>
+        <item quantity="other">%1$d closed months</item>
     </plurals>
 
     <!-- Highlights (rule-based narrative callouts) -->

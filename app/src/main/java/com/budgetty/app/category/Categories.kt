@@ -241,6 +241,54 @@ object Categories {
     fun groupOf(name: String): String = parentOf(name) ?: name
 
     /**
+     * Default [CategoryBucket] per top-level group (lower-cased keys). A category with no explicit
+     * entry in [categoryBucketDefault] inherits its group's bucket here; anything unmapped (including a
+     * brand-new custom category) falls back to [CategoryBucket.WANT]. Needs = the bills you'd keep
+     * paying in a lean month (housing, utilities, groceries, transport, insurance, health); Wants =
+     * discretionary; Savings = money set aside.
+     */
+    private val groupBucketDefault: Map<String, CategoryBucket> = mapOf(
+        "groceries" to CategoryBucket.NEED,
+        "household & personal" to CategoryBucket.NEED,
+        "health & wellness" to CategoryBucket.NEED,
+        "transportation" to CategoryBucket.NEED,
+        "services & subscriptions" to CategoryBucket.NEED,
+        "bills & finance" to CategoryBucket.NEED,
+        "dining & entertainment" to CategoryBucket.WANT,
+        "shopping & lifestyle" to CategoryBucket.WANT,
+        "other" to CategoryBucket.WANT,
+    )
+
+    /**
+     * Per-category bucket defaults that differ from their group's [groupBucketDefault] (lower-cased
+     * keys): the discretionary members of otherwise-essential groups (travel, subscriptions, gifts,
+     * one-off services, beauty) and the two money-set-aside categories that anchor the Savings bucket.
+     * All of these remain user-overridable in Manage categories.
+     */
+    private val categoryBucketDefault: Map<String, CategoryBucket> = mapOf(
+        "travel & accommodation" to CategoryBucket.WANT,
+        "subscriptions" to CategoryBucket.WANT,
+        "gifts & charitable donations" to CategoryBucket.WANT,
+        "services" to CategoryBucket.WANT,
+        "beauty" to CategoryBucket.WANT,
+        "savings" to CategoryBucket.SAVINGS,
+        "investments" to CategoryBucket.SAVINGS,
+    )
+
+    /**
+     * The code-defined 50/30/20 bucket for [name] (case-insensitive), ignoring any user override: an
+     * explicit per-category default ([categoryBucketDefault]) wins, else the category's group default
+     * ([groupBucketDefault], keyed by its [defaultParentOf] group or itself when top-level), else
+     * [CategoryBucket.WANT]. Callers holding a category row resolve the effective bucket as
+     * `row.bucket ?: <parent's non-null bucket> ?: defaultBucketOf(name)`.
+     */
+    fun defaultBucketOf(name: String): CategoryBucket {
+        categoryBucketDefault[name.lowercase()]?.let { return it }
+        val group = (defaultParentOf(name) ?: name).lowercase()
+        return groupBucketDefault[group] ?: CategoryBucket.WANT
+    }
+
+    /**
      * The colors offered when a user creates a custom category — the app's own category-color
      * family (muted, deep tones, several shared with the predefined groups), so custom categories
      * blend in with the built-ins rather than introducing new hues.

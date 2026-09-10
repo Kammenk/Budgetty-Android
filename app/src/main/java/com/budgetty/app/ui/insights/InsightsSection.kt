@@ -29,7 +29,8 @@ enum class InsightsSection(val key: String, @param:StringRes val labelRes: Int) 
     // bills moved to Home — neither is an Insights section any more.)
     INCOME_SPENDING("income_spending", R.string.insights_income_spending),
     SAVINGS_RATE("savings_rate", R.string.insights_savings_rate),
-    FIXED_FLEXIBLE("fixed_flexible", R.string.insights_fixed_flexible),
+    // The 50/30/20 split (Needs/Wants/Savings) + its trend — replaces the old fixed-vs-flexible card.
+    NEEDS_WANTS_SAVINGS("needs_wants_savings", R.string.insights_needs_wants_savings),
     INCOME_BY_SOURCE("income_by_source", R.string.insights_income_by_source),
     TOP_CATEGORIES("top_categories", R.string.insights_top_categories),
     TOP_STORES("top_stores", R.string.insights_top_stores),

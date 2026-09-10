@@ -14,7 +14,7 @@ import com.budgetty.app.category.Categories
         SavingsGoalEntity::class, SavingsContributionEntity::class,
         IgnoredSubscriptionEntity::class, BuyingLimitEntity::class, WellbeingScoreEntity::class,
     ],
-    version = 26,
+    version = 27,
     exportSchema = true,
 )
 @TypeConverters(Converters::class)
@@ -411,6 +411,20 @@ val MIGRATION_25_26 = object : Migration(25, 26) {
     }
 }
 
+/**
+ * v27 adds categories.bucket — the Needs/Wants/Savings bucket a category's spend counts toward in the
+ * Insights 50/30/20 split. Nullable like [categories.parent] ([MIGRATION_19_20]): NULL keeps the
+ * code-defined default ([Categories.defaultBucketOf], with sub-categories inheriting their group), a
+ * non-null value is the user's explicit tag. Only the column is added — existing rows stay NULL and
+ * resolve from code, so no data moves on upgrade — and, being user-editable, it is never rewritten by
+ * the onOpen re-seed.
+ */
+val MIGRATION_26_27 = object : Migration(26, 27) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE categories ADD COLUMN bucket TEXT DEFAULT NULL")
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -456,4 +470,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
     MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26,
+    MIGRATION_26_27,
 )

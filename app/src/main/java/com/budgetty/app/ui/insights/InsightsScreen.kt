@@ -59,6 +59,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.pluralStringResource
@@ -89,12 +90,19 @@ import com.budgetty.app.ui.recap.RecapReopenRow
 import com.budgetty.app.ui.wellbeing.WellbeingInsightsRow
 import com.budgetty.app.ui.subscriptions.SubscriptionsInsightsCard
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.CategoryBucket
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetWarnColor
+import com.budgetty.app.ui.theme.bucketColor
+import com.budgetty.app.ui.theme.bucketContainerAlpha
+import com.budgetty.app.ui.theme.bucketLeftoverColor
+import com.budgetty.app.ui.theme.wellbeingGoodContainer
+import com.budgetty.app.ui.theme.wellbeingWarnContainer
+import com.budgetty.app.ui.theme.wellbeingWarnOn
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
 import com.budgetty.app.ui.util.categoryDisplayName
 import com.budgetty.app.ui.util.recurringSubtitle
@@ -144,6 +152,7 @@ fun InsightsScreen(
         onCustomRangeSelected = viewModel::onCustomRangeSelected,
         onToggleIncludeRecurringBills = viewModel::onIncludeRecurringBillsChanged,
         onDismissOverlayNudge = viewModel::onDismissOverlayNudge,
+        onChooseSavingsAllocation = viewModel::onCountLeftoverAsSavings,
         overlayNudgeDismissed = settings.insightsOverlayNudgeDismissed,
         modifier = modifier,
     )
@@ -171,6 +180,7 @@ private fun InsightsScreenContent(
     onCustomRangeSelected: (LocalDate, LocalDate) -> Unit,
     onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
     onDismissOverlayNudge: () -> Unit = {},
+    onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
@@ -232,12 +242,14 @@ private fun InsightsScreenContent(
                 onRevertSections = onRevertSections,
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
+                onNavigateToBudget = onNavigateToBudget,
                 onNavigateToWellbeing = onNavigateToWellbeing,
                 onNavigateToRecap = onNavigateToRecap,
                 showRecapEntry = showRecapEntry,
                 onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
                 onPlannedBadgeClick = { plannedDialog = it },
                 onDismissOverlayNudge = onDismissOverlayNudge,
+                onChooseSavingsAllocation = onChooseSavingsAllocation,
                 overlayNudgeDismissed = overlayNudgeDismissed,
             )
         } else {
@@ -261,6 +273,7 @@ private fun InsightsScreenContent(
                 onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
                 onPlannedBadgeClick = { plannedDialog = it },
                 onDismissOverlayNudge = onDismissOverlayNudge,
+                onChooseSavingsAllocation = onChooseSavingsAllocation,
                 overlayNudgeDismissed = overlayNudgeDismissed,
             )
         }
@@ -622,6 +635,7 @@ private fun InsightsPhoneBody(
     onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
     onPlannedBadgeClick: (PlannedDialog) -> Unit = {},
     onDismissOverlayNudge: () -> Unit = {},
+    onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
@@ -660,6 +674,10 @@ private fun InsightsPhoneBody(
                 onRevertToDefault = onRevertSections,
                 // A "Layers" group above the section list: the opt-in switch for the planned-bills overlay.
                 header = {
+                    SavingsAllocationCustomize(
+                        current = state.savingsAllocation,
+                        onChoose = onChooseSavingsAllocation,
+                    )
                     InsightsLayersToggle(
                         checked = state.includeRecurringBills,
                         onCheckedChange = onToggleIncludeRecurringBills,
@@ -755,10 +773,21 @@ private fun InsightsPhoneBody(
                             SavingsRateContent(state, periodLabel, onNavigateToBudget)
                         }
 
-                    InsightsSection.FIXED_FLEXIBLE ->
-                        if (state.isLoaded && (state.hasIncome || state.hasBills)) InsightCard {
-                            FixedVsFlexibleContent(state, periodLabel, onNavigateToBudget)
+                    // The split card shows a setup state when there's no income yet, so it gates on
+                    // isLoaded alone; the trend only appears beneath a populated split with enough months.
+                    InsightsSection.NEEDS_WANTS_SAVINGS -> if (state.isLoaded) {
+                        InsightCard {
+                            NeedsWantsSplitContent(
+                                split = state.needsWantsSplit,
+                                periodLabel = periodLabel,
+                                onGoToBudget = onNavigateToBudget,
+                                onChooseAllocation = onChooseSavingsAllocation,
+                            )
                         }
+                        if (state.showsBucketTrend) {
+                            InsightCard { BucketTrendContent(state.bucketTrend) }
+                        }
+                    }
 
                     InsightsSection.INCOME_BY_SOURCE ->
                         if (state.isLoaded && (state.hasIncome || state.hasBills)) InsightCard {
@@ -833,12 +862,14 @@ internal fun InsightsTabletBody(
     onRevertSections: () -> Unit,
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
+    onNavigateToBudget: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
     showRecapEntry: Boolean = false,
     onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
     onPlannedBadgeClick: (PlannedDialog) -> Unit = {},
     onDismissOverlayNudge: () -> Unit = {},
+    onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
@@ -874,6 +905,23 @@ internal fun InsightsTabletBody(
                 includeBills = state.includeRecurringBills,
                 onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.TREND) },
             )
+        }
+    }
+    // Needs/Wants/Savings 50/30/20 split + its closed-month trend (the split shows a setup state
+    // without income; the trend only beneath a populated split, with per-month savings % labels).
+    val nwsSplitCard: @Composable (Modifier) -> Unit = { mod ->
+        if (shows(InsightsSection.NEEDS_WANTS_SAVINGS)) InsightCard(modifier = mod) {
+            NeedsWantsSplitContent(
+                split = state.needsWantsSplit,
+                periodLabel = periodLabel,
+                onGoToBudget = onNavigateToBudget,
+                onChooseAllocation = onChooseSavingsAllocation,
+            )
+        }
+    }
+    val nwsTrendCard: @Composable (Modifier) -> Unit = { mod ->
+        if (shows(InsightsSection.NEEDS_WANTS_SAVINGS) && state.showsBucketTrend) {
+            InsightCard(modifier = mod) { BucketTrendContent(state.bucketTrend, showMonthLabels = true) }
         }
     }
     // Period-over-period comparison as its own card below the trend (mirrors the phone layout);
@@ -930,6 +978,10 @@ internal fun InsightsTabletBody(
                 onRevertToDefault = onRevertSections,
                 // A "Layers" group above the section list: the opt-in switch for the planned-bills overlay.
                 header = {
+                    SavingsAllocationCustomize(
+                        current = state.savingsAllocation,
+                        onChoose = onChooseSavingsAllocation,
+                    )
                     InsightsLayersToggle(
                         checked = state.includeRecurringBills,
                         onCheckedChange = onToggleIncludeRecurringBills,
@@ -1003,6 +1055,8 @@ internal fun InsightsTabletBody(
                     ) {
                         donutCard(Modifier.fillMaxWidth())
                         statTiles()
+                        nwsSplitCard(Modifier.fillMaxWidth())
+                        nwsTrendCard(Modifier.fillMaxWidth())
                         trendCard(Modifier.fillMaxWidth())
                         periodComparisonCard(Modifier.fillMaxWidth())
                     }
@@ -1052,6 +1106,8 @@ internal fun InsightsTabletBody(
                 overlayNudge()
                 donutCard(Modifier.fillMaxWidth())
                 statTiles()
+                nwsSplitCard(Modifier.fillMaxWidth())
+                nwsTrendCard(Modifier.fillMaxWidth())
                 trendCard(Modifier.fillMaxWidth())
                 periodComparisonCard(Modifier.fillMaxWidth())
                 breakdownCards()
@@ -1062,8 +1118,6 @@ internal fun InsightsTabletBody(
 
 // ── Income & recurring-payment cards ───────────────────────────────────────────────────────────
 
-private val FixedBillsColor = Color(0xFFD08A4A)
-private val FlexibleLeftColor = Color(0xFF4FA85A)
 private val IncomeSourceColors = listOf(
     Color(0xFF4FA85A), Color(0xFFD08A4A), Color(0xFF4AA3C7), Color(0xFF9A78D0), Color(0xFFC98A00),
 )
@@ -1338,71 +1392,701 @@ private fun SavingsRateContent(state: InsightsUiState, periodLabel: String, onGo
     }
 }
 
+// ── Needs / Wants / Savings (the 50/30/20 split) ───────────────────────────────────────────────
+
+/** The split card: the populated 50/30/20 view when there's income to measure against, else the
+ *  setup state. Shared by phone and tablet. */
 @Composable
-private fun LegendRow(dotColor: Color, label: String, amount: String, percent: Int, amountColor: Color) {
-    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        Box(Modifier.size(11.dp).clip(RoundedCornerShape(3.dp)).background(dotColor))
-        Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
-        Text(amount, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = amountColor)
+internal fun NeedsWantsSplitContent(
+    split: NeedsWantsSplit?,
+    periodLabel: String,
+    onGoToBudget: () -> Unit,
+    onChooseAllocation: (Boolean) -> Unit = {},
+) {
+    if (split == null) {
+        NeedsWantsSetup(onGoToBudget)
+    } else {
+        NeedsWantsSplitCard(split, periodLabel, onGoToBudget, onChooseAllocation)
+    }
+}
+
+/** Title + "share of income" subtitle + period pill — the split card's header. */
+@Composable
+private fun NeedsWantsHeader(income: BigDecimal, periodLabel: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(
+                stringResource(R.string.insights_needs_wants_savings),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(R.string.insights_nws_income_subtitle, income.formatMoney()),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Text(
-            text = "$percent%",
-            style = MaterialTheme.typography.bodySmall,
+            text = periodLabel,
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.End,
-            modifier = Modifier.width(36.dp),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier
+                .clip(RoundedCornerShape(50))
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                .padding(horizontal = 10.dp, vertical = 5.dp),
         )
     }
 }
 
-/** "Where your income goes": a stacked bar of fixed bills / flexible spend / left, with a legend. */
 @Composable
-private fun FixedVsFlexibleContent(state: InsightsUiState, periodLabel: String, onGoToBudget: () -> Unit) {
+private fun NeedsWantsSplitCard(
+    split: NeedsWantsSplit,
+    periodLabel: String,
+    onGoToBudget: () -> Unit,
+    onChooseAllocation: (Boolean) -> Unit,
+) {
+    val unset = split.allocation == SavingsAllocation.UNSET
     Column(Modifier.fillMaxWidth()) {
-        MoneyFlowCardHeader(stringResource(R.string.insights_fixed_flexible), periodLabel)
-        val income = state.periodIncome
-        if (income.signum() <= 0) {
-            CardNudge("💡", null, stringResource(R.string.insights_fixed_nudge), onGoToBudget)
+        NeedsWantsHeader(split.income, periodLabel)
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+        BucketSplitBar(split)
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = splitBarCaption(split),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        // The one-time ask sits between the bar and the rows, until the user answers it.
+        if (unset) {
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            SavingsAllocationAsk(split, onChooseAllocation)
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        BucketRow(split.needs, showPill = !unset)
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        BucketRow(split.wants, showPill = !unset)
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        if (unset) {
+            SavingsWaitingRow(split)
         } else {
-            val incD = income.toDouble()
-            val fixed = state.periodBills
-            val flexible = state.total
-            val left = income.subtract(fixed).subtract(flexible)
-            val fixedFrac = (fixed.toDouble() / incD).coerceIn(0.0, 1.0).toFloat()
-            val flexFrac = (flexible.toDouble() / incD).coerceIn(0.0, (1.0 - fixedFrac).coerceAtLeast(0.0)).toFloat()
-            val leftFrac = (1f - fixedFrac - flexFrac).coerceIn(0f, 1f)
-            fun pct(v: BigDecimal) = (v.toDouble() / incD * 100).roundToInt()
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
-            Row(
-                modifier = Modifier.fillMaxWidth().height(18.dp).clip(RoundedCornerShape(50)),
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
-                if (fixedFrac > 0.001f) Box(Modifier.fillMaxHeight().weight(fixedFrac).background(FixedBillsColor))
-                if (flexFrac > 0.001f) Box(Modifier.fillMaxHeight().weight(flexFrac).background(MaterialTheme.colorScheme.primary))
-                if (leftFrac > 0.001f) Box(Modifier.fillMaxHeight().weight(leftFrac).background(FlexibleLeftColor))
+            BucketRow(split.savings)
+            if (split.allocation == SavingsAllocation.SET_ASIDE && split.leftover.signum() > 0) {
+                Spacer(Modifier.height(MaterialTheme.dimens.md))
+                LeftoverRow(split)
             }
-            Spacer(Modifier.height(MaterialTheme.dimens.lg))
-            LegendRow(FixedBillsColor, stringResource(R.string.insights_fixed_bills), fixed.formatMoney(), pct(fixed), MaterialTheme.colorScheme.onSurface)
-            Spacer(Modifier.height(MaterialTheme.dimens.md))
-            LegendRow(MaterialTheme.colorScheme.primary, stringResource(R.string.insights_flexible_spending), flexible.formatMoney(), pct(flexible), MaterialTheme.colorScheme.onSurface)
-            Spacer(Modifier.height(MaterialTheme.dimens.md))
-            LegendRow(
-                FlexibleLeftColor,
-                stringResource(R.string.insights_left),
-                left.formatMoney(),
-                pct(left),
-                if (left.signum() >= 0) budgetGoodColor() else budgetBadColor(),
-            )
+        }
+        // Summary + goal nudge + footer note only once the definition is chosen.
+        if (!unset) {
             Spacer(Modifier.height(MaterialTheme.dimens.lg))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             Spacer(Modifier.height(MaterialTheme.dimens.md))
             Text(
-                text = stringResource(R.string.insights_fixed_read, pct(fixed).coerceAtLeast(0)),
-                style = MaterialTheme.typography.bodySmall,
+                text = allocationSummary(split),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            SavingsGoalCta(split.allocation, onGoToBudget)
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            Text(
+                text = stringResource(
+                    if (split.allocation == SavingsAllocation.COUNT_KEPT) {
+                        R.string.insights_nws_footer_keep
+                    } else {
+                        R.string.insights_nws_footer_aside
+                    },
+                ),
+                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
 }
+
+/** The caption under the bar, worded for whichever Savings definition is in force. */
+@Composable
+private fun splitBarCaption(split: NeedsWantsSplit): String = when (split.allocation) {
+    SavingsAllocation.UNSET -> stringResource(R.string.insights_nws_bar_unspent, split.leftover.formatMoney())
+    SavingsAllocation.COUNT_KEPT -> stringResource(R.string.insights_nws_targets_caption)
+    SavingsAllocation.SET_ASIDE -> stringResource(R.string.insights_nws_bar_leftover)
+}
+
+@Composable
+private fun allocationSummary(split: NeedsWantsSplit): String = when (split.allocation) {
+    SavingsAllocation.COUNT_KEPT -> stringResource(
+        R.string.insights_nws_summary_kept,
+        split.savings.amount.formatMoney(),
+        split.income.formatMoney(),
+    )
+    else -> splitSummary(split)
+}
+
+/** The Savings row before the user has chosen — no percent, no pill, a "waiting" sub-line. */
+@Composable
+private fun SavingsWaitingRow(split: NeedsWantsSplit) {
+    val kept = split.leftover.add(split.savings.amount)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(9.dp),
+    ) {
+        Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(bucketColor(CategoryBucket.SAVINGS)))
+        Column(Modifier.weight(1f)) {
+            Text(bucketLabel(CategoryBucket.SAVINGS), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.insights_nws_savings_waiting, kept.formatMoney()),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text("—", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** The 4th "Left over" row (only under "only money I set aside"): income counted as no bucket. */
+@Composable
+private fun LeftoverRow(split: NeedsWantsSplit) {
+    val pct = (split.leftover.toDouble() / split.income.toDouble() * 100).roundToInt()
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(9.dp),
+    ) {
+        Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(bucketLeftoverColor()))
+        Column(Modifier.weight(1f)) {
+            Text(
+                stringResource(R.string.insights_nws_leftover),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                stringResource(R.string.insights_nws_leftover_sub, split.leftover.formatMoney()),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text("$pct%", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** The "give it a goal" nudge under the chosen split; taps through to Budget, where goals live. */
+@Composable
+private fun SavingsGoalCta(allocation: SavingsAllocation, onGoToBudget: () -> Unit) {
+    val keep = allocation == SavingsAllocation.COUNT_KEPT
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .clickable(onClick = onGoToBudget)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(11.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(34.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(bucketColor(CategoryBucket.SAVINGS).copy(alpha = bucketContainerAlpha())),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(Icons.Filled.ArrowUpward, contentDescription = null, tint = bucketColor(CategoryBucket.SAVINGS), modifier = Modifier.size(18.dp))
+        }
+        Column(Modifier.weight(1f)) {
+            Text(
+                stringResource(if (keep) R.string.insights_nws_cta_keep_title else R.string.insights_nws_cta_aside_title),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                stringResource(if (keep) R.string.insights_nws_cta_keep_sub else R.string.insights_nws_cta_aside_sub),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text("›", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** The one-time inline ask: two choice cards, each with a live mini-bar of what it does to this month. */
+@Composable
+private fun SavingsAllocationAsk(split: NeedsWantsSplit, onChoose: (Boolean) -> Unit) {
+    val keptAmount = split.income.subtract(split.needs.amount).subtract(split.wants.amount).max(BigDecimal.ZERO)
+    val keptPct = (keptAmount.toDouble() / split.income.toDouble() * 100).roundToInt()
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+            .padding(11.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        Text(stringResource(R.string.insights_nws_ask_title), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+        Text(stringResource(R.string.insights_nws_ask_subtitle), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        AllocationChoiceCard(
+            label = stringResource(R.string.insights_nws_ask_keep),
+            percent = "$keptPct%",
+            percentColor = bucketColor(CategoryBucket.SAVINGS),
+            desc = stringResource(R.string.insights_nws_ask_keep_desc),
+            needsFraction = split.needs.fraction,
+            wantsFraction = split.wants.fraction,
+            tailColor = bucketColor(CategoryBucket.SAVINGS),
+            onClick = { onChoose(true) },
+        )
+        AllocationChoiceCard(
+            label = stringResource(R.string.insights_nws_ask_aside),
+            percent = "${split.savings.percent}%",
+            percentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            desc = stringResource(R.string.insights_nws_ask_aside_desc),
+            needsFraction = split.needs.fraction,
+            wantsFraction = split.wants.fraction,
+            tailColor = bucketLeftoverColor(),
+            onClick = { onChoose(false) },
+        )
+    }
+}
+
+@Composable
+private fun AllocationChoiceCard(
+    label: String,
+    percent: String,
+    percentColor: Color,
+    desc: String,
+    needsFraction: Float,
+    wantsFraction: Float,
+    tailColor: Color,
+    onClick: () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 10.dp, vertical = 9.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+            Text(percent, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = percentColor)
+        }
+        Text(desc, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Row(
+            modifier = Modifier.fillMaxWidth().height(10.dp).clip(RoundedCornerShape(50)),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            if (needsFraction > 0.001f) Box(Modifier.fillMaxHeight().weight(needsFraction).background(bucketColor(CategoryBucket.NEED)))
+            if (wantsFraction > 0.001f) Box(Modifier.fillMaxHeight().weight(wantsFraction).background(bucketColor(CategoryBucket.WANT)))
+            Box(Modifier.fillMaxHeight().weight((1f - needsFraction - wantsFraction).coerceAtLeast(0.001f)).background(tailColor))
+        }
+    }
+}
+
+/** The "How Savings is counted" radio group in the Insights Customize sheet header — the change-later
+ *  counterpart to the split's one-time ask. */
+@Composable
+private fun SavingsAllocationCustomize(current: Boolean?, onChoose: (Boolean) -> Unit) {
+    Column(Modifier.fillMaxWidth().padding(bottom = MaterialTheme.dimens.sm)) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(
+                stringResource(R.string.insights_nws_alloc_header).uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                stringResource(R.string.insights_nws_new).uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+                    .padding(horizontal = 7.dp, vertical = 1.dp),
+            )
+        }
+        Text(
+            stringResource(R.string.insights_nws_alloc_desc),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
+        )
+        AllocationRadioRow(
+            selected = current == true,
+            label = stringResource(R.string.insights_nws_ask_keep),
+            desc = stringResource(R.string.insights_nws_alloc_keep_desc),
+            swatch = bucketColor(CategoryBucket.SAVINGS),
+            onClick = { onChoose(true) },
+        )
+        AllocationRadioRow(
+            selected = current != true,
+            label = stringResource(R.string.insights_nws_ask_aside),
+            desc = stringResource(R.string.insights_nws_alloc_aside_desc),
+            swatch = bucketLeftoverColor(),
+            onClick = { onChoose(false) },
+        )
+        Text(
+            stringResource(R.string.insights_nws_alloc_footer),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp),
+        )
+    }
+}
+
+@Composable
+private fun AllocationRadioRow(selected: Boolean, label: String, desc: String, swatch: Color, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable(onClick = onClick).padding(vertical = 8.dp),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.spacedBy(11.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(18.dp)
+                .clip(CircleShape)
+                .border(2.dp, if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (selected) Box(Modifier.size(9.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary))
+        }
+        Column(Modifier.weight(1f)) {
+            Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Text(desc, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(swatch).align(Alignment.CenterVertically))
+    }
+}
+
+/** The 20px stacked bar carrying the three shares, with target ticks fixed at the cumulative 50% and
+ *  80% marks (a segment ending past its tick is over target without reading a number). */
+@Composable
+private fun BucketSplitBar(split: NeedsWantsSplit) {
+    // If the three buckets exceed income (overspend), scale them to fit the bar; the remainder is the
+    // leftover track. The row numbers still report the true, unscaled percentages.
+    val raw = floatArrayOf(split.needs.fraction, split.wants.fraction, split.savings.fraction)
+    val sum = raw.sum()
+    val scale = if (sum > 1f) 1f / sum else 1f
+    val n = raw[0] * scale
+    val w = raw[1] * scale
+    val s = raw[2] * scale
+    val leftover = (1f - n - w - s).coerceIn(0f, 1f)
+    Box(Modifier.fillMaxWidth().height(9.dp)) {
+        Box(Modifier.fillMaxWidth(0.50f)) {
+            Box(
+                Modifier.align(Alignment.CenterEnd).width(2.dp).height(7.dp)
+                    .clip(RoundedCornerShape(1.dp)).background(MaterialTheme.colorScheme.outline),
+            )
+        }
+        Box(Modifier.fillMaxWidth(0.80f)) {
+            Box(
+                Modifier.align(Alignment.CenterEnd).width(2.dp).height(7.dp)
+                    .clip(RoundedCornerShape(1.dp)).background(MaterialTheme.colorScheme.outline),
+            )
+        }
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth().height(20.dp).clip(RoundedCornerShape(50)),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+    ) {
+        if (n > 0.001f) Box(Modifier.fillMaxHeight().weight(n).background(bucketColor(CategoryBucket.NEED)))
+        if (w > 0.001f) Box(Modifier.fillMaxHeight().weight(w).background(bucketColor(CategoryBucket.WANT)))
+        if (s > 0.001f) Box(Modifier.fillMaxHeight().weight(s).background(bucketColor(CategoryBucket.SAVINGS)))
+        if (leftover > 0.001f) {
+            Box(Modifier.fillMaxHeight().weight(leftover).background(bucketLeftoverColor()))
+        }
+    }
+}
+
+/** One bucket's legend row: colour dot, name + "amount · target", the big percent, and a delta pill
+ *  (suppressed under the one-time ask, where no definition is chosen yet). */
+@Composable
+private fun BucketRow(share: BucketShare, showPill: Boolean = true) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(9.dp),
+    ) {
+        Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(bucketColor(share.bucket)))
+        Column(Modifier.weight(1f)) {
+            Text(bucketLabel(share.bucket), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Text(
+                stringResource(R.string.insights_nws_row_sub, share.amount.formatMoney(), share.targetPercent),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Text("${share.percent}%", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        if (showPill) BucketDeltaPill(share)
+    }
+}
+
+@Composable
+private fun BucketDeltaPill(share: BucketShare) {
+    val (label, fg, bg) = when (share.status) {
+        BucketDeltaStatus.ON_TARGET ->
+            Triple(stringResource(R.string.insights_nws_on_target), budgetGoodColor(), wellbeingGoodContainer())
+        BucketDeltaStatus.OVER_GOOD ->
+            Triple(signedPoints(share.deltaPoints), budgetGoodColor(), wellbeingGoodContainer())
+        BucketDeltaStatus.OVER_WARN ->
+            Triple(signedPoints(share.deltaPoints), wellbeingWarnOn(), wellbeingWarnContainer())
+        BucketDeltaStatus.UNDER_WARN ->
+            Triple(signedPoints(share.deltaPoints), wellbeingWarnOn(), wellbeingWarnContainer())
+        BucketDeltaStatus.UNDER_NEUTRAL -> Triple(
+            stringResource(R.string.insights_nws_under, -share.deltaPoints),
+            MaterialTheme.colorScheme.onSurfaceVariant,
+            MaterialTheme.colorScheme.surfaceContainerHigh,
+        )
+    }
+    Text(
+        text = label,
+        style = MaterialTheme.typography.labelSmall,
+        fontWeight = FontWeight.Bold,
+        color = fg,
+        modifier = Modifier.clip(RoundedCornerShape(50)).background(bg).padding(horizontal = 8.dp, vertical = 3.dp),
+    )
+}
+
+/** One sentence under the divider: states the gap and one concrete move, never a scolding. */
+@Composable
+private fun splitSummary(split: NeedsWantsSplit): String = when (split.tone) {
+    SplitTone.BALANCED -> stringResource(R.string.insights_nws_summary_balanced)
+    SplitTone.WANTS_OVER -> stringResource(R.string.insights_nws_summary_wants_over, split.wants.deltaPoints)
+    SplitTone.NEEDS_OVER -> stringResource(R.string.insights_nws_summary_needs_over, split.needs.deltaPoints)
+    SplitTone.UNDER_SAVING -> {
+        val gapPoints = split.savings.targetPercent - split.savings.percent
+        val gapAmount = split.income
+            .multiply(BigDecimal(split.savings.targetPercent))
+            .divide(BigDecimal(100))
+            .subtract(split.savings.amount)
+            .coerceAtLeast(BigDecimal.ZERO)
+        stringResource(R.string.insights_nws_summary_under_saving, gapPoints, gapAmount.formatMoney())
+    }
+}
+
+/** The setup state: the target preview it will become, plus one CTA. Shown when there's no income —
+ *  built-in categories come pre-tagged, so income (the 50/30/20 denominator) is the real precondition. */
+@Composable
+private fun NeedsWantsSetup(onGoToBudget: () -> Unit) {
+    Column(Modifier.fillMaxWidth()) {
+        Text(
+            stringResource(R.string.insights_needs_wants_savings),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            stringResource(R.string.insights_nws_setup_subtitle),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+        Row(
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+        ) {
+            SetupTargetTile(CategoryBucket.NEED, 50, R.string.insights_nws_needs, Modifier.weight(50f))
+            SetupTargetTile(CategoryBucket.WANT, 30, R.string.insights_nws_wants, Modifier.weight(30f))
+            SetupTargetTile(CategoryBucket.SAVINGS, 20, R.string.insights_nws_saved, Modifier.weight(20f))
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+        Text(
+            stringResource(R.string.insights_nws_setup_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.xs))
+        Text(
+            stringResource(R.string.insights_nws_setup_body),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(50))
+                .background(MaterialTheme.colorScheme.primary)
+                .clickable(onClick = onGoToBudget)
+                .padding(vertical = 12.dp),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                stringResource(R.string.insights_nws_setup_cta),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary,
+            )
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        Text(
+            stringResource(R.string.insights_nws_setup_note),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+@Composable
+private fun SetupTargetTile(bucket: CategoryBucket, target: Int, labelRes: Int, modifier: Modifier) {
+    val accent = bucketColor(bucket)
+    Column(
+        modifier = modifier
+            .fillMaxHeight()
+            .clip(RoundedCornerShape(10.dp))
+            .background(accent.copy(alpha = bucketContainerAlpha())),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text("$target", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = accent)
+        Text(stringResource(labelRes), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.SemiBold, color = accent)
+    }
+}
+
+/** The split trend: Savings on top of every column so its share grows against a dashed 20% line;
+ *  closed months only. Shared by phone and tablet ([showMonthLabels] adds per-column savings %). */
+@Composable
+internal fun BucketTrendContent(months: List<BucketMonth>, showMonthLabels: Boolean = false) {
+    val savingsFirst = months.first().savingsPercent
+    val savingsLast = months.last().savingsPercent
+    val delta = savingsLast - savingsFirst
+    Column(Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.insights_nws_trend_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    pluralStringResource(R.plurals.insights_nws_trend_subtitle, months.size, months.size),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            val positive = delta >= 0
+            Text(
+                text = stringResource(R.string.insights_nws_trend_delta, signedPoints(delta)),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                color = if (positive) budgetGoodColor() else MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(if (positive) wellbeingGoodContainer() else MaterialTheme.colorScheme.surfaceContainerHigh)
+                    .padding(horizontal = 9.dp, vertical = 4.dp),
+            )
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+        BucketTrendChart(months)
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            months.forEach { m ->
+                Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (showMonthLabels) {
+                        Text(
+                            "${m.savingsPercent}%",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = bucketColor(CategoryBucket.SAVINGS),
+                        )
+                    }
+                    Text(
+                        m.axisLabel,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            BucketLegendDot(CategoryBucket.NEED)
+            BucketLegendDot(CategoryBucket.WANT)
+            BucketLegendDot(CategoryBucket.SAVINGS)
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
+        Text(
+            stringResource(R.string.insights_nws_trend_footer, savingsFirst, savingsLast, months.size),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun BucketTrendChart(months: List<BucketMonth>) {
+    val needsC = bucketColor(CategoryBucket.NEED)
+    val wantsC = bucketColor(CategoryBucket.WANT)
+    val savingsC = bucketColor(CategoryBucket.SAVINGS)
+    val lineColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+    val track = MaterialTheme.colorScheme.surfaceContainerHighest
+    Box(Modifier.fillMaxWidth().height(150.dp)) {
+        Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+            months.forEach { m ->
+                val leftover = (100 - m.needsPercent - m.wantsPercent - m.savingsPercent).coerceAtLeast(0)
+                Column(
+                    modifier = Modifier.weight(1f).fillMaxHeight().clip(RoundedCornerShape(5.dp)).background(track),
+                ) {
+                    // Savings caps the column (top) so it grows toward the 20% line; then Wants, Needs,
+                    // and the unallocated remainder as the track at the bottom.
+                    if (m.savingsPercent > 0) Box(Modifier.fillMaxWidth().weight(m.savingsPercent.toFloat()).background(savingsC))
+                    if (m.wantsPercent > 0) Box(Modifier.fillMaxWidth().weight(m.wantsPercent.toFloat()).background(wantsC))
+                    if (m.needsPercent > 0) Box(Modifier.fillMaxWidth().weight(m.needsPercent.toFloat()).background(needsC))
+                    if (leftover > 0) Box(Modifier.fillMaxWidth().weight(leftover.toFloat()))
+                }
+            }
+        }
+        Canvas(Modifier.fillMaxSize()) {
+            val y = size.height * (SAVINGS_TARGET_FRACTION)
+            drawLine(
+                color = lineColor,
+                start = Offset(0f, y),
+                end = Offset(size.width, y),
+                strokeWidth = 1.5.dp.toPx(),
+                pathEffect = PathEffect.dashPathEffect(floatArrayOf(8f, 8f)),
+            )
+        }
+    }
+}
+
+@Composable
+private fun BucketLegendDot(bucket: CategoryBucket) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+        Box(Modifier.size(9.dp).clip(RoundedCornerShape(3.dp)).background(bucketColor(bucket)))
+        Text(bucketLabel(bucket), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+@Composable
+private fun bucketLabel(bucket: CategoryBucket): String = stringResource(
+    when (bucket) {
+        CategoryBucket.NEED -> R.string.insights_nws_needs
+        CategoryBucket.WANT -> R.string.insights_nws_wants
+        CategoryBucket.SAVINGS -> R.string.insights_nws_savings
+    },
+)
+
+/** The dashed savings-target line sits this far down from the top of the trend chart (20%). */
+private const val SAVINGS_TARGET_FRACTION = 0.20f
+
+/** A signed whole-point label using a true minus sign, e.g. "+10" / "−5". */
+private fun signedPoints(points: Int): String = if (points >= 0) "+$points" else "−${-points}"
 
 @Composable
 private fun IncomeSourceRow(source: IncomeSourceUi, amountColor: Color) {

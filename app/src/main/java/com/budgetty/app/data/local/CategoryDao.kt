@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.budgetty.app.category.CategoryBucket
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,6 +26,11 @@ interface CategoryDao {
      *  built-in with no stored row yet — isn't present, so the override sticks. */
     @Query("UPDATE categories SET parent = :parent WHERE name = :name")
     suspend fun setParent(name: String, parent: String?)
+
+    /** Tags [name] with a Needs/Wants/Savings [bucket] (null = fall back to the code default). Like
+     *  [setParent], the caller inserts a row first for a built-in with no stored row yet so the tag sticks. */
+    @Query("UPDATE categories SET bucket = :bucket WHERE name = :name")
+    suspend fun setBucket(name: String, bucket: CategoryBucket?)
 
     /** On deleting a parent, promote its children to top-level rather than orphaning or deleting them. */
     @Query("UPDATE categories SET parent = NULL WHERE parent = :parent")

@@ -3,6 +3,7 @@ package com.budgetty.app.ui.categories
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.CategoryBucket
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.repository.BudgetRepository
@@ -102,6 +103,12 @@ class ManageCategoriesViewModel(
             categoryRepository.setParent(name, parent)
             if (parent != null) categoryRepository.promoteChildrenOf(name)
         }
+    }
+
+    /** Tags a category — built-in or custom — with a Needs/Wants/Savings [bucket] (null clears the
+     *  tag, reverting to the code default); drives the Insights 50/30/20 split. */
+    fun updateBucket(name: String, bucket: CategoryBucket?) {
+        viewModelScope.launch { categoryRepository.setBucket(name, bucket) }
     }
 
     /** Deletes a custom category: its transactions re-file to "Other", its rules and per-category

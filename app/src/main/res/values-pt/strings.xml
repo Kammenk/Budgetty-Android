@@ -532,6 +532,60 @@
     <string name="insights_upcoming_bills">Próximas contas</string>
     <string name="insights_income_by_source">Renda por fonte</string>
     <string name="insights_go_to_budget">Ir para Orçamento</string>
+
+    <!-- Insights: Needs / Wants / Savings (a divisão 50/30/20) -->
+    <string name="insights_needs_wants_savings">Necessidades · Desejos · Poupança</string>
+    <string name="insights_nws_needs">Necessidades</string>
+    <string name="insights_nws_wants">Desejos</string>
+    <string name="insights_nws_savings">Poupança</string>
+    <string name="insights_nws_saved">Poupado</string>
+    <string name="insights_nws_income_subtitle">Parte da renda de %1$s</string>
+    <string name="insights_nws_targets_caption">As marcas mostram os objetivos 50 / 30 / 20</string>
+    <string name="insights_nws_row_sub">%1$s · objetivo %2$d%%</string>
+    <string name="insights_nws_on_target">no objetivo</string>
+    <string name="insights_nws_under">%1$d abaixo</string>
+    <string name="insights_nws_summary_balanced">Bem equilibrado — os três a menos de um ponto da regra.</string>
+    <string name="insights_nws_summary_wants_over">Os desejos ultrapassaram o objetivo em %1$d pontos este mês, e a poupança absorveu a diferença.</string>
+    <string name="insights_nws_summary_needs_over">As necessidades ultrapassaram o objetivo em %1$d pontos este mês — muitas vezes o aluguel ou as contas caem no mesmo período.</string>
+    <string name="insights_nws_summary_under_saving">A poupança está %1$d pontos abaixo dos 20%% este mês. Cerca de %2$s de desejos cobririam a diferença.</string>
+    <string name="insights_nws_trend_title">A sua divisão ao longo do tempo</string>
+    <string name="insights_nws_trend_delta">%1$s pts</string>
+    <string name="insights_nws_trend_footer">A sua parte de poupança passou de %1$d%% para %2$d%% nos últimos %3$d meses.</string>
+    <string name="insights_nws_setup_subtitle">A regra 50/30/20, a partir das suas próprias categorias</string>
+    <string name="insights_nws_setup_title">Veja a sua divisão 50/30/20</string>
+    <string name="insights_nws_setup_body">Adicione a sua renda e o Budgetty organiza as suas despesas em Necessidades, Desejos e Poupança — as categorias integradas já vêm classificadas.</string>
+    <string name="insights_nws_setup_cta">Configurar renda</string>
+    <string name="insights_nws_setup_note">Calculado no seu dispositivo — nada é enviado para lugar nenhum.</string>
+
+    <!-- Insights: a pergunta única sobre o que conta como Poupança + o seletor em Personalizar seções -->
+    <string name="insights_nws_ask_title">O dinheiro que você simplesmente guarda conta como Poupança?</string>
+    <string name="insights_nws_ask_subtitle">Escolha a que combina com o seu jeito de pensar. Pode mudar depois.</string>
+    <string name="insights_nws_ask_keep">Contar o que eu guardo</string>
+    <string name="insights_nws_ask_keep_desc">Tudo o que sobra depois de Necessidades e Desejos é dinheiro poupado.</string>
+    <string name="insights_nws_ask_aside">Só o dinheiro que eu separo</string>
+    <string name="insights_nws_ask_aside_desc">Só transferências para metas e categorias de Poupança. O resto não é gasto.</string>
+    <string name="insights_nws_bar_unspent">%1$s da sua renda ainda não foi gasto</string>
+    <string name="insights_nws_bar_leftover">O cinza é a renda que você não gastou nem separou</string>
+    <string name="insights_nws_savings_waiting">%1$s restante · aguardando sua resposta</string>
+    <string name="insights_nws_leftover">Sobra</string>
+    <string name="insights_nws_leftover_sub">%1$s · não conta como Poupança</string>
+    <string name="insights_nws_summary_kept">Este mês você guardou %1$s da sua renda de %2$s.</string>
+    <string name="insights_nws_cta_keep_title">Dê uma meta para ele</string>
+    <string name="insights_nws_cta_keep_sub">Diga para que você está guardando</string>
+    <string name="insights_nws_cta_aside_title">Defina uma meta de poupança</string>
+    <string name="insights_nws_cta_aside_sub">Uma transferência para meta conta como Poupança</string>
+    <string name="insights_nws_footer_keep">Conta tudo o que você guarda. Altere em Personalizar seções.</string>
+    <string name="insights_nws_footer_aside">Conta o dinheiro que você separa. Altere em Personalizar seções.</string>
+    <string name="insights_nws_alloc_header">Poupança</string>
+    <string name="insights_nws_alloc_desc">Como a Poupança é contada na sua divisão 50/30/20.</string>
+    <string name="insights_nws_alloc_keep_desc">Renda menos Necessidades e Desejos conta como poupado.</string>
+    <string name="insights_nws_alloc_aside_desc">Só transferências para metas e categorias de Poupança.</string>
+    <string name="insights_nws_alloc_footer">Também vale para meses anteriores, para a sua tendência ficar consistente.</string>
+    <string name="insights_nws_new">Novo</string>
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d mês fechado</item>
+        <item quantity="other">%1$d meses fechados</item>
+    </plurals>
     <string name="insights_income_in">Entrada</string>
     <string name="insights_income_out">Saída</string>
     <string name="insights_income_net">Líquido</string>
@@ -1006,6 +1060,10 @@
     <string name="manage_unlimited_premium">Ilimitadas com Premium</string>
     <string name="manage_in_group">Em %1$s</string>
     <string name="manage_top_level">Nível principal</string>
+    <!-- Seletor Needs/Wants/Savings sob cada linha de categoria (Gerenciar categorias) -->
+    <string name="manage_bucket_need">Necessidade</string>
+    <string name="manage_bucket_want">Desejo</string>
+    <string name="manage_bucket_savings">Poupança</string>
     <plurals name="manage_sub_count">
         <item quantity="one">%1$d subcategoria</item>
         <item quantity="other">%1$d subcategorias</item>

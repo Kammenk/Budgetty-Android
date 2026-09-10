@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import com.budgetty.app.category.CategoryBucket
 
 // ── Material 3 baseline (violet/purple) — DEFAULT ACCENT ──────────────────────
 // Light
@@ -92,6 +93,17 @@ val WellbeingWarnOn         = Color(0xFF8A6100); val WellbeingWarnOnDark        
 val WellbeingBadContainer   = Color(0xFFFADCDA); val WellbeingBadContainerDark   = Color(0xFF452220)
 val WellbeingGreatContainer = Color(0xFFCFE7D2); val WellbeingGreatContainerDark = Color(0xFF20422A)
 
+// ── Needs / Wants / Savings bucket accents (the Insights 50/30/20 split). Three hues at one lightness
+// and chroma (oklch L.48 C.075, hues 255 / 35 / 155; dark lifts to L.80 C.085), deliberately deeper and
+// less saturated than the category pie palette so a bucket never reads as a category. Containers are the
+// accent at a low alpha ([bucketContainerAlpha]) over the card surface. ──
+val BucketNeeds   = Color(0xFF405F87); val BucketNeedsDark   = Color(0xFF99C1F4)
+val BucketWants   = Color(0xFF824E40); val BucketWantsDark   = Color(0xFFEFAA99)
+val BucketSavings = Color(0xFF386A4B); val BucketSavingsDark = Color(0xFF91CEA6)
+// The "leftover" track — income counted in neither Needs, Wants nor Savings. One step off the
+// surface, deliberately never a bucket hue, so unspent income reads as not-counted, not missing.
+val BucketLeftover = Color(0xFFD6D0DC); val BucketLeftoverDark = Color(0xFF413E48)
+
 // ── Premium accent seeds (light / dark primary). Build alternate ColorSchemes from these. ──
 // Sage   #3E5E41 / #A8C6AA
 // Ocean  #1C5C6E / #8FC8D8
@@ -137,3 +149,30 @@ fun wellbeingBadContainer(): Color = if (isDarkTheme()) WellbeingBadContainerDar
 
 @Composable @ReadOnlyComposable
 fun wellbeingGreatContainer(): Color = if (isDarkTheme()) WellbeingGreatContainerDark else WellbeingGreatContainer
+
+// ── Needs / Wants / Savings bucket accessors ──────────────────────────────────
+@Composable @ReadOnlyComposable
+fun bucketNeedsColor(): Color = if (isDarkTheme()) BucketNeedsDark else BucketNeeds
+
+@Composable @ReadOnlyComposable
+fun bucketWantsColor(): Color = if (isDarkTheme()) BucketWantsDark else BucketWants
+
+@Composable @ReadOnlyComposable
+fun bucketSavingsColor(): Color = if (isDarkTheme()) BucketSavingsDark else BucketSavings
+
+/** The accent for a bucket. */
+@Composable @ReadOnlyComposable
+fun bucketColor(bucket: CategoryBucket): Color = when (bucket) {
+    CategoryBucket.NEED -> bucketNeedsColor()
+    CategoryBucket.WANT -> bucketWantsColor()
+    CategoryBucket.SAVINGS -> bucketSavingsColor()
+}
+
+/** Alpha for a bucket's tonal container — its accent drawn over the card surface (matches the
+ *  mockup's 13% light / 20% dark tints). */
+@Composable @ReadOnlyComposable
+fun bucketContainerAlpha(): Float = if (isDarkTheme()) 0.20f else 0.13f
+
+/** The "leftover" track colour for the split bar and its row (income not counted as any bucket). */
+@Composable @ReadOnlyComposable
+fun bucketLeftoverColor(): Color = if (isDarkTheme()) BucketLeftoverDark else BucketLeftover
