@@ -100,6 +100,9 @@ val WellbeingGreatContainer = Color(0xFFCFE7D2); val WellbeingGreatContainerDark
 val BucketNeeds   = Color(0xFF405F87); val BucketNeedsDark   = Color(0xFF99C1F4)
 val BucketWants   = Color(0xFF824E40); val BucketWantsDark   = Color(0xFFEFAA99)
 val BucketSavings = Color(0xFF386A4B); val BucketSavingsDark = Color(0xFF91CEA6)
+// The "leftover" track — income counted in neither Needs, Wants nor Savings. One step off the
+// surface, deliberately never a bucket hue, so unspent income reads as not-counted, not missing.
+val BucketLeftover = Color(0xFFD6D0DC); val BucketLeftoverDark = Color(0xFF413E48)
 
 // ── Premium accent seeds (light / dark primary). Build alternate ColorSchemes from these. ──
 // Sage   #3E5E41 / #A8C6AA
@@ -169,3 +172,7 @@ fun bucketColor(bucket: CategoryBucket): Color = when (bucket) {
  *  mockup's 13% light / 20% dark tints). */
 @Composable @ReadOnlyComposable
 fun bucketContainerAlpha(): Float = if (isDarkTheme()) 0.20f else 0.13f
+
+/** The "leftover" track colour for the split bar and its row (income not counted as any bucket). */
+@Composable @ReadOnlyComposable
+fun bucketLeftoverColor(): Color = if (isDarkTheme()) BucketLeftoverDark else BucketLeftover

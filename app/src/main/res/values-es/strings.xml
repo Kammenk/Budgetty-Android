@@ -556,6 +556,32 @@
     <string name="insights_nws_setup_body">Añade tus ingresos y Budgetty clasifica tus gastos en Necesidades, Deseos y Ahorro — las categorías integradas ya vienen etiquetadas.</string>
     <string name="insights_nws_setup_cta">Configurar ingresos</string>
     <string name="insights_nws_setup_note">Calculado en tu dispositivo — no se envía nada a ningún sitio.</string>
+
+    <!-- Insights: la pregunta única sobre qué cuenta como Ahorro + su interruptor en Personalizar secciones -->
+    <string name="insights_nws_ask_title">¿El dinero que simplemente guardas cuenta como Ahorro?</string>
+    <string name="insights_nws_ask_subtitle">Elige la que encaje con tu forma de pensar. Puedes cambiarla luego.</string>
+    <string name="insights_nws_ask_keep">Contar lo que guardo</string>
+    <string name="insights_nws_ask_keep_desc">Todo lo que queda tras Necesidades y Deseos es dinero ahorrado.</string>
+    <string name="insights_nws_ask_aside">Solo el dinero que aparto</string>
+    <string name="insights_nws_ask_aside_desc">Solo transferencias a objetivos y categorías de Ahorro. El resto queda sin gastar.</string>
+    <string name="insights_nws_bar_unspent">%1$s de tus ingresos aún no se ha gastado</string>
+    <string name="insights_nws_bar_leftover">El gris son ingresos que no has gastado ni apartado</string>
+    <string name="insights_nws_savings_waiting">%1$s restante · esperando tu respuesta</string>
+    <string name="insights_nws_leftover">Sobrante</string>
+    <string name="insights_nws_leftover_sub">%1$s · no cuenta como Ahorro</string>
+    <string name="insights_nws_summary_kept">Este mes has guardado %1$s de tus %2$s de ingresos.</string>
+    <string name="insights_nws_cta_keep_title">Dale un objetivo</string>
+    <string name="insights_nws_cta_keep_sub">Indica para qué lo guardas</string>
+    <string name="insights_nws_cta_aside_title">Crea un objetivo de ahorro</string>
+    <string name="insights_nws_cta_aside_sub">Una transferencia a un objetivo cuenta como Ahorro</string>
+    <string name="insights_nws_footer_keep">Cuenta todo lo que guardas. Cámbialo en Personalizar secciones.</string>
+    <string name="insights_nws_footer_aside">Cuenta el dinero que apartas. Cámbialo en Personalizar secciones.</string>
+    <string name="insights_nws_alloc_header">Ahorro</string>
+    <string name="insights_nws_alloc_desc">Cómo se cuenta el Ahorro en tu reparto 50/30/20.</string>
+    <string name="insights_nws_alloc_keep_desc">Los ingresos menos Necesidades y Deseos cuentan como ahorrado.</string>
+    <string name="insights_nws_alloc_aside_desc">Solo transferencias a objetivos y categorías de Ahorro.</string>
+    <string name="insights_nws_alloc_footer">También se aplica a meses anteriores, para que tu tendencia sea coherente.</string>
+    <string name="insights_nws_new">Nuevo</string>
     <plurals name="insights_nws_trend_subtitle">
         <item quantity="one">%1$d mes cerrado</item>
         <item quantity="other">%1$d meses cerrados</item>

@@ -541,6 +541,32 @@
     <string name="insights_nws_setup_body">Gib deine Einnahmen ein, und Budgetty sortiert deine Ausgaben in Bedürfnisse, Wünsche und Sparen — die integrierten Kategorien sind bereits zugeordnet.</string>
     <string name="insights_nws_setup_cta">Einnahmen einrichten</string>
     <string name="insights_nws_setup_note">Auf deinem Gerät berechnet — es wird nichts versendet.</string>
+
+    <!-- Insights: die einmalige Frage, was als Sparen zählt + Umschalter unter Bereiche anpassen -->
+    <string name="insights_nws_ask_title">Zählt Geld, das du einfach behältst, als Sparen?</string>
+    <string name="insights_nws_ask_subtitle">Wähle, was zu deinem Denken passt. Später änderbar.</string>
+    <string name="insights_nws_ask_keep">Zählen, was ich behalte</string>
+    <string name="insights_nws_ask_keep_desc">Alles, was nach Bedürfnissen und Wünschen übrig bleibt, hast du gespart.</string>
+    <string name="insights_nws_ask_aside">Nur Geld, das ich zurücklege</string>
+    <string name="insights_nws_ask_aside_desc">Nur Zielüberweisungen und Sparkategorien. Der Rest bleibt übrig.</string>
+    <string name="insights_nws_bar_unspent">%1$s deiner Einnahmen sind noch nicht ausgegeben</string>
+    <string name="insights_nws_bar_leftover">Grau sind Einnahmen, die du weder ausgegeben noch zurückgelegt hast</string>
+    <string name="insights_nws_savings_waiting">%1$s übrig · wartet auf deine Antwort</string>
+    <string name="insights_nws_leftover">Übrig</string>
+    <string name="insights_nws_leftover_sub">%1$s · zählt nicht als Sparen</string>
+    <string name="insights_nws_summary_kept">Du hast diesen Monat %1$s von deinen %2$s Einnahmen behalten.</string>
+    <string name="insights_nws_cta_keep_title">Gib ihm ein Ziel</string>
+    <string name="insights_nws_cta_keep_sub">Benenne, wofür du es behältst</string>
+    <string name="insights_nws_cta_aside_title">Sparziel festlegen</string>
+    <string name="insights_nws_cta_aside_sub">Eine Zielüberweisung zählt als Sparen</string>
+    <string name="insights_nws_footer_keep">Zählt alles, was du behältst. Änderbar unter Bereiche anpassen.</string>
+    <string name="insights_nws_footer_aside">Zählt Geld, das du zurücklegst. Änderbar unter Bereiche anpassen.</string>
+    <string name="insights_nws_alloc_header">Sparen</string>
+    <string name="insights_nws_alloc_desc">Wie Sparen in deiner 50/30/20-Aufteilung gezählt wird.</string>
+    <string name="insights_nws_alloc_keep_desc">Einnahmen minus Bedürfnisse und Wünsche zählen als gespart.</string>
+    <string name="insights_nws_alloc_aside_desc">Nur Zielüberweisungen und Sparkategorien.</string>
+    <string name="insights_nws_alloc_footer">Gilt auch für vergangene Monate, damit dein Verlauf einheitlich bleibt.</string>
+    <string name="insights_nws_new">Neu</string>
     <plurals name="insights_nws_trend_subtitle">
         <item quantity="one">%1$d abgeschlossener Monat</item>
         <item quantity="other">%1$d abgeschlossene Monate</item>

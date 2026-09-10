@@ -556,6 +556,32 @@
     <string name="insights_nws_setup_body">Aggiungi le tue entrate e Budgetty suddivide le spese in Bisogni, Desideri e Risparmio — le categorie integrate sono già etichettate.</string>
     <string name="insights_nws_setup_cta">Imposta le entrate</string>
     <string name="insights_nws_setup_note">Calcolato sul tuo dispositivo — non viene inviato nulla da nessuna parte.</string>
+
+    <!-- Insights: la domanda una tantum su cosa conta come Risparmio + il selettore in Personalizza sezioni -->
+    <string name="insights_nws_ask_title">Il denaro che semplicemente tieni conta come Risparmio?</string>
+    <string name="insights_nws_ask_subtitle">Scegli quella che rispecchia il tuo modo di pensare. Modificabile in seguito.</string>
+    <string name="insights_nws_ask_keep">Conta ciò che tengo</string>
+    <string name="insights_nws_ask_keep_desc">Tutto ciò che resta dopo Bisogni e Desideri è denaro risparmiato.</string>
+    <string name="insights_nws_ask_aside">Solo il denaro che metto da parte</string>
+    <string name="insights_nws_ask_aside_desc">Solo i versamenti verso un obiettivo e le categorie Risparmio. Il resto non viene speso.</string>
+    <string name="insights_nws_bar_unspent">%1$s delle tue entrate non è ancora speso</string>
+    <string name="insights_nws_bar_leftover">Il grigio sono le entrate che non hai speso né messo da parte</string>
+    <string name="insights_nws_savings_waiting">%1$s rimasti · in attesa della tua risposta</string>
+    <string name="insights_nws_leftover">Avanzo</string>
+    <string name="insights_nws_leftover_sub">%1$s · non conta come Risparmio</string>
+    <string name="insights_nws_summary_kept">Questo mese hai tenuto %1$s su %2$s di entrate.</string>
+    <string name="insights_nws_cta_keep_title">Dagli un obiettivo</string>
+    <string name="insights_nws_cta_keep_sub">Indica per cosa lo tieni</string>
+    <string name="insights_nws_cta_aside_title">Imposta un obiettivo di risparmio</string>
+    <string name="insights_nws_cta_aside_sub">Un versamento verso un obiettivo conta come Risparmio</string>
+    <string name="insights_nws_footer_keep">Conta tutto ciò che tieni. Modifica in Personalizza sezioni.</string>
+    <string name="insights_nws_footer_aside">Conta il denaro che metti da parte. Modifica in Personalizza sezioni.</string>
+    <string name="insights_nws_alloc_header">Risparmio</string>
+    <string name="insights_nws_alloc_desc">Come viene conteggiato il Risparmio nella tua ripartizione 50/30/20.</string>
+    <string name="insights_nws_alloc_keep_desc">Le entrate meno Bisogni e Desideri contano come risparmiate.</string>
+    <string name="insights_nws_alloc_aside_desc">Solo i versamenti verso un obiettivo e le categorie Risparmio.</string>
+    <string name="insights_nws_alloc_footer">Vale anche per i mesi passati, così il tuo andamento resta coerente.</string>
+    <string name="insights_nws_new">Nuovo</string>
     <plurals name="insights_nws_trend_subtitle">
         <item quantity="one">%1$d mese chiuso</item>
         <item quantity="other">%1$d mesi chiusi</item>

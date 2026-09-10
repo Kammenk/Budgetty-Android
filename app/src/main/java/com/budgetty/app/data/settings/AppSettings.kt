@@ -122,6 +122,13 @@ data class AppSettings(
      */
     val insightsIncludeRecurringBills: Boolean = false,
     /**
+     * How the Insights 50/30/20 split counts Savings: null = the user hasn't chosen yet (the split
+     * shows a one-time inline ask), true = count everything kept (income − Needs − Wants), false =
+     * only deliberate savings (goal transfers + Savings-tagged spend). Per-user, changeable in the
+     * Customize-sections sheet. See [com.budgetty.app.ui.insights.SavingsAllocation].
+     */
+    val nwsCountLeftoverAsSavings: Boolean? = null,
+    /**
      * Whether the one-time "Insights and Home disagree — overlay planned bills?" discovery nudge above
      * Breakdown has been dismissed. The overlay switch is off-by-default and lives in Customize (behind
      * the header ⋮), so this nudge is the one thing that surfaces the feature; shown once per user until

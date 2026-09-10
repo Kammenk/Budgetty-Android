@@ -31,6 +31,9 @@ class SettingsStore(context: Context) {
         insightsSectionOrder = prefs.getString(KEY_ORDER_INSIGHTS, null).toKeyList(),
         insightsPeriodUnit = prefs.getString(KEY_PERIOD_UNIT_INSIGHTS, "MONTH") ?: "MONTH",
         insightsIncludeRecurringBills = prefs.getBoolean(KEY_INCLUDE_RECURRING_BILLS, false),
+        // Tri-state: absent key = not asked yet (null), so the split shows its one-time inline ask.
+        nwsCountLeftoverAsSavings =
+            if (prefs.contains(KEY_NWS_COUNT_LEFTOVER)) prefs.getBoolean(KEY_NWS_COUNT_LEFTOVER, false) else null,
         insightsOverlayNudgeDismissed = prefs.getBoolean(KEY_OVERLAY_NUDGE_DISMISSED, false),
         monthStartDay = prefs.getInt(KEY_MONTH_START_DAY, 1).coerceIn(1, 31),
         budgetRolloverEnabled = prefs.getBoolean(KEY_BUDGET_ROLLOVER, false),
@@ -149,6 +152,11 @@ class SettingsStore(context: Context) {
     /** Toggles the Insights "planned recurring bills" overlay (opt-in, default off). */
     fun setInsightsIncludeRecurringBills(value: Boolean) =
         save(KEY_INCLUDE_RECURRING_BILLS, value) { it.copy(insightsIncludeRecurringBills = value) }
+
+    /** Records the user's Savings-allocation choice for the 50/30/20 split (true = count everything
+     *  kept, false = only deliberate savings). Any non-null value dismisses the one-time inline ask. */
+    fun setNwsCountLeftoverAsSavings(value: Boolean) =
+        save(KEY_NWS_COUNT_LEFTOVER, value) { it.copy(nwsCountLeftoverAsSavings = value) }
 
     /** Marks the one-time Insights overlay discovery nudge as dismissed (never resurfaces). */
     fun dismissInsightsOverlayNudge() =
@@ -300,6 +308,7 @@ class SettingsStore(context: Context) {
             .remove(KEY_RECAP_LAST_WEEK)
             .remove(KEY_RECAP_LAST_MONTH)
             .remove(KEY_INCLUDE_RECURRING_BILLS)
+            .remove(KEY_NWS_COUNT_LEFTOVER)
             .remove(KEY_OVERLAY_NUDGE_DISMISSED)
             .apply()
         _settings.update {
@@ -319,6 +328,7 @@ class SettingsStore(context: Context) {
                 recapLastShownWeek = "",
                 recapLastShownMonth = "",
                 insightsIncludeRecurringBills = false,
+                nwsCountLeftoverAsSavings = null,
                 insightsOverlayNudgeDismissed = false,
             )
         }
@@ -396,6 +406,7 @@ class SettingsStore(context: Context) {
         const val KEY_AUTO_LOCK = "app_lock_auto_minutes"
         const val KEY_PERIOD_UNIT_INSIGHTS = "insights_period_unit"
         const val KEY_INCLUDE_RECURRING_BILLS = "insights_include_recurring_bills"
+        const val KEY_NWS_COUNT_LEFTOVER = "nws_count_leftover_as_savings"
         const val KEY_OVERLAY_NUDGE_DISMISSED = "insights_overlay_nudge_dismissed"
         const val KEY_MONTH_START_DAY = "month_start_day"
         const val KEY_BUDGET_ROLLOVER = "budget_rollover_enabled"

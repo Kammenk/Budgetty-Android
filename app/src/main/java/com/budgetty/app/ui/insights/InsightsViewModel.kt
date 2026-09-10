@@ -210,20 +210,34 @@ data class BucketShare(
 }
 
 /**
+ * How Savings is counted in the split — the user's one-time choice (see
+ * [com.budgetty.app.data.settings.AppSettings.nwsCountLeftoverAsSavings]): [UNSET] hasn't been asked
+ * yet (the card shows the inline ask), [COUNT_KEPT] counts everything not spent on Needs/Wants as
+ * saved, [SET_ASIDE] counts only deliberate savings (goal transfers + Savings-tagged spend) and shows
+ * the rest as leftover.
+ */
+enum class SavingsAllocation { UNSET, COUNT_KEPT, SET_ASIDE }
+
+/**
  * The Needs/Wants/Savings 50/30/20 split for the selected period, on an income basis (each share is
  * of income, so the rule is comparable month to month even when spending swings). Null → the setup
  * state, shown when there's no income to measure against. Needs/Wants come from category-tagged
  * spend; Savings is net savings-goal contributions in the period plus spend on Savings-tagged
- * categories.
+ * categories — plus, under [SavingsAllocation.COUNT_KEPT], whatever income is left over.
  */
 data class NeedsWantsSplit(
     val income: BigDecimal,
     val needs: BucketShare,
     val wants: BucketShare,
     val savings: BucketShare,
-    /** Income not accounted for by the three buckets, as a 0..1 fraction — the bar's empty track. */
+    /** Income not accounted for by the three buckets, as a 0..1 fraction — the bar's leftover track
+     *  (zero under [SavingsAllocation.COUNT_KEPT], where Savings absorbs it). */
     val leftoverFraction: Float,
     val tone: SplitTone,
+    /** How Savings is counted — drives the one-time ask, the Savings row, and the leftover row. */
+    val allocation: SavingsAllocation,
+    /** The leftover amount (income − Needs − Wants − deliberate savings), for the leftover row + copy. */
+    val leftover: BigDecimal,
 )
 
 /** One closed month in the split trend (the card plots these oldest-first); shares are whole-percent
@@ -311,6 +325,9 @@ data class InsightsUiState(
     /** The split across the last closed pay-cycle months (oldest first), independent of the selected
      *  period; the trend card stays hidden until [MIN_BUCKET_TREND_MONTHS] are present. */
     val bucketTrend: List<BucketMonth> = emptyList(),
+    /** The user's raw Savings-allocation choice (null = not asked yet), so the Customize sheet shows
+     *  the current selection even when there's no split on screen. */
+    val savingsAllocation: Boolean? = null,
 ) {
     /** The split trend card renders only beneath a populated split and with enough closed months. */
     val showsBucketTrend: Boolean
@@ -485,9 +502,14 @@ class InsightsViewModel(
             // The split needs the just-computed periodIncome (denominator) plus the category rows (for
             // bucket resolution) and savings contributions, so it folds in after the recurring stage.
             .combine(
-                combine(categoryRepository.categories, savingsRepository.allContributions) { c, s -> c to s },
-            ) { state, (categories, contributions) ->
+                combine(
+                    categoryRepository.categories,
+                    savingsRepository.allContributions,
+                    settingsStore.settings.map { it.nwsCountLeftoverAsSavings }.distinctUntilChanged(),
+                ) { categories, contributions, allocation -> Triple(categories, contributions, allocation) },
+            ) { state, (categories, contributions, allocation) ->
                 state.copy(
+                    savingsAllocation = allocation,
                     needsWantsSplit = computeSplit(
                         period = state.period,
                         monthStartDay = state.monthStartDay,
@@ -495,6 +517,7 @@ class InsightsViewModel(
                         categories = categories,
                         contributions = contributions,
                         income = state.periodIncome,
+                        countLeftoverAsSavings = allocation,
                     ),
                 )
             }
@@ -738,6 +761,15 @@ class InsightsViewModel(
         settingsStore.dismissInsightsOverlayNudge()
     }
 
+    /**
+     * Records the user's answer to the split's one-time "does money you simply keep count as Savings?"
+     * ask (true = count everything kept, false = only deliberate savings). Remembered per user and
+     * changeable later in Customize sections; setting it dismisses the inline ask.
+     */
+    fun onCountLeftoverAsSavings(countKept: Boolean) {
+        settingsStore.setNwsCountLeftoverAsSavings(countKept)
+    }
+
     /** Switches to the current block of [unit] (offset 0) and remembers the unit for next launch. */
     fun onUnitSelected(unit: PeriodUnit) {
         selectedPeriod.value = InsightsPeriod.Stepped(unit)
@@ -828,8 +860,13 @@ class InsightsViewModel(
     /**
      * The Needs/Wants/Savings split for [period] on an income basis: each bucket's spend (Needs/Wants
      * from category tags, Savings from Savings-tagged spend plus net savings-goal contributions in the
-     * window) as a share of [income]. Null when [income] is zero — there's nothing to measure 50/30/20
-     * against, so the card shows its setup state instead.
+     * window) as a share of [income]. Null when [income] is zero — nothing to measure 50/30/20 against,
+     * so the card shows its setup state instead.
+     *
+     * [countLeftoverAsSavings] is the user's one-time choice: `true` folds the leftover (income kept
+     * back but not deliberately saved) into Savings; `false`/`null` keeps Savings to deliberate savings
+     * only and reports the rest as [NeedsWantsSplit.leftover]. `null` also marks the split UNSET so the
+     * card shows the inline ask.
      */
     private fun computeSplit(
         period: InsightsPeriod,
@@ -838,6 +875,7 @@ class InsightsViewModel(
         categories: List<CategoryEntity>,
         contributions: List<SavingsContributionEntity>,
         income: BigDecimal,
+        countLeftoverAsSavings: Boolean?,
     ): NeedsWantsSplit? {
         if (income.signum() <= 0) return null
         val byName = categories.associateBy { it.name.lowercase() }
@@ -846,19 +884,48 @@ class InsightsViewModel(
         val contribNet = contributions
             .filter { it.date in start..end }
             .fold(BigDecimal.ZERO) { acc, c -> acc + c.amount }
-        val savingsAmount = (spend.savings + contribNet).max(BigDecimal.ZERO)
+        val deliberateSavings = (spend.savings + contribNet).max(BigDecimal.ZERO)
+        // Income kept back after Needs and Wants that wasn't deliberately saved.
+        val leftover = income
+            .subtract(spend.needs).subtract(spend.wants).subtract(deliberateSavings)
+            .max(BigDecimal.ZERO)
+
+        val countKept = countLeftoverAsSavings == true
+        val savingsAmount = if (countKept) {
+            income.subtract(spend.needs).subtract(spend.wants).max(BigDecimal.ZERO)
+        } else {
+            deliberateSavings
+        }
 
         val needs = bucketShare(CategoryBucket.NEED, spend.needs, NEEDS_TARGET_PERCENT, income)
         val wants = bucketShare(CategoryBucket.WANT, spend.wants, WANTS_TARGET_PERCENT, income)
         val savings = bucketShare(CategoryBucket.SAVINGS, savingsAmount, SAVINGS_TARGET_PERCENT, income)
-        val leftover = (1f - needs.fraction - wants.fraction - savings.fraction).coerceIn(0f, 1f)
+        val leftoverFraction = if (countKept) {
+            0f
+        } else {
+            (leftover.toDouble() / income.toDouble()).toFloat().coerceIn(0f, 1f)
+        }
         val tone = when {
             savings.percent < SAVINGS_TARGET_PERCENT - BUCKET_ON_TARGET_TOLERANCE -> SplitTone.UNDER_SAVING
             wants.percent > WANTS_TARGET_PERCENT + BUCKET_ON_TARGET_TOLERANCE -> SplitTone.WANTS_OVER
             needs.percent > NEEDS_TARGET_PERCENT + BUCKET_ON_TARGET_TOLERANCE -> SplitTone.NEEDS_OVER
             else -> SplitTone.BALANCED
         }
-        return NeedsWantsSplit(income.setScale(2, RoundingMode.HALF_UP), needs, wants, savings, leftover, tone)
+        val allocation = when (countLeftoverAsSavings) {
+            null -> SavingsAllocation.UNSET
+            true -> SavingsAllocation.COUNT_KEPT
+            false -> SavingsAllocation.SET_ASIDE
+        }
+        return NeedsWantsSplit(
+            income = income.setScale(2, RoundingMode.HALF_UP),
+            needs = needs,
+            wants = wants,
+            savings = savings,
+            leftoverFraction = leftoverFraction,
+            tone = tone,
+            allocation = allocation,
+            leftover = leftover.setScale(2, RoundingMode.HALF_UP),
+        )
     }
 
     /**

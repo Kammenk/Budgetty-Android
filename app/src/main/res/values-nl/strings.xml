@@ -556,6 +556,32 @@
     <string name="insights_nws_setup_body">Voeg je inkomen toe en Budgetty verdeelt je uitgaven over Behoeften, Wensen en Sparen — de ingebouwde categorieën zijn al ingedeeld.</string>
     <string name="insights_nws_setup_cta">Inkomen instellen</string>
     <string name="insights_nws_setup_note">Berekend op je apparaat — er wordt niets verzonden.</string>
+
+    <!-- Insights: de eenmalige vraag wat als Sparen telt + schakelaar in Secties aanpassen -->
+    <string name="insights_nws_ask_title">Telt geld dat je gewoon overhoudt als Sparen?</string>
+    <string name="insights_nws_ask_subtitle">Kies wat past bij hoe jij denkt. Later te wijzigen.</string>
+    <string name="insights_nws_ask_keep">Tellen wat ik overhoud</string>
+    <string name="insights_nws_ask_keep_desc">Alles wat na Behoeften en Wensen overblijft, heb je gespaard.</string>
+    <string name="insights_nws_ask_aside">Alleen geld dat ik apart zet</string>
+    <string name="insights_nws_ask_aside_desc">Alleen doeloverboekingen en spaarcategorieën. De rest blijft over.</string>
+    <string name="insights_nws_bar_unspent">%1$s van je inkomen is nog niet uitgegeven</string>
+    <string name="insights_nws_bar_leftover">Grijs is inkomen dat je niet hebt uitgegeven of apart gezet</string>
+    <string name="insights_nws_savings_waiting">%1$s over · wacht op je antwoord</string>
+    <string name="insights_nws_leftover">Restant</string>
+    <string name="insights_nws_leftover_sub">%1$s · telt niet als Sparen</string>
+    <string name="insights_nws_summary_kept">Je hield deze maand %1$s van je %2$s inkomen over.</string>
+    <string name="insights_nws_cta_keep_title">Geef het een doel</string>
+    <string name="insights_nws_cta_keep_sub">Benoem waarvoor je het bewaart</string>
+    <string name="insights_nws_cta_aside_title">Stel een spaardoel in</string>
+    <string name="insights_nws_cta_aside_sub">Een doeloverboeking telt als Sparen</string>
+    <string name="insights_nws_footer_keep">Telt alles wat je overhoudt. Wijzig bij Secties aanpassen.</string>
+    <string name="insights_nws_footer_aside">Telt geld dat je apart zet. Wijzig bij Secties aanpassen.</string>
+    <string name="insights_nws_alloc_header">Sparen</string>
+    <string name="insights_nws_alloc_desc">Hoe Sparen wordt geteld in je 50/30/20-verdeling.</string>
+    <string name="insights_nws_alloc_keep_desc">Inkomen min Behoeften en Wensen telt als gespaard.</string>
+    <string name="insights_nws_alloc_aside_desc">Alleen doeloverboekingen en spaarcategorieën.</string>
+    <string name="insights_nws_alloc_footer">Geldt ook voor eerdere maanden, zodat je trend consistent blijft.</string>
+    <string name="insights_nws_new">Nieuw</string>
     <plurals name="insights_nws_trend_subtitle">
         <item quantity="one">%1$d afgesloten maand</item>
         <item quantity="other">%1$d afgesloten maanden</item>

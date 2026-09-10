@@ -498,6 +498,36 @@
     <string name="insights_nws_setup_cta">Set up income</string>
     <string name="insights_nws_setup_note">Worked out on your device — nothing is sent anywhere.</string>
 
+    <!-- Insights: the one-time "what counts as Savings?" ask + its Customize-sheet toggle -->
+    <string name="insights_nws_ask_title">Does money you simply keep count as Savings?</string>
+    <string name="insights_nws_ask_subtitle">Pick the one that matches how you think. Changeable later.</string>
+    <string name="insights_nws_ask_keep">Count what I keep</string>
+    <string name="insights_nws_ask_keep_desc">Anything left after Needs and Wants is money you saved.</string>
+    <string name="insights_nws_ask_aside">Only money I set aside</string>
+    <string name="insights_nws_ask_aside_desc">Goal transfers and Savings categories only. The rest stays unspent.</string>
+    <!-- %1$s = the leftover amount, e.g. "€1,824" -->
+    <string name="insights_nws_bar_unspent">%1$s of your income is not spent yet</string>
+    <string name="insights_nws_bar_leftover">Grey is income you have not spent or set aside</string>
+    <!-- %1$s = the amount kept back -->
+    <string name="insights_nws_savings_waiting">%1$s left · waiting on your answer</string>
+    <string name="insights_nws_leftover">Left over</string>
+    <!-- %1$s = the leftover amount -->
+    <string name="insights_nws_leftover_sub">%1$s · not counted as Savings</string>
+    <!-- %1$s = amount kept, %2$s = income for the month -->
+    <string name="insights_nws_summary_kept">You kept %1$s of your %2$s income this month.</string>
+    <string name="insights_nws_cta_keep_title">Give it a goal</string>
+    <string name="insights_nws_cta_keep_sub">Name what you are keeping it for</string>
+    <string name="insights_nws_cta_aside_title">Set a savings goal</string>
+    <string name="insights_nws_cta_aside_sub">A goal transfer counts toward Savings</string>
+    <string name="insights_nws_footer_keep">Counting everything you keep. Change in Customize sections.</string>
+    <string name="insights_nws_footer_aside">Counting money you set aside. Change in Customize sections.</string>
+    <string name="insights_nws_alloc_header">Savings</string>
+    <string name="insights_nws_alloc_desc">How Savings is counted in your 50/30/20 split.</string>
+    <string name="insights_nws_alloc_keep_desc">Income minus Needs and Wants counts as saved.</string>
+    <string name="insights_nws_alloc_aside_desc">Goal transfers and Savings categories only.</string>
+    <string name="insights_nws_alloc_footer">Applies to past months too, so your trend stays consistent.</string>
+    <string name="insights_nws_new">New</string>
+
     <!-- Money in vs. out -->
     <string name="insights_income_in">In</string>
     <string name="insights_income_out">Out</string>
