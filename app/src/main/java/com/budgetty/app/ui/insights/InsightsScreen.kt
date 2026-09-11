@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -67,6 +68,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -130,6 +132,7 @@ fun InsightsScreen(
     onNavigateToPaywall: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
+    onNavigateToManageCategories: () -> Unit = {},
     viewModel: InsightsViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
@@ -159,6 +162,9 @@ fun InsightsScreen(
         onDismissOverlayNudge = viewModel::onDismissOverlayNudge,
         onChooseSavingsAllocation = viewModel::onCountLeftoverAsSavings,
         overlayNudgeDismissed = settings.insightsOverlayNudgeDismissed,
+        onNavigateToManageCategories = onNavigateToManageCategories,
+        dismissedSetup = settings.dismissedInsightsSetup,
+        onDismissSetupItem = viewModel::onDismissSetupItem,
         modifier = modifier,
     )
 }
@@ -187,6 +193,9 @@ private fun InsightsScreenContent(
     onDismissOverlayNudge: () -> Unit = {},
     onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
+    onNavigateToManageCategories: () -> Unit = {},
+    dismissedSetup: Set<String> = emptySet(),
+    onDismissSetupItem: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     // The category whose transactions are shown in the bottom sheet, or null when none is open.
@@ -280,6 +289,9 @@ private fun InsightsScreenContent(
                 onDismissOverlayNudge = onDismissOverlayNudge,
                 onChooseSavingsAllocation = onChooseSavingsAllocation,
                 overlayNudgeDismissed = overlayNudgeDismissed,
+                onNavigateToManageCategories = onNavigateToManageCategories,
+                dismissedSetup = dismissedSetup,
+                onDismissSetupItem = onDismissSetupItem,
             )
         }
     }
@@ -642,6 +654,9 @@ private fun InsightsPhoneBody(
     onDismissOverlayNudge: () -> Unit = {},
     onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
+    onNavigateToManageCategories: () -> Unit = {},
+    dismissedSetup: Set<String> = emptySet(),
+    onDismissSetupItem: (String) -> Unit = {},
 ) {
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
@@ -710,9 +725,18 @@ private fun InsightsPhoneBody(
         if (selectedTab == InsightsTab.OVERVIEW) {
             OverviewTabContent(
                 state = state,
-                periodLabel = periodLabel,
                 onGoToTab = { selectedTab = it },
                 onSliceClick = onSliceClick,
+                controls = OverviewControls(
+                    dismissedSetup = dismissedSetup,
+                    overlayNudgeDismissed = overlayNudgeDismissed,
+                    onNavigateToBudget = onNavigateToBudget,
+                    onNavigateToManageCategories = onNavigateToManageCategories,
+                    onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
+                    onChooseSavingsAllocation = onChooseSavingsAllocation,
+                    onDismissOverlayNudge = onDismissOverlayNudge,
+                    onDismissSetupItem = onDismissSetupItem,
+                ),
             )
         } else ordered.forEach { section ->
             // Only the selected tab's sections render; WELLBEING (tab == null) stays pinned above.
@@ -721,13 +745,8 @@ private fun InsightsPhoneBody(
                     // Breakdown shows its own empty state, so it renders even with no data; the rest
                     // only appear once there's spend to summarize.
                     InsightsSection.BREAKDOWN -> if (state.isLoaded) {
-                        // One-time nudge (the off-by-default overlay is otherwise invisible), above Breakdown.
-                        OverlayDiscoveryNudge(
-                            state = state,
-                            dismissed = overlayNudgeDismissed,
-                            onEnable = { onToggleIncludeRecurringBills(true) },
-                            onDismiss = onDismissOverlayNudge,
-                        )
+                        // The planned-bills overlay discovery nudge now lives in the Overview "things to
+                        // set up" checklist (P3), so Breakdown no longer pins its own copy here.
                         if (hasData) {
                             BreakdownCard(
                                 slices = state.slices,
@@ -2228,12 +2247,27 @@ private fun StatTile(
  * a few headline stats, the top categories, and a couple of highlights, each linking into the tab
  * that holds the full detail. Built entirely from existing [InsightsUiState] data (no new derivation).
  */
+/**
+ * The Overview tab's setup/global-toggle wiring (P3), bundled so [OverviewTabContent] stays a short
+ * parameter list: the two dismissed-state flags the checklist reads, plus the checklist/chip actions.
+ */
+private class OverviewControls(
+    val dismissedSetup: Set<String>,
+    val overlayNudgeDismissed: Boolean,
+    val onNavigateToBudget: () -> Unit,
+    val onNavigateToManageCategories: () -> Unit,
+    val onToggleIncludeRecurringBills: (Boolean) -> Unit,
+    val onChooseSavingsAllocation: (Boolean) -> Unit,
+    val onDismissOverlayNudge: () -> Unit,
+    val onDismissSetupItem: (String) -> Unit,
+)
+
 @Composable
 private fun OverviewTabContent(
     state: InsightsUiState,
-    periodLabel: String,
     onGoToTab: (InsightsTab) -> Unit,
     onSliceClick: (PieSlice) -> Unit,
+    controls: OverviewControls,
 ) {
     // Hero: total spent + period-over-period delta + the 50/30/20 mini split + headline stats.
     InsightCard {
@@ -2317,6 +2351,238 @@ private fun OverviewTabContent(
                 )
             }
         }
+    }
+    // "Things to set up": the consolidated setup checklist, then the two global quick-toggle chips.
+    // Both self-hide when nothing applies; gated on isLoaded so neither flashes on cold start.
+    if (state.isLoaded) {
+        OverviewSetupChecklist(
+            items = activeSetupItems(state, controls.dismissedSetup, controls.overlayNudgeDismissed),
+            onAction = { item ->
+                when (item) {
+                    // Savings allocation is chosen inline on the Money tab's Needs/Wants card.
+                    InsightsSetupItem.SAVINGS -> onGoToTab(InsightsTab.MONEY)
+                    InsightsSetupItem.INCOME -> controls.onNavigateToBudget()
+                    InsightsSetupItem.OVERLAY -> controls.onToggleIncludeRecurringBills(true)
+                    InsightsSetupItem.BUCKETS -> controls.onNavigateToManageCategories()
+                }
+            },
+            onDismiss = { item ->
+                // The overlay item shares the older discovery-nudge flag; the rest use the setup set.
+                if (item == InsightsSetupItem.OVERLAY) {
+                    controls.onDismissOverlayNudge()
+                } else {
+                    controls.onDismissSetupItem(item.key)
+                }
+            },
+        )
+        OverviewToggleChips(
+            state = state,
+            onToggleIncludeRecurringBills = controls.onToggleIncludeRecurringBills,
+            onChooseSavingsAllocation = controls.onChooseSavingsAllocation,
+        )
+    }
+}
+
+/**
+ * Which setup-checklist items are live for [state] right now. Each fires only while its setup is
+ * genuinely incomplete and it hasn't been dismissed; the overlay item reuses the existing
+ * discovery-nudge gate (and its own dismissed flag) so it never double-shows against that feature.
+ */
+private fun activeSetupItems(
+    state: InsightsUiState,
+    dismissedSetup: Set<String>,
+    overlayNudgeDismissed: Boolean,
+): List<InsightsSetupItem> = buildList {
+    // Savings allocation not yet answered, but there's a split for it to matter to.
+    if (state.needsWantsSplit != null && state.savingsAllocation == null &&
+        InsightsSetupItem.SAVINGS.key !in dismissedSetup
+    ) {
+        add(InsightsSetupItem.SAVINGS)
+    }
+    // No money plan at all (neither income nor bills), so the whole Money tab is empty.
+    if (!state.hasIncome && !state.hasBills && InsightsSetupItem.INCOME.key !in dismissedSetup) {
+        add(InsightsSetupItem.INCOME)
+    }
+    // Recurring bills exist but the planned overlay is off (same gate as the retired inline nudge).
+    if (shouldShowOverlayNudge(state, overlayNudgeDismissed)) add(InsightsSetupItem.OVERLAY)
+    // There's a split, but every category is still on its default Needs/Wants bucket.
+    if (state.needsWantsSplit != null && !state.hasCustomBuckets &&
+        InsightsSetupItem.BUCKETS.key !in dismissedSetup
+    ) {
+        add(InsightsSetupItem.BUCKETS)
+    }
+}
+
+/**
+ * The Overview "things to set up" card: a tonal container that starts as a one-line summary chip and
+ * expands to a short, per-row-dismissible checklist (P3). Renders nothing when [items] is empty, so
+ * the card is simply absent once there's nothing to set up. The header ✕ dismisses every shown item.
+ */
+@Composable
+private fun OverviewSetupChecklist(
+    items: List<InsightsSetupItem>,
+    onAction: (InsightsSetupItem) -> Unit,
+    onDismiss: (InsightsSetupItem) -> Unit,
+) {
+    if (items.isEmpty()) return
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    val onContainer = MaterialTheme.colorScheme.onSecondaryContainer
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusLg))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(horizontal = MaterialTheme.dimens.lg, vertical = MaterialTheme.dimens.sm),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = pluralStringResource(R.plurals.insights_setup_count, items.size, items.size),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                color = onContainer,
+                modifier = Modifier.weight(1f),
+            )
+            Text(
+                text = stringResource(if (expanded) R.string.insights_setup_hide else R.string.insights_setup_review),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .clickable { expanded = !expanded }
+                    .padding(horizontal = MaterialTheme.dimens.sm, vertical = MaterialTheme.dimens.xs),
+            )
+            SetupDismissButton(tint = onContainer, onClick = { items.forEach(onDismiss) })
+        }
+        if (expanded) {
+            items.forEach { item ->
+                HorizontalDivider(color = onContainer.copy(alpha = 0.15f))
+                Row(
+                    modifier = Modifier.padding(vertical = MaterialTheme.dimens.xs),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+                ) {
+                    Text(
+                        text = stringResource(item.labelRes),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = onContainer,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Text(
+                        text = stringResource(item.ctaRes),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .clickable { onAction(item) }
+                            .padding(horizontal = MaterialTheme.dimens.sm, vertical = MaterialTheme.dimens.xs),
+                    )
+                    SetupDismissButton(tint = onContainer, onClick = { onDismiss(item) })
+                }
+            }
+        }
+    }
+}
+
+/** The compact ✕ used in the setup checklist (header + per row); a small, labelled touch target. */
+@Composable
+private fun SetupDismissButton(tint: Color, onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(CircleShape)
+            .clickable(onClick = onClick)
+            .padding(MaterialTheme.dimens.xs),
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Close,
+            contentDescription = stringResource(R.string.cd_insights_setup_dismiss),
+            tint = tint,
+            modifier = Modifier.size(16.dp),
+        )
+    }
+}
+
+/**
+ * The two Overview global quick-toggle chips: the planned-bills overlay (shown when there are bills to
+ * overlay) and the Needs/Wants savings-allocation mode (shown once a split exists and the mode is set;
+ * the first choice is made through the checklist). Each is a compact pill toggle; the whole chip is the
+ * control. Absent entirely when neither applies.
+ */
+@Composable
+private fun OverviewToggleChips(
+    state: InsightsUiState,
+    onToggleIncludeRecurringBills: (Boolean) -> Unit,
+    onChooseSavingsAllocation: (Boolean) -> Unit,
+) {
+    val showPlanned = state.hasBills
+    val showSavings = state.needsWantsSplit != null && state.savingsAllocation != null
+    if (!showPlanned && !showSavings) return
+    Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm)) {
+        if (showPlanned) {
+            OverviewToggleChip(
+                checked = state.includeRecurringBills,
+                label = stringResource(R.string.insights_overview_chip_planned),
+                modifier = Modifier.weight(1f),
+                onToggle = { onToggleIncludeRecurringBills(!state.includeRecurringBills) },
+            )
+        }
+        if (showSavings) {
+            val kept = state.savingsAllocation == true
+            OverviewToggleChip(
+                checked = kept,
+                label = stringResource(
+                    if (kept) R.string.insights_overview_chip_savings_kept
+                    else R.string.insights_overview_chip_savings_aside,
+                ),
+                modifier = Modifier.weight(1f),
+                onToggle = { onChooseSavingsAllocation(!kept) },
+            )
+        }
+    }
+}
+
+/** One compact pill toggle-chip: a mini track+knob and a label, the whole row toggling [checked]. */
+@Composable
+private fun OverviewToggleChip(
+    checked: Boolean,
+    label: String,
+    modifier: Modifier = Modifier,
+    onToggle: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .toggleable(value = checked, role = Role.Switch, onValueChange = { onToggle() })
+            .padding(horizontal = MaterialTheme.dimens.md, vertical = MaterialTheme.dimens.sm),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+    ) {
+        val track = if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+        Box(
+            modifier = Modifier
+                .size(width = 26.dp, height = 15.dp)
+                .clip(RoundedCornerShape(50))
+                .background(track),
+            contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart,
+        ) {
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 2.dp)
+                    .size(11.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surface),
+            )
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = if (checked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+        )
     }
 }
 

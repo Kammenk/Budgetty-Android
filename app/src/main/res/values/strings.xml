@@ -459,6 +459,26 @@
     <string name="insights_overview_worth">Worth knowing</string>
     <string name="insights_overview_on_pace">On pace for %1$s</string>
     <string name="insights_open_recap">Open your last recap</string>
+    <!-- Overview "things to set up" checklist (P3) -->
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d thing to set up</item>
+        <item quantity="other">%1$d things to set up</item>
+    </plurals>
+    <string name="insights_setup_review">Review</string>
+    <string name="insights_setup_hide">Hide</string>
+    <string name="insights_setup_item_savings">Choose what counts as savings</string>
+    <string name="insights_setup_cta_savings">Choose</string>
+    <string name="insights_setup_item_income">Add income or a budget</string>
+    <string name="insights_setup_cta_income">Add</string>
+    <string name="insights_setup_item_overlay">Try the planned-bills overlay</string>
+    <string name="insights_setup_cta_overlay">Turn on</string>
+    <string name="insights_setup_item_buckets">Tag categories as needs / wants</string>
+    <string name="insights_setup_cta_buckets">Tag</string>
+    <string name="cd_insights_setup_dismiss">Dismiss</string>
+    <!-- Overview quick-toggle chips (P3) -->
+    <string name="insights_overview_chip_planned">Planned layers</string>
+    <string name="insights_overview_chip_savings_kept">Savings: Kept</string>
+    <string name="insights_overview_chip_savings_aside">Savings: Set aside</string>
     <string name="insights_breakdown">Breakdown</string>
     <string name="insights_summary">Summary</string>
     <string name="insights_trend">Trend</string>

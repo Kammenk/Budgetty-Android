@@ -46,3 +46,23 @@ fun InsightsSection.tab(): InsightsTab? = when (this) {
 
     InsightsSection.WELLBEING -> null
 }
+
+/**
+ * One row of the consolidated "things to set up" checklist on the Overview tab (P3). Each item names a
+ * piece of one-time setup that unlocks more of Insights, links to where it's done, and can be dismissed
+ * with the ✕. An item is shown only while its setup is genuinely incomplete (see `activeSetupItems` in
+ * `InsightsScreen`) so the card empties itself out and then disappears entirely.
+ *
+ * [key] is persisted (dismissals live in `SettingsStore.dismissedInsightsSetup`, except [OVERLAY]
+ * which reuses the older `insightsOverlayNudgeDismissed` flag) — keep the keys stable.
+ */
+enum class InsightsSetupItem(
+    val key: String,
+    @param:StringRes val labelRes: Int,
+    @param:StringRes val ctaRes: Int,
+) {
+    SAVINGS("savings", R.string.insights_setup_item_savings, R.string.insights_setup_cta_savings),
+    INCOME("income", R.string.insights_setup_item_income, R.string.insights_setup_cta_income),
+    OVERLAY("overlay", R.string.insights_setup_item_overlay, R.string.insights_setup_cta_overlay),
+    BUCKETS("buckets", R.string.insights_setup_item_buckets, R.string.insights_setup_cta_buckets),
+}
