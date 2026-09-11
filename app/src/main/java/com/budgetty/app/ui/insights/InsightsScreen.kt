@@ -1,6 +1,7 @@
 package com.budgetty.app.ui.insights
 
 import com.budgetty.app.ui.theme.dimens
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -645,7 +646,7 @@ private fun InsightsPhoneBody(
     val ordered = resolveSectionOrder(sectionOrder, InsightsSection.entries, InsightsSection::key)
     // P1: the sections are grouped into a few tabs (a segmented toggle below the header) instead of
     // one long scroll. Tab is view-only state — default lands on Spending; Overview/Custom arrive later.
-    var selectedTab by rememberSaveable { mutableStateOf(InsightsTab.SPENDING) }
+    var selectedTab by rememberSaveable { mutableStateOf(InsightsTab.OVERVIEW) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -704,7 +705,14 @@ private fun InsightsPhoneBody(
             onSelect = { selectedTab = InsightsTab.entries[it] },
             modifier = Modifier.fillMaxWidth(),
         )
-        ordered.forEach { section ->
+        if (selectedTab == InsightsTab.OVERVIEW) {
+            OverviewTabContent(
+                state = state,
+                periodLabel = periodLabel,
+                onGoToTab = { selectedTab = it },
+                onSliceClick = onSliceClick,
+            )
+        } else ordered.forEach { section ->
             // Only the selected tab's sections render; WELLBEING (tab == null) stays pinned above.
             if (shows(section) && section.tab() == selectedTab) {
                 when (section) {
@@ -2210,6 +2218,165 @@ private fun StatTile(
             fontWeight = FontWeight.Bold,
             color = valueColor,
         )
+    }
+}
+
+/**
+ * The Overview tab (P2): a bespoke summary that leads the screen — total spent, the 50/30/20 split,
+ * a few headline stats, the top categories, and a couple of highlights, each linking into the tab
+ * that holds the full detail. Built entirely from existing [InsightsUiState] data (no new derivation).
+ */
+@Composable
+private fun OverviewTabContent(
+    state: InsightsUiState,
+    periodLabel: String,
+    onGoToTab: (InsightsTab) -> Unit,
+    onSliceClick: (PieSlice) -> Unit,
+) {
+    // Hero: total spent + period-over-period delta + the 50/30/20 mini split + headline stats.
+    InsightCard {
+        Text(
+            text = stringResource(R.string.insights_overview_spent),
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+        ) {
+            Text(
+                text = state.total.formatMoney(),
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
+            )
+            state.periodComparison?.takeIf { it.deltaPercent != 0 }?.let { pc ->
+                val down = pc.deltaPercent < 0
+                val magnitude = if (down) -pc.deltaPercent else pc.deltaPercent
+                Text(
+                    text = "${if (down) "↓" else "↑"} $magnitude%",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = if (down) budgetGoodColor() else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = MaterialTheme.dimens.sm),
+                )
+            }
+        }
+        state.needsWantsSplit?.let { split ->
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            BucketSplitBar(split)
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+            Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md)) {
+                CompactBucketLabel(CategoryBucket.NEED, split.needs.percent)
+                CompactBucketLabel(CategoryBucket.WANT, split.wants.percent)
+                CompactBucketLabel(CategoryBucket.SAVINGS, split.savings.percent)
+            }
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.lg))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+        ) {
+            StatTile(stringResource(R.string.insights_stat_avg_day), state.avgPerDay.formatMoney(), Modifier.weight(1f))
+            StatTile(stringResource(R.string.home_receipts), state.receiptCount.toString(), Modifier.weight(1f))
+            StatTile(
+                stringResource(R.string.insights_stat_saved),
+                state.totalSaved.formatMoney(),
+                Modifier.weight(1f),
+                valueColor = budgetGoodColor(),
+            )
+        }
+    }
+    // Top spending: a compact donut + the top three categories, linking into the Spending tab.
+    if (state.slices.isNotEmpty()) {
+        InsightCard {
+            OverviewLinkHeader(R.string.insights_overview_top, InsightsTab.SPENDING, onGoToTab)
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            state.slices.take(4).forEachIndexed { index, slice ->
+                if (index > 0) Spacer(Modifier.height(MaterialTheme.dimens.md))
+                TopSliceRow(slice, onClick = { onSliceClick(slice) })
+            }
+        }
+    }
+    // Worth knowing: the top highlights + the on-pace projection, linking into the Trends tab.
+    if (state.highlights.isNotEmpty() || state.projectedTotal != null) {
+        InsightCard {
+            OverviewLinkHeader(R.string.insights_overview_worth, InsightsTab.TRENDS, onGoToTab)
+            Spacer(Modifier.height(MaterialTheme.dimens.md))
+            state.highlights.take(2).forEachIndexed { index, highlight ->
+                if (index > 0) Spacer(Modifier.height(MaterialTheme.dimens.md))
+                HighlightRow(highlight, state.period)
+            }
+            state.projectedTotal?.let { projected ->
+                if (state.highlights.isNotEmpty()) Spacer(Modifier.height(MaterialTheme.dimens.md))
+                Text(
+                    text = stringResource(R.string.insights_overview_on_pace, projected.formatMoney()),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+/** A card header with a title and a "<tab> ›" deep-link into the tab that holds the full detail. */
+@Composable
+private fun OverviewLinkHeader(@StringRes titleRes: Int, linkTab: InsightsTab, onGoToTab: (InsightsTab) -> Unit) {
+    Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = stringResource(titleRes),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = "${stringResource(linkTab.labelRes)} ›",
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .clip(RoundedCornerShape(50))
+                .clickable { onGoToTab(linkTab) }
+                .padding(horizontal = MaterialTheme.dimens.sm, vertical = MaterialTheme.dimens.xs),
+        )
+    }
+}
+
+/** Compact "Needs 52%" label under the Overview split bar. */
+@Composable
+private fun CompactBucketLabel(bucket: CategoryBucket, percent: Int) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.xs),
+    ) {
+        Box(Modifier.size(8.dp).clip(RoundedCornerShape(2.dp)).background(bucketColor(bucket)))
+        Text(
+            text = "${bucketLabel(bucket)} $percent%",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/** One "top spending" row: colour dot, category name, amount; taps open its transactions. */
+@Composable
+private fun TopSliceRow(slice: PieSlice, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
+            .clickable(onClick = onClick)
+            .padding(vertical = MaterialTheme.dimens.xs),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+    ) {
+        Box(Modifier.size(9.dp).clip(RoundedCornerShape(3.dp)).background(slice.color))
+        Text(
+            text = slice.label,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+        )
+        Text(slice.value.formatMoney(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
     }
 }
 

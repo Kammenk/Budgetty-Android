@@ -453,6 +453,11 @@
     <string name="insights_tab_spending">Spending</string>
     <string name="insights_tab_money">Money</string>
     <string name="insights_tab_trends">Trends</string>
+    <string name="insights_overview_tab">Overview</string>
+    <string name="insights_overview_spent">Total spent</string>
+    <string name="insights_overview_top">Top spending</string>
+    <string name="insights_overview_worth">Worth knowing</string>
+    <string name="insights_overview_on_pace">On pace for %1$s</string>
     <string name="insights_breakdown">Breakdown</string>
     <string name="insights_summary">Summary</string>
     <string name="insights_trend">Trend</string>
