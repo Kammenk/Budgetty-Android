@@ -458,6 +458,7 @@
     <string name="insights_overview_top">Top spending</string>
     <string name="insights_overview_worth">Worth knowing</string>
     <string name="insights_overview_on_pace">On pace for %1$s</string>
+    <string name="insights_open_recap">Open your last recap</string>
     <string name="insights_breakdown">Breakdown</string>
     <string name="insights_summary">Summary</string>
     <string name="insights_trend">Trend</string>

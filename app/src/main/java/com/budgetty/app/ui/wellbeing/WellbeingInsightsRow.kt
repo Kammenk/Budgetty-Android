@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -25,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.budgetty.app.R
+import com.budgetty.app.ui.components.ScoreRing
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetGreatColor
@@ -90,6 +92,35 @@ fun WellbeingInsightsRow(summary: WellbeingSummary, onClick: () -> Unit, modifie
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(18.dp),
+        )
+    }
+}
+
+/**
+ * The compact toolbar variant of [WellbeingInsightsRow] (Hybrid Insights header): a small band-
+ * coloured score ring showing the number, tappable into the Wellbeing screen. Falls to a dashed,
+ * muted ring with an em dash before there's a score.
+ */
+@Composable
+fun WellbeingScorePip(summary: WellbeingSummary, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    val firstRun = !summary.hasScore
+    val arc = bandColorOf(summary.score.band)
+    val scoreValue = summary.score.score ?: 0
+    ScoreRing(
+        fraction = if (firstRun) 0f else scoreValue / 100f,
+        arcColor = arc,
+        dashedTrack = firstRun,
+        strokeRatio = 5.4f / 42f,
+        modifier = modifier
+            .size(34.dp)
+            .clip(CircleShape)
+            .clickable(onClick = onClick, onClickLabel = stringResource(R.string.wellbeing_entry_score)),
+    ) {
+        Text(
+            text = if (firstRun) "—" else "$scoreValue",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Black,
+            color = if (firstRun) MaterialTheme.colorScheme.onSurfaceVariant else arc,
         )
     }
 }

@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.UnfoldLess
 import androidx.compose.material.icons.filled.UnfoldMore
 import androidx.compose.material.icons.automirrored.filled.TrendingDown
@@ -91,6 +92,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.R
 import com.budgetty.app.ui.recap.RecapReopenRow
 import com.budgetty.app.ui.wellbeing.WellbeingInsightsRow
+import com.budgetty.app.ui.wellbeing.WellbeingScorePip
 import com.budgetty.app.ui.subscriptions.SubscriptionsInsightsCard
 import com.budgetty.app.category.Categories
 import com.budgetty.app.category.CategoryBucket
@@ -669,6 +671,13 @@ private fun InsightsPhoneBody(
                     .weight(1f)
                     .padding(start = MaterialTheme.dimens.xs),
             )
+            // Wellbeing + recap live in the toolbar (out of the scroll); recap shows only when ready.
+            if (shows(InsightsSection.WELLBEING)) {
+                state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
+            }
+            if (showRecapEntry) {
+                RecapToolbarButton(onClick = onNavigateToRecap)
+            }
             SectionsMenu(
                 sections = InsightsSection.entries,
                 order = sectionOrder,
@@ -692,13 +701,6 @@ private fun InsightsPhoneBody(
             )
         }
         stepper(Modifier.fillMaxWidth(), true)
-        // Pinned above Breakdown: a one-line door into the Wellbeing screen. Hidden via Customize sections.
-        if (shows(InsightsSection.WELLBEING)) {
-            state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
-        }
-        if (showRecapEntry) {
-            RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
-        }
         SegmentedToggle(
             options = InsightsTab.entries.map { stringResource(it.labelRes) },
             selectedIndex = selectedTab.ordinal,
@@ -2377,6 +2379,18 @@ private fun TopSliceRow(slice: PieSlice, onClick: () -> Unit) {
             maxLines = 1,
         )
         Text(slice.value.formatMoney(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+    }
+}
+
+/** The toolbar recap control: a play button that opens the last recap (only shown when one exists). */
+@Composable
+private fun RecapToolbarButton(onClick: () -> Unit) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = Icons.Filled.PlayArrow,
+            contentDescription = stringResource(R.string.insights_open_recap),
+            tint = MaterialTheme.colorScheme.primary,
+        )
     }
 }
 
