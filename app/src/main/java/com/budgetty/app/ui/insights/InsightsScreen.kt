@@ -96,7 +96,6 @@ import com.budgetty.app.ui.savings.SavingsSheetLabel
 import com.budgetty.app.ui.util.MatchedBillLine
 import com.budgetty.app.ui.components.StoreTransactionsSheet
 import com.budgetty.app.ui.components.TransactionLineRow
-import com.budgetty.app.ui.components.resolveSectionOrder
 import com.budgetty.app.ui.util.formatMoney
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.R
@@ -283,11 +282,6 @@ private fun InsightsScreenContent(
                 state = state,
                 periodLabel = periodLabel,
                 stepper = stepper,
-                hiddenSections = hiddenSections,
-                sectionOrder = sectionOrder,
-                onToggleSection = onToggleSection,
-                onReorderSections = onReorderSections,
-                onRevertSections = onRevertSections,
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
                 onNavigateToBudget = onNavigateToBudget,
@@ -650,11 +644,6 @@ private fun InsightsPhoneBody(
     state: InsightsUiState,
     periodLabel: String,
     stepper: @Composable (Modifier, Boolean) -> Unit,
-    hiddenSections: Set<String>,
-    sectionOrder: List<String>,
-    onToggleSection: (InsightsSection, Boolean) -> Unit,
-    onReorderSections: (List<String>) -> Unit,
-    onRevertSections: () -> Unit,
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
     onNavigateToBudget: () -> Unit = {},
@@ -674,9 +663,7 @@ private fun InsightsPhoneBody(
     customSections: List<String> = emptyList(),
     onSetCustomSections: (List<String>) -> Unit = {},
 ) {
-    fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
-    val ordered = resolveSectionOrder(sectionOrder, InsightsSection.entries, InsightsSection::key)
     // Callbacks a section card may fire, bundled once so both the fixed tabs and Custom render through
     // the same InsightSectionCard.
     val sectionActions = SectionCardActions(
@@ -714,33 +701,12 @@ private fun InsightsPhoneBody(
                     .padding(start = MaterialTheme.dimens.xs),
             )
             // Wellbeing + recap live in the toolbar (out of the scroll); recap shows only when ready.
-            if (shows(InsightsSection.WELLBEING)) {
-                state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
-            }
+            // The old "Customize sections" menu is gone on phone (D6): the fixed groups are fixed, the
+            // Custom tab is the curation surface, and the overlay / savings toggles are Overview chips.
+            state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
             if (showRecapEntry) {
                 RecapToolbarButton(onClick = onNavigateToRecap)
             }
-            SectionsMenu(
-                sections = InsightsSection.entries,
-                order = sectionOrder,
-                hiddenSections = hiddenSections,
-                sectionKey = { it.key },
-                labelRes = { it.labelRes },
-                onToggle = onToggleSection,
-                onReorder = onReorderSections,
-                onRevertToDefault = onRevertSections,
-                // A "Layers" group above the section list: the opt-in switch for the planned-bills overlay.
-                header = {
-                    SavingsAllocationCustomize(
-                        current = state.savingsAllocation,
-                        onChoose = onChooseSavingsAllocation,
-                    )
-                    InsightsLayersToggle(
-                        checked = state.includeRecurringBills,
-                        onCheckedChange = onToggleIncludeRecurringBills,
-                    )
-                },
-            )
         }
         stepper(Modifier.fillMaxWidth(), true)
         SegmentedToggle(
@@ -775,11 +741,10 @@ private fun InsightsPhoneBody(
                 onSetCustomSections = onSetCustomSections,
             )
 
-            // A fixed group: render its own sections (in the saved order) through the shared card.
+            // A fixed group (D1): every section that belongs to it, in the canonical order.
             else -> {
-                ordered.forEach { section ->
-                    // Only the selected tab's sections render; WELLBEING (tab == null) stays pinned above.
-                    if (shows(section) && section.tab() == selectedTab) {
+                InsightsSection.entries.forEach { section ->
+                    if (section.tab() == selectedTab) {
                         InsightSectionCard(section, state, periodLabel, sectionActions)
                     }
                 }
