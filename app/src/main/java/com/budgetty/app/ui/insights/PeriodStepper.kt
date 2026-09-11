@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -68,10 +67,11 @@ fun PeriodStepper(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    // One fully-rounded pill (same surface as the Insights cards) holding both step arrows and the
-    // centre label; tapping the label opens the unit / custom-range menu, matching the Hybrid mockup.
+    // One rounded control holding both step arrows and the centre label; tapping the label opens the
+    // unit / custom-range menu. Uses the same corner radius as the tab pills + the History filter chips
+    // (`MaterialTheme.shapes.small`, 12dp) so the date control and the tabs below it read as a set.
     val pillColor = MaterialTheme.colorScheme.surfaceContainer
-    val pillShape = RoundedCornerShape(percent = 50)
+    val pillShape = MaterialTheme.shapes.small
     val arrowColors = IconButtonDefaults.iconButtonColors(
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),

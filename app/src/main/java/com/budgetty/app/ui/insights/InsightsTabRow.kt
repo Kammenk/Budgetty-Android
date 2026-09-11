@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,8 +23,9 @@ import com.budgetty.app.ui.theme.dimens
  * radius as the [PeriodStepper] pill above it, and the iOS `InsightsTabBar`. Unlike the fixed
  * [com.budgetty.app.ui.components.SegmentedToggle], the pills keep their natural width and scroll, so
  * all groups stay reachable at any screen size or font scale instead of squeezing five labels into one
- * fixed row (a small phone or large font would otherwise truncate them). The selected pill takes the
- * primary fill; tapping scrolls the selection into view.
+ * fixed row (a small phone or large font would otherwise truncate them). The pills use the same corner
+ * radius as the History screen's filter chips (`MaterialTheme.shapes.small`, 12dp); the selected pill
+ * takes the primary fill; tapping scrolls the selection into view.
  */
 @Composable
 fun InsightsTabRow(
@@ -58,7 +58,7 @@ fun InsightsTabRow(
                 },
                 maxLines = 1,
                 modifier = Modifier
-                    .clip(RoundedCornerShape(percent = 50))
+                    .clip(MaterialTheme.shapes.small)
                     .background(
                         if (isSelected) {
                             MaterialTheme.colorScheme.primary
