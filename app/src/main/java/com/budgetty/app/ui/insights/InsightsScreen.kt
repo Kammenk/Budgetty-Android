@@ -708,7 +708,7 @@ private fun InsightsPhoneBody(
                 RecapToolbarButton(onClick = onNavigateToRecap)
             }
         }
-        stepper(Modifier.fillMaxWidth(), true)
+        stepper(Modifier.fillMaxWidth(), false)
         SegmentedToggle(
             options = InsightsTab.entries.map { stringResource(it.labelRes) },
             selectedIndex = selectedTab.ordinal,

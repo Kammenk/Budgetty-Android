@@ -6,7 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,7 +40,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.budgetty.app.R
 import com.budgetty.app.ui.components.formatDateRange
 import java.time.LocalDate
@@ -49,9 +47,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
- * The Insights period control: `‹ [pill] ›`. The centre is an elevated "refined pill" — the active
- * unit as a small uppercase eyebrow over the bold period value (a calendar glyph fronts the eyebrow
- * for a custom range) — and tapping it opens a dropdown to pick the stepping unit or a custom range.
+ * The Insights period control: `‹ [pill] ›`. The centre is a compact single-line pill — the bold
+ * period value plus a chevron (a calendar glyph fronts a custom range) — and tapping it opens a
+ * dropdown to pick the stepping unit or a custom range.
  * The arrows walk an [InsightsPeriod.Stepped] window one [unit] at a time; they're disabled while a
  * custom range is active ([steppable] = false), the forward arrow is disabled at the current period
  * ([canStepForward] = false), and the back arrow is disabled once the earliest recorded data is
@@ -77,16 +75,10 @@ fun PeriodStepper(
     var expanded by remember { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(if (expanded) 180f else 0f, label = "stepperChevron")
 
-    // Eyebrow over the value: the active unit, or "CUSTOM" for a custom range, shown uppercased.
-    val eyebrow = when {
-        customSelected -> stringResource(R.string.period_unit_custom)
-        selectedUnit != null -> stringResource(selectedUnit.labelRes)
-        else -> ""
-    }.uppercase(Locale.getDefault())
-
-    // Same background as the Insights cards (InsightCard uses surfaceContainer) in both themes.
+    // Same background as the Insights cards (InsightCard uses surfaceContainer) in both themes; a
+    // fully-rounded (pill) shape keeps the compact control light, matching the Hybrid mockup.
     val pillColor = MaterialTheme.colorScheme.surfaceContainer
-    val pillShape = RoundedCornerShape(MaterialTheme.dimens.radiusLg)
+    val pillShape = RoundedCornerShape(percent = 50)
     val arrowColors = IconButtonDefaults.iconButtonColors(
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
         disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
@@ -104,48 +96,41 @@ fun PeriodStepper(
             )
         }
         Box(modifier = if (fillWidth) Modifier.fillMaxWidth(0.5f) else Modifier) {
+            // A single compact line — the period label + a chevron (a calendar glyph fronts a custom
+            // range) — so the control reads as a small filter chip rather than a tall two-line block.
             Row(
                 modifier = Modifier
                     .then(if (fillWidth) Modifier.fillMaxWidth() else Modifier)
                     .clip(pillShape)
                     .background(pillColor)
                     .clickable { expanded = true }
-                    .padding(start = MaterialTheme.dimens.lg, end = MaterialTheme.dimens.md, top = MaterialTheme.dimens.sm, bottom = MaterialTheme.dimens.sm),
+                    .padding(horizontal = MaterialTheme.dimens.md, vertical = MaterialTheme.dimens.xs),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        if (customSelected) {
-                            Icon(
-                                Icons.Filled.CalendarMonth,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.size(MaterialTheme.dimens.md),
-                            )
-                            Spacer(Modifier.width(MaterialTheme.dimens.xs))
-                        }
-                        Text(
-                            text = eyebrow,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Medium,
-                            letterSpacing = 0.8.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    Text(
-                        text = label,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
+                if (customSelected) {
+                    Icon(
+                        Icons.Filled.CalendarMonth,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(MaterialTheme.dimens.md),
                     )
+                    Spacer(Modifier.width(MaterialTheme.dimens.xs))
                 }
-                if (fillWidth) Spacer(Modifier.weight(1f)) else Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                )
+                if (fillWidth) Spacer(Modifier.weight(1f)) else Spacer(Modifier.width(MaterialTheme.dimens.xs))
                 Icon(
                     Icons.Filled.KeyboardArrowDown,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.rotate(chevronRotation),
+                    modifier = Modifier
+                        .rotate(chevronRotation)
+                        .size(MaterialTheme.dimens.md),
                 )
             }
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
