@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -71,6 +72,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -785,6 +787,8 @@ private fun InsightsPhoneBody(
                 if (selectedTab == InsightsTab.TRENDS && hasData && state.categoryDeltas.isNotEmpty()) {
                     InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
                 }
+                // Fill an otherwise-blank Money / Trends pane with a friendly state (P8).
+                BlankTabInvitation(selectedTab, state, periodLabel, hasData, onNavigateToBudget)
             }
         }
     }
@@ -1095,6 +1099,80 @@ private fun AddSectionRow(onClick: () -> Unit) {
 private fun FilledPillButton(text: String, onClick: () -> Unit) {
     Button(onClick = onClick, shape = RoundedCornerShape(50)) {
         Text(text, fontWeight = FontWeight.Bold)
+    }
+}
+
+/**
+ * Fills an otherwise-blank Money / Trends pane with a friendly state (P8): Money with no income or
+ * budget gets a verb-first invitation to add one; Trends with no spend this period reuses the same
+ * period-aware empty as Breakdown (first-run vs stepped-into-an-empty-period), keeping its copy honest.
+ * A no-op for other tabs, before the first load, or when the tab already has content.
+ */
+@Composable
+private fun BlankTabInvitation(
+    tab: InsightsTab,
+    state: InsightsUiState,
+    periodLabel: String,
+    hasData: Boolean,
+    onNavigateToBudget: () -> Unit,
+) {
+    if (!state.isLoaded) return
+    val moneyNeedsPlan = !state.hasIncome && !state.hasBills
+    when {
+        tab == InsightsTab.MONEY && moneyNeedsPlan -> TabInvitationCard(
+            titleRes = R.string.insights_money_empty_title,
+            bodyRes = R.string.insights_money_empty_body,
+            ctaRes = R.string.insights_money_empty_cta,
+            icon = Icons.Filled.AccountBalanceWallet,
+            onCta = onNavigateToBudget,
+        )
+
+        tab == InsightsTab.TRENDS && !hasData ->
+            InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
+    }
+}
+
+/**
+ * A friendly per-tab invitation card (P8): an icon, a title, one line, and a verb-first CTA — shown in
+ * place of an otherwise-blank pane so a group with nothing to show (e.g. Money with no income or
+ * budget) reads as an intentional next step rather than an empty screen.
+ */
+@Composable
+private fun TabInvitationCard(
+    @StringRes titleRes: Int,
+    @StringRes bodyRes: Int,
+    @StringRes ctaRes: Int,
+    icon: ImageVector,
+    onCta: () -> Unit,
+) {
+    InsightCard {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(vertical = MaterialTheme.dimens.md),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(MaterialTheme.dimens.radiusLg))
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
+            }
+            Text(
+                text = stringResource(titleRes),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = stringResource(bodyRes),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+            FilledPillButton(text = stringResource(ctaRes), onClick = onCta)
+        }
     }
 }
 

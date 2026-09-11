@@ -494,6 +494,10 @@
     </plurals>
     <string name="insights_custom_footer">Sections stay in their own tabs too — adding one here doesn\'t remove it from Spending, Money or Trends.</string>
     <string name="cd_insights_custom_close">Close</string>
+    <!-- Money tab invitation when there's no income or budget yet (P8) -->
+    <string name="insights_money_empty_title">Your money flow needs a plan</string>
+    <string name="insights_money_empty_body">Add your income or a budget to see your money flow.</string>
+    <string name="insights_money_empty_cta">Add income or budget</string>
     <string name="insights_breakdown">Breakdown</string>
     <string name="insights_summary">Summary</string>
     <string name="insights_trend">Trend</string>
