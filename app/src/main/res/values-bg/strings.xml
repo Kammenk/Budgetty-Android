@@ -1278,4 +1278,47 @@
     <string name="recap_freq_sheet_title">Честота на обобщенията</string>
     <string name="recap_freq_sheet_sub">Кога Budgetty ви показва обобщение.</string>
     <string name="recap_freq_off">Изкл.</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Преглед</string>
+    <string name="insights_overview_spent">Похарчено общо</string>
+    <string name="insights_overview_top">Топ разходи</string>
+    <string name="insights_overview_worth">Добре е да знаеш</string>
+    <string name="insights_overview_on_pace">При това темпо — %1$s</string>
+    <string name="insights_open_recap">Отвори последното си обобщение</string>
+    <string name="insights_setup_review">Прегледай</string>
+    <string name="insights_setup_hide">Скрий</string>
+    <string name="insights_setup_item_savings">Избери какво се брои за спестяване</string>
+    <string name="insights_setup_cta_savings">Избери</string>
+    <string name="insights_setup_item_income">Добави доход или бюджет</string>
+    <string name="insights_setup_cta_income">Добави</string>
+    <string name="insights_setup_item_overlay">Опитай слоя с планираните сметки</string>
+    <string name="insights_setup_cta_overlay">Включи</string>
+    <string name="insights_setup_item_buckets">Отбележи категориите като нужди / желания</string>
+    <string name="insights_setup_cta_buckets">Отбележи</string>
+    <string name="cd_insights_setup_dismiss">Скрий</string>
+    <string name="insights_overview_chip_planned">Планирани слоеве</string>
+    <string name="insights_overview_chip_savings_kept">Спестявания: Запазено</string>
+    <string name="insights_overview_chip_savings_aside">Спестявания: Заделено</string>
+    <string name="insights_tab_custom">По избор</string>
+    <string name="insights_custom_choose">Избери секции</string>
+    <string name="insights_custom_add">Добави секции</string>
+    <string name="insights_custom_add_another">Добави още една секция</string>
+    <string name="insights_custom_empty_title">Твоят собствен изглед</string>
+    <string name="insights_custom_empty_body">Избери само секциите, които са важни за теб — те остават в този раздел, в реда, който избереш, и следват същия период като всичко останало.</string>
+    <string name="insights_custom_sheet_title">Секции в „По избор“</string>
+    <string name="insights_custom_none">Още няма секции</string>
+    <string name="insights_custom_footer">Секциите остават и в собствените си раздели — добавянето на секция тук не я маха от Разходи, Пари или Тенденции.</string>
+    <string name="cd_insights_custom_close">Затвори</string>
+    <string name="insights_money_empty_title">Паричният ти поток се нуждае от план</string>
+    <string name="insights_money_empty_body">Добави доход или бюджет, за да видиш паричния си поток.</string>
+    <string name="insights_money_empty_cta">Добави доход или бюджет</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d нещо за настройване</item>
+        <item quantity="other">%1$d неща за настройване</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d секция</item>
+        <item quantity="other">%1$d секции</item>
+    </plurals>
 </resources>

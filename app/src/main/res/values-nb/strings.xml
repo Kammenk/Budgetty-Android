@@ -1289,4 +1289,47 @@
     <string name="recap_freq_sheet_title">Hyppighet for oppsummering</string>
     <string name="recap_freq_sheet_sub">Når Budgetty viser deg en oppsummering.</string>
     <string name="recap_freq_off">Av</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Oversikt</string>
+    <string name="insights_overview_spent">Totalt brukt</string>
+    <string name="insights_overview_top">Toppforbruk</string>
+    <string name="insights_overview_worth">Verdt å vite</string>
+    <string name="insights_overview_on_pace">På vei mot %1$s</string>
+    <string name="insights_open_recap">Åpne din siste oppsummering</string>
+    <string name="insights_setup_review">Gå gjennom</string>
+    <string name="insights_setup_hide">Skjul</string>
+    <string name="insights_setup_item_savings">Velg hva som telles som sparing</string>
+    <string name="insights_setup_cta_savings">Velg</string>
+    <string name="insights_setup_item_income">Legg til inntekt eller et budsjett</string>
+    <string name="insights_setup_cta_income">Legg til</string>
+    <string name="insights_setup_item_overlay">Prøv laget med planlagte regninger</string>
+    <string name="insights_setup_cta_overlay">Slå på</string>
+    <string name="insights_setup_item_buckets">Merk kategorier som behov / ønsker</string>
+    <string name="insights_setup_cta_buckets">Merk</string>
+    <string name="cd_insights_setup_dismiss">Avvis</string>
+    <string name="insights_overview_chip_planned">Planlagte lag</string>
+    <string name="insights_overview_chip_savings_kept">Sparing: Beholdt</string>
+    <string name="insights_overview_chip_savings_aside">Sparing: Satt av</string>
+    <string name="insights_tab_custom">Egendefinert</string>
+    <string name="insights_custom_choose">Velg seksjoner</string>
+    <string name="insights_custom_add">Legg til seksjoner</string>
+    <string name="insights_custom_add_another">Legg til en seksjon til</string>
+    <string name="insights_custom_empty_title">Din egen visning</string>
+    <string name="insights_custom_empty_body">Velg bare seksjonene du bryr deg om — de blir i denne fanen, i rekkefølgen du velger, og følger samme periode som alt annet.</string>
+    <string name="insights_custom_sheet_title">Seksjoner i Egendefinert</string>
+    <string name="insights_custom_none">Ingen seksjoner ennå</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d ting å sette opp</item>
+        <item quantity="other">%1$d ting å sette opp</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d seksjon</item>
+        <item quantity="other">%1$d seksjoner</item>
+    </plurals>
+    <string name="insights_custom_footer">Seksjoner blir også i sine egne faner — å legge til én her fjerner den ikke fra Forbruk, Penger eller Trender.</string>
+    <string name="cd_insights_custom_close">Lukk</string>
+    <string name="insights_money_empty_title">Pengeflyten din trenger en plan</string>
+    <string name="insights_money_empty_body">Legg til inntekten din eller et budsjett for å se pengeflyten din.</string>
+    <string name="insights_money_empty_cta">Legg til inntekt eller budsjett</string>
 </resources>

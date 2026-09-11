@@ -1289,4 +1289,47 @@
     <string name="recap_freq_sheet_title">Sammanfattningens frekvens</string>
     <string name="recap_freq_sheet_sub">När Budgetty visar en sammanfattning.</string>
     <string name="recap_freq_off">Av</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Översikt</string>
+    <string name="insights_overview_spent">Totalt spenderat</string>
+    <string name="insights_overview_top">Topputgifter</string>
+    <string name="insights_overview_worth">Värt att veta</string>
+    <string name="insights_overview_on_pace">På väg mot %1$s</string>
+    <string name="insights_open_recap">Öppna din senaste sammanfattning</string>
+    <string name="insights_setup_review">Granska</string>
+    <string name="insights_setup_hide">Dölj</string>
+    <string name="insights_setup_item_savings">Välj vad som räknas som sparande</string>
+    <string name="insights_setup_cta_savings">Välj</string>
+    <string name="insights_setup_item_income">Lägg till inkomst eller en budget</string>
+    <string name="insights_setup_cta_income">Lägg till</string>
+    <string name="insights_setup_item_overlay">Prova lagret med planerade räkningar</string>
+    <string name="insights_setup_cta_overlay">Aktivera</string>
+    <string name="insights_setup_item_buckets">Märk kategorier som behov/önskemål</string>
+    <string name="insights_setup_cta_buckets">Märk</string>
+    <string name="cd_insights_setup_dismiss">Stäng</string>
+    <string name="insights_overview_chip_planned">Planerade lager</string>
+    <string name="insights_overview_chip_savings_kept">Sparande: Behållet</string>
+    <string name="insights_overview_chip_savings_aside">Sparande: Avsatt</string>
+    <string name="insights_tab_custom">Anpassad</string>
+    <string name="insights_custom_choose">Välj sektioner</string>
+    <string name="insights_custom_add">Lägg till sektioner</string>
+    <string name="insights_custom_add_another">Lägg till en sektion till</string>
+    <string name="insights_custom_empty_title">Din egen vy</string>
+    <string name="insights_custom_empty_body">Välj bara de sektioner du bryr dig om — de stannar kvar i den här fliken, i den ordning du väljer, och följer samma period som allt annat.</string>
+    <string name="insights_custom_sheet_title">Sektioner i Anpassad</string>
+    <string name="insights_custom_none">Inga sektioner ännu</string>
+    <string name="insights_custom_footer">Sektioner finns kvar i sina egna flikar också — att lägga till en här tar inte bort den från Utgifter, Pengar eller Trender.</string>
+    <string name="cd_insights_custom_close">Stäng</string>
+    <string name="insights_money_empty_title">Ditt kassaflöde behöver en plan</string>
+    <string name="insights_money_empty_body">Lägg till din inkomst eller en budget för att se ditt kassaflöde.</string>
+    <string name="insights_money_empty_cta">Lägg till inkomst eller budget</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d sak att ställa in</item>
+        <item quantity="other">%1$d saker att ställa in</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d sektion</item>
+        <item quantity="other">%1$d sektioner</item>
+    </plurals>
 </resources>

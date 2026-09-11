@@ -1282,4 +1282,47 @@
     <string name="recap_freq_sheet_title">Frequentie van overzicht</string>
     <string name="recap_freq_sheet_sub">Wanneer Budgetty je een overzicht toont.</string>
     <string name="recap_freq_off">Uit</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Overzicht</string>
+    <string name="insights_overview_spent">Totaal uitgegeven</string>
+    <string name="insights_overview_top">Topuitgaven</string>
+    <string name="insights_overview_worth">Goed om te weten</string>
+    <string name="insights_overview_on_pace">Op koers voor %1$s</string>
+    <string name="insights_open_recap">Open je laatste overzicht</string>
+    <string name="insights_setup_review">Bekijken</string>
+    <string name="insights_setup_hide">Verbergen</string>
+    <string name="insights_setup_item_savings">Kies wat telt als sparen</string>
+    <string name="insights_setup_cta_savings">Kiezen</string>
+    <string name="insights_setup_item_income">Voeg inkomen of een budget toe</string>
+    <string name="insights_setup_cta_income">Toevoegen</string>
+    <string name="insights_setup_item_overlay">Probeer de laag met geplande rekeningen</string>
+    <string name="insights_setup_cta_overlay">Aanzetten</string>
+    <string name="insights_setup_item_buckets">Deel categorieën in als Behoefte of Wens</string>
+    <string name="insights_setup_cta_buckets">Indelen</string>
+    <string name="cd_insights_setup_dismiss">Sluiten</string>
+    <string name="insights_overview_chip_planned">Geplande lagen</string>
+    <string name="insights_overview_chip_savings_kept">Sparen: Overgehouden</string>
+    <string name="insights_overview_chip_savings_aside">Sparen: Apart gezet</string>
+    <string name="insights_tab_custom">Aangepast</string>
+    <string name="insights_custom_choose">Secties kiezen</string>
+    <string name="insights_custom_add">Secties toevoegen</string>
+    <string name="insights_custom_add_another">Nog een sectie toevoegen</string>
+    <string name="insights_custom_empty_title">Je eigen weergave</string>
+    <string name="insights_custom_empty_body">Kies alleen de secties die je belangrijk vindt — ze blijven in dit tabblad, in de volgorde die jij kiest, en volgen dezelfde periode als de rest.</string>
+    <string name="insights_custom_sheet_title">Secties in Aangepast</string>
+    <string name="insights_custom_none">Nog geen secties</string>
+    <string name="insights_custom_footer">Secties blijven ook in hun eigen tabblad — toevoegen hier verwijdert ze niet uit Uitgaven, Geld of Trends.</string>
+    <string name="cd_insights_custom_close">Sluiten</string>
+    <string name="insights_money_empty_title">Je geldstroom heeft een plan nodig</string>
+    <string name="insights_money_empty_body">Voeg je inkomen of een budget toe om je geldstroom te zien.</string>
+    <string name="insights_money_empty_cta">Inkomen of budget toevoegen</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d taak om in te stellen</item>
+        <item quantity="other">%1$d taken om in te stellen</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d sectie</item>
+        <item quantity="other">%1$d secties</item>
+    </plurals>
 </resources>

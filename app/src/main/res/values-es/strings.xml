@@ -1279,4 +1279,47 @@
     <string name="recap_freq_sheet_title">Frecuencia del resumen</string>
     <string name="recap_freq_sheet_sub">Cuándo Budgetty te muestra un resumen.</string>
     <string name="recap_freq_off">Desactivado</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">General</string>
+    <string name="insights_overview_spent">Total gastado</string>
+    <string name="insights_overview_top">Gasto principal</string>
+    <string name="insights_overview_worth">Dato interesante</string>
+    <string name="insights_overview_on_pace">A este ritmo, unos %1$s</string>
+    <string name="insights_open_recap">Abrir tu último resumen</string>
+    <string name="insights_setup_review">Revisar</string>
+    <string name="insights_setup_hide">Ocultar</string>
+    <string name="insights_setup_item_savings">Elige qué cuenta como Ahorro</string>
+    <string name="insights_setup_cta_savings">Elegir</string>
+    <string name="insights_setup_item_income">Añade ingresos o un presupuesto</string>
+    <string name="insights_setup_cta_income">Añadir</string>
+    <string name="insights_setup_item_overlay">Prueba la capa de pagos previstos</string>
+    <string name="insights_setup_cta_overlay">Activar</string>
+    <string name="insights_setup_item_buckets">Etiqueta categorías como Necesidad o Deseo</string>
+    <string name="insights_setup_cta_buckets">Etiquetar</string>
+    <string name="cd_insights_setup_dismiss">Descartar</string>
+    <string name="insights_overview_chip_planned">Capas previstas</string>
+    <string name="insights_overview_chip_savings_kept">Ahorros: Conservado</string>
+    <string name="insights_overview_chip_savings_aside">Ahorros: Apartado</string>
+    <string name="insights_tab_custom">Personalizado</string>
+    <string name="insights_custom_choose">Elegir secciones</string>
+    <string name="insights_custom_add">Añadir secciones</string>
+    <string name="insights_custom_add_another">Añadir otra sección</string>
+    <string name="insights_custom_empty_title">Tu propia vista</string>
+    <string name="insights_custom_empty_body">Elige solo las secciones que te interesan: se quedan en esta pestaña, en el orden que prefieras, y siguen el mismo período que el resto.</string>
+    <string name="insights_custom_sheet_title">Secciones en Personalizado</string>
+    <string name="insights_custom_none">Aún no hay secciones</string>
+    <string name="insights_custom_footer">Las secciones también se quedan en sus pestañas: añadir una aquí no la quita de Gastos, Dinero ni Tendencias.</string>
+    <string name="cd_insights_custom_close">Cerrar</string>
+    <string name="insights_money_empty_title">Tu flujo de dinero necesita un plan</string>
+    <string name="insights_money_empty_body">Añade tus ingresos o un presupuesto para ver tu flujo de dinero.</string>
+    <string name="insights_money_empty_cta">Añadir ingresos o presupuesto</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d cosa por configurar</item>
+        <item quantity="other">%1$d cosas por configurar</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d sección</item>
+        <item quantity="other">%1$d secciones</item>
+    </plurals>
 </resources>

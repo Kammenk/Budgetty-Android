@@ -1280,4 +1280,47 @@
     <string name="recap_freq_sheet_title">Häufigkeit des Rückblicks</string>
     <string name="recap_freq_sheet_sub">Wann Budgetty dir einen Rückblick zeigt.</string>
     <string name="recap_freq_off">Aus</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Übersicht</string>
+    <string name="insights_overview_spent">Gesamtausgaben</string>
+    <string name="insights_overview_top">Top-Ausgaben</string>
+    <string name="insights_overview_worth">Wissenswertes</string>
+    <string name="insights_overview_on_pace">Bei diesem Tempo etwa %1$s</string>
+    <string name="insights_open_recap">Letzten Rückblick öffnen</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d Ding zum Einrichten</item>
+        <item quantity="other">%1$d Dinge zum Einrichten</item>
+    </plurals>
+    <string name="insights_setup_review">Anzeigen</string>
+    <string name="insights_setup_hide">Ausblenden</string>
+    <string name="insights_setup_item_savings">Wähle, was als Sparen zählt</string>
+    <string name="insights_setup_cta_savings">Wählen</string>
+    <string name="insights_setup_item_income">Füge deine Einnahmen oder ein Budget hinzu</string>
+    <string name="insights_setup_cta_income">Hinzufügen</string>
+    <string name="insights_setup_item_overlay">Probiere die Ebene für geplante Rechnungen aus</string>
+    <string name="insights_setup_cta_overlay">Aktivieren</string>
+    <string name="insights_setup_item_buckets">Ordne Kategorien als Bedürfnisse/Wünsche ein</string>
+    <string name="insights_setup_cta_buckets">Einordnen</string>
+    <string name="cd_insights_setup_dismiss">Verwerfen</string>
+    <string name="insights_overview_chip_planned">Geplante Ebenen</string>
+    <string name="insights_overview_chip_savings_kept">Sparen: Behalten</string>
+    <string name="insights_overview_chip_savings_aside">Sparen: Zurückgelegt</string>
+    <string name="insights_tab_custom">Eigene</string>
+    <string name="insights_custom_choose">Bereiche wählen</string>
+    <string name="insights_custom_add">Bereiche hinzufügen</string>
+    <string name="insights_custom_add_another">Weiteren Bereich hinzufügen</string>
+    <string name="insights_custom_empty_title">Deine eigene Ansicht</string>
+    <string name="insights_custom_empty_body">Wähle nur die Bereiche, die dir wichtig sind — sie bleiben in diesem Tab, in der Reihenfolge, die du festlegst, und folgen demselben Zeitraum wie alles andere.</string>
+    <string name="insights_custom_sheet_title">Bereiche im Tab „Eigene“</string>
+    <string name="insights_custom_none">Noch keine Bereiche</string>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d Bereich</item>
+        <item quantity="other">%1$d Bereiche</item>
+    </plurals>
+    <string name="insights_custom_footer">Bereiche bleiben auch in ihren eigenen Tabs. Fügst du hier einen hinzu, verschwindet er nicht aus „Ausgaben“, „Geld“ oder „Trends“.</string>
+    <string name="cd_insights_custom_close">Schließen</string>
+    <string name="insights_money_empty_title">Dein Geldfluss braucht einen Plan</string>
+    <string name="insights_money_empty_body">Füge deine Einnahmen oder ein Budget hinzu, um deinen Geldfluss zu sehen.</string>
+    <string name="insights_money_empty_cta">Einnahmen oder Budget hinzufügen</string>
 </resources>
