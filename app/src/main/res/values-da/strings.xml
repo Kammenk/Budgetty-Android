@@ -249,6 +249,9 @@
     </plurals>
     <string name="cd_edit_category">Rediger %1$s</string>
 
+    <string name="insights_tab_spending">Forbrug</string>
+    <string name="insights_tab_money">Penge</string>
+    <string name="insights_tab_trends">Tendenser</string>
     <string name="insights_breakdown">Fordeling</string>
     <string name="insights_summary">Oversigt</string>
     <string name="insights_trend">Tendens</string>

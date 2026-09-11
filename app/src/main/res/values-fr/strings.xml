@@ -96,6 +96,9 @@
     <string name="upload_error_title">Impossible de lire ce reçu</string>
     <string name="upload_go_back">Retour</string>
 
+    <string name="insights_tab_spending">Dépenses</string>
+    <string name="insights_tab_money">Argent</string>
+    <string name="insights_tab_trends">Tendances</string>
     <string name="insights_breakdown">Répartition</string>
     <string name="insights_summary">Résumé</string>
     <string name="insights_trend">Tendance</string>

@@ -96,6 +96,9 @@
     <string name="upload_error_title">Kan die bon niet lezen</string>
     <string name="upload_go_back">Terug</string>
 
+    <string name="insights_tab_spending">Uitgaven</string>
+    <string name="insights_tab_money">Geld</string>
+    <string name="insights_tab_trends">Trends</string>
     <string name="insights_breakdown">Verdeling</string>
     <string name="insights_summary">Samenvatting</string>
     <string name="insights_trend">Trend</string>

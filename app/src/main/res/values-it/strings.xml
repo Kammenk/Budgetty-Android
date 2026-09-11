@@ -96,6 +96,9 @@
     <string name="upload_error_title">Impossibile leggere lo scontrino</string>
     <string name="upload_go_back">Indietro</string>
 
+    <string name="insights_tab_spending">Spese</string>
+    <string name="insights_tab_money">Denaro</string>
+    <string name="insights_tab_trends">Tendenze</string>
     <string name="insights_breakdown">Ripartizione</string>
     <string name="insights_summary">Riepilogo</string>
     <string name="insights_trend">Andamento</string>

@@ -96,6 +96,9 @@
     <string name="upload_error_title">Не удалось прочитать чек</string>
     <string name="upload_go_back">Назад</string>
 
+    <string name="insights_tab_spending">Расходы</string>
+    <string name="insights_tab_money">Деньги</string>
+    <string name="insights_tab_trends">Тренды</string>
     <string name="insights_breakdown">Разбивка</string>
     <string name="insights_summary">Сводка</string>
     <string name="insights_trend">Динамика</string>

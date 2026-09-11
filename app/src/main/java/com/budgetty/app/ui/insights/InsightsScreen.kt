@@ -50,6 +50,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -77,6 +78,7 @@ import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.PlannedBadge
 import com.budgetty.app.ui.components.PlannedSwatch
 import com.budgetty.app.ui.components.SectionsMenu
+import com.budgetty.app.ui.components.SegmentedToggle
 import com.budgetty.app.ui.components.drawPlannedHatch
 import com.budgetty.app.ui.savings.SavingsSheetLabel
 import com.budgetty.app.ui.util.MatchedBillLine
@@ -641,6 +643,9 @@ private fun InsightsPhoneBody(
     fun shows(section: InsightsSection) = section.key !in hiddenSections
     val hasData = state.slices.isNotEmpty()
     val ordered = resolveSectionOrder(sectionOrder, InsightsSection.entries, InsightsSection::key)
+    // P1: the sections are grouped into a few tabs (a segmented toggle below the header) instead of
+    // one long scroll. Tab is view-only state — default lands on Spending; Overview/Custom arrive later.
+    var selectedTab by rememberSaveable { mutableStateOf(InsightsTab.SPENDING) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -693,8 +698,15 @@ private fun InsightsPhoneBody(
         if (showRecapEntry) {
             RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
         }
+        SegmentedToggle(
+            options = InsightsTab.entries.map { stringResource(it.labelRes) },
+            selectedIndex = selectedTab.ordinal,
+            onSelect = { selectedTab = InsightsTab.entries[it] },
+            modifier = Modifier.fillMaxWidth(),
+        )
         ordered.forEach { section ->
-            if (shows(section)) {
+            // Only the selected tab's sections render; WELLBEING (tab == null) stays pinned above.
+            if (shows(section) && section.tab() == selectedTab) {
                 when (section) {
                     // Breakdown shows its own empty state, so it renders even with no data; the rest
                     // only appear once there's spend to summarize.
@@ -833,8 +845,8 @@ private fun InsightsPhoneBody(
                 }
             }
         }
-        // The per-category-change card isn't user-managed, so it stays anchored at the end.
-        if (hasData && state.categoryDeltas.isNotEmpty()) {
+        // The per-category-change card isn't user-managed; it's a Trends card anchored at that tab's end.
+        if (selectedTab == InsightsTab.TRENDS && hasData && state.categoryDeltas.isNotEmpty()) {
             InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
         }
     }

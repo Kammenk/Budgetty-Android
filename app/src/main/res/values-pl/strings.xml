@@ -96,6 +96,9 @@
     <string name="upload_error_title">Nie można odczytać tego paragonu</string>
     <string name="upload_go_back">Wróć</string>
 
+    <string name="insights_tab_spending">Wydatki</string>
+    <string name="insights_tab_money">Pieniądze</string>
+    <string name="insights_tab_trends">Trendy</string>
     <string name="insights_breakdown">Podział</string>
     <string name="insights_summary">Podsumowanie</string>
     <string name="insights_trend">Trend</string>

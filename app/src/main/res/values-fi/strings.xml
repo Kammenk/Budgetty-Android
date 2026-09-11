@@ -249,6 +249,9 @@
     </plurals>
     <string name="cd_edit_category">Muokkaa %1$s</string>
 
+    <string name="insights_tab_spending">Menot</string>
+    <string name="insights_tab_money">Raha</string>
+    <string name="insights_tab_trends">Trendit</string>
     <string name="insights_breakdown">Erittely</string>
     <string name="insights_summary">Yhteenveto</string>
     <string name="insights_trend">Trendi</string>

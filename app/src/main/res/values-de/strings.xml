@@ -96,6 +96,9 @@
     <string name="upload_error_title">Beleg konnte nicht gelesen werden</string>
     <string name="upload_go_back">Zurück</string>
 
+    <string name="insights_tab_spending">Ausgaben</string>
+    <string name="insights_tab_money">Geld</string>
+    <string name="insights_tab_trends">Trends</string>
     <string name="insights_breakdown">Aufschlüsselung</string>
     <string name="insights_summary">Zusammenfassung</string>
     <string name="insights_trend">Trend</string>

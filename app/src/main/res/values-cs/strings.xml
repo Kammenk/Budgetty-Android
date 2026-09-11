@@ -249,6 +249,9 @@
     </plurals>
     <string name="cd_edit_category">Upravit %1$s</string>
 
+    <string name="insights_tab_spending">Výdaje</string>
+    <string name="insights_tab_money">Peníze</string>
+    <string name="insights_tab_trends">Trendy</string>
     <string name="insights_breakdown">Rozdělení</string>
     <string name="insights_summary">Souhrn</string>
     <string name="insights_trend">Trend</string>

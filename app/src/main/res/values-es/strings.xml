@@ -96,6 +96,9 @@
     <string name="upload_error_title">No se pudo leer ese recibo</string>
     <string name="upload_go_back">Volver</string>
 
+    <string name="insights_tab_spending">Gastos</string>
+    <string name="insights_tab_money">Dinero</string>
+    <string name="insights_tab_trends">Tendencias</string>
     <string name="insights_breakdown">Desglose</string>
     <string name="insights_summary">Resumen</string>
     <string name="insights_trend">Tendencia</string>

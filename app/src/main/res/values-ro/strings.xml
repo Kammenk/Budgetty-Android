@@ -249,6 +249,9 @@
     </plurals>
     <string name="cd_edit_category">Editează %1$s</string>
 
+    <string name="insights_tab_spending">Cheltuieli</string>
+    <string name="insights_tab_money">Bani</string>
+    <string name="insights_tab_trends">Tendințe</string>
     <string name="insights_breakdown">Defalcare</string>
     <string name="insights_summary">Rezumat</string>
     <string name="insights_trend">Tendință</string>
