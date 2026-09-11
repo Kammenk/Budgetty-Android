@@ -4,6 +4,7 @@ import com.budgetty.app.ui.theme.dimens
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -2440,6 +2441,12 @@ private fun StatTile(
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = valueColor,
+            // Keep the amount on one line in the narrow third-width tile; a value too long for the tile
+            // (a big figure, or a wide currency) scrolls instead of wrapping the currency to a 2nd row.
+            maxLines = 1,
+            softWrap = false,
+            overflow = TextOverflow.Clip,
+            modifier = Modifier.fillMaxWidth().basicMarquee(),
         )
     }
 }
