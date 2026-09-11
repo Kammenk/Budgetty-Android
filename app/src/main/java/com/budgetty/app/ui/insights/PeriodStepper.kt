@@ -1,14 +1,11 @@
 package com.budgetty.app.ui.insights
 
 import com.budgetty.app.ui.theme.dimens
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -19,7 +16,6 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -36,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,9 +42,9 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
- * The Insights period control: `‹ [pill] ›`. The centre is a compact single-line pill — the bold
- * period value plus a chevron (a calendar glyph fronts a custom range) — and tapping it opens a
- * dropdown to pick the stepping unit or a custom range.
+ * The Insights period control: one fully-rounded pill holding `‹ [label] ›` — the step arrows at its
+ * edges and the bold period value centred (a calendar glyph fronts a custom range). Tapping the label
+ * opens a dropdown to pick the stepping unit or a custom range.
  * The arrows walk an [InsightsPeriod.Stepped] window one [unit] at a time; they're disabled while a
  * custom range is active ([steppable] = false), the forward arrow is disabled at the current period
  * ([canStepForward] = false), and the back arrow is disabled once the earliest recorded data is
@@ -69,14 +64,12 @@ fun PeriodStepper(
     onUnitSelected: (PeriodUnit) -> Unit,
     onCustomClick: () -> Unit,
     onAllTimeClick: () -> Unit,
-    fillWidth: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val chevronRotation by animateFloatAsState(if (expanded) 180f else 0f, label = "stepperChevron")
 
-    // Same background as the Insights cards (InsightCard uses surfaceContainer) in both themes; a
-    // fully-rounded (pill) shape keeps the compact control light, matching the Hybrid mockup.
+    // One fully-rounded pill (same surface as the Insights cards) holding both step arrows and the
+    // centre label; tapping the label opens the unit / custom-range menu, matching the Hybrid mockup.
     val pillColor = MaterialTheme.colorScheme.surfaceContainer
     val pillShape = RoundedCornerShape(percent = 50)
     val arrowColors = IconButtonDefaults.iconButtonColors(
@@ -85,28 +78,31 @@ fun PeriodStepper(
     )
 
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .clip(pillShape)
+            .background(pillColor),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
     ) {
-        IconButton(onClick = onStepBackward, enabled = steppable && canStepBackward, colors = arrowColors) {
+        IconButton(
+            onClick = onStepBackward,
+            enabled = steppable && canStepBackward,
+            colors = arrowColors,
+            modifier = Modifier.size(40.dp),
+        ) {
             Icon(
                 Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = stringResource(R.string.cd_period_previous),
             )
         }
-        Box(modifier = if (fillWidth) Modifier.fillMaxWidth(0.5f) else Modifier) {
-            // A single compact line — the period label + a chevron (a calendar glyph fronts a custom
-            // range) — so the control reads as a small filter chip rather than a tall two-line block.
-            Row(
-                modifier = Modifier
-                    .then(if (fillWidth) Modifier.fillMaxWidth() else Modifier)
-                    .clip(pillShape)
-                    .background(pillColor)
-                    .clickable { expanded = true }
-                    .padding(horizontal = MaterialTheme.dimens.md, vertical = MaterialTheme.dimens.xs),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .clip(pillShape)
+                .clickable { expanded = true }
+                .padding(vertical = MaterialTheme.dimens.sm),
+            contentAlignment = Alignment.Center,
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 if (customSelected) {
                     Icon(
                         Icons.Filled.CalendarMonth,
@@ -123,90 +119,84 @@ fun PeriodStepper(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                 )
-                if (fillWidth) Spacer(Modifier.weight(1f)) else Spacer(Modifier.width(MaterialTheme.dimens.xs))
-                Icon(
-                    Icons.Filled.KeyboardArrowDown,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier
-                        .rotate(chevronRotation)
-                        .size(MaterialTheme.dimens.md),
-                )
             }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                PeriodUnit.entries.forEach { unit ->
-                    val isSelected = unit == selectedUnit
-                    DropdownMenuItem(
-                        modifier = if (isSelected) {
-                            Modifier.background(MaterialTheme.colorScheme.primary.copy(alpha = 0.10f))
-                        } else {
-                            Modifier
-                        },
-                        text = {
-                            Text(
-                                text = stringResource(unit.labelRes),
-                                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                            )
-                        },
-                        onClick = {
-                            onUnitSelected(unit)
-                            expanded = false
-                        },
-                        leadingIcon = {
-                            if (isSelected) {
-                                Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            } else {
-                                Box(Modifier.size(MaterialTheme.dimens.icon))
-                            }
-                        },
-                    )
-                }
-                HorizontalDivider()
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = stringResource(R.string.period_all_time),
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    },
-                    onClick = {
-                        onAllTimeClick()
-                        expanded = false
-                    },
-                    leadingIcon = {
-                        Icon(Icons.Filled.AllInclusive, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                    },
-                )
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = stringResource(R.string.period_custom_range),
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.SemiBold,
-                        )
-                    },
-                    onClick = {
-                        onCustomClick()
-                        expanded = false
-                    },
-                    leadingIcon = {
-                        Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                    },
-                    trailingIcon = if (customSelected) {
-                        { Icon(Icons.Filled.Check, contentDescription = null, tint = MaterialTheme.colorScheme.primary) }
-                    } else {
-                        null
-                    },
-                )
-            }
+            PeriodMenu(
+                expanded = expanded,
+                selectedUnit = selectedUnit,
+                customSelected = customSelected,
+                onUnitSelected = onUnitSelected,
+                onAllTimeClick = onAllTimeClick,
+                onCustomClick = onCustomClick,
+                onDismiss = { expanded = false },
+            )
         }
-        IconButton(onClick = onStepForward, enabled = steppable && canStepForward, colors = arrowColors) {
+        IconButton(
+            onClick = onStepForward,
+            enabled = steppable && canStepForward,
+            colors = arrowColors,
+            modifier = Modifier.size(40.dp),
+        ) {
             Icon(
                 Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = stringResource(R.string.cd_period_next),
             )
         }
+    }
+}
+
+/** The period control's dropdown: the stepping units, then All-time and a custom range. */
+@Composable
+private fun PeriodMenu(
+    expanded: Boolean,
+    selectedUnit: PeriodUnit?,
+    customSelected: Boolean,
+    onUnitSelected: (PeriodUnit) -> Unit,
+    onAllTimeClick: () -> Unit,
+    onCustomClick: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val primary = MaterialTheme.colorScheme.primary
+    DropdownMenu(expanded = expanded, onDismissRequest = onDismiss) {
+        PeriodUnit.entries.forEach { unit ->
+            val isSelected = unit == selectedUnit
+            DropdownMenuItem(
+                modifier = if (isSelected) Modifier.background(primary.copy(alpha = 0.10f)) else Modifier,
+                text = {
+                    Text(
+                        text = stringResource(unit.labelRes),
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                    )
+                },
+                onClick = { onUnitSelected(unit); onDismiss() },
+                leadingIcon = {
+                    if (isSelected) {
+                        Icon(Icons.Filled.Check, contentDescription = null, tint = primary)
+                    } else {
+                        Box(Modifier.size(MaterialTheme.dimens.icon))
+                    }
+                },
+            )
+        }
+        HorizontalDivider()
+        DropdownMenuItem(
+            text = {
+                Text(stringResource(R.string.period_all_time), color = primary, fontWeight = FontWeight.SemiBold)
+            },
+            onClick = { onAllTimeClick(); onDismiss() },
+            leadingIcon = { Icon(Icons.Filled.AllInclusive, contentDescription = null, tint = primary) },
+        )
+        DropdownMenuItem(
+            text = {
+                Text(stringResource(R.string.period_custom_range), color = primary, fontWeight = FontWeight.SemiBold)
+            },
+            onClick = { onCustomClick(); onDismiss() },
+            leadingIcon = { Icon(Icons.Filled.CalendarMonth, contentDescription = null, tint = primary) },
+            trailingIcon = if (customSelected) {
+                { Icon(Icons.Filled.Check, contentDescription = null, tint = primary) }
+            } else {
+                null
+            },
+        )
     }
 }
 

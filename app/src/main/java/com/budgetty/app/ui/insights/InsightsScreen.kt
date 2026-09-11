@@ -89,7 +89,6 @@ import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.PlannedBadge
 import com.budgetty.app.ui.components.PlannedSwatch
 import com.budgetty.app.ui.components.AdaptiveSheet
-import com.budgetty.app.ui.components.SectionsMenu
 import com.budgetty.app.ui.components.SegmentedToggle
 import com.budgetty.app.ui.components.drawPlannedHatch
 import com.budgetty.app.ui.savings.SavingsSheetLabel
@@ -99,8 +98,6 @@ import com.budgetty.app.ui.components.TransactionLineRow
 import com.budgetty.app.ui.util.formatMoney
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.R
-import com.budgetty.app.ui.recap.RecapReopenRow
-import com.budgetty.app.ui.wellbeing.WellbeingInsightsRow
 import com.budgetty.app.ui.wellbeing.WellbeingScorePip
 import com.budgetty.app.ui.subscriptions.SubscriptionsInsightsCard
 import com.budgetty.app.category.Categories
@@ -156,11 +153,6 @@ fun InsightsScreen(
         onNavigateToRecap = onNavigateToRecap,
         // The re-open door only exists once a recap has actually been shown for a closed period.
         showRecapEntry = settings.recapLastShownWeek.isNotEmpty() || settings.recapLastShownMonth.isNotEmpty(),
-        hiddenSections = settings.hiddenInsightsSections,
-        sectionOrder = settings.insightsSectionOrder,
-        onToggleSection = { section, hidden -> settingsStore.setInsightsSectionHidden(section.key, hidden) },
-        onReorderSections = { settingsStore.setInsightsSectionOrder(it) },
-        onRevertSections = { settingsStore.resetInsightsSections() },
         onUnitSelected = viewModel::onUnitSelected,
         onStepBackward = viewModel::onStepBackward,
         onStepForward = viewModel::onStepForward,
@@ -189,11 +181,6 @@ private fun InsightsScreenContent(
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
     showRecapEntry: Boolean = false,
-    hiddenSections: Set<String>,
-    sectionOrder: List<String>,
-    onToggleSection: (InsightsSection, Boolean) -> Unit,
-    onReorderSections: (List<String>) -> Unit,
-    onRevertSections: () -> Unit,
     onUnitSelected: (PeriodUnit) -> Unit,
     onStepBackward: () -> Unit,
     onStepForward: () -> Unit,
@@ -230,7 +217,7 @@ private fun InsightsScreenContent(
     val periodLabel = periodFriendlyLabel(state.period, monthStartDay = state.monthStartDay)
 
     // One stepper instance, wired identically for both layouts; each body places it in its header.
-    val stepper: @Composable (Modifier, Boolean) -> Unit = { mod, fill ->
+    val stepper: @Composable (Modifier) -> Unit = { mod ->
         PeriodStepper(
             label = periodLabel,
             steppable = stepped != null,
@@ -245,7 +232,6 @@ private fun InsightsScreenContent(
             // "All time" reuses the custom-range window, bounded to the first recorded transaction so
             // the trend and averages stay meaningful (no epoch-to-today blow-up).
             onAllTimeClick = { onCustomRangeSelected(state.earliestDate ?: LocalDate.now(), LocalDate.now()) },
-            fillWidth = fill,
             modifier = mod,
         )
     }
@@ -260,22 +246,24 @@ private fun InsightsScreenContent(
                 isWide = isWide,
                 periodLabel = periodLabel,
                 stepper = stepper,
-                hiddenSections = hiddenSections,
-                sectionOrder = sectionOrder,
-                onToggleSection = onToggleSection,
-                onReorderSections = onReorderSections,
-                onRevertSections = onRevertSections,
                 onSliceClick = { selectedSlice = it },
                 onStoreClick = { selectedStore = it },
                 onNavigateToBudget = onNavigateToBudget,
+                onNavigateToSubscriptions = onNavigateToSubscriptions,
+                onNavigateToPaywall = onNavigateToPaywall,
                 onNavigateToWellbeing = onNavigateToWellbeing,
                 onNavigateToRecap = onNavigateToRecap,
+                onNavigateToManageCategories = onNavigateToManageCategories,
                 showRecapEntry = showRecapEntry,
                 onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
                 onPlannedBadgeClick = { plannedDialog = it },
                 onDismissOverlayNudge = onDismissOverlayNudge,
                 onChooseSavingsAllocation = onChooseSavingsAllocation,
                 overlayNudgeDismissed = overlayNudgeDismissed,
+                dismissedSetup = dismissedSetup,
+                onDismissSetupItem = onDismissSetupItem,
+                customSections = customSections,
+                onSetCustomSections = onSetCustomSections,
             )
         } else {
             InsightsPhoneBody(
@@ -643,7 +631,7 @@ private fun HighlightRow(highlight: Highlight, period: InsightsPeriod) {
 private fun InsightsPhoneBody(
     state: InsightsUiState,
     periodLabel: String,
-    stepper: @Composable (Modifier, Boolean) -> Unit,
+    stepper: @Composable (Modifier) -> Unit,
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
     onNavigateToBudget: () -> Unit = {},
@@ -708,7 +696,7 @@ private fun InsightsPhoneBody(
                 RecapToolbarButton(onClick = onNavigateToRecap)
             }
         }
-        stepper(Modifier.fillMaxWidth(), false)
+        stepper(Modifier.fillMaxWidth())
         SegmentedToggle(
             options = InsightsTab.entries.map { stringResource(it.labelRes) },
             selectedIndex = selectedTab.ordinal,
@@ -1269,122 +1257,89 @@ private fun List<String>.swappedKeys(a: Int, b: Int): List<String> {
     return toMutableList().apply { val t = this[a]; this[a] = this[b]; this[b] = t }
 }
 
+/** Renders a fixed group (Spending/Money/Trends) or the Custom tab into the calling column — the
+ *  tablet counterpart of the phone body's per-tab dispatch, reusing the same section cards. */
+@Composable
+private fun InsightsTabPane(
+    tab: InsightsTab,
+    state: InsightsUiState,
+    periodLabel: String,
+    actions: SectionCardActions,
+    customSections: List<String>,
+    onSetCustomSections: (List<String>) -> Unit,
+) {
+    if (tab == InsightsTab.CUSTOM) {
+        CustomTabContent(customSections, state, periodLabel, actions, onSetCustomSections)
+    } else {
+        InsightsSection.entries.forEach { section ->
+            if (section.tab() == tab) InsightSectionCard(section, state, periodLabel, actions)
+        }
+        if (tab == InsightsTab.TRENDS && state.slices.isNotEmpty() && state.categoryDeltas.isNotEmpty()) {
+            InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
+        }
+        BlankTabInvitation(tab, state, periodLabel, state.slices.isNotEmpty(), actions.onNavigateToBudget)
+    }
+}
+
 /**
- * Tablet Insights: a single centred column on portrait (capped at [SinglePaneMaxWidth]); a two-pane
- * layout on landscape — charts (donut, stat tiles, trend) on the left, the numeric breakdown
- * (categories, stores, budget, deltas) on the right.
- *
- * Section visibility follows the same customize setting as the phone (menu in the header). The
- * saved custom *order* is persisted but not applied here: the two-pane split is positional, so
- * cards keep their pane slots.
+ * Tablet Insights, Hybrid model (P6). Landscape keeps **Overview as a permanent left column** while a
+ * group selector (Spending / Money flow / Trends / Custom) drives the right pane; portrait falls back
+ * to the phone's five-tab model in one capped column. Wellbeing + recap sit in the toolbar (score ring
+ * + recap button) next to the compact period stepper — the old Customize menu is gone (D6), replaced by
+ * the Overview chips and the Custom picker (which [AdaptiveSheet] renders as a centered dialog here).
  */
 @Composable
 internal fun InsightsTabletBody(
     state: InsightsUiState,
     isWide: Boolean,
     periodLabel: String,
-    stepper: @Composable (Modifier, Boolean) -> Unit,
-    hiddenSections: Set<String>,
-    sectionOrder: List<String>,
-    onToggleSection: (InsightsSection, Boolean) -> Unit,
-    onReorderSections: (List<String>) -> Unit,
-    onRevertSections: () -> Unit,
+    stepper: @Composable (Modifier) -> Unit,
     onSliceClick: (PieSlice) -> Unit,
     onStoreClick: (String) -> Unit,
     onNavigateToBudget: () -> Unit = {},
+    onNavigateToSubscriptions: () -> Unit = {},
+    onNavigateToPaywall: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
+    onNavigateToManageCategories: () -> Unit = {},
     showRecapEntry: Boolean = false,
     onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
     onPlannedBadgeClick: (PlannedDialog) -> Unit = {},
     onDismissOverlayNudge: () -> Unit = {},
     onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
+    dismissedSetup: Set<String> = emptySet(),
+    onDismissSetupItem: (String) -> Unit = {},
+    customSections: List<String> = emptyList(),
+    onSetCustomSections: (List<String>) -> Unit = {},
 ) {
-    fun shows(section: InsightsSection) = section.key !in hiddenSections
-    val hasData = state.slices.isNotEmpty()
+    val sectionActions = SectionCardActions(
+        onSliceClick = onSliceClick,
+        onStoreClick = onStoreClick,
+        onNavigateToBudget = onNavigateToBudget,
+        onNavigateToSubscriptions = onNavigateToSubscriptions,
+        onNavigateToPaywall = onNavigateToPaywall,
+        onChooseSavingsAllocation = onChooseSavingsAllocation,
+        onPlannedBadgeClick = onPlannedBadgeClick,
+    )
+    val overviewControls = OverviewControls(
+        dismissedSetup = dismissedSetup,
+        overlayNudgeDismissed = overlayNudgeDismissed,
+        onNavigateToBudget = onNavigateToBudget,
+        onNavigateToManageCategories = onNavigateToManageCategories,
+        onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
+        onChooseSavingsAllocation = onChooseSavingsAllocation,
+        onDismissOverlayNudge = onDismissOverlayNudge,
+        onDismissSetupItem = onDismissSetupItem,
+    )
 
-    // Card builders shared by the portrait single column and the landscape two panes.
-    val donutCard: @Composable (Modifier) -> Unit = { mod ->
-        if (shows(InsightsSection.BREAKDOWN)) BreakdownCard(
-            slices = state.slices,
-            total = state.total,
-            periodLabel = periodLabel,
-            onSliceClick = onSliceClick,
-            includeBills = state.includeRecurringBills,
-            plannedOverlay = state.plannedOverlay,
-            onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.BREAKDOWN) },
-            modifier = mod,
-        )
-    }
-    // The one-time discovery nudge, spanning the content above Breakdown (both panes/columns).
-    val overlayNudge: @Composable () -> Unit = {
-        OverlayDiscoveryNudge(
-            state = state,
-            dismissed = overlayNudgeDismissed,
-            onEnable = { onToggleIncludeRecurringBills(true) },
-            onDismiss = onDismissOverlayNudge,
-        )
-    }
-    val trendCard: @Composable (Modifier) -> Unit = { mod ->
-        if (shows(InsightsSection.TREND)) InsightCard(modifier = mod) {
-            TrendCardContent(
-                state.trend,
-                state.projectedTotal,
-                includeBills = state.includeRecurringBills,
-                onPlannedBadgeClick = { onPlannedBadgeClick(PlannedDialog.TREND) },
-            )
-        }
-    }
-    // Needs/Wants/Savings 50/30/20 split + its closed-month trend (the split shows a setup state
-    // without income; the trend only beneath a populated split, with per-month savings % labels).
-    val nwsSplitCard: @Composable (Modifier) -> Unit = { mod ->
-        if (shows(InsightsSection.NEEDS_WANTS_SAVINGS)) InsightCard(modifier = mod) {
-            NeedsWantsSplitContent(
-                split = state.needsWantsSplit,
-                periodLabel = periodLabel,
-                onGoToBudget = onNavigateToBudget,
-                onChooseAllocation = onChooseSavingsAllocation,
-            )
-        }
-    }
-    val nwsTrendCard: @Composable (Modifier) -> Unit = { mod ->
-        if (shows(InsightsSection.NEEDS_WANTS_SAVINGS) && state.showsBucketTrend) {
-            InsightCard(modifier = mod) { BucketTrendContent(state.bucketTrend, showMonthLabels = true) }
-        }
-    }
-    // Period-over-period comparison as its own card below the trend (mirrors the phone layout);
-    // renders nothing when there's no previous period to compare against.
-    val periodComparisonCard: @Composable (Modifier) -> Unit = { mod ->
-        if (shows(InsightsSection.PERIOD_COMPARISON)) state.periodComparison?.let { comparison ->
-            InsightCard(modifier = mod) { PeriodComparisonContent(comparison, state.period, state.monthStartDay) }
-        }
-    }
-    // Total / Receipts / Avg / Saved as a compact 2×2 tile grid (fits both the pane and the column).
-    val statTiles: @Composable () -> Unit = {
-        if (shows(InsightsSection.SUMMARY)) Column(verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
-            ) {
-                StatTile(stringResource(R.string.insights_stat_avg_day), state.avgPerDay.formatMoney(), Modifier.weight(1f))
-                StatTile(stringResource(R.string.home_receipts), state.receiptCount.toString(), Modifier.weight(1f))
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
-            ) {
-                StatTile(stringResource(R.string.insights_stat_avg_receipt), state.avgPerReceipt.formatMoney(), Modifier.weight(1f))
-                StatTile(
-                    stringResource(R.string.insights_stat_saved),
-                    state.totalSaved.formatMoney(),
-                    Modifier.weight(1f),
-                    valueColor = budgetGoodColor(),
-                )
-            }
-        }
-    }
-    val header: @Composable () -> Unit = {
+    Column(
+        modifier = Modifier
+            .then(if (isWide) Modifier.fillMaxSize() else Modifier.widthIn(max = SinglePaneMaxWidth).fillMaxHeight())
+            .padding(horizontal = MaterialTheme.dimens.screenPadding)
+            .padding(bottom = MaterialTheme.dimens.lg),
+    ) {
+        // Toolbar: title + wellbeing ring + recap + compact period stepper.
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.xxl),
             verticalAlignment = Alignment.CenterVertically,
@@ -1395,151 +1350,77 @@ internal fun InsightsTabletBody(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.xs),
             )
-            stepper(Modifier, false)
-            SectionsMenu(
-                sections = InsightsSection.entries,
-                order = sectionOrder,
-                hiddenSections = hiddenSections,
-                sectionKey = { it.key },
-                labelRes = { it.labelRes },
-                onToggle = onToggleSection,
-                onReorder = onReorderSections,
-                onRevertToDefault = onRevertSections,
-                // A "Layers" group above the section list: the opt-in switch for the planned-bills overlay.
-                header = {
-                    SavingsAllocationCustomize(
-                        current = state.savingsAllocation,
-                        onChoose = onChooseSavingsAllocation,
-                    )
-                    InsightsLayersToggle(
-                        checked = state.includeRecurringBills,
-                        onCheckedChange = onToggleIncludeRecurringBills,
-                    )
-                },
-            )
+            state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
+            if (showRecapEntry) RecapToolbarButton(onClick = onNavigateToRecap)
+            stepper(Modifier)
         }
-    }
-    // The numeric breakdown — the right pane in landscape, stacked below the charts in portrait.
-    val breakdownCards: @Composable () -> Unit = {
-        if (shows(InsightsSection.TOP_CATEGORIES)) {
-            InsightCard { TopCategoriesContent(state.slices, state.total, onSliceClick) }
-        }
-        if (shows(InsightsSection.TOP_STORES) && state.topStores.isNotEmpty()) {
-            InsightCard { TopStoresContent(state.topStores, onStoreClick) }
-        }
-        if (shows(InsightsSection.BIGGEST_PURCHASES) && state.biggestPurchases.isNotEmpty()) {
-            InsightCard { BiggestPurchasesContent(state.biggestPurchases, state.storeByReceiptId) }
-        }
-        if (state.categoryDeltas.isNotEmpty()) {
-            InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
-        }
-    }
+        Spacer(Modifier.height(MaterialTheme.dimens.md))
 
-    if (isWide) {
-        // Landscape two-pane: charts on the left, the numeric breakdown on the right.
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = MaterialTheme.dimens.screenPadding)
-                .padding(bottom = MaterialTheme.dimens.lg),
-        ) {
-            header()
-            Spacer(Modifier.height(MaterialTheme.dimens.md))
-            if (shows(InsightsSection.WELLBEING)) {
-                state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
-                Spacer(Modifier.height(MaterialTheme.dimens.md))
-            }
-            if (showRecapEntry) {
-                RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
-                Spacer(Modifier.height(MaterialTheme.dimens.md))
-            }
-            // Discovery nudge spans the content above the panes (manual layout ⇒ gate its spacer too).
-            if (shouldShowOverlayNudge(state, overlayNudgeDismissed)) {
-                overlayNudge()
-                Spacer(Modifier.height(MaterialTheme.dimens.md))
-            }
-            if (!hasData) {
-                // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
-                if (state.isLoaded) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
-                    ) {
-                        if (shows(InsightsSection.BREAKDOWN)) {
-                            InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
-                        }
-                    }
-                }
-            } else {
-                Row(
-                    modifier = Modifier.fillMaxWidth().weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
+        if (isWide) {
+            // Landscape: permanent Overview column + a group pane driven by a segmented selector.
+            var group by rememberSaveable { mutableStateOf(InsightsTab.SPENDING) }
+            val groupTabs = remember { InsightsTab.entries.filter { it != InsightsTab.OVERVIEW } }
+            Row(
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.lg),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .weight(0.42f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .weight(0.54f)
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
-                    ) {
-                        donutCard(Modifier.fillMaxWidth())
-                        statTiles()
-                        nwsSplitCard(Modifier.fillMaxWidth())
-                        nwsTrendCard(Modifier.fillMaxWidth())
-                        trendCard(Modifier.fillMaxWidth())
-                        periodComparisonCard(Modifier.fillMaxWidth())
-                    }
-                    Column(
-                        modifier = Modifier
-                            .weight(0.46f)
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
-                    ) {
-                        breakdownCards()
-                    }
+                    OverviewTabContent(
+                        state = state,
+                        onGoToTab = { group = it },
+                        onSliceClick = onSliceClick,
+                        controls = overviewControls,
+                    )
                 }
-            }
-        }
-    } else {
-        // Portrait single-pane: one centred, capped column with everything stacked.
-        Column(
-            modifier = Modifier
-                .widthIn(max = SinglePaneMaxWidth)
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = MaterialTheme.dimens.screenPadding)
-                .padding(bottom = MaterialTheme.dimens.lg),
-            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
-        ) {
-            header()
-            if (shows(InsightsSection.WELLBEING)) {
-                state.wellbeing?.let { WellbeingInsightsRow(summary = it, onClick = onNavigateToWellbeing) }
-            }
-            if (showRecapEntry) {
-                RecapReopenRow(onClick = onNavigateToRecap, modifier = Modifier.fillMaxWidth())
-            }
-            if (!hasData) {
-                // No spend yet — surface the breakdown's period empty-state so the screen isn't blank.
-                if (state.isLoaded) {
-                    Column(
+                Column(
+                    modifier = Modifier
+                        .weight(0.58f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
+                ) {
+                    SegmentedToggle(
+                        options = groupTabs.map { stringResource(it.labelRes) },
+                        selectedIndex = groupTabs.indexOf(group).coerceAtLeast(0),
+                        onSelect = { group = groupTabs[it] },
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
-                    ) {
-                        if (shows(InsightsSection.BREAKDOWN)) {
-                            InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
-                        }
-                    }
+                    )
+                    InsightsTabPane(group, state, periodLabel, sectionActions, customSections, onSetCustomSections)
                 }
-            } else {
-                overlayNudge()
-                donutCard(Modifier.fillMaxWidth())
-                statTiles()
-                nwsSplitCard(Modifier.fillMaxWidth())
-                nwsTrendCard(Modifier.fillMaxWidth())
-                trendCard(Modifier.fillMaxWidth())
-                periodComparisonCard(Modifier.fillMaxWidth())
-                breakdownCards()
+            }
+        } else {
+            // Portrait: the phone's five-tab model in one capped, scrolling column.
+            var selectedTab by rememberSaveable { mutableStateOf(InsightsTab.OVERVIEW) }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
+            ) {
+                SegmentedToggle(
+                    options = InsightsTab.entries.map { stringResource(it.labelRes) },
+                    selectedIndex = selectedTab.ordinal,
+                    onSelect = { selectedTab = InsightsTab.entries[it] },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                if (selectedTab == InsightsTab.OVERVIEW) {
+                    OverviewTabContent(
+                        state = state,
+                        onGoToTab = { selectedTab = it },
+                        onSliceClick = onSliceClick,
+                        controls = overviewControls,
+                    )
+                } else {
+                    InsightsTabPane(
+                        selectedTab, state, periodLabel, sectionActions, customSections, onSetCustomSections,
+                    )
+                }
             }
         }
     }
@@ -2117,82 +1998,6 @@ private fun AllocationChoiceCard(
             if (wantsFraction > 0.001f) Box(Modifier.fillMaxHeight().weight(wantsFraction).background(bucketColor(CategoryBucket.WANT)))
             Box(Modifier.fillMaxHeight().weight((1f - needsFraction - wantsFraction).coerceAtLeast(0.001f)).background(tailColor))
         }
-    }
-}
-
-/** The "How Savings is counted" radio group in the Insights Customize sheet header — the change-later
- *  counterpart to the split's one-time ask. */
-@Composable
-private fun SavingsAllocationCustomize(current: Boolean?, onChoose: (Boolean) -> Unit) {
-    Column(Modifier.fillMaxWidth().padding(bottom = MaterialTheme.dimens.sm)) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(
-                stringResource(R.string.insights_nws_alloc_header).uppercase(),
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                stringResource(R.string.insights_nws_new).uppercase(),
-                style = MaterialTheme.typography.labelSmall,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .background(MaterialTheme.colorScheme.secondaryContainer)
-                    .padding(horizontal = 7.dp, vertical = 1.dp),
-            )
-        }
-        Text(
-            stringResource(R.string.insights_nws_alloc_desc),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 2.dp, bottom = 2.dp),
-        )
-        AllocationRadioRow(
-            selected = current == true,
-            label = stringResource(R.string.insights_nws_ask_keep),
-            desc = stringResource(R.string.insights_nws_alloc_keep_desc),
-            swatch = bucketColor(CategoryBucket.SAVINGS),
-            onClick = { onChoose(true) },
-        )
-        AllocationRadioRow(
-            selected = current != true,
-            label = stringResource(R.string.insights_nws_ask_aside),
-            desc = stringResource(R.string.insights_nws_alloc_aside_desc),
-            swatch = bucketLeftoverColor(),
-            onClick = { onChoose(false) },
-        )
-        Text(
-            stringResource(R.string.insights_nws_alloc_footer),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 4.dp),
-        )
-    }
-}
-
-@Composable
-private fun AllocationRadioRow(selected: Boolean, label: String, desc: String, swatch: Color, onClick: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(10.dp)).clickable(onClick = onClick).padding(vertical = 8.dp),
-        verticalAlignment = Alignment.Top,
-        horizontalArrangement = Arrangement.spacedBy(11.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .size(18.dp)
-                .clip(CircleShape)
-                .border(2.dp, if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline, CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (selected) Box(Modifier.size(9.dp).clip(CircleShape).background(MaterialTheme.colorScheme.primary))
-        }
-        Column(Modifier.weight(1f)) {
-            Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-            Text(desc, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        Box(Modifier.size(10.dp).clip(RoundedCornerShape(3.dp)).background(swatch).align(Alignment.CenterVertically))
     }
 }
 
@@ -3036,15 +2841,40 @@ private fun TopSliceRow(slice: PieSlice, onClick: () -> Unit) {
     }
 }
 
-/** The toolbar recap control: a play button that opens the last recap (only shown when one exists). */
+/**
+ * The toolbar recap control (only shown when a recap exists): a filled circular button — a play icon on
+ * a tonal surface with a small accent dot — sized to sit beside the wellbeing ring, per the mockup.
+ */
 @Composable
 private fun RecapToolbarButton(onClick: () -> Unit) {
-    IconButton(onClick = onClick) {
-        Icon(
-            imageVector = Icons.Filled.PlayArrow,
-            contentDescription = stringResource(R.string.insights_open_recap),
-            tint = MaterialTheme.colorScheme.primary,
-        )
+    IconButton(onClick = onClick, modifier = Modifier.size(34.dp)) {
+        Box(contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .size(34.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.PlayArrow,
+                    contentDescription = stringResource(R.string.insights_open_recap),
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+            // Small "recap available" dot, ringed in the background colour so it reads as a badge.
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .size(9.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(1.5.dp)
+                    .clip(CircleShape)
+                    .background(budgetWarnColor()),
+            )
+        }
     }
 }
 
@@ -3395,102 +3225,6 @@ private fun shouldShowOverlayNudge(state: InsightsUiState, dismissed: Boolean): 
     state.isLoaded && !dismissed && !state.includeRecurringBills &&
         state.hasBills && state.periodBills.signum() > 0
 
-/**
- * The "Layers" group at the top of the Customize-sections sheet: the opt-in switch for the
- * planned-bills overlay, with the hatch swatch as its icon so the sheet teaches the texture before it
- * appears on the charts. Off by default; flipping it is remembered per user.
- */
-@Composable
-internal fun InsightsLayersToggle(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        SavingsSheetLabel(stringResource(R.string.insights_overlay_layers))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
-                .clickable { onCheckedChange(!checked) }
-                .padding(vertical = MaterialTheme.dimens.sm),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            PlannedSwatch(hatched = true, size = 20.dp)
-            Spacer(Modifier.width(MaterialTheme.dimens.md))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = stringResource(R.string.insights_overlay_toggle_title),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Text(
-                    text = stringResource(R.string.insights_overlay_toggle_subtitle),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Spacer(Modifier.width(MaterialTheme.dimens.sm))
-            Switch(checked = checked, onCheckedChange = onCheckedChange)
-        }
-        Spacer(Modifier.height(MaterialTheme.dimens.md))
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        Spacer(Modifier.height(MaterialTheme.dimens.md))
-    }
-}
-
-/**
- * The one-time discovery nudge above Breakdown: names, in the user's own terms, the disagreement the
- * tester reported ("Home also counts €X of recurring bills") and offers to switch the overlay on — the
- * only surface that reveals an otherwise-invisible, off-by-default preference. Self-gating; shown once
- * per user until enabled or dismissed.
- */
-@Composable
-private fun OverlayDiscoveryNudge(
-    state: InsightsUiState,
-    dismissed: Boolean,
-    onEnable: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    if (!shouldShowOverlayNudge(state, dismissed)) return
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusLg))
-            .background(MaterialTheme.colorScheme.secondaryContainer)
-            .padding(
-                start = MaterialTheme.dimens.lg,
-                end = MaterialTheme.dimens.sm,
-                top = MaterialTheme.dimens.sm,
-                bottom = MaterialTheme.dimens.md,
-            ),
-    ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = stringResource(R.string.insights_overlay_nudge_title),
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer,
-                modifier = Modifier.weight(1f),
-            )
-            IconButton(onClick = onDismiss) {
-                Icon(
-                    Icons.Filled.Close,
-                    contentDescription = stringResource(R.string.cd_insights_overlay_nudge_dismiss),
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-            }
-        }
-        Text(
-            text = stringResource(R.string.insights_overlay_nudge_text, state.periodBills.formatMoney()),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
-            modifier = Modifier.padding(end = MaterialTheme.dimens.sm),
-        )
-        Spacer(Modifier.height(MaterialTheme.dimens.xs))
-        TextButton(onClick = onEnable) {
-            PlannedSwatch(hatched = true, size = 12.dp)
-            Spacer(Modifier.width(MaterialTheme.dimens.sm))
-            Text(stringResource(R.string.insights_overlay_nudge_action), fontWeight = FontWeight.SemiBold)
-        }
-    }
-}
-
 /** A section card title with an optional trailing "Planned" badge (Summary / Trend headers). */
 @Composable
 private fun SectionTitleRow(title: String, showPlannedBadge: Boolean, onPlannedBadgeClick: () -> Unit) {
@@ -3749,11 +3483,6 @@ private fun InsightsScreenPreview() {
             state = previewInsightsState,
             isExpanded = false,
             isWide = false,
-            hiddenSections = emptySet(),
-            sectionOrder = emptyList(),
-            onToggleSection = { _, _ -> },
-            onReorderSections = {},
-            onRevertSections = {},
             onUnitSelected = {},
             onStepBackward = {},
             onStepForward = {},
@@ -3770,11 +3499,6 @@ private fun InsightsScreenTabletPreview() {
             state = previewInsightsState,
             isExpanded = true,
             isWide = true,
-            hiddenSections = emptySet(),
-            sectionOrder = emptyList(),
-            onToggleSection = { _, _ -> },
-            onReorderSections = {},
-            onRevertSections = {},
             onUnitSelected = {},
             onStepBackward = {},
             onStepForward = {},
@@ -3791,11 +3515,6 @@ private fun InsightsScreenEmptyPreview() {
             state = InsightsUiState(isLoaded = true),
             isExpanded = false,
             isWide = false,
-            hiddenSections = emptySet(),
-            sectionOrder = emptyList(),
-            onToggleSection = { _, _ -> },
-            onReorderSections = {},
-            onRevertSections = {},
             onUnitSelected = {},
             onStepBackward = {},
             onStepForward = {},
