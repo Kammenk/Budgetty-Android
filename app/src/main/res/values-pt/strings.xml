@@ -96,6 +96,9 @@
     <string name="upload_error_title">Não foi possível ler esse recibo</string>
     <string name="upload_go_back">Voltar</string>
 
+    <string name="insights_tab_spending">Despesas</string>
+    <string name="insights_tab_money">Dinheiro</string>
+    <string name="insights_tab_trends">Tendências</string>
     <string name="insights_breakdown">Detalhamento</string>
     <string name="insights_summary">Resumo</string>
     <string name="insights_trend">Tendência</string>
@@ -1279,4 +1282,43 @@
     <string name="recap_freq_sheet_title">Frequência do resumo</string>
     <string name="recap_freq_sheet_sub">Quando o Budgetty te mostra um resumo.</string>
     <string name="recap_freq_off">Desligado</string>
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Visão geral</string>
+    <string name="insights_overview_spent">Total gasto</string>
+    <string name="insights_overview_top">Maiores despesas</string>
+    <string name="insights_overview_worth">Vale a pena saber</string>
+    <string name="insights_overview_on_pace">No ritmo de %1$s</string>
+    <string name="insights_open_recap">Abrir seu último resumo</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d coisa para configurar</item>
+        <item quantity="other">%1$d coisas para configurar</item>
+    </plurals>
+    <string name="insights_setup_review">Rever</string>
+    <string name="insights_setup_hide">Ocultar</string>
+    <string name="insights_setup_item_savings">Escolha o que conta como Poupança</string>
+    <string name="insights_setup_cta_savings">Escolher</string>
+    <string name="insights_setup_item_income">Adicione renda ou um orçamento</string>
+    <string name="insights_setup_cta_income">Adicionar</string>
+    <string name="insights_setup_item_overlay">Experimente a camada de contas previstas</string>
+    <string name="insights_setup_cta_overlay">Ativar</string>
+    <string name="insights_setup_item_buckets">Classifique as categorias como Necessidades ou Desejos</string>
+    <string name="insights_setup_cta_buckets">Classificar</string>
+    <string name="cd_insights_setup_dismiss">Dispensar</string>
+    <string name="insights_tab_custom">Personalizado</string>
+    <string name="insights_custom_choose">Escolher seções</string>
+    <string name="insights_custom_add">Adicionar seções</string>
+    <string name="insights_custom_add_another">Adicionar outra seção</string>
+    <string name="insights_custom_empty_title">A sua própria visão</string>
+    <string name="insights_custom_empty_body">Escolha só as seções que mais importam para você — elas ficam nesta aba, na ordem escolhida, e seguem o mesmo período que as demais.</string>
+    <string name="insights_custom_sheet_title">Seções em Personalizado</string>
+    <string name="insights_custom_none">Ainda sem seções</string>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d seção</item>
+        <item quantity="other">%1$d seções</item>
+    </plurals>
+    <string name="insights_custom_footer">As seções continuam nas próprias abas também — adicionar uma aqui não a remove de Despesas, Dinheiro ou Tendências.</string>
+    <string name="cd_insights_custom_close">Fechar</string>
+    <string name="insights_money_empty_title">O fluxo do seu dinheiro precisa de um plano</string>
+    <string name="insights_money_empty_body">Adicione sua renda ou um orçamento para ver o fluxo do seu dinheiro.</string>
+    <string name="insights_money_empty_cta">Adicionar renda ou orçamento</string>
 </resources>

@@ -328,6 +328,10 @@ data class InsightsUiState(
     /** The user's raw Savings-allocation choice (null = not asked yet), so the Customize sheet shows
      *  the current selection even when there's no split on screen. */
     val savingsAllocation: Boolean? = null,
+    /** True once the user has given at least one category an explicit Needs/Wants/Savings bucket
+     *  (`bucket != null`); false while the split runs entirely on taxonomy defaults. Drives the
+     *  Overview "Tag categories as needs / wants" setup prompt. */
+    val hasCustomBuckets: Boolean = false,
 ) {
     /** The split trend card renders only beneath a populated split and with enough closed months. */
     val showsBucketTrend: Boolean
@@ -510,6 +514,7 @@ class InsightsViewModel(
             ) { state, (categories, contributions, allocation) ->
                 state.copy(
                     savingsAllocation = allocation,
+                    hasCustomBuckets = categories.any { it.bucket != null },
                     needsWantsSplit = computeSplit(
                         period = state.period,
                         monthStartDay = state.monthStartDay,
@@ -759,6 +764,11 @@ class InsightsViewModel(
     /** Dismisses the one-time "Insights and Home disagree — overlay planned bills?" nudge for good. */
     fun onDismissOverlayNudge() {
         settingsStore.dismissInsightsOverlayNudge()
+    }
+
+    /** Dismisses one Overview "things to set up" checklist item ([InsightsSetupItem.key]) for good. */
+    fun onDismissSetupItem(itemKey: String) {
+        settingsStore.dismissInsightsSetupItem(itemKey)
     }
 
     /**

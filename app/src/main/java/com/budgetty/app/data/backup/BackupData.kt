@@ -64,6 +64,7 @@ data class BackupSettings(
     val hiddenInsightsSections: List<String>? = null,
     val homeSectionOrder: List<String>? = null,
     val insightsSectionOrder: List<String>? = null,
+    val customInsightsSections: List<String>? = null,
     val recapEnabled: Boolean? = null,
     val recapFrequency: String? = null,
 )

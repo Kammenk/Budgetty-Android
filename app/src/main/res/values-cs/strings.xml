@@ -249,6 +249,9 @@
     </plurals>
     <string name="cd_edit_category">Upravit %1$s</string>
 
+    <string name="insights_tab_spending">Výdaje</string>
+    <string name="insights_tab_money">Peníze</string>
+    <string name="insights_tab_trends">Trendy</string>
     <string name="insights_breakdown">Rozdělení</string>
     <string name="insights_summary">Souhrn</string>
     <string name="insights_trend">Trend</string>
@@ -1332,4 +1335,48 @@
     <string name="recap_freq_sheet_title">Četnost přehledů</string>
     <string name="recap_freq_sheet_sub">Kdy vám Budgetty ukáže přehled.</string>
     <string name="recap_freq_off">Vypnuto</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Přehled</string>
+    <string name="insights_overview_spent">Celkem utraceno</string>
+    <string name="insights_overview_top">Největší výdaje</string>
+    <string name="insights_overview_worth">Dobré vědět</string>
+    <string name="insights_overview_on_pace">Směřuje k %1$s</string>
+    <string name="insights_open_recap">Otevřít poslední přehled</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d věc k nastavení</item>
+        <item quantity="few">%1$d věci k nastavení</item>
+        <item quantity="many">%1$d věci k nastavení</item>
+        <item quantity="other">%1$d věcí k nastavení</item>
+    </plurals>
+    <string name="insights_setup_review">Zkontrolovat</string>
+    <string name="insights_setup_hide">Skrýt</string>
+    <string name="insights_setup_item_savings">Vybrat, co se počítá jako úspory</string>
+    <string name="insights_setup_cta_savings">Vybrat</string>
+    <string name="insights_setup_item_income">Přidat příjem nebo rozpočet</string>
+    <string name="insights_setup_cta_income">Přidat</string>
+    <string name="insights_setup_item_overlay">Vyzkoušet vrstvu plánovaných účtů</string>
+    <string name="insights_setup_cta_overlay">Zapnout</string>
+    <string name="insights_setup_item_buckets">Označit kategorie jako potřeby nebo přání</string>
+    <string name="insights_setup_cta_buckets">Označit</string>
+    <string name="cd_insights_setup_dismiss">Skrýt</string>
+    <string name="insights_tab_custom">Vlastní</string>
+    <string name="insights_custom_choose">Vybrat sekce</string>
+    <string name="insights_custom_add">Přidat sekce</string>
+    <string name="insights_custom_add_another">Přidat další sekci</string>
+    <string name="insights_custom_empty_title">Váš vlastní pohled</string>
+    <string name="insights_custom_empty_body">Vyberte jen sekce, které vás zajímají — zůstanou v této záložce, v pořadí, které zvolíte, a řídí se stejným obdobím jako vše ostatní.</string>
+    <string name="insights_custom_sheet_title">Sekce v záložce Vlastní</string>
+    <string name="insights_custom_none">Zatím žádné sekce</string>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d sekce</item>
+        <item quantity="few">%1$d sekce</item>
+        <item quantity="many">%1$d sekce</item>
+        <item quantity="other">%1$d sekcí</item>
+    </plurals>
+    <string name="insights_custom_footer">Sekce zůstávají i ve svých záložkách — přidání sem je neodebere z Výdajů, Peněz ani Trendů.</string>
+    <string name="cd_insights_custom_close">Zavřít</string>
+    <string name="insights_money_empty_title">Váš tok peněz potřebuje plán</string>
+    <string name="insights_money_empty_body">Přidejte příjem nebo rozpočet a uvidíte svůj tok peněz.</string>
+    <string name="insights_money_empty_cta">Přidat příjem nebo rozpočet</string>
 </resources>

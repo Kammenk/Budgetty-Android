@@ -96,6 +96,9 @@
     <string name="upload_error_title">Не удалось прочитать чек</string>
     <string name="upload_go_back">Назад</string>
 
+    <string name="insights_tab_spending">Расходы</string>
+    <string name="insights_tab_money">Деньги</string>
+    <string name="insights_tab_trends">Тренды</string>
     <string name="insights_breakdown">Разбивка</string>
     <string name="insights_summary">Сводка</string>
     <string name="insights_trend">Динамика</string>
@@ -1321,4 +1324,48 @@
     <string name="recap_freq_sheet_title">Частота сводок</string>
     <string name="recap_freq_sheet_sub">Когда Budgetty показывает сводку.</string>
     <string name="recap_freq_off">Выкл.</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Обзор</string>
+    <string name="insights_overview_spent">Всего потрачено</string>
+    <string name="insights_overview_top">Топ расходов</string>
+    <string name="insights_overview_worth">Полезно знать</string>
+    <string name="insights_overview_on_pace">При таком темпе — %1$s</string>
+    <string name="insights_open_recap">Открыть последние итоги</string>
+    <string name="insights_setup_review">Просмотреть</string>
+    <string name="insights_setup_hide">Скрыть</string>
+    <string name="insights_setup_item_savings">Выберите, что считать сбережениями</string>
+    <string name="insights_setup_cta_savings">Выбрать</string>
+    <string name="insights_setup_item_income">Добавьте доход или бюджет</string>
+    <string name="insights_setup_cta_income">Добавить</string>
+    <string name="insights_setup_item_overlay">Попробуйте слой плановых счетов</string>
+    <string name="insights_setup_cta_overlay">Включить</string>
+    <string name="insights_setup_item_buckets">Разметьте категории как потребности и желания</string>
+    <string name="insights_setup_cta_buckets">Разметить</string>
+    <string name="cd_insights_setup_dismiss">Скрыть</string>
+    <string name="insights_tab_custom">Подборка</string>
+    <string name="insights_custom_choose">Выбрать разделы</string>
+    <string name="insights_custom_add">Добавить разделы</string>
+    <string name="insights_custom_add_another">Добавить ещё раздел</string>
+    <string name="insights_custom_empty_title">Здесь только ваше</string>
+    <string name="insights_custom_empty_body">Выберите только нужные вам разделы — они останутся в этой вкладке, в выбранном порядке, и будут использовать тот же период, что и всё остальное.</string>
+    <string name="insights_custom_sheet_title">Разделы вкладки «Подборка»</string>
+    <string name="insights_custom_none">Пока нет разделов</string>
+    <string name="insights_custom_footer">Разделы остаются и в своих вкладках — добавление сюда не убирает их из Расходов, Денег или Трендов.</string>
+    <string name="cd_insights_custom_close">Закрыть</string>
+    <string name="insights_money_empty_title">Движению денег нужен план</string>
+    <string name="insights_money_empty_body">Добавьте доход или бюджет, чтобы увидеть движение денег.</string>
+    <string name="insights_money_empty_cta">Добавить доход или бюджет</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d шаг настройки</item>
+        <item quantity="few">%1$d шага настройки</item>
+        <item quantity="many">%1$d шагов настройки</item>
+        <item quantity="other">%1$d шага настройки</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d раздел</item>
+        <item quantity="few">%1$d раздела</item>
+        <item quantity="many">%1$d разделов</item>
+        <item quantity="other">%1$d раздела</item>
+    </plurals>
 </resources>

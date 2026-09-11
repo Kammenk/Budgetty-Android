@@ -389,6 +389,7 @@ private fun BudgettyNavHost(
                 onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
                 onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
                 onNavigateToRecap = { navController.navigate(Routes.RECAP) },
+                onNavigateToManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
             )
         }
         composable(Routes.SUBSCRIPTIONS) {

@@ -96,6 +96,9 @@
     <string name="upload_error_title">Impossibile leggere lo scontrino</string>
     <string name="upload_go_back">Indietro</string>
 
+    <string name="insights_tab_spending">Spese</string>
+    <string name="insights_tab_money">Denaro</string>
+    <string name="insights_tab_trends">Tendenze</string>
     <string name="insights_breakdown">Ripartizione</string>
     <string name="insights_summary">Riepilogo</string>
     <string name="insights_trend">Andamento</string>
@@ -1278,4 +1281,44 @@
     <string name="recap_freq_sheet_title">Frequenza del riepilogo</string>
     <string name="recap_freq_sheet_sub">Quando Budgetty ti mostra un riepilogo.</string>
     <string name="recap_freq_off">Off</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Panoramica</string>
+    <string name="insights_overview_spent">Totale speso</string>
+    <string name="insights_overview_top">Spese principali</string>
+    <string name="insights_overview_worth">Da sapere</string>
+    <string name="insights_overview_on_pace">A questo ritmo, %1$s</string>
+    <string name="insights_open_recap">Apri il tuo ultimo riepilogo</string>
+    <string name="insights_setup_review">Rivedi</string>
+    <string name="insights_setup_hide">Nascondi</string>
+    <string name="insights_setup_item_savings">Scegli cosa conta come Risparmio</string>
+    <string name="insights_setup_cta_savings">Scegli</string>
+    <string name="insights_setup_item_income">Aggiungi entrate o un budget</string>
+    <string name="insights_setup_cta_income">Aggiungi</string>
+    <string name="insights_setup_item_overlay">Prova il livello delle spese previste</string>
+    <string name="insights_setup_cta_overlay">Attiva</string>
+    <string name="insights_setup_item_buckets">Etichetta le categorie come Bisogni o Desideri</string>
+    <string name="insights_setup_cta_buckets">Etichetta</string>
+    <string name="cd_insights_setup_dismiss">Ignora</string>
+    <string name="insights_tab_custom">Personalizzato</string>
+    <string name="insights_custom_choose">Scegli sezioni</string>
+    <string name="insights_custom_add">Aggiungi sezioni</string>
+    <string name="insights_custom_add_another">Aggiungi un\'altra sezione</string>
+    <string name="insights_custom_empty_title">Vista personalizzata</string>
+    <string name="insights_custom_empty_body">Scegli solo le sezioni che ti interessano — restano in questa scheda, nell\'ordine che preferisci, e seguono lo stesso periodo di tutto il resto.</string>
+    <string name="insights_custom_sheet_title">Sezioni in Personalizzato</string>
+    <string name="insights_custom_none">Ancora nessuna sezione</string>
+    <string name="insights_custom_footer">Le sezioni restano anche nelle proprie schede — aggiungerne una qui non la rimuove da Spese, Denaro o Tendenze.</string>
+    <string name="cd_insights_custom_close">Chiudi</string>
+    <string name="insights_money_empty_title">Il tuo flusso di denaro ha bisogno di un piano</string>
+    <string name="insights_money_empty_body">Aggiungi le tue entrate o un budget per vedere il tuo flusso di denaro.</string>
+    <string name="insights_money_empty_cta">Aggiungi entrate o budget</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d cosa da impostare</item>
+        <item quantity="other">%1$d cose da impostare</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d sezione</item>
+        <item quantity="other">%1$d sezioni</item>
+    </plurals>
 </resources>

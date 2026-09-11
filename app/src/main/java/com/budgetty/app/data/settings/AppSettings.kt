@@ -179,6 +179,20 @@ data class AppSettings(
      * this small per-user pref is the only state they persist.
      */
     val dismissedLimitSuggestions: Set<String> = emptySet(),
+    /**
+     * Keys of the Overview "things to set up" checklist items the user has dismissed with the ✕ (one of
+     * [com.budgetty.app.ui.insights.InsightsSetupItem]'s stable keys). A dismissed item stays hidden
+     * even while its setup is still incomplete. The overlay item reuses [insightsOverlayNudgeDismissed]
+     * instead, so it isn't listed here. Per-user, transient — deliberately excluded from backup.
+     */
+    val dismissedInsightsSetup: Set<String> = emptySet(),
+    /**
+     * Ordered section keys composing the Insights **Custom** tab (P4) — the one user-curated view;
+     * sections still live in their fixed home tabs too. Seeded with a small default on first run (see
+     * [com.budgetty.app.data.settings.SettingsStore.DEFAULT_CUSTOM_INSIGHTS]); an empty list is a
+     * valid, remembered "cleared" state. Round-trips through backup like the other section prefs.
+     */
+    val customInsightsSections: List<String> = emptyList(),
     // ── End-of-period recap ──
     /** Whether the end-of-period recap interstitial is shown at all. Default on. */
     val recapEnabled: Boolean = true,

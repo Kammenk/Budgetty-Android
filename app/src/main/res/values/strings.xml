@@ -450,6 +450,50 @@
     <string name="manage_empty_hint">No custom categories yet — create one to tag spending your own way.</string>
 
     <!-- Insights -->
+    <string name="insights_tab_spending">Spending</string>
+    <string name="insights_tab_money">Money</string>
+    <string name="insights_tab_trends">Trends</string>
+    <string name="insights_overview_tab">Overview</string>
+    <string name="insights_overview_spent">Total spent</string>
+    <string name="insights_overview_top">Top spending</string>
+    <string name="insights_overview_worth">Worth knowing</string>
+    <string name="insights_overview_on_pace">On pace for %1$s</string>
+    <string name="insights_open_recap">Open your last recap</string>
+    <!-- Overview "things to set up" checklist (P3) -->
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d thing to set up</item>
+        <item quantity="other">%1$d things to set up</item>
+    </plurals>
+    <string name="insights_setup_review">Review</string>
+    <string name="insights_setup_hide">Hide</string>
+    <string name="insights_setup_item_savings">Choose what counts as savings</string>
+    <string name="insights_setup_cta_savings">Choose</string>
+    <string name="insights_setup_item_income">Add income or a budget</string>
+    <string name="insights_setup_cta_income">Add</string>
+    <string name="insights_setup_item_overlay">Try the planned-bills overlay</string>
+    <string name="insights_setup_cta_overlay">Turn on</string>
+    <string name="insights_setup_item_buckets">Tag categories as needs / wants</string>
+    <string name="insights_setup_cta_buckets">Tag</string>
+    <string name="cd_insights_setup_dismiss">Dismiss</string>
+    <!-- Custom tab + section picker (P4) -->
+    <string name="insights_tab_custom">Custom</string>
+    <string name="insights_custom_choose">Choose sections</string>
+    <string name="insights_custom_add">Add sections</string>
+    <string name="insights_custom_add_another">Add another section</string>
+    <string name="insights_custom_empty_title">Your own view</string>
+    <string name="insights_custom_empty_body">Pick only the sections you care about — they stay in this tab, in the order you choose, and follow the same period as everything else.</string>
+    <string name="insights_custom_sheet_title">Sections in Custom</string>
+    <string name="insights_custom_none">No sections yet</string>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d section</item>
+        <item quantity="other">%1$d sections</item>
+    </plurals>
+    <string name="insights_custom_footer">Sections stay in their own tabs too — adding one here doesn\'t remove it from Spending, Money or Trends.</string>
+    <string name="cd_insights_custom_close">Close</string>
+    <!-- Money tab invitation when there's no income or budget yet (P8) -->
+    <string name="insights_money_empty_title">Your money flow needs a plan</string>
+    <string name="insights_money_empty_body">Add your income or a budget to see your money flow.</string>
+    <string name="insights_money_empty_cta">Add income or budget</string>
     <string name="insights_breakdown">Breakdown</string>
     <string name="insights_summary">Summary</string>
     <string name="insights_trend">Trend</string>

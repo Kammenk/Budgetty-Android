@@ -96,6 +96,9 @@
     <string name="upload_error_title">Nie można odczytać tego paragonu</string>
     <string name="upload_go_back">Wróć</string>
 
+    <string name="insights_tab_spending">Wydatki</string>
+    <string name="insights_tab_money">Pieniądze</string>
+    <string name="insights_tab_trends">Trendy</string>
     <string name="insights_breakdown">Podział</string>
     <string name="insights_summary">Podsumowanie</string>
     <string name="insights_trend">Trend</string>
@@ -1322,4 +1325,47 @@
     <string name="recap_freq_sheet_title">Częstotliwość podsumowań</string>
     <string name="recap_freq_sheet_sub">Kiedy Budgetty pokazuje podsumowanie.</string>
     <string name="recap_freq_off">Wył.</string>
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Przegląd</string>
+    <string name="insights_overview_spent">Wydano łącznie</string>
+    <string name="insights_overview_top">Najczęstsze wydatki</string>
+    <string name="insights_overview_worth">Warto wiedzieć</string>
+    <string name="insights_overview_on_pace">W tym tempie: %1$s</string>
+    <string name="insights_open_recap">Otwórz ostatnie podsumowanie</string>
+    <string name="insights_setup_review">Sprawdź</string>
+    <string name="insights_setup_hide">Ukryj</string>
+    <string name="insights_setup_item_savings">Wybierz, co liczy się jako Oszczędności</string>
+    <string name="insights_setup_cta_savings">Wybierz</string>
+    <string name="insights_setup_item_income">Dodaj dochód lub budżet</string>
+    <string name="insights_setup_cta_income">Dodaj</string>
+    <string name="insights_setup_item_overlay">Wypróbuj warstwę planowanych rachunków</string>
+    <string name="insights_setup_cta_overlay">Włącz</string>
+    <string name="insights_setup_item_buckets">Oznacz kategorie jako Potrzeby / Zachcianki</string>
+    <string name="insights_setup_cta_buckets">Oznacz</string>
+    <string name="cd_insights_setup_dismiss">Odrzuć</string>
+    <string name="insights_tab_custom">Własne</string>
+    <string name="insights_custom_choose">Wybierz sekcje</string>
+    <string name="insights_custom_add">Dodaj sekcje</string>
+    <string name="insights_custom_add_another">Dodaj kolejną sekcję</string>
+    <string name="insights_custom_empty_title">Twój własny widok</string>
+    <string name="insights_custom_empty_body">Wybierz tylko sekcje, na których Ci zależy — zostają w tej zakładce, w wybranej przez Ciebie kolejności, i obejmują ten sam okres co reszta.</string>
+    <string name="insights_custom_sheet_title">Sekcje w zakładce Własne</string>
+    <string name="insights_custom_none">Brak sekcji</string>
+    <string name="insights_custom_footer">Sekcje pozostają też w swoich zakładkach — dodanie tutaj nie usuwa ich z Wydatków, Pieniędzy ani Trendów.</string>
+    <string name="cd_insights_custom_close">Zamknij</string>
+    <string name="insights_money_empty_title">Twój przepływ pieniędzy potrzebuje planu</string>
+    <string name="insights_money_empty_body">Dodaj dochód lub budżet, aby zobaczyć swój przepływ pieniędzy.</string>
+    <string name="insights_money_empty_cta">Dodaj dochód lub budżet</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d rzecz do ustawienia</item>
+        <item quantity="few">%1$d rzeczy do ustawienia</item>
+        <item quantity="many">%1$d rzeczy do ustawienia</item>
+        <item quantity="other">%1$d rzeczy do ustawienia</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d sekcja</item>
+        <item quantity="few">%1$d sekcje</item>
+        <item quantity="many">%1$d sekcji</item>
+        <item quantity="other">%1$d sekcji</item>
+    </plurals>
 </resources>

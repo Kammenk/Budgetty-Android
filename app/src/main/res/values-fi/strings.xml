@@ -249,6 +249,9 @@
     </plurals>
     <string name="cd_edit_category">Muokkaa %1$s</string>
 
+    <string name="insights_tab_spending">Menot</string>
+    <string name="insights_tab_money">Raha</string>
+    <string name="insights_tab_trends">Trendit</string>
     <string name="insights_breakdown">Erittely</string>
     <string name="insights_summary">Yhteenveto</string>
     <string name="insights_trend">Trendi</string>
@@ -1287,4 +1290,43 @@
     <string name="recap_freq_sheet_title">Koosteen tiheys</string>
     <string name="recap_freq_sheet_sub">Milloin Budgetty näyttää koosteen.</string>
     <string name="recap_freq_off">Pois</string>
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Katsaus</string>
+    <string name="insights_overview_spent">Käytetty yhteensä</string>
+    <string name="insights_overview_top">Suosituimmat menot</string>
+    <string name="insights_overview_worth">Hyvä tietää</string>
+    <string name="insights_overview_on_pace">Menossa %1$s kohti</string>
+    <string name="insights_open_recap">Avaa viimeisin koosteesi</string>
+    <string name="insights_setup_review">Tarkista</string>
+    <string name="insights_setup_hide">Piilota</string>
+    <string name="insights_setup_item_savings">Valitse, mikä lasketaan säästöiksi</string>
+    <string name="insights_setup_cta_savings">Valitse</string>
+    <string name="insights_setup_item_income">Lisää tulot tai budjetti</string>
+    <string name="insights_setup_cta_income">Lisää</string>
+    <string name="insights_setup_item_overlay">Kokeile suunniteltujen laskujen tasoa</string>
+    <string name="insights_setup_cta_overlay">Ota käyttöön</string>
+    <string name="insights_setup_item_buckets">Merkitse kategoriat tarpeiksi / haluiksi</string>
+    <string name="insights_setup_cta_buckets">Merkitse</string>
+    <string name="cd_insights_setup_dismiss">Ohita</string>
+    <string name="insights_tab_custom">Mukautettu</string>
+    <string name="insights_custom_choose">Valitse osiot</string>
+    <string name="insights_custom_add">Lisää osioita</string>
+    <string name="insights_custom_add_another">Lisää toinen osio</string>
+    <string name="insights_custom_empty_title">Oma näkymäsi</string>
+    <string name="insights_custom_empty_body">Valitse vain sinua kiinnostavat osiot — ne pysyvät tässä välilehdessä valitsemassasi järjestyksessä ja noudattavat samaa jaksoa kuin kaikki muu.</string>
+    <string name="insights_custom_sheet_title">Mukautettu-välilehden osiot</string>
+    <string name="insights_custom_none">Ei osioita vielä</string>
+    <string name="insights_custom_footer">Osiot pysyvät myös omissa välilehdissään — osion lisääminen tänne ei poista sitä Menoista, Rahasta tai Trendeistä.</string>
+    <string name="cd_insights_custom_close">Sulje</string>
+    <string name="insights_money_empty_title">Kassavirtasi tarvitsee suunnitelman</string>
+    <string name="insights_money_empty_body">Lisää tulot tai budjetti nähdäksesi kassavirtasi.</string>
+    <string name="insights_money_empty_cta">Lisää tulot tai budjetti</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d asia määritettävänä</item>
+        <item quantity="other">%1$d asiaa määritettävänä</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d osio</item>
+        <item quantity="other">%1$d osiota</item>
+    </plurals>
 </resources>

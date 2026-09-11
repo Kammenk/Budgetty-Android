@@ -249,6 +249,9 @@
     </plurals>
     <string name="cd_edit_category">Editează %1$s</string>
 
+    <string name="insights_tab_spending">Cheltuieli</string>
+    <string name="insights_tab_money">Bani</string>
+    <string name="insights_tab_trends">Tendințe</string>
     <string name="insights_breakdown">Defalcare</string>
     <string name="insights_summary">Rezumat</string>
     <string name="insights_trend">Tendință</string>
@@ -1309,4 +1312,46 @@
     <string name="recap_freq_sheet_title">Frecvența recapitulărilor</string>
     <string name="recap_freq_sheet_sub">Când îți arată Budgetty o recapitulare.</string>
     <string name="recap_freq_off">Dezactivat</string>
+
+    <!-- Insights Hybrid redesign (P2-P8) -->
+    <string name="insights_overview_tab">Sumar</string>
+    <string name="insights_overview_spent">Total cheltuit</string>
+    <string name="insights_overview_top">Cheltuieli principale</string>
+    <string name="insights_overview_worth">Bine de știut</string>
+    <string name="insights_overview_on_pace">Pe cale să atingi %1$s</string>
+    <string name="insights_open_recap">Deschide ultimul tău rezumat</string>
+    <string name="insights_setup_review">Verifică</string>
+    <string name="insights_setup_hide">Ascunde</string>
+    <string name="insights_setup_item_savings">Alege ce se numără ca economii</string>
+    <string name="insights_setup_cta_savings">Alege</string>
+    <string name="insights_setup_item_income">Adaugă venitul sau un buget</string>
+    <string name="insights_setup_cta_income">Adaugă</string>
+    <string name="insights_setup_item_overlay">Încearcă stratul de facturi planificate</string>
+    <string name="insights_setup_cta_overlay">Activează</string>
+    <string name="insights_setup_item_buckets">Etichetează categoriile ca nevoi / dorințe</string>
+    <string name="insights_setup_cta_buckets">Etichetează</string>
+    <string name="cd_insights_setup_dismiss">Ignoră</string>
+    <string name="insights_tab_custom">Personalizat</string>
+    <string name="insights_custom_choose">Alege secțiunile</string>
+    <string name="insights_custom_add">Adaugă secțiuni</string>
+    <string name="insights_custom_add_another">Adaugă încă o secțiune</string>
+    <string name="insights_custom_empty_title">Vizualizarea ta</string>
+    <string name="insights_custom_empty_body">Alege doar secțiunile care contează pentru tine — rămân în această filă, în ordinea pe care o alegi, și urmează aceeași perioadă ca tot restul.</string>
+    <string name="insights_custom_sheet_title">Secțiuni în Personalizat</string>
+    <string name="insights_custom_none">Nicio secțiune încă</string>
+    <string name="insights_custom_footer">Secțiunile rămân și în filele lor — adăugarea aici nu le elimină din Cheltuieli, Bani sau Tendințe.</string>
+    <string name="cd_insights_custom_close">Închide</string>
+    <string name="insights_money_empty_title">Fluxul tău de bani are nevoie de un plan</string>
+    <string name="insights_money_empty_body">Adaugă-ți venitul sau un buget pentru a-ți vedea fluxul de bani.</string>
+    <string name="insights_money_empty_cta">Adaugă venit sau buget</string>
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d lucru de configurat</item>
+        <item quantity="few">%1$d lucruri de configurat</item>
+        <item quantity="other">%1$d de lucruri de configurat</item>
+    </plurals>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d secțiune</item>
+        <item quantity="few">%1$d secțiuni</item>
+        <item quantity="other">%1$d de secțiuni</item>
+    </plurals>
 </resources>

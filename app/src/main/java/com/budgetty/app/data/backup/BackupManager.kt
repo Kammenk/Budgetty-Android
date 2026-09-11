@@ -128,6 +128,7 @@ class BackupManager(
             hiddenInsightsSections = s.hiddenInsightsSections.toList(),
             homeSectionOrder = s.homeSectionOrder,
             insightsSectionOrder = s.insightsSectionOrder,
+            customInsightsSections = s.customInsightsSections,
             recapEnabled = s.recapEnabled,
             recapFrequency = s.recapFrequency.name,
         )
@@ -153,6 +154,7 @@ class BackupManager(
         s.hiddenInsightsSections?.let { settingsStore.setHiddenInsightsSections(it.toSet()) }
         s.homeSectionOrder?.let(settingsStore::setHomeSectionOrder)
         s.insightsSectionOrder?.let(settingsStore::setInsightsSectionOrder)
+        s.customInsightsSections?.let(settingsStore::setCustomInsightsSections)
     }
 
     /** Parses [name] to an enum of type [T] and applies it via [set]; a null or unknown name is a no-op. */
