@@ -1308,9 +1308,6 @@
     <string name="insights_setup_item_buckets">Merkitse kategoriat tarpeiksi / haluiksi</string>
     <string name="insights_setup_cta_buckets">Merkitse</string>
     <string name="cd_insights_setup_dismiss">Ohita</string>
-    <string name="insights_overview_chip_planned">Suunnitellut tasot</string>
-    <string name="insights_overview_chip_savings_kept">Säästöt: Pidetty</string>
-    <string name="insights_overview_chip_savings_aside">Säästöt: Sivuun laitettu</string>
     <string name="insights_tab_custom">Mukautettu</string>
     <string name="insights_custom_choose">Valitse osiot</string>
     <string name="insights_custom_add">Lisää osioita</string>

@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -75,7 +74,6 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -690,17 +688,21 @@ private fun InsightsPhoneBody(
             )
             // Wellbeing + recap live in the toolbar (out of the scroll); recap shows only when ready.
             // The old "Customize sections" menu is gone on phone (D6): the fixed groups are fixed, the
-            // Custom tab is the curation surface, and the overlay / savings toggles are Overview chips.
+            // Custom tab is the curation surface, and the overlay / savings toggles are Overview options.
             state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
             if (showRecapEntry) {
+                // A clear gap so the score ring and the recap button read as two separate controls.
+                Spacer(Modifier.width(MaterialTheme.dimens.sm))
                 RecapToolbarButton(onClick = onNavigateToRecap)
             }
         }
         stepper(Modifier.fillMaxWidth())
-        SegmentedToggle(
-            options = InsightsTab.entries.map { stringResource(it.labelRes) },
-            selectedIndex = selectedTab.ordinal,
-            onSelect = { selectedTab = InsightsTab.entries[it] },
+        // A horizontally scrollable pill row (fully-rounded, matching the period pill) instead of a fixed
+        // segmented control, so all five groups stay reachable at any width / font scale.
+        InsightsTabRow(
+            tabs = InsightsTab.entries,
+            selected = selectedTab,
+            onSelect = { selectedTab = it },
             modifier = Modifier.fillMaxWidth(),
         )
         when (selectedTab) {
@@ -1348,11 +1350,18 @@ internal fun InsightsTabletBody(
                 text = stringResource(R.string.insights_title),
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
+                maxLines = 1,
                 modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.xs),
             )
             state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
-            if (showRecapEntry) RecapToolbarButton(onClick = onNavigateToRecap)
-            stepper(Modifier)
+            if (showRecapEntry) {
+                Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                RecapToolbarButton(onClick = onNavigateToRecap)
+            }
+            Spacer(Modifier.width(MaterialTheme.dimens.md))
+            // A bounded width: the period pill's inner arrows use a weight, so left unbounded it would
+            // grab the whole row and collapse the weighted title to a single vertical column.
+            stepper(Modifier.width(360.dp))
         }
         Spacer(Modifier.height(MaterialTheme.dimens.md))
 
@@ -1403,10 +1412,10 @@ internal fun InsightsTabletBody(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sectionSpacing),
             ) {
-                SegmentedToggle(
-                    options = InsightsTab.entries.map { stringResource(it.labelRes) },
-                    selectedIndex = selectedTab.ordinal,
-                    onSelect = { selectedTab = InsightsTab.entries[it] },
+                InsightsTabRow(
+                    tabs = InsightsTab.entries,
+                    selected = selectedTab,
+                    onSelect = { selectedTab = it },
                     modifier = Modifier.fillMaxWidth(),
                 )
                 if (selectedTab == InsightsTab.OVERVIEW) {
@@ -2568,7 +2577,7 @@ private fun OverviewTabContent(
                 }
             },
         )
-        OverviewToggleChips(
+        OverviewOptionsCard(
             state = state,
             onToggleIncludeRecurringBills = controls.onToggleIncludeRecurringBills,
             onChooseSavingsAllocation = controls.onChooseSavingsAllocation,
@@ -2698,13 +2707,14 @@ private fun SetupDismissButton(tint: Color, onClick: () -> Unit) {
 }
 
 /**
- * The two Overview global quick-toggle chips: the planned-bills overlay (shown when there are bills to
- * overlay) and the Needs/Wants savings-allocation mode (shown once a split exists and the mode is set;
- * the first choice is made through the checklist). Each is a compact pill toggle; the whole chip is the
- * control. Absent entirely when neither applies.
+ * The two global Overview options as full settings-style rows in one card (the mockup treatment): the
+ * planned-bills overlay switch (shown when there are bills to overlay) and the Needs/Wants savings-
+ * allocation mode (shown once a split exists and the mode is set; the first choice is made through the
+ * checklist). Each row names what it does and gives a real, comfortably-sized control — replacing the
+ * cramped mini-chips. Absent entirely when neither applies.
  */
 @Composable
-private fun OverviewToggleChips(
+private fun OverviewOptionsCard(
     state: InsightsUiState,
     onToggleIncludeRecurringBills: (Boolean) -> Unit,
     onChooseSavingsAllocation: (Boolean) -> Unit,
@@ -2712,70 +2722,64 @@ private fun OverviewToggleChips(
     val showPlanned = state.hasBills
     val showSavings = state.needsWantsSplit != null && state.savingsAllocation != null
     if (!showPlanned && !showSavings) return
-    Row(horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm)) {
+    InsightCard {
         if (showPlanned) {
-            OverviewToggleChip(
-                checked = state.includeRecurringBills,
-                label = stringResource(R.string.insights_overview_chip_planned),
-                modifier = Modifier.weight(1f),
-                onToggle = { onToggleIncludeRecurringBills(!state.includeRecurringBills) },
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        text = stringResource(R.string.insights_overlay_toggle_title),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = stringResource(R.string.insights_overlay_toggle_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                Spacer(Modifier.width(MaterialTheme.dimens.sm))
+                Switch(checked = state.includeRecurringBills, onCheckedChange = onToggleIncludeRecurringBills)
+            }
+            if (showSavings) {
+                HorizontalDivider(
+                    modifier = Modifier.padding(vertical = MaterialTheme.dimens.sm),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                )
+            }
         }
         if (showSavings) {
             val kept = state.savingsAllocation == true
-            OverviewToggleChip(
-                checked = kept,
-                label = stringResource(
-                    if (kept) R.string.insights_overview_chip_savings_kept
-                    else R.string.insights_overview_chip_savings_aside,
-                ),
-                modifier = Modifier.weight(1f),
-                onToggle = { onChooseSavingsAllocation(!kept) },
-            )
-        }
-    }
-}
-
-/** One compact pill toggle-chip: a mini track+knob and a label, the whole row toggling [checked]. */
-@Composable
-private fun OverviewToggleChip(
-    checked: Boolean,
-    label: String,
-    modifier: Modifier = Modifier,
-    onToggle: () -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .toggleable(value = checked, role = Role.Switch, onValueChange = { onToggle() })
-            .padding(horizontal = MaterialTheme.dimens.md, vertical = MaterialTheme.dimens.sm),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
-    ) {
-        val track = if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
-        Box(
-            modifier = Modifier
-                .size(width = 26.dp, height = 15.dp)
-                .clip(RoundedCornerShape(50))
-                .background(track),
-            contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart,
-        ) {
-            Box(
+            Row(
                 modifier = Modifier
-                    .padding(horizontal = 2.dp)
-                    .size(11.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-            )
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
+                    .clickable { onChooseSavingsAllocation(!kept) }
+                    .padding(vertical = MaterialTheme.dimens.sm),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+            ) {
+                Text(
+                    text = stringResource(R.string.insights_nws_alloc_header),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = stringResource(
+                        if (kept) R.string.insights_nws_ask_keep else R.string.insights_nws_ask_aside,
+                    ),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
+                Icon(
+                    Icons.Filled.UnfoldMore,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(MaterialTheme.dimens.icon),
+                )
+            }
         }
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
-            color = if (checked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1,
-        )
     }
 }
 

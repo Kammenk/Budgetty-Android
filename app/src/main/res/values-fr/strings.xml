@@ -1297,9 +1297,6 @@
     <string name="insights_setup_item_buckets">Étiqueter les catégories en Besoins / Envies</string>
     <string name="insights_setup_cta_buckets">Étiqueter</string>
     <string name="cd_insights_setup_dismiss">Ignorer</string>
-    <string name="insights_overview_chip_planned">Calques prévus</string>
-    <string name="insights_overview_chip_savings_kept">Épargne : Gardée</string>
-    <string name="insights_overview_chip_savings_aside">Épargne : Mise de côté</string>
     <string name="insights_tab_custom">Personnalisé</string>
     <string name="insights_custom_choose">Choisir les sections</string>
     <string name="insights_custom_add">Ajouter des sections</string>

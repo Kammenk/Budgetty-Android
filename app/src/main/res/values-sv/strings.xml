@@ -1308,9 +1308,6 @@
     <string name="insights_setup_item_buckets">Märk kategorier som behov/önskemål</string>
     <string name="insights_setup_cta_buckets">Märk</string>
     <string name="cd_insights_setup_dismiss">Stäng</string>
-    <string name="insights_overview_chip_planned">Planerade lager</string>
-    <string name="insights_overview_chip_savings_kept">Sparande: Behållet</string>
-    <string name="insights_overview_chip_savings_aside">Sparande: Avsatt</string>
     <string name="insights_tab_custom">Anpassad</string>
     <string name="insights_custom_choose">Välj sektioner</string>
     <string name="insights_custom_add">Lägg till sektioner</string>

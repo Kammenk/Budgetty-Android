@@ -475,10 +475,6 @@
     <string name="insights_setup_item_buckets">Tag categories as needs / wants</string>
     <string name="insights_setup_cta_buckets">Tag</string>
     <string name="cd_insights_setup_dismiss">Dismiss</string>
-    <!-- Overview quick-toggle chips (P3) -->
-    <string name="insights_overview_chip_planned">Planned layers</string>
-    <string name="insights_overview_chip_savings_kept">Savings: Kept</string>
-    <string name="insights_overview_chip_savings_aside">Savings: Set aside</string>
     <!-- Custom tab + section picker (P4) -->
     <string name="insights_tab_custom">Custom</string>
     <string name="insights_custom_choose">Choose sections</string>

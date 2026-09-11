@@ -1343,9 +1343,6 @@
     <string name="insights_setup_item_buckets">Разметьте категории как потребности и желания</string>
     <string name="insights_setup_cta_buckets">Разметить</string>
     <string name="cd_insights_setup_dismiss">Скрыть</string>
-    <string name="insights_overview_chip_planned">Плановые слои</string>
-    <string name="insights_overview_chip_savings_kept">Сбережения: Остаток</string>
-    <string name="insights_overview_chip_savings_aside">Сбережения: Отложено</string>
     <string name="insights_tab_custom">Подборка</string>
     <string name="insights_custom_choose">Выбрать разделы</string>
     <string name="insights_custom_add">Добавить разделы</string>

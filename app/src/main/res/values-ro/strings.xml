@@ -1331,9 +1331,6 @@
     <string name="insights_setup_item_buckets">Etichetează categoriile ca nevoi / dorințe</string>
     <string name="insights_setup_cta_buckets">Etichetează</string>
     <string name="cd_insights_setup_dismiss">Ignoră</string>
-    <string name="insights_overview_chip_planned">Straturi planificate</string>
-    <string name="insights_overview_chip_savings_kept">Economii: păstrate</string>
-    <string name="insights_overview_chip_savings_aside">Economii: puse deoparte</string>
     <string name="insights_tab_custom">Personalizat</string>
     <string name="insights_custom_choose">Alege secțiunile</string>
     <string name="insights_custom_add">Adaugă secțiuni</string>

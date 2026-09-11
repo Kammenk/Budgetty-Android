@@ -1343,9 +1343,6 @@
     <string name="insights_setup_item_buckets">Oznacz kategorie jako Potrzeby / Zachcianki</string>
     <string name="insights_setup_cta_buckets">Oznacz</string>
     <string name="cd_insights_setup_dismiss">Odrzuć</string>
-    <string name="insights_overview_chip_planned">Planowane warstwy</string>
-    <string name="insights_overview_chip_savings_kept">Oszczędności: zatrzymane</string>
-    <string name="insights_overview_chip_savings_aside">Oszczędności: odłożone</string>
     <string name="insights_tab_custom">Własne</string>
     <string name="insights_custom_choose">Wybierz sekcje</string>
     <string name="insights_custom_add">Dodaj sekcje</string>

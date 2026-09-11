@@ -1360,9 +1360,6 @@
     <string name="insights_setup_item_buckets">Označit kategorie jako potřeby nebo přání</string>
     <string name="insights_setup_cta_buckets">Označit</string>
     <string name="cd_insights_setup_dismiss">Skrýt</string>
-    <string name="insights_overview_chip_planned">Plánované vrstvy</string>
-    <string name="insights_overview_chip_savings_kept">Úspory: Ponecháno</string>
-    <string name="insights_overview_chip_savings_aside">Úspory: Odloženo</string>
     <string name="insights_tab_custom">Vlastní</string>
     <string name="insights_custom_choose">Vybrat sekce</string>
     <string name="insights_custom_add">Přidat sekce</string>

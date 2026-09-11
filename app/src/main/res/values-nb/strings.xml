@@ -1308,9 +1308,6 @@
     <string name="insights_setup_item_buckets">Merk kategorier som behov / ønsker</string>
     <string name="insights_setup_cta_buckets">Merk</string>
     <string name="cd_insights_setup_dismiss">Avvis</string>
-    <string name="insights_overview_chip_planned">Planlagte lag</string>
-    <string name="insights_overview_chip_savings_kept">Sparing: Beholdt</string>
-    <string name="insights_overview_chip_savings_aside">Sparing: Satt av</string>
     <string name="insights_tab_custom">Egendefinert</string>
     <string name="insights_custom_choose">Velg seksjoner</string>
     <string name="insights_custom_add">Legg til seksjoner</string>

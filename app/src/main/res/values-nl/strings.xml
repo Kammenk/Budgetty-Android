@@ -1301,9 +1301,6 @@
     <string name="insights_setup_item_buckets">Deel categorieën in als Behoefte of Wens</string>
     <string name="insights_setup_cta_buckets">Indelen</string>
     <string name="cd_insights_setup_dismiss">Sluiten</string>
-    <string name="insights_overview_chip_planned">Geplande lagen</string>
-    <string name="insights_overview_chip_savings_kept">Sparen: Overgehouden</string>
-    <string name="insights_overview_chip_savings_aside">Sparen: Apart gezet</string>
     <string name="insights_tab_custom">Aangepast</string>
     <string name="insights_custom_choose">Secties kiezen</string>
     <string name="insights_custom_add">Secties toevoegen</string>

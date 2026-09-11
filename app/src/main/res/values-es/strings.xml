@@ -1298,9 +1298,6 @@
     <string name="insights_setup_item_buckets">Etiqueta categorías como Necesidad o Deseo</string>
     <string name="insights_setup_cta_buckets">Etiquetar</string>
     <string name="cd_insights_setup_dismiss">Descartar</string>
-    <string name="insights_overview_chip_planned">Capas previstas</string>
-    <string name="insights_overview_chip_savings_kept">Ahorros: Conservado</string>
-    <string name="insights_overview_chip_savings_aside">Ahorros: Apartado</string>
     <string name="insights_tab_custom">Personalizado</string>
     <string name="insights_custom_choose">Elegir secciones</string>
     <string name="insights_custom_add">Añadir secciones</string>

@@ -1303,9 +1303,6 @@
     <string name="insights_setup_item_buckets">Ordne Kategorien als Bedürfnisse/Wünsche ein</string>
     <string name="insights_setup_cta_buckets">Einordnen</string>
     <string name="cd_insights_setup_dismiss">Verwerfen</string>
-    <string name="insights_overview_chip_planned">Geplante Ebenen</string>
-    <string name="insights_overview_chip_savings_kept">Sparen: Behalten</string>
-    <string name="insights_overview_chip_savings_aside">Sparen: Zurückgelegt</string>
     <string name="insights_tab_custom">Eigene</string>
     <string name="insights_custom_choose">Bereiche wählen</string>
     <string name="insights_custom_add">Bereiche hinzufügen</string>

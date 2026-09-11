@@ -1300,9 +1300,6 @@
     <string name="insights_setup_item_buckets">Etichetta le categorie come Bisogni o Desideri</string>
     <string name="insights_setup_cta_buckets">Etichetta</string>
     <string name="cd_insights_setup_dismiss">Ignora</string>
-    <string name="insights_overview_chip_planned">Livelli previsti</string>
-    <string name="insights_overview_chip_savings_kept">Risparmio: tenuto</string>
-    <string name="insights_overview_chip_savings_aside">Risparmio: accantonato</string>
     <string name="insights_tab_custom">Personalizzato</string>
     <string name="insights_custom_choose">Scegli sezioni</string>
     <string name="insights_custom_add">Aggiungi sezioni</string>

@@ -1297,9 +1297,6 @@
     <string name="insights_setup_item_buckets">Отбележи категориите като нужди / желания</string>
     <string name="insights_setup_cta_buckets">Отбележи</string>
     <string name="cd_insights_setup_dismiss">Скрий</string>
-    <string name="insights_overview_chip_planned">Планирани слоеве</string>
-    <string name="insights_overview_chip_savings_kept">Спестявания: Запазено</string>
-    <string name="insights_overview_chip_savings_aside">Спестявания: Заделено</string>
     <string name="insights_tab_custom">По избор</string>
     <string name="insights_custom_choose">Избери секции</string>
     <string name="insights_custom_add">Добави секции</string>

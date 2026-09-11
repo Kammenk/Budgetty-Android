@@ -1306,9 +1306,6 @@
     <string name="insights_setup_item_buckets">Mærk kategorier som behov/ønsker</string>
     <string name="insights_setup_cta_buckets">Mærk</string>
     <string name="cd_insights_setup_dismiss">Luk</string>
-    <string name="insights_overview_chip_planned">Planlagte lag</string>
-    <string name="insights_overview_chip_savings_kept">Opsparing: Beholdt</string>
-    <string name="insights_overview_chip_savings_aside">Opsparing: Lagt til side</string>
     <string name="insights_tab_custom">Tilpasset</string>
     <string name="insights_custom_choose">Vælg sektioner</string>
     <string name="insights_custom_add">Tilføj sektioner</string>

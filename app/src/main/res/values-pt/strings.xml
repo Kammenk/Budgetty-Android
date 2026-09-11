@@ -1304,9 +1304,6 @@
     <string name="insights_setup_item_buckets">Classifique as categorias como Necessidades ou Desejos</string>
     <string name="insights_setup_cta_buckets">Classificar</string>
     <string name="cd_insights_setup_dismiss">Dispensar</string>
-    <string name="insights_overview_chip_planned">Camadas previstas</string>
-    <string name="insights_overview_chip_savings_kept">Poupança: guardada</string>
-    <string name="insights_overview_chip_savings_aside">Poupança: separada</string>
     <string name="insights_tab_custom">Personalizado</string>
     <string name="insights_custom_choose">Escolher seções</string>
     <string name="insights_custom_add">Adicionar seções</string>
