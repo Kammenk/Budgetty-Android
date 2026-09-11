@@ -51,8 +51,10 @@ fun InsightsTabRow(
                 text = stringResource(tab.labelRes),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                // Match the History screen's FilterChips: a tonal `secondaryContainer` fill when
+                // selected (not the bright `primary`), on a `surfaceContainerHigh` resting pill.
                 color = if (isSelected) {
-                    MaterialTheme.colorScheme.onPrimary
+                    MaterialTheme.colorScheme.onSecondaryContainer
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
@@ -61,9 +63,9 @@ fun InsightsTabRow(
                     .clip(MaterialTheme.shapes.small)
                     .background(
                         if (isSelected) {
-                            MaterialTheme.colorScheme.primary
+                            MaterialTheme.colorScheme.secondaryContainer
                         } else {
-                            MaterialTheme.colorScheme.surfaceContainer
+                            MaterialTheme.colorScheme.surfaceContainerHigh
                         },
                     )
                     .clickable { onSelect(tab) }
