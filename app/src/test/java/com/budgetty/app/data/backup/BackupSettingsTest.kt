@@ -28,6 +28,7 @@ class BackupSettingsTest {
             hiddenInsightsSections = listOf("trend"),
             homeSectionOrder = listOf("safeToSpend", "budget"),
             insightsSectionOrder = listOf("breakdown", "trend"),
+            customInsightsSections = listOf("breakdown", "top_categories"),
             recapEnabled = false,
             recapFrequency = "MONTHLY",
         )
@@ -53,6 +54,7 @@ class BackupSettingsTest {
             "currency", "dateFormat", "language", "themeMode", "accent",
             "monthStartDay", "budgetRolloverEnabled",
             "hiddenHomeSections", "hiddenInsightsSections", "homeSectionOrder", "insightsSectionOrder",
+            "customInsightsSections",
             "recapEnabled", "recapFrequency",
         )
         val actual = BackupSettings::class.java.declaredFields

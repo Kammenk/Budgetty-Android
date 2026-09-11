@@ -48,6 +48,7 @@ class SettingsStore(context: Context) {
         dismissedWellbeingTips = prefs.getStringSet(KEY_DISMISSED_TIPS, emptySet()).orEmpty().toSet(),
         dismissedLimitSuggestions = prefs.getStringSet(KEY_DISMISSED_LIMIT_SUGGESTIONS, emptySet()).orEmpty().toSet(),
         dismissedInsightsSetup = prefs.getStringSet(KEY_DISMISSED_INSIGHTS_SETUP, emptySet()).orEmpty().toSet(),
+        customInsightsSections = loadCustomInsights(),
         recapEnabled = prefs.getBoolean(KEY_RECAP_ENABLED, true),
         // §1.1: default BOTH (weekly on) when the user never made an explicit choice.
         recapFrequency = read(KEY_RECAP_FREQUENCY, RecapFrequency.BOTH),
@@ -120,6 +121,13 @@ class SettingsStore(context: Context) {
     fun setInsightsSectionOrder(order: List<String>) {
         prefs.edit().putString(KEY_ORDER_INSIGHTS, order.joinToString(",")).apply()
         _settings.update { it.copy(insightsSectionOrder = order) }
+    }
+
+    /** Persists the Insights Custom-tab membership (ordered section keys). An empty list is stored as
+     *  a present, remembered "cleared" state — distinct from the never-set default seed. */
+    fun setCustomInsightsSections(order: List<String>) {
+        prefs.edit().putString(KEY_CUSTOM_INSIGHTS, order.joinToString(",")).apply()
+        _settings.update { it.copy(customInsightsSections = order) }
     }
 
     /** Replaces the whole set of hidden Home section keys at once (used by backup restore). */
@@ -312,6 +320,7 @@ class SettingsStore(context: Context) {
             .remove(KEY_HIDDEN_INSIGHTS)
             .remove(KEY_ORDER_HOME)
             .remove(KEY_ORDER_INSIGHTS)
+            .remove(KEY_CUSTOM_INSIGHTS)
             // Per-user recap timing (not the cadence preference, which is device-global like theme):
             // reset so the next account on a shared device gets fresh recap boundaries.
             .remove(KEY_RECAP_LAST_WEEK)
@@ -335,6 +344,7 @@ class SettingsStore(context: Context) {
                 hiddenInsightsSections = emptySet(),
                 homeSectionOrder = emptyList(),
                 insightsSectionOrder = emptyList(),
+                customInsightsSections = DEFAULT_CUSTOM_INSIGHTS,
                 recapLastShownWeek = "",
                 recapLastShownMonth = "",
                 insightsIncludeRecurringBills = false,
@@ -346,6 +356,11 @@ class SettingsStore(context: Context) {
 
     private fun Set<String>.toggled(key: String, present: Boolean): Set<String> =
         if (present) this + key else this - key
+
+    // Absent key → seed the default Custom set; a present (even empty) value is the user's own choice.
+    private fun loadCustomInsights(): List<String> =
+        if (prefs.contains(KEY_CUSTOM_INSIGHTS)) prefs.getString(KEY_CUSTOM_INSIGHTS, null).toKeyList()
+        else DEFAULT_CUSTOM_INSIGHTS
 
     private fun String?.toKeyList(): List<String> =
         this?.split(",")?.filter { it.isNotBlank() } ?: emptyList()
@@ -410,6 +425,11 @@ class SettingsStore(context: Context) {
         const val KEY_HIDDEN_INSIGHTS = "hidden_insights_sections"
         const val KEY_ORDER_HOME = "home_section_order"
         const val KEY_ORDER_INSIGHTS = "insights_section_order"
+        const val KEY_CUSTOM_INSIGHTS = "custom_insights_sections"
+
+        /** Seed for the Insights Custom tab on first run (D5) — a small, useful default so the tab is
+         *  never empty on first open. Keys must match [com.budgetty.app.ui.insights.InsightsSection]. */
+        val DEFAULT_CUSTOM_INSIGHTS = listOf("breakdown", "top_categories")
         const val KEY_APP_LOCK = "app_lock_enabled"
         const val KEY_PIN_HASH = "app_lock_pin_hash"
         const val KEY_BIOMETRIC = "app_lock_biometric"

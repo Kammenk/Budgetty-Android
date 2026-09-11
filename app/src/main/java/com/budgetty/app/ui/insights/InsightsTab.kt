@@ -19,7 +19,16 @@ enum class InsightsTab(@param:StringRes val labelRes: Int) {
     SPENDING(R.string.insights_tab_spending),
     MONEY(R.string.insights_tab_money),
     TRENDS(R.string.insights_tab_trends),
+
+    /** The one user-curated tab (P4): renders `SettingsStore.customInsightsSections` in order via the
+     *  same section cards. No [InsightsSection] maps here — sections keep their fixed home tabs too. */
+    CUSTOM(R.string.insights_tab_custom),
 }
+
+/** Sections offerable in the Custom tab's picker: every section except the toolbar-only Wellbeing
+ *  entry. Order here is the picker's stable listing order. */
+val customizableSections: List<InsightsSection> =
+    InsightsSection.entries.filter { it != InsightsSection.WELLBEING }
 
 /** Which tab a section belongs to, or `null` for sections rendered outside the tab strip (WELLBEING). */
 fun InsightsSection.tab(): InsightsTab? = when (this) {

@@ -479,6 +479,21 @@
     <string name="insights_overview_chip_planned">Planned layers</string>
     <string name="insights_overview_chip_savings_kept">Savings: Kept</string>
     <string name="insights_overview_chip_savings_aside">Savings: Set aside</string>
+    <!-- Custom tab + section picker (P4) -->
+    <string name="insights_tab_custom">Custom</string>
+    <string name="insights_custom_choose">Choose sections</string>
+    <string name="insights_custom_add">Add sections</string>
+    <string name="insights_custom_add_another">Add another section</string>
+    <string name="insights_custom_empty_title">Your own view</string>
+    <string name="insights_custom_empty_body">Pick only the sections you care about — they stay in this tab, in the order you choose, and follow the same period as everything else.</string>
+    <string name="insights_custom_sheet_title">Sections in Custom</string>
+    <string name="insights_custom_none">No sections yet</string>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d section</item>
+        <item quantity="other">%1$d sections</item>
+    </plurals>
+    <string name="insights_custom_footer">Sections stay in their own tabs too — adding one here doesn\'t remove it from Spending, Money or Trends.</string>
+    <string name="cd_insights_custom_close">Close</string>
     <string name="insights_breakdown">Breakdown</string>
     <string name="insights_summary">Summary</string>
     <string name="insights_trend">Trend</string>
