@@ -1,9 +1,12 @@
 package com.budgetty.app.data.settings
 
-enum class ThemeMode(val label: String) {
-    SYSTEM("System default"),
-    LIGHT("Light"),
-    DARK("Dark"),
+import androidx.annotation.StringRes
+import com.budgetty.app.R
+
+enum class ThemeMode(@StringRes val labelRes: Int) {
+    SYSTEM(R.string.theme_mode_system),
+    LIGHT(R.string.theme_mode_light),
+    DARK(R.string.theme_mode_dark),
 }
 
 /**

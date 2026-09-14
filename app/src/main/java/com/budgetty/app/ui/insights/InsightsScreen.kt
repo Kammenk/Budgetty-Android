@@ -2843,7 +2843,7 @@ private fun TopSliceRow(slice: PieSlice, onClick: () -> Unit) {
     ) {
         Box(Modifier.size(9.dp).clip(RoundedCornerShape(3.dp)).background(slice.color))
         Text(
-            text = slice.label,
+            text = categoryDisplayName(slice.label),
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.weight(1f),
             maxLines = 1,

@@ -20,6 +20,9 @@
     <string name="account_import">Importar datos</string>
     <string name="section_preferences">Preferencias</string>
     <string name="account_theme">Tema</string>
+    <string name="theme_mode_system">Predeterminado del sistema</string>
+    <string name="theme_mode_light">Claro</string>
+    <string name="theme_mode_dark">Oscuro</string>
     <string name="account_accent">Color de acento</string>
     <string name="account_date_format">Formato de fecha</string>
     <string name="account_language">Idioma</string>

@@ -83,6 +83,9 @@
 
     <string name="section_preferences">Beállítások</string>
     <string name="account_theme">Téma</string>
+    <string name="theme_mode_system">Rendszer alapértelmezett</string>
+    <string name="theme_mode_light">Világos</string>
+    <string name="theme_mode_dark">Sötét</string>
     <string name="account_accent">Kiemelőszín</string>
     <string name="account_currency">Pénznem</string>
     <string name="account_date_format">Dátumformátum</string>
@@ -642,8 +645,8 @@
     <!-- Highlights (rule-based narrative callouts) -->
     <string name="insights_highlights">Kiemelések</string>
     <string name="insights_highlight_new">Első költés itt: %1$s — %2$s</string>
-    <string name="insights_highlight_up">%1$s %2$d%%-kal feljebb %3$s-hoz képest</string>
-    <string name="insights_highlight_down">%1$s %2$d%%-kal lejjebb %3$s-hoz képest</string>
+    <string name="insights_highlight_up">%1$s %2$d%%-kal feljebb, mint %3$s</string>
+    <string name="insights_highlight_down">%1$s %2$d%%-kal lejjebb, mint %3$s</string>
     <string name="insights_highlight_share">%1$s a költés %2$d%%-át tette ki</string>
     <!-- Spending pace / projection (shown on the trend card for the current period) -->
     <string name="insights_pace">Jelenlegi ütem szerint körülbelül %1$s</string>

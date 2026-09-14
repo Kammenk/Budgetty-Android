@@ -20,6 +20,9 @@
     <string name="account_import">Импорт данных</string>
     <string name="section_preferences">Настройки</string>
     <string name="account_theme">Тема</string>
+    <string name="theme_mode_system">Системная</string>
+    <string name="theme_mode_light">Светлая</string>
+    <string name="theme_mode_dark">Тёмная</string>
     <string name="account_accent">Акцентный цвет</string>
     <string name="account_date_format">Формат даты</string>
     <string name="account_language">Язык</string>

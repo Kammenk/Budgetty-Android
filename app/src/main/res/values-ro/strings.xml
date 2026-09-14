@@ -78,6 +78,9 @@
 
     <string name="section_preferences">Preferințe</string>
     <string name="account_theme">Temă</string>
+    <string name="theme_mode_system">Prestabilit de sistem</string>
+    <string name="theme_mode_light">Luminos</string>
+    <string name="theme_mode_dark">Întunecat</string>
     <string name="account_accent">Culoare de accent</string>
     <string name="account_date_format">Format dată</string>
     <string name="account_language">Limbă</string>
