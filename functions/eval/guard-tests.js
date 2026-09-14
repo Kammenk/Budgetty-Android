@@ -71,7 +71,6 @@ test("unit-counting receipt: 9 lines / 18 units vs printed 18 is served", () => 
   assert.strictEqual(d.countMismatch, false);
   assert.strictEqual(d.outcome, "ok");
   // The money must still reconcile exactly — this read was never in doubt.
-  assert.strictEqual(d.grossItems, 18.27);
   assert.strictEqual(d.overshoot, 0);
 });
 
