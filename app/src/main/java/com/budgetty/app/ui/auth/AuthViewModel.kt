@@ -2,6 +2,7 @@ package com.budgetty.app.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.repository.AuthRepository
 import com.budgetty.app.data.settings.SettingsStore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ sealed interface AuthState {
 class AuthViewModel(
     private val repository: AuthRepository,
     private val settingsStore: SettingsStore,
+    private val crashReporting: CrashReporting,
 ) : ViewModel() {
 
     val authState: StateFlow<AuthState> = repository.currentUser
@@ -102,6 +104,9 @@ class AuthViewModel(
             try {
                 block()
             } catch (e: Exception) {
+                // Record the swallowed failure to Crashlytics (throwable + fixed tag, no PII); the
+                // user-facing error message path is unchanged.
+                crashReporting.recordException(e, "auth failed")
                 _error.value = e.message ?: failureMessage
             } finally {
                 _loading.value = false

@@ -87,15 +87,36 @@
     <string name="account_contact_subtitle">Nahlaste problém, navrhněte funkci nebo jen pozdravte</string>
     <string name="account_rate">Ohodnotit Budgetty</string>
     <string name="account_privacy_policy">Zásady ochrany soukromí</string>
-    <string name="account_crash_reporting">Hlášení pádů</string>
-    <string name="account_crash_reporting_subtitle">Odesílat anonymní hlášení o pádech a pomáhat opravovat chyby</string>
-    <string name="account_analytics">Analýza používání</string>
-    <string name="account_analytics_sub">Pomozte vylepšit Budgetty pomocí anonymních údajů o používání · žádné účtenky ani částky</string>
     <string name="account_sign_out">Odhlásit se</string>
     <string name="account_delete">Smazat účet</string>
     <string name="account_edit_name">Upravit jméno</string>
     <string name="account_save_name">Uložit jméno</string>
     <string name="account_discard_name">Zahodit změny</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Pomozte vylepšit Budgetty</string>
+    <string name="consent_subtitle">Dvě věci, které můžete sdílet, pokud chcete. Obě jsou vypnuté, dokud je nezapnete.</string>
+    <string name="consent_analytics_label">Analýza používání</string>
+    <string name="consent_analytics_desc">Anonymní údaje o tom, které funkce používáte, abychom mohli Budgetty vylepšovat. Nikdy vaše účtenky, částky ani osobní údaje.</string>
+    <string name="consent_crash_label">Pády a diagnostika</string>
+    <string name="consent_crash_desc">Automatická hlášení o pádech a údaje o výkonu, abychom mohli problémy rychleji řešit.</string>
+    <string name="consent_detail_toggle">Co shromažďujeme a co nikdy</string>
+    <string name="consent_collected_header">Shromažďuje se</string>
+    <string name="consent_never_header">Nikdy</string>
+    <string name="consent_collected_1">Které obrazovky otevíráte</string>
+    <string name="consent_collected_2">Které funkce používáte</string>
+    <string name="consent_collected_3">Hlášení o pádech</string>
+    <string name="consent_collected_4">Rychlost aplikace a chyby</string>
+    <string name="consent_collected_5">Model zařízení, verze systému</string>
+    <string name="consent_never_1">Vaše účtenky</string>
+    <string name="consent_never_2">Žádné částky</string>
+    <string name="consent_never_3">Váš příjem</string>
+    <string name="consent_never_4">Vaše kategorie</string>
+    <string name="consent_never_5">Vaše identita</string>
+    <string name="consent_detail_footnote">Hlášení jsou svázána s náhodným identifikátorem, ne s vámi ani s vaším účtem, a kdykoli můžete kteroukoli z nich vypnout v sekci Účet.</string>
+    <string name="consent_reassurance">Žádná finanční data nikdy neopustí vaše zařízení.</string>
+    <string name="consent_continue">Pokračovat</string>
+    <string name="consent_not_now">Teď ne</string>
 
     <string name="import_title">Importovat zálohu</string>
     <string name="import_message">Sloučit tuto zálohu s aktuálními daty, nebo vše nahradit.</string>

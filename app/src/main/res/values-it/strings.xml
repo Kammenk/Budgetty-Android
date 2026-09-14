@@ -29,15 +29,36 @@
     <string name="account_contact_subtitle">Segnala un problema, proponi una funzione o mandaci due righe</string>
     <string name="account_rate">Valuta Budgetty</string>
     <string name="account_privacy_policy">Informativa sulla privacy</string>
-    <string name="account_crash_reporting">Segnalazione arresti anomali</string>
-    <string name="account_crash_reporting_subtitle">Invia rapporti anonimi sugli arresti anomali per aiutare a correggere i bug</string>
-    <string name="account_analytics">Analisi d\'uso</string>
-    <string name="account_analytics_sub">Aiuta a migliorare Budgetty con dati d\'uso anonimi · nessuno scontrino o importo</string>
     <string name="account_sign_out">Esci</string>
     <string name="account_delete">Elimina account</string>
     <string name="account_edit_name">Modifica nome</string>
     <string name="account_save_name">Salva nome</string>
     <string name="account_discard_name">Annulla modifiche</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Aiutaci a migliorare Budgetty</string>
+    <string name="consent_subtitle">Due cose che puoi condividere, se vuoi. Entrambe sono disattivate finché non le attivi.</string>
+    <string name="consent_analytics_label">Analisi d\'uso</string>
+    <string name="consent_analytics_desc">Dati anonimi sulle funzioni che usi, così possiamo migliorare Budgetty. Mai i tuoi scontrini, importi o dati personali.</string>
+    <string name="consent_crash_label">Arresti anomali e diagnostica</string>
+    <string name="consent_crash_desc">Rapporti automatici sugli arresti anomali e dati sulle prestazioni per risolvere i problemi più in fretta.</string>
+    <string name="consent_detail_toggle">Cosa raccogliamo e cosa mai</string>
+    <string name="consent_collected_header">Raccolto</string>
+    <string name="consent_never_header">Mai</string>
+    <string name="consent_collected_1">Quali schermate apri</string>
+    <string name="consent_collected_2">Quali funzioni usi</string>
+    <string name="consent_collected_3">Rapporti sugli arresti anomali</string>
+    <string name="consent_collected_4">Velocità ed errori dell\'app</string>
+    <string name="consent_collected_5">Modello del dispositivo, versione OS</string>
+    <string name="consent_never_1">I tuoi scontrini</string>
+    <string name="consent_never_2">Nessun importo</string>
+    <string name="consent_never_3">Le tue entrate</string>
+    <string name="consent_never_4">Le tue categorie</string>
+    <string name="consent_never_5">La tua identità</string>
+    <string name="consent_detail_footnote">I rapporti sono associati a un ID casuale, non a te o al tuo account, e puoi disattivare l\'una o l\'altra opzione in qualsiasi momento in Account.</string>
+    <string name="consent_reassurance">Nessun dato finanziario lascia mai il tuo dispositivo.</string>
+    <string name="consent_continue">Continua</string>
+    <string name="consent_not_now">Non ora</string>
 
     <string name="import_title">Importa backup</string>
     <string name="import_message">Unisci questo backup ai tuoi dati attuali oppure sostituisci tutto.</string>

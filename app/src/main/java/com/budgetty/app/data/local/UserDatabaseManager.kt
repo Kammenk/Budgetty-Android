@@ -2,6 +2,7 @@ package com.budgetty.app.data.local
 
 import android.content.Context
 import androidx.room.Room
+import com.budgetty.app.crash.CrashReporting
 import com.google.firebase.auth.FirebaseAuth
 import java.io.File
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +25,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 class UserDatabaseManager(
     private val context: Context,
     private val auth: FirebaseAuth,
+    private val crashReporting: CrashReporting,
 ) {
     private val _activeUid = MutableStateFlow(auth.currentUser?.uid)
 
@@ -60,6 +62,11 @@ class UserDatabaseManager(
     private fun databaseFor(uid: String?): BudgettyDatabase = instances.getOrPut(uid) {
         val name = fileNameFor(uid)
         if (uid != null) adoptLegacyDatabase(name)
+        // Diagnostic breadcrumb only (once per account, when its DB is first opened): if a later crash
+        // — including a failed Room migration, which surfaces on this first access — reaches
+        // Crashlytics, the log names the schema version the open targeted. Pure logging; it never
+        // touches the migration/open path or alters control flow.
+        crashReporting.leaveBreadcrumb("db: opening (target schema v${BudgettyDatabase.VERSION})")
         Room.databaseBuilder(context, BudgettyDatabase::class.java, name)
             .addMigrations(*ALL_MIGRATIONS)
             .addCallback(categorySeedCallback)

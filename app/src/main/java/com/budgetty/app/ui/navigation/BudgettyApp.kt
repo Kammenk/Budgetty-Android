@@ -46,6 +46,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.analytics.PaywallSource
+import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.settings.AppSettings
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.debug.DebugAuth
@@ -64,6 +67,7 @@ import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
 import com.budgetty.app.ui.budget.BudgetScreen
 import com.budgetty.app.ui.buyinglimits.BuyingLimitsScreen
+import com.budgetty.app.ui.consent.AnalyticsConsentScreen
 import com.budgetty.app.ui.savings.SavingsGoalDetailScreen
 import com.budgetty.app.ui.lock.SetPinScreen
 import com.budgetty.app.ui.subscriptions.SubscriptionsScreen
@@ -90,6 +94,9 @@ fun BudgettyApp(
     authViewModel: AuthViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
+    // Product analytics for the activation funnel; resolved once here so the onboarding onDone below
+    // can log completion. The singleton is shared with the rest of the app.
+    val analytics = koinInject<Analytics>()
     // Debug-only test bypass: skip onboarding + login + quiz straight to the app. Compile-time false
     // in release (see DebugAuth), and set once in MainActivity.onCreate before this composes, so no
     // Compose state is needed to observe it.
@@ -102,7 +109,31 @@ fun BudgettyApp(
 
     // First launch: show the onboarding carousel before anything else (login included).
     if (!settings.onboardingSeen) {
-        OnboardingScreen(onDone = { settingsStore.setOnboardingSeen() })
+        OnboardingScreen(onDone = {
+            analytics.logOnboardingCompleted()
+            settingsStore.setOnboardingSeen()
+        })
+        return
+    }
+
+    // One-time telemetry consent, gated right after onboarding and before auth. Until the user
+    // decides, BudgettyApplication forces both SDKs off at startup regardless of the stored flags;
+    // each choice here is applied to its SDK immediately and persisted with decided=true, so this
+    // never shows again (an upgrading user on the old default-on behaviour is re-asked here too).
+    if (!settings.analyticsConsentDecided) {
+        val crashReporting = koinInject<CrashReporting>()
+        AnalyticsConsentScreen(
+            onContinue = { analyticsOn, crashOn ->
+                settingsStore.setAnalyticsConsent(analyticsOn, crashOn)
+                analytics.setEnabled(analyticsOn)
+                crashReporting.setEnabled(crashOn)
+            },
+            onNotNow = {
+                settingsStore.setAnalyticsConsent(analyticsEnabled = false, crashReportingEnabled = false)
+                analytics.setEnabled(false)
+                crashReporting.setEnabled(false)
+            },
+        )
         return
     }
 
@@ -257,6 +288,18 @@ private fun MainScaffold(
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
+    // Telemetry: on every navigation log a screen_view (nav route PATTERN only — placeholders like
+    // {source}/{goalId} are never filled, so no ids/PII leak), mirror it into the Crashlytics
+    // current-screen key, and drop a breadcrumb so a crash report names where the user was.
+    val analytics = koinInject<Analytics>()
+    val crashReporting = koinInject<CrashReporting>()
+    LaunchedEffect(currentRoute) {
+        currentRoute?.let { route ->
+            analytics.logScreenView(route)
+            crashReporting.setCurrentScreen(route)
+            crashReporting.leaveBreadcrumb("nav: $route")
+        }
+    }
 
     // Upload and Paywall are immersive full-screen flows on every form factor. Budget is immersive
     // on the phone (no bottom bar), but on a tablet it's a primary rail destination, so the rail
@@ -363,6 +406,9 @@ private fun BudgettyNavHost(
     budgetIsTab: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    // Resolved once for the whole host: each screen's paywall-entry lambda logs paywall_shown with its
+    // own source right before navigating to the paywall (the source is per originating screen).
+    val analytics = koinInject<Analytics>()
     // Paywall draws its gradient hero edge-to-edge (behind the status bar), so it manages its own
     // top inset; the recap story is full-bleed (its band backdrops run behind both system bars and it
     // handles its own insets); every other route gets the standard scaffold insets.
@@ -381,7 +427,10 @@ private fun BudgettyNavHost(
                 onNavigateToUpload = { source -> navController.navigate(Routes.upload(source)) },
                 onNavigateToEdit = { receiptId -> navController.navigate(Routes.editReceipt(receiptId)) },
                 onNavigateToBudget = { navController.navigateToBudget(budgetIsTab) },
-                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.HOME)
+                    navController.navigate(Routes.PAYWALL)
+                },
                 onNavigateToHistory = { navController.navigateToTab(Routes.HISTORY) },
                 onNavigateToInsights = { navController.navigateToTab(Routes.INSIGHTS) },
                 onNavigateToAccount = { navController.navigateToTab(Routes.ACCOUNT) },
@@ -393,7 +442,10 @@ private fun BudgettyNavHost(
             InsightsScreen(
                 onNavigateToBudget = { navController.navigateToBudget(budgetIsTab) },
                 onNavigateToSubscriptions = { navController.navigate(Routes.SUBSCRIPTIONS) },
-                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.INSIGHTS)
+                    navController.navigate(Routes.PAYWALL)
+                },
                 onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
                 onNavigateToRecap = { navController.navigate(Routes.RECAP) },
                 onNavigateToManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
@@ -417,7 +469,10 @@ private fun BudgettyNavHost(
         }
         composable(Routes.ACCOUNT) {
             AccountScreen(
-                onOpenPaywall = { navController.navigate(Routes.PAYWALL) },
+                onOpenPaywall = {
+                    analytics.logPaywallShown(PaywallSource.ACCOUNT)
+                    navController.navigate(Routes.PAYWALL)
+                },
                 onOpenBudget = { navController.navigateToBudget(budgetIsTab) },
                 onOpenWidgets = { navController.navigate(Routes.WIDGETS) },
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
@@ -449,13 +504,20 @@ private fun BudgettyNavHost(
                 source = entry.arguments?.getString(Routes.UPLOAD_ARG_SOURCE) ?: "file",
                 receiptId = entry.arguments?.getLong(Routes.UPLOAD_ARG_RECEIPT_ID) ?: -1L,
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                // Upload's only paywall entry is the custom-category create cap → CATEGORIES.
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.CATEGORIES)
+                    navController.navigate(Routes.PAYWALL)
+                },
             )
         }
         composable(Routes.BUDGET) {
             BudgetScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.BUDGET)
+                    navController.navigate(Routes.PAYWALL)
+                },
                 onNavigateToGoal = { navController.navigate(Routes.savingsGoal(it)) },
             )
         }
@@ -480,7 +542,10 @@ private fun BudgettyNavHost(
         composable(Routes.WIDGETS) {
             WidgetsScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.WIDGETS)
+                    navController.navigate(Routes.PAYWALL)
+                },
             )
         }
         composable(Routes.CATEGORY_RULES) {
@@ -489,13 +554,19 @@ private fun BudgettyNavHost(
         composable(Routes.BUYING_LIMITS) {
             BuyingLimitsScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPaywall = { navController.navigate(Routes.PAYWALL) },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.BUYING_LIMITS)
+                    navController.navigate(Routes.PAYWALL)
+                },
             )
         }
         composable(Routes.MANAGE_CATEGORIES) {
             ManageCategoriesScreen(
                 onNavigateBack = { navController.popBackStack() },
-                onOpenPaywall = { navController.navigate(Routes.PAYWALL) },
+                onOpenPaywall = {
+                    analytics.logPaywallShown(PaywallSource.CATEGORIES)
+                    navController.navigate(Routes.PAYWALL)
+                },
             )
         }
     }

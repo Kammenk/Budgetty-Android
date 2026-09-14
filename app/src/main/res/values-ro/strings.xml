@@ -87,15 +87,36 @@
     <string name="account_contact_subtitle">Raportează o problemă, propune o funcție sau spune-ne salut</string>
     <string name="account_rate">Evaluează Budgetty</string>
     <string name="account_privacy_policy">Politica de confidențialitate</string>
-    <string name="account_crash_reporting">Raportarea blocărilor</string>
-    <string name="account_crash_reporting_subtitle">Trimite rapoarte anonime despre blocări pentru a ajuta la remedierea erorilor</string>
-    <string name="account_analytics">Analiză de utilizare</string>
-    <string name="account_analytics_sub">Ajută la îmbunătățirea Budgetty cu date de utilizare anonime · fără bonuri sau sume</string>
     <string name="account_sign_out">Deconectează-te</string>
     <string name="account_delete">Șterge contul</string>
     <string name="account_edit_name">Editează numele</string>
     <string name="account_save_name">Salvează numele</string>
     <string name="account_discard_name">Renunță la modificări</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Ajută la îmbunătățirea Budgetty</string>
+    <string name="consent_subtitle">Două lucruri pe care le poți partaja, dacă vrei. Ambele sunt dezactivate până când le activezi.</string>
+    <string name="consent_analytics_label">Analiză de utilizare</string>
+    <string name="consent_analytics_desc">Date anonime despre funcțiile pe care le folosești, ca să putem îmbunătăți Budgetty. Niciodată bonurile, sumele sau datele tale personale.</string>
+    <string name="consent_crash_label">Blocări și diagnosticare</string>
+    <string name="consent_crash_desc">Rapoarte automate despre blocări și date de performanță, ca să putem rezolva problemele mai repede.</string>
+    <string name="consent_detail_toggle">Ce colectăm și ce nu</string>
+    <string name="consent_collected_header">Se colectează</string>
+    <string name="consent_never_header">Niciodată</string>
+    <string name="consent_collected_1">Ce ecrane deschizi</string>
+    <string name="consent_collected_2">Ce funcții folosești</string>
+    <string name="consent_collected_3">Rapoarte despre blocări</string>
+    <string name="consent_collected_4">Viteza aplicației și erorile</string>
+    <string name="consent_collected_5">Modelul dispozitivului, versiunea SO</string>
+    <string name="consent_never_1">Bonurile tale</string>
+    <string name="consent_never_2">Nicio sumă</string>
+    <string name="consent_never_3">Venitul tău</string>
+    <string name="consent_never_4">Categoriile tale</string>
+    <string name="consent_never_5">Identitatea ta</string>
+    <string name="consent_detail_footnote">Rapoartele sunt asociate unui ID aleatoriu, nu ție sau contului tău, și poți dezactiva oricare dintre ele oricând în Cont.</string>
+    <string name="consent_reassurance">Datele financiare nu îți părăsesc niciodată dispozitivul.</string>
+    <string name="consent_continue">Continuă</string>
+    <string name="consent_not_now">Nu acum</string>
 
     <string name="import_title">Importă backup</string>
     <string name="import_message">Îmbină acest backup cu datele actuale sau înlocuiește tot.</string>

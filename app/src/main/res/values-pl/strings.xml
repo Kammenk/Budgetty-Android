@@ -29,15 +29,36 @@
     <string name="account_contact_subtitle">Zgłoś problem, zaproponuj funkcję lub po prostu się przywitaj</string>
     <string name="account_rate">Oceń Budgetty</string>
     <string name="account_privacy_policy">Polityka prywatności</string>
-    <string name="account_crash_reporting">Raporty o awariach</string>
-    <string name="account_crash_reporting_subtitle">Wysyłaj anonimowe raporty o awariach, aby pomóc naprawiać błędy</string>
-    <string name="account_analytics">Analiza użytkowania</string>
-    <string name="account_analytics_sub">Pomóż ulepszać Budgetty dzięki anonimowym danym o użytkowaniu · bez paragonów i kwot</string>
     <string name="account_sign_out">Wyloguj się</string>
     <string name="account_delete">Usuń konto</string>
     <string name="account_edit_name">Edytuj imię</string>
     <string name="account_save_name">Zapisz imię</string>
     <string name="account_discard_name">Odrzuć zmiany</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Pomóż ulepszać Budgetty</string>
+    <string name="consent_subtitle">Dwie rzeczy, którymi możesz się podzielić, jeśli chcesz. Obie są wyłączone, dopóki ich nie włączysz.</string>
+    <string name="consent_analytics_label">Analiza użytkowania</string>
+    <string name="consent_analytics_desc">Anonimowe dane o tym, których funkcji używasz, abyśmy mogli ulepszać Budgetty. Nigdy Twoich paragonów, kwot ani danych osobowych.</string>
+    <string name="consent_crash_label">Awarie i diagnostyka</string>
+    <string name="consent_crash_desc">Automatyczne raporty o awariach i dane o wydajności, abyśmy mogli szybciej rozwiązywać problemy.</string>
+    <string name="consent_detail_toggle">Co zbieramy, a czego nigdy</string>
+    <string name="consent_collected_header">Zbierane</string>
+    <string name="consent_never_header">Nigdy</string>
+    <string name="consent_collected_1">Które ekrany otwierasz</string>
+    <string name="consent_collected_2">Których funkcji używasz</string>
+    <string name="consent_collected_3">Raporty o awariach</string>
+    <string name="consent_collected_4">Szybkość aplikacji i błędy</string>
+    <string name="consent_collected_5">Model urządzenia, wersja systemu</string>
+    <string name="consent_never_1">Twoje paragony</string>
+    <string name="consent_never_2">Żadne kwoty</string>
+    <string name="consent_never_3">Twoje dochody</string>
+    <string name="consent_never_4">Twoje kategorie</string>
+    <string name="consent_never_5">Twoja tożsamość</string>
+    <string name="consent_detail_footnote">Raporty są powiązane z losowym identyfikatorem, a nie z Tobą ani Twoim kontem, i możesz w każdej chwili wyłączyć każdą z tych opcji w sekcji Konto.</string>
+    <string name="consent_reassurance">Żadne dane finansowe nigdy nie opuszczają Twojego urządzenia.</string>
+    <string name="consent_continue">Kontynuuj</string>
+    <string name="consent_not_now">Nie teraz</string>
 
     <string name="import_title">Importuj kopię zapasową</string>
     <string name="import_message">Scal tę kopię z bieżącymi danymi lub zastąp wszystko.</string>

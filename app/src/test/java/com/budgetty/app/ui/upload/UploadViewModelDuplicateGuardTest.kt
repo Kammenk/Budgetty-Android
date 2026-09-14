@@ -3,6 +3,8 @@ package com.budgetty.app.ui.upload
 import android.app.Application
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.ingest.HaikuReceiptExtractor
 import com.budgetty.app.data.ingest.ReceiptIngestManager
@@ -85,7 +87,12 @@ class UploadViewModelDuplicateGuardTest {
     fun doubleFinalize_createsSingleReceiptAndItems() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val auth = FirebaseAuth.getInstance()
-        val dbManager = UserDatabaseManager(context, auth)
+        // Telemetry wrappers are constructor deps of the graph below. The guard path (manual entry →
+        // finalize) never invokes them, and neither touches Firebase until a log/record call, so real
+        // instances stay fully offline here — this project has no mocking library.
+        val analytics = Analytics(context)
+        val crashReporting = CrashReporting()
+        val dbManager = UserDatabaseManager(context, auth, crashReporting)
 
         val transactionRepo = TransactionRepository(dbManager)
         val receiptRepo = ReceiptRepository(dbManager)
@@ -102,7 +109,7 @@ class UploadViewModelDuplicateGuardTest {
             receiptRepo,
             ScanQuota(context),
             ruleRepo,
-            BillingManager(context, auth),
+            BillingManager(context, auth, analytics, crashReporting),
             budgetRepo,
             ReviewTracker(context),
             BuyingLimitNudger(
@@ -111,6 +118,8 @@ class UploadViewModelDuplicateGuardTest {
                 SettingsStore(context),
                 BuyingLimitNudgeBus(),
             ),
+            analytics,
+            crashReporting,
         )
 
         // Land on the review screen with one filled-in row.

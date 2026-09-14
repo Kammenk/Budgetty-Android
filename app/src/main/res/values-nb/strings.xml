@@ -87,15 +87,36 @@
     <string name="account_contact_subtitle">Meld en feil, foreslå en funksjon, eller bare si hei</string>
     <string name="account_rate">Vurder Budgetty</string>
     <string name="account_privacy_policy">Personvernerklæring</string>
-    <string name="account_crash_reporting">Krasjrapportering</string>
-    <string name="account_crash_reporting_subtitle">Send anonyme krasjrapporter for å bidra til å rette feil</string>
-    <string name="account_analytics">Bruksanalyse</string>
-    <string name="account_analytics_sub">Bidra til å forbedre Budgetty med anonyme bruksdata · ingen kvitteringer eller beløp</string>
     <string name="account_sign_out">Logg ut</string>
     <string name="account_delete">Slett konto</string>
     <string name="account_edit_name">Rediger navn</string>
     <string name="account_save_name">Lagre navn</string>
     <string name="account_discard_name">Forkast endringer</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Hjelp oss å forbedre Budgetty</string>
+    <string name="consent_subtitle">To ting du kan dele, hvis du vil. Begge er av til du slår dem på.</string>
+    <string name="consent_analytics_label">Bruksanalyse</string>
+    <string name="consent_analytics_desc">Anonyme data om hvilke funksjoner du bruker, så vi kan forbedre Budgetty. Aldri kvitteringene, beløpene eller de personlige opplysningene dine.</string>
+    <string name="consent_crash_label">Krasj og diagnostikk</string>
+    <string name="consent_crash_desc">Automatiske krasjrapporter og ytelsesdata så vi kan løse problemer raskere.</string>
+    <string name="consent_detail_toggle">Hva vi samler inn, og aldri</string>
+    <string name="consent_collected_header">Samles inn</string>
+    <string name="consent_never_header">Aldri</string>
+    <string name="consent_collected_1">Hvilke skjermer du åpner</string>
+    <string name="consent_collected_2">Hvilke funksjoner du bruker</string>
+    <string name="consent_collected_3">Krasjrapporter</string>
+    <string name="consent_collected_4">Apphastighet og feil</string>
+    <string name="consent_collected_5">Enhetsmodell, OS-versjon</string>
+    <string name="consent_never_1">Kvitteringene dine</string>
+    <string name="consent_never_2">Ingen beløp</string>
+    <string name="consent_never_3">Inntekten din</string>
+    <string name="consent_never_4">Kategoriene dine</string>
+    <string name="consent_never_5">Identiteten din</string>
+    <string name="consent_detail_footnote">Rapportene er knyttet til en tilfeldig ID, ikke til deg eller kontoen din, og du kan slå av begge når som helst under Konto.</string>
+    <string name="consent_reassurance">Ingen økonomiske data forlater noen gang enheten din.</string>
+    <string name="consent_continue">Fortsett</string>
+    <string name="consent_not_now">Ikke nå</string>
 
     <string name="import_title">Importer sikkerhetskopi</string>
     <string name="import_message">Slå denne sikkerhetskopien sammen med gjeldende data, eller erstatt alt.</string>

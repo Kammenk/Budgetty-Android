@@ -19,7 +19,36 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
  */
 class CrashReporting {
 
+    private val crashlytics get() = FirebaseCrashlytics.getInstance()
+
     fun setEnabled(enabled: Boolean) {
-        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = enabled
+        crashlytics.isCrashlyticsCollectionEnabled = enabled
+    }
+
+    /** Static context set once at startup: the Room schema version a crash occurred on. */
+    fun setDatabaseVersion(version: Int) = crashlytics.setCustomKey(KEY_DB_VERSION, version)
+
+    /** The user's premium tier; updated as the subscription state changes. */
+    fun setPremium(premium: Boolean) = crashlytics.setCustomKey(KEY_PREMIUM, premium)
+
+    /** The screen currently visible; updated on every navigation so a crash names where it happened. */
+    fun setCurrentScreen(route: String) = crashlytics.setCustomKey(KEY_SCREEN, route)
+
+    /** Leave a breadcrumb in the next crash report's log (e.g. a navigation or a key user action). */
+    fun leaveBreadcrumb(message: String) = crashlytics.log(message)
+
+    /**
+     * Record a caught, non-fatal [throwable] so it surfaces in Crashlytics instead of being swallowed.
+     * [context] is logged as a breadcrumb first, so the report carries what the app was doing.
+     */
+    fun recordException(throwable: Throwable, context: String? = null) {
+        if (context != null) crashlytics.log(context)
+        crashlytics.recordException(throwable)
+    }
+
+    private companion object {
+        const val KEY_DB_VERSION = "db_version"
+        const val KEY_PREMIUM = "premium"
+        const val KEY_SCREEN = "screen"
     }
 }

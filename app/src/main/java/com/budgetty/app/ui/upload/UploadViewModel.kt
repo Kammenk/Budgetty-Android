@@ -4,7 +4,10 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.analytics.Analytics
+import com.budgetty.app.analytics.ScanFailReason
 import com.budgetty.app.category.Categories
+import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.ingest.ParsedTransaction
 import com.budgetty.app.data.ingest.ReceiptIngestManager
@@ -89,6 +92,10 @@ data class PropagationPrompt(
     val ruleExists: Boolean,
 )
 
+// analytics + crashReporting are cross-cutting telemetry deps added on top of this VM's existing
+// collaborators, taking the constructor one past detekt's list limit. Suppressed rather than bundled
+// into a wrapper, since the two SDK seams (Analytics / CrashReporting) are kept separate elsewhere.
+@Suppress("LongParameterList")
 class UploadViewModel(
     private val ingestManager: ReceiptIngestManager,
     private val repository: TransactionRepository,
@@ -100,6 +107,8 @@ class UploadViewModel(
     private val budgetRepository: BudgetRepository,
     private val reviewTracker: ReviewTracker,
     private val buyingLimitNudger: BuyingLimitNudger,
+    private val analytics: Analytics,
+    private val crashReporting: CrashReporting,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UploadUiState())
@@ -170,6 +179,8 @@ class UploadViewModel(
         // A brand-new capture: clear any pending count from a previous, abandoned scan on this VM.
         scanPendingCount = false
         _uiState.update { it.copy(stage = UploadStage.EXTRACTING, error = null) }
+        // A scan was kicked off (a picked/captured receipt begins extraction).
+        analytics.logScanAttempted()
         viewModelScope.launch {
             try {
                 val receipt = ingestManager.extract(uri)
@@ -194,21 +205,25 @@ class UploadViewModel(
                 }
                 // Don't count the scan yet — only a finalized receipt counts (see [finalizeUpload]).
                 scanPendingCount = true
+                analytics.logScanSucceeded()
             } catch (e: Exception) {
                 // Log (no receipt content) so a scan failure's real cause is visible in logcat — the
                 // on-screen SERVICE/UNREADABLE copy is deliberately generic. Tag: BudgettyScan.
                 Log.w("BudgettyScan", "Receipt extraction failed", e)
+                // A poor photo / model abstention is the user's to fix (retake); anything else
+                // — HTTP, network, or a billing/outage error from the proxy — is a backend
+                // problem, so point the user at "try again later" instead of blaming the photo.
+                val kind = if (e is ReceiptUnreadableException) UploadErrorKind.UNREADABLE
+                else UploadErrorKind.SERVICE
                 _uiState.update {
                     it.copy(
                         stage = UploadStage.IDLE,
                         error = e.message ?: "Failed to read receipt",
-                        // A poor photo / model abstention is the user's to fix (retake); anything else
-                        // — HTTP, network, or a billing/outage error from the proxy — is a backend
-                        // problem, so point the user at "try again later" instead of blaming the photo.
-                        errorKind = if (e is ReceiptUnreadableException) UploadErrorKind.UNREADABLE
-                        else UploadErrorKind.SERVICE,
+                        errorKind = kind,
                     )
                 }
+                analytics.logScanFailed(kind.toScanFailReason())
+                crashReporting.recordException(e, "scan failed")
             }
         }
     }
@@ -303,6 +318,8 @@ class UploadViewModel(
      */
     fun attachAndScan(uri: Uri) {
         _uiState.update { it.copy(stage = UploadStage.EXTRACTING, error = null) }
+        // A scan was kicked off (attach-scan appends a scanned receipt to a manual edit).
+        analytics.logScanAttempted()
         viewModelScope.launch {
             try {
                 val receipt = ingestManager.extract(uri)
@@ -318,12 +335,17 @@ class UploadViewModel(
                 }
                 // Counts only when the (still-manual) receipt is finalized — see [finalizeUpload].
                 scanPendingCount = true
+                analytics.logScanSucceeded()
             } catch (e: Exception) {
                 Log.w("BudgettyScan", "Receipt attach-scan failed", e)
                 // Keep the manual data the user already had; just surface the error.
                 _uiState.update {
                     it.copy(stage = UploadStage.REVIEW, error = e.message ?: "Failed to read receipt")
                 }
+                val kind = if (e is ReceiptUnreadableException) UploadErrorKind.UNREADABLE
+                else UploadErrorKind.SERVICE
+                analytics.logScanFailed(kind.toScanFailReason())
+                crashReporting.recordException(e, "scan failed")
             }
         }
     }
@@ -683,6 +705,12 @@ class UploadViewModel(
                 },
             )
         }
+    }
+
+    /** Maps the UI's [UploadErrorKind] to the analytics [ScanFailReason] — they mirror each other. */
+    private fun UploadErrorKind.toScanFailReason(): ScanFailReason = when (this) {
+        UploadErrorKind.UNREADABLE -> ScanFailReason.UNREADABLE
+        UploadErrorKind.SERVICE -> ScanFailReason.SERVICE
     }
 
     private fun String.toBigDecimalOrNull(): BigDecimal? =

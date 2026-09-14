@@ -345,6 +345,17 @@ private fun AccountScreenContent(
                 onSetAnalytics = onSetAnalytics,
             )
         }
+        // Group footer echoing the consent screen's reassurance line.
+        Text(
+            text = stringResource(R.string.consent_reassurance),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                start = MaterialTheme.dimens.sm,
+                end = MaterialTheme.dimens.sm,
+                top = MaterialTheme.dimens.sm,
+            ),
+        )
     }
     // Sign out + delete + version, grouped so the landscape layout can tuck them under the left-hand
     // nav column instead of spanning the full width.
@@ -736,10 +747,12 @@ private fun SupportSectionRows(
     RowDivider()
     // Crash reporting opt-out. Tapping the row or the switch both flip it; the whole row is the
     // control, so the trailing Switch is not independently clickable (onClick handles the toggle).
+    // Copy mirrors the first-run consent screen (shared consent_* strings) so this setting reads like
+    // exactly what the user agreed to there. The stored flags/handlers are unchanged.
     SettingRow(
         icon = Icons.Filled.BugReport,
-        title = stringResource(R.string.account_crash_reporting),
-        subtitle = stringResource(R.string.account_crash_reporting_subtitle),
+        title = stringResource(R.string.consent_crash_label),
+        subtitle = stringResource(R.string.consent_crash_desc),
         trailing = {
             Switch(
                 checked = crashReportingEnabled,
@@ -752,8 +765,8 @@ private fun SupportSectionRows(
     // Usage-analytics opt-out — a separate control from crash reporting, same row/switch pattern.
     SettingRow(
         icon = Icons.Filled.Analytics,
-        title = stringResource(R.string.account_analytics),
-        subtitle = stringResource(R.string.account_analytics_sub),
+        title = stringResource(R.string.consent_analytics_label),
+        subtitle = stringResource(R.string.consent_analytics_desc),
         trailing = {
             Switch(
                 checked = analyticsEnabled,

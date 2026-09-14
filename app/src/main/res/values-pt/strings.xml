@@ -29,15 +29,36 @@
     <string name="account_contact_subtitle">Relate um problema, sugira um recurso ou apenas diga oi</string>
     <string name="account_rate">Avaliar o Budgetty</string>
     <string name="account_privacy_policy">Política de Privacidade</string>
-    <string name="account_crash_reporting">Relatórios de falhas</string>
-    <string name="account_crash_reporting_subtitle">Enviar relatórios de falhas anónimos para ajudar a corrigir erros</string>
-    <string name="account_analytics">Análise de utilização</string>
-    <string name="account_analytics_sub">Ajude a melhorar o Budgetty com dados de utilização anónimos · sem recibos nem valores</string>
     <string name="account_sign_out">Sair</string>
     <string name="account_delete">Excluir conta</string>
     <string name="account_edit_name">Editar nome</string>
     <string name="account_save_name">Salvar nome</string>
     <string name="account_discard_name">Descartar alterações</string>
+
+    <!-- Analytics / crash consent screen -->
+    <string name="consent_title">Ajude a melhorar o Budgetty</string>
+    <string name="consent_subtitle">Duas coisas que pode partilhar, se quiser. Ambas estão desativadas até as ativar.</string>
+    <string name="consent_analytics_label">Análise de utilização</string>
+    <string name="consent_analytics_desc">Dados anónimos sobre as funcionalidades que usa, para podermos melhorar o Budgetty. Nunca os seus recibos, valores ou dados pessoais.</string>
+    <string name="consent_crash_label">Falhas e diagnóstico</string>
+    <string name="consent_crash_desc">Relatórios de falhas automáticos e dados de desempenho para resolvermos problemas mais depressa.</string>
+    <string name="consent_detail_toggle">O que recolhemos e o que nunca</string>
+    <string name="consent_collected_header">Recolhido</string>
+    <string name="consent_never_header">Nunca</string>
+    <string name="consent_collected_1">Que ecrãs abre</string>
+    <string name="consent_collected_2">Que funcionalidades usa</string>
+    <string name="consent_collected_3">Relatórios de falhas</string>
+    <string name="consent_collected_4">Velocidade e erros da app</string>
+    <string name="consent_collected_5">Modelo do dispositivo, versão do SO</string>
+    <string name="consent_never_1">Os seus recibos</string>
+    <string name="consent_never_2">Nenhum valor</string>
+    <string name="consent_never_3">A sua renda</string>
+    <string name="consent_never_4">As suas categorias</string>
+    <string name="consent_never_5">A sua identidade</string>
+    <string name="consent_detail_footnote">Os relatórios estão associados a um ID aleatório, não a si nem à sua conta, e pode desativar qualquer uma das opções a qualquer momento em Conta.</string>
+    <string name="consent_reassurance">Os seus dados financeiros nunca saem do dispositivo.</string>
+    <string name="consent_continue">Continuar</string>
+    <string name="consent_not_now">Agora não</string>
 
     <string name="import_title">Importar backup</string>
     <string name="import_message">Combine este backup com seus dados atuais ou substitua tudo.</string>

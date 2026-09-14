@@ -2,6 +2,7 @@ package com.budgetty.app.ui.quiz
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.RecurringRepository
@@ -23,6 +24,7 @@ class InsightsQuizViewModel(
     private val settingsStore: SettingsStore,
     private val recurringRepository: RecurringRepository,
     private val budgetRepository: BudgetRepository,
+    private val analytics: Analytics,
 ) : ViewModel() {
 
     val settings: StateFlow<AppSettings> = settingsStore.settings
@@ -34,7 +36,10 @@ class InsightsQuizViewModel(
      */
     fun selectCurrency(currency: Currency) = settingsStore.setCurrency(currency)
 
-    fun skip() = settingsStore.setInsightsQuizPending(false)
+    fun skip() {
+        analytics.logQuizCompleted(skipped = true)
+        settingsStore.setInsightsQuizPending(false)
+    }
 
     /**
      * Finishes the quiz: seeds the optional income source and monthly budget, then applies the
@@ -46,6 +51,9 @@ class InsightsQuizViewModel(
         amountTexts: Map<String, String>,
         incomeLabel: String,
     ) {
+        // The quiz finished (not skipped). Logged before the best-effort seeding below so a storage
+        // hiccup there never suppresses the completion event.
+        analytics.logQuizCompleted(skipped = false)
         val incomeAmount: BigDecimal? = InsightsQuiz.incomeSeed(answers, amountTexts)
         val budgetAmount: BigDecimal? = InsightsQuiz.budgetSeed(answers, amountTexts)
         viewModelScope.launch {
