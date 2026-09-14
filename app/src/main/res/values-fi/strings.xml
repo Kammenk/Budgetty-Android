@@ -78,6 +78,9 @@
 
     <string name="section_preferences">Asetukset</string>
     <string name="account_theme">Teema</string>
+    <string name="theme_mode_system">Järjestelmän oletus</string>
+    <string name="theme_mode_light">Vaalea</string>
+    <string name="theme_mode_dark">Tumma</string>
     <string name="account_accent">Korostusväri</string>
     <string name="account_date_format">Päivämäärämuoto</string>
     <string name="account_language">Kieli</string>

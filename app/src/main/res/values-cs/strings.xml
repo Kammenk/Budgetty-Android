@@ -78,6 +78,9 @@
 
     <string name="section_preferences">Předvolby</string>
     <string name="account_theme">Motiv</string>
+    <string name="theme_mode_system">Systémový</string>
+    <string name="theme_mode_light">Světlý</string>
+    <string name="theme_mode_dark">Tmavý</string>
     <string name="account_accent">Barva zvýraznění</string>
     <string name="account_date_format">Formát data</string>
     <string name="account_language">Jazyk</string>

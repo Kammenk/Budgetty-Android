@@ -20,6 +20,9 @@
     <string name="account_import">Gegevens importeren</string>
     <string name="section_preferences">Voorkeuren</string>
     <string name="account_theme">Thema</string>
+    <string name="theme_mode_system">Systeemstandaard</string>
+    <string name="theme_mode_light">Licht</string>
+    <string name="theme_mode_dark">Donker</string>
     <string name="account_accent">Accentkleur</string>
     <string name="account_date_format">Datumnotatie</string>
     <string name="account_language">Taal</string>

@@ -78,6 +78,9 @@
 
     <string name="section_preferences">Inställningar</string>
     <string name="account_theme">Tema</string>
+    <string name="theme_mode_system">Systemstandard</string>
+    <string name="theme_mode_light">Ljust</string>
+    <string name="theme_mode_dark">Mörkt</string>
     <string name="account_accent">Accentfärg</string>
     <string name="account_date_format">Datumformat</string>
     <string name="account_language">Språk</string>

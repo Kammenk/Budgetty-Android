@@ -32,6 +32,7 @@ import com.budgetty.app.ui.theme.budgetGreatColor
 import com.budgetty.app.ui.theme.budgetWarnColor
 import com.budgetty.app.ui.theme.dimens
 import com.budgetty.app.ui.theme.wellbeingBadContainer
+import com.budgetty.app.ui.util.categoryDisplayName
 import com.budgetty.app.ui.util.formatMoney
 import com.budgetty.app.ui.wellbeing.TipTone
 import com.budgetty.app.ui.wellbeing.TipType
@@ -133,11 +134,18 @@ private fun bannerLine(firstRun: Boolean, tip: WellbeingTip?): String = when {
     else -> {
         val amt = (tip.amount ?: BigDecimal.ZERO).formatMoney()
         when (tip.type) {
-            TipType.CATEGORY_SPIKE -> stringResource(R.string.wellbeing_banner_spike, tip.label.orEmpty(), tip.percent ?: 0)
+            TipType.CATEGORY_SPIKE -> stringResource(
+                R.string.wellbeing_banner_spike,
+                categoryDisplayName(tip.label.orEmpty()),
+                tip.percent ?: 0,
+            )
             TipType.NEGATIVE_CASHFLOW -> stringResource(R.string.wellbeing_banner_cashflow, amt)
             TipType.OVER_BUDGET -> stringResource(R.string.wellbeing_banner_overbudget)
             TipType.SUBSCRIPTION_COST -> stringResource(R.string.wellbeing_banner_subs, amt)
-            TipType.MISSING_BUDGET -> stringResource(R.string.wellbeing_banner_missingbudget, tip.label.orEmpty())
+            TipType.MISSING_BUDGET -> stringResource(
+                R.string.wellbeing_banner_missingbudget,
+                categoryDisplayName(tip.label.orEmpty()),
+            )
             TipType.NO_GOAL -> stringResource(R.string.wellbeing_banner_nogoal)
             TipType.SAVINGS_WIN -> stringResource(R.string.wellbeing_banner_savingswin, tip.percent ?: 0)
             else -> stringResource(R.string.wellbeing_banner_generic)

@@ -483,7 +483,11 @@ fun PieChart(
                     }
                 }
                 Text(
-                    text = selected?.label ?: stringResource(R.string.pie_center_total),
+                    text = if (selected != null) {
+                        categoryDisplayName(selected.label)
+                    } else {
+                        stringResource(R.string.pie_center_total)
+                    },
                     style = MaterialTheme.typography.labelMedium,
                     // When a slice is tapped, tint its name with the slice's own color.
                     color = selected?.color ?: MaterialTheme.colorScheme.onSurfaceVariant,

@@ -561,7 +561,7 @@ private fun AccountScreenContent(
             title = stringResource(R.string.account_theme),
             options = ThemeMode.entries,
             selected = settings.themeMode,
-            label = { it.label },
+            label = { stringResource(it.labelRes) },
             onSelect = { onSetThemeMode(it); openPicker = null },
             onDismiss = { openPicker = null },
         )
@@ -593,7 +593,8 @@ private fun AccountScreenContent(
             title = stringResource(R.string.account_language),
             options = Language.entries,
             selected = settings.language,
-            label = { it.label },
+            // SYSTEM is a UI label (localized); the rest are autonyms, kept in their own language.
+            label = { if (it == Language.SYSTEM) stringResource(R.string.theme_mode_system) else it.label },
             onSelect = { onSetLanguage(it); openPicker = null },
             onDismiss = { openPicker = null },
         )
@@ -680,7 +681,7 @@ private fun PreferencesSectionRows(
     onOpenPicker: (Picker) -> Unit,
     onOpenPaywall: () -> Unit,
 ) {
-    SettingRow(Icons.Filled.DarkMode, stringResource(R.string.account_theme), value = settings.themeMode.label) {
+    SettingRow(Icons.Filled.DarkMode, stringResource(R.string.account_theme), value = stringResource(settings.themeMode.labelRes)) {
         onOpenPicker(Picker.THEME)
     }
     RowDivider()
@@ -716,7 +717,12 @@ private fun PreferencesSectionRows(
         onOpenPicker(Picker.MONTH_START)
     }
     RowDivider()
-    SettingRow(Icons.Filled.Language, stringResource(R.string.account_language), value = settings.language.label) {
+    val languageLabel = if (settings.language == Language.SYSTEM) {
+        stringResource(R.string.theme_mode_system)
+    } else {
+        settings.language.label
+    }
+    SettingRow(Icons.Filled.Language, stringResource(R.string.account_language), value = languageLabel) {
         onOpenPicker(Picker.LANGUAGE)
     }
 }
@@ -1258,7 +1264,7 @@ private fun <T> SelectionDialog(
     title: String,
     options: List<T>,
     selected: T,
-    label: (T) -> String,
+    label: @Composable (T) -> String,
     onSelect: (T) -> Unit,
     onDismiss: () -> Unit,
 ) {
