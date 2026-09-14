@@ -26,20 +26,16 @@ preserve_hierarchy: true
 
 files:
   - source: /app/src/main/res/values/strings.xml
-    # %android_code% resolves to the values-<code> qualifier (bg, de, hu, …).
-    translation: /app/src/main/res/values-%android_code%/%original_file_name%
+    # %two_letters_code% = the ISO 639-1 code (bg, de, hu, …), which matches the app's
+    # bare  values-<code>/  folders.  Do NOT use %android_code% here: it appends the
+    # region (de → de-rDE, fr → fr-rFR, …) and misses every bare folder.
+    translation: /app/src/main/res/values-%two_letters_code%/%original_file_name%
 
-    # Safety net: pin the region-suffixed Crowdin languages to the bare folder
-    # Budgetty actually ships, so they never land in values-es-rES / values-pt-rPT.
-    # Harmless if a language's ID differs (it just falls back to %android_code%).
-    # Confirm with one `crowdin download` and eyeball the folders that appear.
+    # Norwegian Bokmål's 2-letter code can come back as "no"; pin it to the values-nb
+    # folder the app ships (Crowdin language id confirmed as "nb").
     languages_mapping:
-      android_code:
-        es-ES: es
-        pt-PT: pt
-        sv-SE: sv
-        nb: nb        # Norwegian Bokmål → values-nb. In Crowdin you MUST have
-                      # selected "Norwegian Bokmål", not the generic "Norwegian".
+      two_letters_code:
+        nb: nb
 
     # Crowdin auto-detects the Android XML type (honours translatable="false"
     # and <plurals>). If a push ever mis-parses it, force it with:  type: android
