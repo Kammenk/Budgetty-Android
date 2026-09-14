@@ -1,0 +1,41 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Crowdin CLI — Budgetty (Android)
+# Project:  https://crowdin.com/project/budgetty        (shared with the iOS repo)
+# CLI:      https://crowdin.github.io/crowdin-cli/
+#           install:  brew install crowdin   (or  npm i -g @crowdin/cli)
+#
+# Credentials come from the environment — do NOT hardcode tokens in this file:
+#   export CROWDIN_PROJECT_ID=<Project → Settings → the numeric Project ID>
+#   export CROWDIN_PERSONAL_TOKEN=<crowdin.com → Account Settings → API →
+#                                  New Token, with this project in scope>
+#
+# Typical workflow:
+#   crowdin push                                        # upload the English source
+#   crowdin upload translations --auto-approve-imported # import the 15 already-done
+#                                                       #   locales so Crowdin marks them
+#                                                       #   done — only Hungarian is left
+#   crowdin download                                    # pull translations back into
+#                                                       #   values-<code>/strings.xml
+# ─────────────────────────────────────────────────────────────────────────────
+
+project_id_env: CROWDIN_PROJECT_ID
+api_token_env: CROWDIN_PERSONAL_TOKEN
+
+base_path: "."
+preserve_hierarchy: true
+
+files:
+  - source: /app/src/main/res/values/strings.xml
+    # %two_letters_code% = the ISO 639-1 code (bg, de, hu, …), which matches the app's
+    # bare  values-<code>/  folders.  Do NOT use %android_code% here: it appends the
+    # region (de → de-rDE, fr → fr-rFR, …) and misses every bare folder.
+    translation: /app/src/main/res/values-%two_letters_code%/%original_file_name%
+
+    # Norwegian Bokmål's 2-letter code can come back as "no"; pin it to the values-nb
+    # folder the app ships (Crowdin language id confirmed as "nb").
+    languages_mapping:
+      two_letters_code:
+        nb: nb
+
+    # Crowdin auto-detects the Android XML type (honours translatable="false"
+    # and <plurals>). If a push ever mis-parses it, force it with:  type: android
