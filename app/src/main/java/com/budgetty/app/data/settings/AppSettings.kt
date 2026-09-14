@@ -27,9 +27,9 @@ enum class AccentTheme(val label: String) {
  * Currencies for the European release. [symbol] is appended after the amount. Trimmed from a global
  * set on 2026-07-16 to the home currencies of supported markets, then extended on 2026-09-09 with
  * ISK and HUF so every country in the Play production footprint (32 countries/regions) can pick its
- * own: Iceland and Hungary are distributed to but have no localized [Language], so they were
- * previously stuck on the EUR fallback. Bulgaria uses EUR (eurozone since 2026). A removed currency
- * saved by an existing user falls back to EUR.
+ * own. Iceland is distributed to but still has no localized [Language], so its UI falls back to
+ * English; Hungary gained a Hungarian [Language] on 2026-09-14. Bulgaria uses EUR (eurozone since
+ * 2026). A removed currency saved by an existing user falls back to EUR.
  */
 enum class Currency(val code: String, val symbol: String) {
     EUR("EUR", "€"),
@@ -62,7 +62,7 @@ enum class DateFormatOption(
 }
 
 /**
- * The 16 languages offered in the Europe-only release, plus a "System default" option. [label] is
+ * The 17 languages offered in the Europe-only release, plus a "System default" option. [label] is
  * the language's own name (autonym) so users can find theirs regardless of the current UI language.
  * [tag] is the locale applied app-wide when selected (null = follow the system locale); it matches
  * the `res/values-<tag>/` qualifier (Norwegian Bokmål = "nb"). Languages dropped for the Europe
@@ -86,6 +86,7 @@ enum class Language(val label: String, val tag: String?) {
     CZECH("Čeština", "cs"),
     BULGARIAN("Български", "bg"),
     ROMANIAN("Română", "ro"),
+    HUNGARIAN("Magyar", "hu"),
 }
 
 data class AppSettings(
