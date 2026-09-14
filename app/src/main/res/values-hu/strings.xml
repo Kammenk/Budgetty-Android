@@ -1,0 +1,1436 @@
+<resources>
+    <string name="app_name">Budgetty</string>
+
+    <!-- Common actions -->
+    <string name="action_save">Mentés</string>
+    <string name="action_cancel">Mégse</string>
+    <string name="action_done">Kész</string>
+    <string name="action_apply">Alkalmaz</string>
+    <string name="action_delete">Törlés</string>
+    <string name="action_ok">OK</string>
+
+    <!-- Bottom navigation -->
+    <string name="nav_home">Kezdőlap</string>
+    <string name="nav_history">Előzmények</string>
+    <string name="nav_insights">Elemzések</string>
+    <string name="nav_account">Fiók</string>
+
+    <!-- Account screen -->
+    <string name="account_subscription">Előfizetés</string>
+    <string name="tier_free">Ingyenes</string>
+    <string name="tier_premium">Prémium</string>
+    <string name="account_budget">Költségvetés</string>
+    <string name="account_export">Adatok exportálása</string>
+    <string name="account_import">Adatok importálása</string>
+    <string name="account_widgets">Widgetek</string>
+    <string name="widgets_soon_title">Hamarosan</string>
+    <string name="widgets_soon_message">A kezdőképernyős widgetek egy későbbi frissítésben érkeznek.</string>
+
+    <!-- Add-widget picker screen -->
+    <string name="widgets_title">Widget hozzáadása</string>
+    <string name="widgets_intro">Gyorsan áttekinthető kártyák az Android kezdőképernyődre. Válassz típust és méretet, majd add hozzá.</string>
+    <string name="widgets_size_large">Nagy · 4×2</string>
+    <string name="widgets_size_compact">Kompakt · 2×2</string>
+    <string name="widgets_add">Hozzáadás a kezdőképernyőhöz</string>
+    <string name="widgets_added">Hozzáadva ✓</string>
+    <string name="widgets_last_added">Utoljára hozzáadva: %1$s</string>
+    <string name="widgets_pin_unsupported">Az indítód így nem tud widgetet hozzáadni – nyomd hosszan a kezdőképernyőt egy widget hozzáadásához.</string>
+    <string name="widgets_slots_used">%1$d/%2$d ingyenes widgethely használatban</string>
+    <string name="widgets_slots_full">Az ingyenes widgethelyek megteltek. Távolíts el egyet a kezdőképernyődről, vagy válts Prémiumra a korlátlan widgetekért.</string>
+    <string name="widgets_slots_unlimited">Prémium · korlátlan widget</string>
+    <string name="widgets_unlock">Több widget feloldása</string>
+    <string name="widget_locked_title">Widget zárolva</string>
+    <string name="widget_locked_body">Koppints a váltáshoz</string>
+    <string name="widget_monthly_desc">Költési haladás és fennmaradó összeg</string>
+    <string name="widget_weekly_desc">A heti költésed egy pillantásra</string>
+    <string name="widget_summary">Havi összefoglaló</string>
+    <string name="widget_summary_desc">Összesen + fő kategóriák</string>
+
+    <!-- App-launcher shortcuts (long-press the app icon) -->
+    <string name="shortcut_scan_short">Beolvasás</string>
+    <string name="shortcut_scan_long">Nyugta beolvasása</string>
+    <string name="shortcut_manual_short">Kézi</string>
+    <string name="shortcut_manual_long">Kézi hozzáadás</string>
+
+    <!-- Widget content -->
+    <string name="widget_monthly_budget">Havi költségvetés</string>
+    <string name="widget_weekly_budget">Heti költségvetés</string>
+    <string name="widget_budget">Költségvetés</string>
+    <string name="widget_budget_desc">Költés a költségvetésedhez képest</string>
+    <string name="widget_scan">Nyugta beolvasása</string>
+    <string name="widget_scan_desc">Fényképezz le egy nyugtát bárhonnan</string>
+    <string name="widget_scan_body">Készíts fotót, vagy importálj PDF-et</string>
+    <string name="widget_scan_action">Beolvasás</string>
+    <string name="widget_scans_left">%1$d beolvasás maradt ebben a hónapban</string>
+    <string name="widget_topcat">Fő kategóriák</string>
+    <string name="widget_topcat_desc">Hová megy a pénzed</string>
+    <string name="widget_other">Egyéb</string>
+    <string name="widget_this_week">Ez a hét</string>
+    <string name="widget_this_month">Ez a hónap</string>
+    <string name="widget_of_budget">/ %1$s</string>
+    <string name="widget_approx_weekly">≈ %1$s / hét</string>
+    <string name="widget_approx_monthly">≈ %1$s / hó</string>
+    <string name="widget_pct_spent">%1$d%% elköltve</string>
+    <string name="widget_remaining">%1$s maradt</string>
+    <string name="widget_set_budget_title">Állíts be költségvetést</string>
+    <string name="widget_set_budget_body">Koppints havi vagy heti keret beállításához</string>
+    <string name="widget_receipts">%1$d nyugta</string>
+    <string name="widget_vs_last_month">%1$s az előző hónaphoz képest</string>
+    <string name="widget_vs_last_week">%1$s az előző héthez képest</string>
+    <string name="widget_last_week">Előző hét</string>
+    <string name="widget_thisweek_desc">Ez a hét az előzőhöz képest</string>
+    <string name="widget_no_spending">Még nincs költés</string>
+
+    <string name="section_preferences">Beállítások</string>
+    <string name="account_theme">Téma</string>
+    <string name="account_accent">Kiemelőszín</string>
+    <string name="account_currency">Pénznem</string>
+    <string name="account_date_format">Dátumformátum</string>
+    <string name="account_month_start">A hónap kezdőnapja</string>
+    <string name="month_start_calendar">1. (naptári hónap)</string>
+    <string name="account_language">Nyelv</string>
+    <string name="section_support">Támogatás és névjegy</string>
+    <string name="section_security">Biztonság</string>
+
+    <!-- App lock (PIN + biometric) -->
+    <string name="account_app_lock">Alkalmazászár</string>
+    <string name="account_app_lock_sub">PIN-kód kérése a Budgetty megnyitásához</string>
+    <string name="account_change_pin">PIN-kód módosítása</string>
+    <string name="account_biometric">Feloldás biometrikusan</string>
+    <string name="account_auto_lock">Automatikus zárolás</string>
+    <string name="app_lock_auto_immediately">Azonnal</string>
+    <string name="app_lock_auto_1min">1 perc után</string>
+    <string name="app_lock_auto_5min">5 perc után</string>
+    <string name="app_lock_title">A Budgetty zárolva van</string>
+    <string name="app_lock_enter_pin">Add meg a PIN-kódod</string>
+    <string name="app_lock_wrong_pin">Hibás PIN-kód. Próbáld újra.</string>
+    <string name="app_lock_forgot">Elfelejtetted a PIN-kódot?</string>
+    <string name="app_lock_set_title">Állíts be PIN-kódot</string>
+    <string name="app_lock_set_hint">Válassz egy 4 jegyű PIN-kódot az alkalmazás zárolásához</string>
+    <string name="app_lock_confirm_title">Erősítsd meg a PIN-kódod</string>
+    <string name="app_lock_confirm_hint">Add meg újra a PIN-kódod a megerősítéshez</string>
+    <string name="app_lock_pin_mismatch">A PIN-kódok nem egyeztek. Próbáld újra.</string>
+    <string name="app_lock_use_biometric">Biometria használata</string>
+    <string name="app_lock_backspace">Törlés</string>
+    <string name="app_lock_biometric_subtitle">Igazold, hogy te vagy a feloldáshoz</string>
+    <string name="app_lock_use_pin">PIN-kód használata</string>
+    <string name="account_help">Súgó és GYIK</string>
+    <string name="account_contact">Kapcsolat</string>
+    <string name="account_contact_subtitle">Jelezz egy hibát, javasolj funkciót, vagy csak köszönj be</string>
+    <string name="account_rate">Értékeld a Budgettyt</string>
+    <string name="account_privacy_policy">Adatvédelmi irányelvek</string>
+    <string name="account_sign_out">Kijelentkezés</string>
+    <string name="account_delete">Fiók törlése</string>
+    <string name="account_edit_name">Név szerkesztése</string>
+    <string name="account_save_name">Név mentése</string>
+    <string name="account_discard_name">Módosítások elvetése</string>
+
+    <!-- First-run analytics / crash consent screen (also reused by the Account "Data & privacy" rows) -->
+    <string name="consent_title">Segíts jobbá tenni a Budgettyt</string>
+    <string name="consent_subtitle">Két dolog, amit megoszthatsz, ha szeretnéd. Mindkettő ki van kapcsolva, amíg be nem kapcsolod.</string>
+    <string name="consent_analytics_label">Használati analitika</string>
+    <string name="consent_analytics_desc">Névtelen adatok arról, mely funkciókat használod, hogy jobbá tehessük a Budgettyt. Soha nem a nyugtáid, összegeid vagy személyes adataid.</string>
+    <string name="consent_crash_label">Összeomlás és diagnosztika</string>
+    <string name="consent_crash_desc">Automatikus összeomlás-jelentések és teljesítményadatok, hogy gyorsabban javíthassuk a hibákat.</string>
+    <string name="consent_detail_toggle">Mit gyűjtünk, és mit soha</string>
+    <string name="consent_collected_header">Gyűjtött adatok</string>
+    <string name="consent_never_header">Soha</string>
+    <string name="consent_collected_1">Mely képernyőket nyitod meg</string>
+    <string name="consent_collected_2">Mely funkciókat használod</string>
+    <string name="consent_collected_3">Összeomlás-jelentések</string>
+    <string name="consent_collected_4">Alkalmazássebesség és hibák</string>
+    <string name="consent_collected_5">Eszközmodell, OS-verzió</string>
+    <string name="consent_never_1">A nyugtáid</string>
+    <string name="consent_never_2">Bármilyen összeg</string>
+    <string name="consent_never_3">A bevételed</string>
+    <string name="consent_never_4">A kategóriáid</string>
+    <string name="consent_never_5">A személyazonosságod</string>
+    <string name="consent_detail_footnote">A jelentések egy véletlenszerű azonosítóhoz kötődnek, nem hozzád vagy a fiókodhoz, és bármelyiket bármikor kikapcsolhatod a Fiókban.</string>
+    <string name="consent_reassurance">Pénzügyi adat soha nem hagyja el az eszközödet.</string>
+    <string name="consent_continue">Tovább</string>
+    <string name="consent_not_now">Most nem</string>
+
+    <!-- Import backup dialog -->
+    <string name="import_title">Biztonsági mentés importálása</string>
+    <string name="import_message">Egyesítsd ezt a mentést a jelenlegi adataiddal, vagy cseréld le az egészet.</string>
+    <string name="import_merge">Egyesítés</string>
+    <string name="import_replace">Összes cseréje</string>
+
+    <!-- Delete account dialogs -->
+    <string name="delete_title">Törlöd a fiókot?</string>
+    <string name="delete_message">Ez véglegesen törli a fiókodat, és minden adatot töröl erről az eszközről. Ezt nem lehet visszavonni.</string>
+    <string name="delete_failed_title">Nem sikerült törölni a fiókot</string>
+    <string name="delete_reauth_message">A biztonságod érdekében jelentkezz ki, majd be újra, és utána töröld a fiókodat.</string>
+
+    <!-- Add receipt -->
+    <string name="add_receipt_title">Nyugta hozzáadása</string>
+    <string name="add_take_photo">Fénykép készítése</string>
+    <string name="add_take_photo_sub">Fényképezd le a nyugtát a kameráddal</string>
+    <string name="add_upload_file">Fájl feltöltése</string>
+    <string name="add_upload_file_sub">Válassz egy PDF-et vagy képet az eszközödről</string>
+    <string name="add_manually">Kézi hozzáadás</string>
+
+    <!-- Common (more) -->
+    <string name="action_edit">Szerkesztés</string>
+    <string name="action_undo">Visszavonás</string>
+
+    <!-- Period filter -->
+    <string name="period_this_month">Ez a hónap</string>
+    <string name="period_last_month">Előző hónap</string>
+    <string name="period_last_3_months">Utolsó 3 hónap</string>
+    <string name="period_last_6_months">Utolsó 6 hónap</string>
+    <string name="period_all_time">Teljes időszak</string>
+
+    <!-- Insights period stepper -->
+    <string name="period_this_week">Ez a hét</string>
+    <string name="period_last_week">Előző hét</string>
+    <string name="period_this_quarter">Ez a negyedév</string>
+    <string name="period_last_quarter">Előző negyedév</string>
+    <string name="period_this_half">Ez a félév</string>
+    <string name="period_last_half">Előző félév</string>
+    <string name="period_unit_week">Hét</string>
+    <string name="period_unit_month">Hónap</string>
+    <string name="period_unit_quarter">Negyedév</string>
+    <string name="period_unit_half_year">Félév</string>
+    <string name="period_unit_custom">Egyéni</string>
+    <string name="period_quarter_format">%2$d %1$d. negyedév</string>
+    <string name="period_half_format">%2$d %1$d. félév</string>
+    <string name="period_custom_range">Egyéni időszak…</string>
+    <string name="cd_period_previous">Előző időszak</string>
+    <string name="cd_period_next">Következő időszak</string>
+    <string name="date_range_selected_label">Kiválasztott időszak</string>
+    <string name="date_range_select_hint">Válassz dátumokat</string>
+    <string name="cd_prev_month">Előző hónap</string>
+    <string name="cd_next_month">Következő hónap</string>
+
+    <!-- Home -->
+    <string name="home_total_spent">Összes kiadás – %1$s</string>
+    <string name="home_receipts">Nyugták</string>
+    <string name="home_recent_receipts">Legutóbbi nyugták</string>
+    <string name="home_view_all">Összes megtekintése</string>
+    <string name="home_no_receipts">Még nincs nyugta</string>
+    <string name="home_budgets">Költségvetések</string>
+    <string name="home_monthly_progress">Havi költségvetés haladása</string>
+    <string name="home_weekly_progress">Heti költségvetés haladása</string>
+    <string name="home_budget_progress">Költségvetés haladása</string>
+    <string name="home_set_budget">Koppints költségvetés beállításához</string>
+    <string name="home_this_week">Ez a hét</string>
+    <string name="home_section_total_spent">Összes kiadás</string>
+    <string name="home_section_week">Ez a hét az előzőhöz képest</string>
+    <string name="home_view_other_budgets">Egyéb költségvetések megtekintése</string>
+    <string name="home_view_all_budgets">Összes költségvetés megtekintése</string>
+    <string name="home_daily_avg">Napi átlag</string>
+    <string name="home_vs_last_month">az előző hónaphoz képest</string>
+    <string name="home_vs_last_period">az előző időszakhoz képest</string>
+    <string name="home_see_all">Összes megtekintése</string>
+    <string name="home_view_insights">Elemzések megtekintése</string>
+    <!-- Summary card: receipt-backed spend vs planning-only recurring bills -->
+    <string name="home_legend_spent">Elköltve</string>
+    <string name="home_legend_bills">Számlák · tervezett</string>
+    <string name="home_with_bills">Számlákkal</string>
+    <!-- Safe to spend: current pay-cycle cash-flow card at the top of Home -->
+    <string name="safe_to_spend_title">Nyugodtan költhető</string>
+    <string name="safe_to_spend_bills_due">Még esedékes számlák</string>
+    <string name="safe_to_spend_total_spent">Ebben a ciklusban elköltve</string>
+    <string name="safe_to_spend_composition">%1$s költés + %2$s kifizetett számla</string>
+    <string name="safe_to_spend_nothing_yet">Ebben a ciklusban még nincs költés</string>
+    <string name="safe_to_spend_over">%1$s túllépés – többet költöttél, mint amennyi ebben a ciklusban maradt.</string>
+    <string name="safe_to_spend_setup_message">Add meg a bevételed, hogy lásd, mennyit költhetsz nyugodtan fizetésnapig.</string>
+    <string name="safe_to_spend_setup_cta">Bevétel beállítása</string>
+    <string name="safe_to_spend_setup_foot">A bevétel a Költségvetés fülön van · körülbelül egy perc hozzáadni.</string>
+    <string name="snackbar_receipt_deleted">Nyugta törölve</string>
+    <string name="snackbar_item_deleted">Tétel törölve</string>
+
+    <!-- Savings goals (Budget tab) -->
+    <string name="savings_title">Megtakarítási célok</string>
+    <string name="savings_subtitle">Te rögzíted, amit félreteszel – a Budgetty nem kezel pénzt.</string>
+    <string name="savings_total_saved">%1$s megtakarítva</string>
+    <string name="savings_empty_title">Állíts be megtakarítási célt</string>
+    <string name="savings_empty_body">Nevezd el, válassz célösszeget, és kövesd, amit félreteszel – egy új laptop, egy utazás vagy egy vésztartalék.</string>
+    <string name="savings_new_goal">Új cél</string>
+    <string name="savings_free_hint">1 cél ingyenes · korlátlan Prémiummal</string>
+    <string name="savings_saved_of_target">%1$s / %2$s · még %3$s</string>
+    <string name="savings_reached">Cél elérve! 🎉</string>
+    <string name="savings_rate">%1$s/hó a %2$s eléréséhez</string>
+    <string name="savings_on_track">jó úton</string>
+    <string name="savings_behind">lemaradva</string>
+    <string name="savings_unlock_title">Korlátlan célok feloldása</string>
+    <string name="savings_unlock_body">Az ingyenes csomag 1 megtakarítási célt tartalmaz. A Prémiummal annyit adhatsz hozzá, amennyit csak szeretnél – ráadásul korlátlan beolvasás és egyéni kategóriák.</string>
+    <string name="savings_new_goal_title">Új cél</string>
+    <string name="savings_edit_goal_title">Cél szerkesztése</string>
+    <string name="savings_field_emoji">Cél emodzsi</string>
+    <string name="savings_field_name">Név</string>
+    <string name="savings_name_hint">Japán utazás</string>
+    <string name="savings_field_target">Célösszeg</string>
+    <string name="savings_target_date">Céldátum</string>
+    <string name="savings_target_date_hint">Havi ütemet ad a kártyához</string>
+    <string name="savings_pick_date">Válassz dátumot</string>
+    <string name="savings_create_free_hint">Ingyenes csomag: 1 cél. A Prémiummal annyit adhatsz hozzá, amennyit csak szeretnél.</string>
+    <string name="savings_create">Cél létrehozása</string>
+    <string name="savings_add_title">Hozzáadás a megtakarításhoz</string>
+    <string name="savings_withdraw_title">Kivétel</string>
+    <string name="savings_field_amount">Összeg</string>
+    <string name="savings_field_note">Megjegyzés · opcionális</string>
+    <string name="savings_note_hint">Mire volt?</string>
+    <string name="savings_field_date">Dátum</string>
+    <string name="savings_new_total">Új összeg: %1$s / %2$s · %3$d%%</string>
+    <string name="savings_withdraw_note">A kivételek csökkentik a megtakarított összeget. A cél változatlan marad.</string>
+    <string name="savings_confirm_add">%1$s hozzáadása</string>
+    <string name="savings_confirm_withdraw">%1$s kivétele</string>
+    <string name="savings_of_amount">/ %1$s</string>
+    <string name="savings_saved_label">Megtakarítva</string>
+    <string name="savings_target_label">Cél</string>
+    <string name="savings_left_label">Hátralévő</string>
+    <string name="savings_add">Hozzáadás a megtakarításhoz</string>
+    <string name="savings_withdraw">Kivétel</string>
+    <string name="savings_withdraw_to_spend">Kivétel költésre</string>
+    <string name="savings_edit_target">Cél szerkesztése</string>
+    <string name="savings_contributions">Befizetések</string>
+    <string name="savings_reached_by">Elérve: %1$s</string>
+    <string name="savings_rate_by">%1$s/hó, hogy elérd %2$s-ig</string>
+    <string name="savings_contribution">Befizetés</string>
+    <string name="savings_withdrawal">Kivétel</string>
+    <string name="savings_delete_goal">Cél törlése</string>
+    <string name="savings_delete_confirm">Törlöd a(z) “%1$s” célt és a befizetéseit? Ezt nem lehet visszavonni.</string>
+
+    <!-- Subscription detection (Insights) -->
+    <string name="sub_title">Előfizetések</string>
+    <string name="sub_per_month">Havonta</string>
+    <string name="sub_per_year">Évente</string>
+    <string name="sub_per_month_suffix">/ hó</string>
+    <string name="sub_see_all">Mind a(z) %1$d megtekintése ›</string>
+    <string name="sub_teaser_body">Körülbelül %1$s havonta, a saját nyugtáidból ezen a telefonon – banki kapcsolat nélkül.</string>
+    <string name="sub_unlock">Feloldás Prémiummal</string>
+    <string name="sub_unlock_note">Feloldja a teljes listát, az áremelkedési riasztásokat és a Számlaként követést.</string>
+    <string name="sub_cadence_monthly">Havi</string>
+    <string name="sub_cadence_yearly">Éves</string>
+    <string name="sub_next">következő ~%1$s</string>
+    <string name="sub_detected">Észlelt előfizetések</string>
+    <string name="sub_list_note">Ezen a telefonon találtuk az ismétlődő terhelések alapján a nyugtáidban. Az éves tételek havonta egytizenketted résszel számítanak.</string>
+    <string name="sub_ignored">Figyelmen kívül hagyva</string>
+    <string name="sub_ignored_note">Elrejtve a listából és az összegekből</string>
+    <string name="sub_ignored_still">Az észlelés továbbra is látja – csak nem zavar téged.</string>
+    <string name="sub_restore">Visszaállítás</string>
+    <string name="sub_footer_ondevice">Az észlelés az eszközödön fut. Semmi nem hagyja el a telefont, és nincs bank csatlakoztatva.</string>
+    <string name="sub_stat_last">Utolsó</string>
+    <string name="sub_stat_next">Következő ~</string>
+    <string name="sub_stat_charges">Terhelések</string>
+    <string name="sub_hike_title">%1$s %2$s óta</string>
+    <string name="sub_hike_body">%1$s → %2$s attól a terheléstől kezdve. Körülbelül %3$s-sel több egy év alatt.</string>
+    <string name="sub_price_up_tag">áremelkedés</string>
+    <string name="sub_track_as_bill">Követés számlaként</string>
+    <string name="sub_track_note">Létrehoz egy ismétlődő számlát – ezután beleszámít a Nyugodtan költhetőbe és a közelgő számlákba.</string>
+    <string name="sub_ignore_merchant">Kereskedő figyelmen kívül hagyása</string>
+    <string name="sub_empty_title">Még semmi nem ismétlődik</string>
+    <string name="sub_empty_body">Észrevesszük az ismétlődő terheléseket, ahogy több nyugtát adsz hozzá. Általában körülbelül három terhelés kell ugyanattól a kereskedőtől.</string>
+    <string name="sub_receipts_so_far">Eddigi nyugták</string>
+    <string name="sub_nearest">Eddig a legközelebbi: %1$d terhelés innen: %2$s – még egy, és jelezzük.</string>
+    <string name="sub_track_sheet_title">Követés ismétlődő számlaként</string>
+    <string name="sub_track_sheet_body">Az észlelt adatokból előre kitöltve. Mentés előtt bármit módosíthatsz.</string>
+    <string name="sub_track_charge_day">%1$s · következő: %2$s</string>
+    <string name="sub_track_sheet_note">A mentett számlák megjelennek a közelgő számláknál, és csökkentik a Nyugodtan költhetőt, amíg fizetettként meg nem jelölöd őket.</string>
+    <string name="sub_add_bill">Számla hozzáadása</string>
+    <string name="sub_added_to_bills">Hozzáadva a számláidhoz</string>
+
+    <!-- CSV / PDF export (Account) -->
+    <string name="account_export_sub">JSON mentés · új telefonra költözéshez</string>
+    <string name="account_import_sub">Visszaállítás JSON mentésből</string>
+    <string name="account_export_file">CSV vagy PDF exportálása</string>
+    <string name="account_export_file_sub">Táblázat vagy kimutatás, embereknek</string>
+    <string name="account_export_file_locked">Exportálás feloldása Prémiummal</string>
+    <string name="export_title">Exportálás</string>
+    <string name="export_subtitle">Táblázat a munkához, vagy kimutatás küldéshez.</string>
+    <string name="export_format">Formátum</string>
+    <string name="export_csv">CSV</string>
+    <string name="export_pdf">PDF</string>
+    <string name="export_csv_help">Nyugtánként egy sor – dátum, bolt, kategória, összeg. Megnyílik Excelben, Numbersben vagy Sheetsben.</string>
+    <string name="export_pdf_help">Egyoldalas kimutatás: összegek, kategóriaösszesítő és a tranzakciós táblázat.</string>
+    <string name="export_period">Időszak</string>
+    <string name="export_empty_title">Ehhez az időszakhoz nincs exportálható adat</string>
+    <string name="export_empty_body">Nincs nyugta ebben az időszakban. Válassz másik időszakot, vagy előbb adj hozzá egy nyugtát.</string>
+    <string name="export_do_csv">CSV exportálása</string>
+    <string name="export_do_pdf">PDF exportálása</string>
+    <string name="export_footer">A telefonodon készül, majd átadva a megosztási lapnak.</string>
+    <string name="export_generated">Létrehozva: %1$s · %2$s · %3$d nyugta</string>
+    <string name="export_total_row">Összesen · %1$s</string>
+    <string name="export_share_title">Exportálás</string>
+
+    <!-- Upload / review -->
+    <string name="upload_title">Nyugta feltöltése</string>
+    <string name="upload_edit_title">Nyugta szerkesztése</string>
+    <string name="upload_preparing">Előkészítés…</string>
+    <string name="upload_reading">Nyugta beolvasása…</string>
+    <string name="upload_saving">Mentés…</string>
+    <string name="upload_store_name">Bolt neve</string>
+    <string name="upload_store_hint">pl. Lidl</string>
+    <string name="upload_add_transaction">Tétel hozzáadása</string>
+    <string name="upload_product">Termék</string>
+    <string name="upload_category">Kategória</string>
+    <string name="upload_select_category">Válassz kategóriát</string>
+    <string name="upload_price">Ár</string>
+    <string name="upload_qty">Db</string>
+    <string name="upload_discount">Kedvezmény</string>
+    <!-- Auto-added line items for delivery-app fees and a tip, materialized from a scanned receipt -->
+    <string name="upload_charge_delivery">Kiszállítás és díjak</string>
+    <string name="upload_charge_tip">Borravaló</string>
+    <string name="receipt_vat_included">Ebből ÁFA: %1$s</string>
+    <string name="upload_finalize">Véglegesítés</string>
+    <string name="upload_total_mismatch">Ezek a tételek %1$s-t adnak ki, de a nyugtán %2$s szerepel. Mentés előtt ellenőrizd a tételárakat.</string>
+    <string name="upload_total_currency_notice">Ezek a tételek %1$s-t adnak ki, de a végösszeg %2$s lett. Ha a nyugtán euró és leva is szerepel, ellenőrizd, hogy az euróösszeget mented.</string>
+    <string name="upload_items_missing_title">Ellenőrizd a tételeidet</string>
+    <string name="upload_save_anyway">Mentés mindenképp</string>
+    <string name="upload_error_title">Nem sikerült beolvasni a nyugtát</string>
+    <string name="upload_error_body">Lehet, hogy a fotó túl homályos, sötét vagy levágott. Készítsd el újra jó fényben, a nyugtát kisimítva és teljesen a képben.</string>
+    <string name="upload_service_error_title">A beolvasás átmenetileg nem érhető el</string>
+    <string name="upload_service_error_body">Most nem sikerült elérni a nyugtabeolvasót. Ellenőrizd a kapcsolatot, és próbáld újra kicsit később.</string>
+    <string name="upload_go_back">Vissza</string>
+    <string name="upload_try_again">Próbáld újra</string>
+    <string name="upload_date">Nyugta dátuma</string>
+    <string name="upload_error_no_items">Mentés előtt adj hozzá legalább egy tételt</string>
+    <string name="upload_error_no_amount">Adj meg árat legalább egy tételhez</string>
+    <string name="upload_from_rules">a szabályaidból</string>
+
+    <!-- Category rules: propagate a category change to matching items + remember it -->
+    <string name="rule_prompt_title">Alkalmazod az egyező tételekre?</string>
+    <plurals name="rule_prompt_body">
+        <item quantity="one">%1$d másik, “%2$s” nevű tétel %3$s lesz.</item>
+        <item quantity="other">%1$d másik, “%2$s” nevű tétel %3$s lesz.</item>
+    </plurals>
+    <string name="rule_prompt_remember">Mindig %1$s legyen ehhez: “%2$s”</string>
+    <string name="rule_prompt_rule_exists">Frissíti a tételhez mentett szabályt</string>
+    <plurals name="rule_prompt_apply">
+        <item quantity="one">1 másik frissítése</item>
+        <item quantity="other">Mind a(z) %1$d frissítése</item>
+    </plurals>
+    <string name="rule_prompt_just_this">Csak ezt</string>
+    <!-- Category rules: nothing to update, but the item repeats — offer to remember it -->
+    <string name="rule_prompt_remember_title">Megjegyzed ezt a kategóriát?</string>
+    <string name="rule_prompt_remember_body">Mindig %1$s legyen ehhez: “%2$s” a jövőbeli nyugtákon?</string>
+    <string name="rule_prompt_remember_confirm">Megjegyzés</string>
+    <string name="rule_prompt_not_now">Most nem</string>
+
+    <!-- Category rules management screen (Account → Category rules) -->
+    <string name="account_category_rules">Kategóriaszabályok</string>
+    <string name="account_manage_categories">Kategóriák kezelése</string>
+    <string name="category_rules_title">Kategóriaszabályok</string>
+    <string name="category_rules_subtitle">Automatikusan alkalmazódik, amikor a Budgetty beolvas egy új nyugtát. Törölj egyet, ha nem szeretnéd tovább használni.</string>
+    <plurals name="category_rules_count">
+        <item quantity="one">%1$d tétel · általad beállítva</item>
+        <item quantity="other">%1$d tétel · általad beállítva</item>
+    </plurals>
+    <string name="category_rules_empty">Még nincsenek kategóriaszabályok</string>
+    <string name="category_rules_footer">A szabályok az Áttekintés és szerkesztés képernyőn jönnek létre, amikor átsorolsz egy kategóriát.</string>
+    <string name="category_rules_delete">“%1$s” szabályának törlése</string>
+
+    <!-- Custom categories (create / edit in the category picker) -->
+    <string name="custom_your_categories">A kategóriáid</string>
+    <string name="custom_count">%1$d / %2$d</string>
+    <string name="custom_create">Létrehozás</string>
+    <string name="custom_unlock_more">Több feloldása</string>
+    <string name="custom_max_reached">Elérted a maximumot</string>
+    <string name="custom_new_title">Új kategória</string>
+    <string name="custom_edit_title">Kategória szerkesztése</string>
+    <string name="custom_name_hint">Név</string>
+    <string name="custom_color_label">Szín</string>
+    <string name="custom_parent_label">Szülőkategória</string>
+    <string name="custom_parent_none">Nincs (legfelső szint)</string>
+    <string name="custom_icon_label">Ikon</string>
+    <string name="custom_icon_search">Ikonok keresése</string>
+    <string name="custom_icon_no_match">Egyetlen ikon sem egyezik ezzel: “%1$s”</string>
+    <string name="custom_icon_no_match_hint">Próbálj rövidebb szót – például “kártya”, “otthon” vagy “számla”.</string>
+    <string name="custom_name_taken">Ez a név már létezik – próbálj mást</string>
+    <string name="custom_delete">Kategória törlése</string>
+    <string name="custom_delete_confirm_title">Törlöd a(z) %1$s kategóriát?</string>
+    <plurals name="custom_delete_confirm_body">
+        <item quantity="one">Áthelyezed a(z) %1$d tételt az Egyéb kategóriába, és törlöd ezt a kategóriát?</item>
+        <item quantity="other">Áthelyezed a(z) %1$d tételt az Egyéb kategóriába, és törlöd ezt a kategóriát?</item>
+    </plurals>
+    <string name="cd_edit_category">%1$s szerkesztése</string>
+
+    <!-- Manage categories (Account → Manage categories). English-first; localized in a later batch. -->
+    <string name="manage_your_categories">A kategóriáid</string>
+    <string name="manage_builtin">Beépített</string>
+    <string name="manage_builtin_summary">%1$d csoport · %2$d kategória</string>
+    <string name="manage_create_category">Kategória létrehozása</string>
+    <string name="manage_cap_hint">Az ingyenes csomag %1$d egyéni kategóriát tartalmaz</string>
+    <string name="manage_unlimited_premium">Korlátlan Prémiummal</string>
+    <string name="manage_in_group">Ebben: %1$s</string>
+    <string name="manage_top_level">Legfelső szint</string>
+    <!-- Needs/Wants/Savings bucket toggle under each category row (Manage categories) -->
+    <string name="manage_bucket_need">Szükséglet</string>
+    <string name="manage_bucket_want">Vágy</string>
+    <string name="manage_bucket_savings">Megtakarítás</string>
+    <plurals name="manage_sub_count">
+        <item quantity="one">%1$d alkategória</item>
+        <item quantity="other">%1$d alkategória</item>
+    </plurals>
+    <string name="manage_yours_suffix"> · %1$d a tiéd</string>
+    <string name="manage_no_subs">Nincs alkategória</string>
+    <string name="manage_move_title">Áthelyezés csoportba</string>
+    <string name="manage_move_cd">%1$s áthelyezése másik csoportba</string>
+    <string name="manage_empty_hint">Még nincs egyéni kategória – hozz létre egyet, hogy a magad módján címkézd a költéseidet.</string>
+
+    <!-- Insights -->
+    <string name="insights_tab_spending">Kiadások</string>
+    <string name="insights_tab_money">Pénz</string>
+    <string name="insights_tab_trends">Trendek</string>
+    <string name="insights_overview_tab">Áttekintés</string>
+    <string name="insights_overview_spent">Összes kiadás</string>
+    <string name="insights_overview_top">Legnagyobb kiadások</string>
+    <string name="insights_overview_worth">Érdemes tudni</string>
+    <string name="insights_overview_on_pace">Jelenlegi ütem szerint %1$s</string>
+    <string name="insights_open_recap">Nyisd meg a legutóbbi összegzésed</string>
+    <!-- Overview "things to set up" checklist (P3) -->
+    <plurals name="insights_setup_count">
+        <item quantity="one">%1$d beállítanivaló</item>
+        <item quantity="other">%1$d beállítanivaló</item>
+    </plurals>
+    <string name="insights_setup_review">Áttekintés</string>
+    <string name="insights_setup_hide">Elrejtés</string>
+    <string name="insights_setup_item_savings">Válaszd ki, mi számít megtakarításnak</string>
+    <string name="insights_setup_cta_savings">Választás</string>
+    <string name="insights_setup_item_income">Adj hozzá bevételt vagy költségvetést</string>
+    <string name="insights_setup_cta_income">Hozzáadás</string>
+    <string name="insights_setup_item_overlay">Próbáld ki a tervezett számlák réteget</string>
+    <string name="insights_setup_cta_overlay">Bekapcsolás</string>
+    <string name="insights_setup_item_buckets">Címkézd a kategóriákat szükséglet / vágy szerint</string>
+    <string name="insights_setup_cta_buckets">Címkézés</string>
+    <string name="cd_insights_setup_dismiss">Elvetés</string>
+    <!-- Custom tab + section picker (P4) -->
+    <string name="insights_tab_custom">Egyéni</string>
+    <string name="insights_custom_choose">Válassz szakaszokat</string>
+    <string name="insights_custom_add">Szakaszok hozzáadása</string>
+    <string name="insights_custom_add_another">Újabb szakasz hozzáadása</string>
+    <string name="insights_custom_empty_title">A saját nézeted</string>
+    <string name="insights_custom_empty_body">Csak azokat a szakaszokat válaszd, amelyek fontosak neked – ezen a fülön maradnak, az általad választott sorrendben, és ugyanazt az időszakot követik, mint a többi.</string>
+    <string name="insights_custom_sheet_title">Szakaszok az Egyéni fülön</string>
+    <string name="insights_custom_none">Még nincsenek szakaszok</string>
+    <plurals name="insights_custom_count">
+        <item quantity="one">%1$d szakasz</item>
+        <item quantity="other">%1$d szakasz</item>
+    </plurals>
+    <string name="insights_custom_footer">A szakaszok a saját fülükön is megmaradnak – ha itt hozzáadsz egyet, az nem tűnik el a Kiadások, Pénz vagy Trendek fülről.</string>
+    <string name="cd_insights_custom_close">Bezárás</string>
+    <!-- Money tab invitation when there's no income or budget yet (P8) -->
+    <string name="insights_money_empty_title">A pénzáramlásodhoz terv kell</string>
+    <string name="insights_money_empty_body">Add meg a bevételed vagy egy költségvetést a pénzáramlásod megtekintéséhez.</string>
+    <string name="insights_money_empty_cta">Bevétel vagy költségvetés hozzáadása</string>
+    <string name="insights_breakdown">Megoszlás</string>
+    <string name="insights_summary">Összefoglaló</string>
+    <string name="insights_trend">Trend</string>
+    <string name="insights_period_comparison">Időszakok összehasonlítása</string>
+    <string name="insights_top_categories">Fő kategóriák</string>
+    <string name="insights_top_stores">Fő boltok</string>
+    <string name="insights_budget">Költségvetés</string>
+
+    <!-- Insights: income & recurring cards -->
+    <string name="insights_income_spending">Bevétel és kiadás</string>
+    <string name="insights_savings_rate">Megtakarítási ráta</string>
+    <string name="insights_fixed_flexible">Hová megy a bevételed</string>
+    <string name="insights_upcoming_bills">Közelgő számlák</string>
+    <string name="insights_income_by_source">Bevétel forrás szerint</string>
+    <string name="insights_go_to_budget">Ugrás a Költségvetéshez</string>
+
+    <!-- Insights: Needs / Wants / Savings (the 50/30/20 split) -->
+    <string name="insights_needs_wants_savings">Szükségletek · Vágyak · Megtakarítás</string>
+    <string name="insights_nws_needs">Szükségletek</string>
+    <string name="insights_nws_wants">Vágyak</string>
+    <string name="insights_nws_savings">Megtakarítás</string>
+    <string name="insights_nws_saved">Megtakarítva</string>
+    <!-- %1$s = total income for the period, e.g. "€2,400" -->
+    <string name="insights_nws_income_subtitle">A(z) %1$s bevétel aránya</string>
+    <string name="insights_nws_targets_caption">A jelölések az 50 / 30 / 20 célokat mutatják</string>
+    <!-- %1$s = amount in this bucket, %2$d = its target percentage, e.g. "€1,176 · target 50%" -->
+    <string name="insights_nws_row_sub">%1$s · cél %2$d%%</string>
+    <string name="insights_nws_on_target">célon</string>
+    <!-- %1$d = points this bucket is below its target (Needs/Wants only), e.g. "5 under" -->
+    <string name="insights_nws_under">%1$d ponttal alatta</string>
+    <string name="insights_nws_summary_balanced">Szépen kiegyensúlyozott – mindhárom egy ponton belül van a szabályhoz képest.</string>
+    <!-- %1$d = points Wants is over its 30% target -->
+    <string name="insights_nws_summary_wants_over">A Vágyak %1$d ponttal túllépték a keretet ebben a hónapban, a különbséget a Megtakarítás vitte el.</string>
+    <!-- %1$d = points Needs is over its 50% target -->
+    <string name="insights_nws_summary_needs_over">A Szükségletek %1$d ponttal túllépték a keretet ebben a hónapban – gyakran a lakbér vagy a rezsi esik egy időszakra.</string>
+    <!-- %1$d = points Savings is under 20%, %2$s = the amount of Wants that would close the gap -->
+    <string name="insights_nws_summary_under_saving">A Megtakarítás %1$d ponttal 20%% alatt van ebben a hónapban. Körülbelül %2$s Vágyakból befedné a különbséget.</string>
+    <string name="insights_nws_trend_title">A felosztásod az idő során</string>
+    <!-- %1$s = signed change in savings share over the window, e.g. "+10" -->
+    <string name="insights_nws_trend_delta">%1$s pont</string>
+    <!-- %1$d = savings share in the earliest month, %2$d = latest month, %3$d = number of months -->
+    <string name="insights_nws_trend_footer">A megtakarítási arányod %1$d%%-ról %2$d%%-ra változott az elmúlt %3$d hónapban.</string>
+    <string name="insights_nws_setup_subtitle">Az 50/30/20 szabály a saját kategóriáidból</string>
+    <string name="insights_nws_setup_title">Nézd meg az 50/30/20 felosztásod</string>
+    <string name="insights_nws_setup_body">Add meg a bevételed, és a Budgetty Szükségletek, Vágyak és Megtakarítás szerint rendezi a költéseidet – a beépített kategóriáid előre címkézve érkeznek.</string>
+    <string name="insights_nws_setup_cta">Bevétel beállítása</string>
+    <string name="insights_nws_setup_note">Az eszközödön számoljuk ki – semmit nem küldünk sehová.</string>
+
+    <!-- Insights: the one-time "what counts as Savings?" ask + its Customize-sheet toggle -->
+    <string name="insights_nws_ask_title">A pénz, amit egyszerűen megtartasz, Megtakarításnak számít?</string>
+    <string name="insights_nws_ask_subtitle">Válaszd azt, ami a te gondolkodásodhoz illik. Később módosítható.</string>
+    <string name="insights_nws_ask_keep">Számítson, amit megtartok</string>
+    <string name="insights_nws_ask_keep_desc">Ami a Szükségletek és Vágyak után marad, az megtakarított pénz.</string>
+    <string name="insights_nws_ask_aside">Csak amit félreteszek</string>
+    <string name="insights_nws_ask_aside_desc">Csak a célbefizetések és a Megtakarítás kategóriák. A többi elköltetlen marad.</string>
+    <!-- %1$s = the leftover amount, e.g. "€1,824" -->
+    <string name="insights_nws_bar_unspent">A bevételedből %1$s még nincs elköltve</string>
+    <string name="insights_nws_bar_leftover">A szürke a bevétel, amit nem költöttél el és nem is tettél félre</string>
+    <!-- %1$s = the amount kept back -->
+    <string name="insights_nws_savings_waiting">%1$s maradt · válaszra vár</string>
+    <string name="insights_nws_leftover">Maradék</string>
+    <!-- %1$s = the leftover amount -->
+    <string name="insights_nws_leftover_sub">%1$s · nem számít Megtakarításnak</string>
+    <!-- %1$s = amount kept, %2$s = income for the month -->
+    <string name="insights_nws_summary_kept">A(z) %2$s bevételedből %1$s-t megtartottál ebben a hónapban.</string>
+    <string name="insights_nws_cta_keep_title">Adj neki célt</string>
+    <string name="insights_nws_cta_keep_sub">Nevezd meg, mire teszed félre</string>
+    <string name="insights_nws_cta_aside_title">Állíts be megtakarítási célt</string>
+    <string name="insights_nws_cta_aside_sub">A célbefizetés beleszámít a Megtakarításba</string>
+    <string name="insights_nws_footer_keep">Minden megtartott pénzt számít. Módosítsd a Szakaszok testreszabása alatt.</string>
+    <string name="insights_nws_footer_aside">A félretett pénzt számít. Módosítsd a Szakaszok testreszabása alatt.</string>
+    <string name="insights_nws_alloc_header">Megtakarítás</string>
+    <string name="insights_nws_alloc_desc">Hogyan számít a Megtakarítás az 50/30/20 felosztásodban.</string>
+    <string name="insights_nws_alloc_keep_desc">A bevétel mínusz a Szükségletek és Vágyak számít megtakarításnak.</string>
+    <string name="insights_nws_alloc_aside_desc">Csak a célbefizetések és a Megtakarítás kategóriák.</string>
+    <string name="insights_nws_alloc_footer">A korábbi hónapokra is érvényes, így a trended következetes marad.</string>
+    <string name="insights_nws_new">Új</string>
+
+    <!-- Money in vs. out -->
+    <string name="insights_income_in">Be</string>
+    <string name="insights_income_out">Ki</string>
+    <string name="insights_income_net">Nettó</string>
+    <string name="insights_income_read_positive">%1$s-t megtartottál.</string>
+    <string name="insights_income_read_negative">%1$s-sel többet költöttél, mint amennyit kerestél.</string>
+    <string name="insights_income_nudge_flow">Add meg a bevételed a Költségvetésben, hogy lásd, hogyan áramlik a pénzed.</string>
+    <!-- Savings rate -->
+    <string name="insights_savings_tag_saved">megtakarítva a bevételedből</string>
+    <string name="insights_savings_tag_over">túlköltés</string>
+    <string name="insights_savings_sub_saved">%1$s megtakarítva ebből: %2$s</string>
+    <string name="insights_savings_sub_over">%1$s-sel többet költöttél, mint amennyit kerestél</string>
+    <string name="insights_savings_legend_great" formatted="false">≥ 20% remek</string>
+    <string name="insights_savings_legend_ok" formatted="false">0–20% rendben</string>
+    <string name="insights_savings_legend_bad">&lt; 0</string>
+    <string name="insights_savings_nudge">Add meg a bevételed a Költségvetésben a megtakarítási rátád követéséhez.</string>
+    <!-- Where your income goes -->
+    <string name="insights_fixed_bills">Fix számlák</string>
+    <string name="insights_flexible_spending">Rugalmas költés</string>
+    <string name="insights_left">Maradék</string>
+    <string name="insights_fixed_read">A fix számlák a bevételed %1$d%%-át teszik ki.</string>
+    <string name="insights_fixed_nudge">Add meg a bevételed a Költségvetésben, hogy lásd, hová megy az egész.</string>
+    <!-- Upcoming bills -->
+    <string name="insights_upcoming_7days">7 nap</string>
+    <string name="insights_upcoming_30days">30 nap</string>
+    <string name="insights_upcoming_due">esedékes a következő %1$d napban</string>
+    <string name="insights_upcoming_today">ma</string>
+    <string name="insights_upcoming_tomorrow">holnap</string>
+    <string name="insights_upcoming_in_days">%1$d nap múlva</string>
+    <string name="insights_upcoming_more">+ %1$d további</string>
+    <string name="insights_upcoming_empty_title">Még nincsenek ismétlődő számlák</string>
+    <string name="insights_upcoming_empty_sub">Adj hozzá ismétlődő fizetéseket a Költségvetésben, hogy lásd, mi esedékes.</string>
+    <!-- Income by source -->
+    <string name="insights_income_total">Összesen</string>
+    <string name="insights_income_single">Csak egy forrás. Adj hozzá még egyet a Költségvetésben a megoszlás megtekintéséhez.</string>
+    <string name="insights_income_nudge_sources">Add meg a bevételi forrásaid a Költségvetésben a megoszlás megtekintéséhez.</string>
+    <plurals name="insights_budget_days_left">
+        <item quantity="one">%1$d nap van hátra</item>
+        <item quantity="other">%1$d nap van hátra</item>
+    </plurals>
+    <!-- Needs/Wants/Savings trend subtitle: %1$d = number of closed months plotted -->
+    <plurals name="insights_nws_trend_subtitle">
+        <item quantity="one">%1$d lezárt hónap</item>
+        <item quantity="other">%1$d lezárt hónap</item>
+    </plurals>
+
+    <!-- Highlights (rule-based narrative callouts) -->
+    <string name="insights_highlights">Kiemelések</string>
+    <string name="insights_highlight_new">Első költés itt: %1$s — %2$s</string>
+    <string name="insights_highlight_up">%1$s %2$d%%-kal feljebb %3$s-hoz képest</string>
+    <string name="insights_highlight_down">%1$s %2$d%%-kal lejjebb %3$s-hoz képest</string>
+    <string name="insights_highlight_share">%1$s a költés %2$d%%-át tette ki</string>
+    <!-- Spending pace / projection (shown on the trend card for the current period) -->
+    <string name="insights_pace">Jelenlegi ütem szerint körülbelül %1$s</string>
+    <string name="insights_biggest_purchases">Legnagyobb vásárlások</string>
+    <!-- Per-period empty states -->
+    <string name="insights_empty_period">Nincs rögzített költés erre: %1$s</string>
+    <string name="insights_empty_period_sub">Próbálj másik időszakot a fenti nyilakkal.</string>
+    <string name="insights_empty_no_data">Még nincs költés</string>
+    <string name="insights_empty_no_data_sub">Olvass be egy nyugtát, hogy lásd az elemzéseidet.</string>
+    <!-- Insights: planned recurring-bills overlay (opt-in "planned" layer drawn over actual spend) -->
+    <string name="insights_overlay_layers">Rétegek</string>
+    <string name="insights_overlay_toggle_title">Ismétlődő számlák beszámítása</string>
+    <string name="insights_overlay_toggle_subtitle">A tervezett számlák külön rétegként megjelenítése</string>
+    <string name="insights_planned_badge">Tervezett</string>
+    <string name="insights_overlay_bills_planned">Számlák · tervezett</string>
+    <!-- Donut centre subline when the overlay is on, under the "spent" hero: "+ €967 bills" -->
+    <string name="insights_overlay_plus_bills">+ %1$s számla</string>
+    <!-- Section explainer dialogs (read-only; opened by the "Planned" badge in a section header) -->
+    <string name="insights_overlay_dialog_subtitle">%1$s · %2$s</string>
+    <string name="insights_overlay_spent">Elköltve</string>
+    <string name="insights_overlay_planned">Tervezett</string>
+    <!-- Breakdown dialog -->
+    <string name="insights_overlay_wedge_header">A vonalkázott cikk</string>
+    <string name="insights_overlay_denominator">A kategóriaarányok az elköltött %1$s százalékai maradnak – a tervezett számlák soha nincsenek ebben az összegben.</string>
+    <plurals name="insights_overlay_dedup_note">
+        <item quantity="one">%1$d számla elrejtve – már egyeztetve egy nyugtával</item>
+        <item quantity="other">%1$d számla elrejtve – már egyeztetve egy nyugtával</item>
+    </plurals>
+    <string name="insights_overlay_matched_detail">egyeztetve · %1$s · %2$s</string>
+    <string name="insights_overlay_counted_once">Egyszer számít, a költésben.</string>
+    <plurals name="insights_overlay_dedup_excludes">
+        <item quantity="one">A(z) %1$s nem tartalmaz %2$d számlát, amelyet ebben az időszakban már egyeztettünk egy nyugtával. Nyisd meg a Megoszlást, hogy lásd, melyiket.</item>
+        <item quantity="other">A(z) %1$s nem tartalmaz %2$d számlát, amelyeket ebben az időszakban már egyeztettünk egy nyugtával. Nyisd meg a Megoszlást, hogy lásd, melyeket.</item>
+    </plurals>
+    <!-- Summary dialog: why the receipt tiles don't move when the layer is on -->
+    <string name="insights_overlay_summary_header">Miért marad minden csempe változatlan</string>
+    <string name="insights_overlay_summary_lead">A fenti csempék nyugtaadatok, és nem változnak, ha ez a réteg be van kapcsolva – a számláknak nincs nyugtájuk és kedvezményük, így nincs mit hozzáadniuk.</string>
+    <string name="insights_overlay_summary_avgday_title">Átlag / nap</string>
+    <string name="insights_overlay_summary_avgday_body">Az elköltött összeg eloszlása. A számlák nincsenek benne.</string>
+    <string name="insights_overlay_summary_receipts_title">Nyugták</string>
+    <string name="insights_overlay_summary_receipts_body">Egy számlának nincs beszámítható nyugtája.</string>
+    <string name="insights_overlay_summary_avg_title">Átlag / nyugta</string>
+    <string name="insights_overlay_summary_avg_body">Ugyanaz az ok – nincs mivel osztani.</string>
+    <string name="insights_overlay_summary_saved_title">Megtakarítva</string>
+    <string name="insights_overlay_summary_saved_body">A kedvezmények a nyugtákból származnak. A számláknak nincs ilyenük.</string>
+    <!-- Trend dialog: reading the hatched caps -->
+    <string name="insights_overlay_trend_header">A vonalkázott sapkák olvasása</string>
+    <string name="insights_overlay_trend_flat_title">Minden sapka egyforma</string>
+    <string name="insights_overlay_trend_flat_body">A számláid fix %1$s havonta, így a vonalkázott rész nem változik. Csak a tömör rész – amit ténylegesen elköltöttél – mozog.</string>
+    <string name="insights_overlay_trend_early_title">A korai hónapokban nincs</string>
+    <string name="insights_overlay_trend_early_body">A számlákat nem vetítjük vissza, így a hozzáadásuk előtti hónapok csak a költést mutatják.</string>
+    <string name="insights_overlay_trend_scale_title">Az oszlopok rövidebbek lettek</string>
+    <string name="insights_overlay_trend_scale_body">A diagram most a költést és a számlákat is befogadja, így a skála változott. Az összegek nem.</string>
+    <!-- Discovery nudge (once per user, above Breakdown) -->
+    <string name="insights_overlay_nudge_title">Az Elemzések és a Kezdőlap eltér?</string>
+    <string name="insights_overlay_nudge_text">A Kezdőlap is beszámít %1$s ismétlődő számlát ebben az időszakban. Jelenítsd meg őket itt tervezett rétegként.</string>
+    <string name="insights_overlay_nudge_action">Számlák megjelenítése</string>
+    <string name="cd_insights_overlay_nudge_dismiss">Elvetés</string>
+
+    <!-- Insights analytical labels (extracted from code) -->
+    <string name="insights_title">Elemzések</string>
+    <string name="insights_trend_daily">Napi költés</string>
+    <string name="insights_trend_monthly">Havi költés</string>
+    <string name="insights_trend_empty">Még nincs elég adat</string>
+    <string name="insights_stat_avg_day">Átlag / nap</string>
+    <string name="insights_stat_avg_receipt">Átlag / nyugta</string>
+    <string name="insights_stat_saved">Megtakarítva</string>
+    <string name="insights_by_category">Kategóriánként %1$s viszonylatában</string>
+    <string name="insights_prev_week">az előző hét</string>
+    <string name="insights_prev_month">az előző hónap</string>
+    <string name="insights_prev_quarter">az előző negyedév</string>
+    <string name="insights_prev_half">az előző félév</string>
+    <string name="insights_prev_period">az előző időszak</string>
+    <string name="insights_compare_less">%1$d%%-kal kevesebb, mint %2$s</string>
+    <string name="insights_compare_more">%1$d%%-kal több, mint %2$s</string>
+    <string name="insights_compare_same">Nagyjából annyi, mint %1$s</string>
+
+    <!-- Customize sections (show / hide / reorder) -->
+    <string name="customize_sections_title">Szakaszok testreszabása</string>
+    <string name="customize_sections_subtitle">Jelenítsd meg, rejtsd el és rendezd át, mi látszik ezen a képernyőn.</string>
+    <string name="customize_sections_reset">Visszaállítás alapértelmezettre</string>
+
+    <!-- History -->
+    <string name="history_search">Tételek keresése</string>
+    <string name="history_select_receipt">Válassz egy nyugtát a tételei megtekintéséhez.</string>
+    <string name="history_today">Ma</string>
+    <string name="history_yesterday">Tegnap</string>
+    <string name="history_tab_receipts">Nyugták</string>
+    <string name="history_tab_items">Tételek</string>
+    <string name="history_tab_budgets">Költségvetések</string>
+    <string name="history_budgets_left_after_bills">Számlák után marad</string>
+    <string name="history_budgets_manage">Kezelés a Költségvetésben</string>
+    <string name="history_budgets_empty_title">Még nincs beállítva költségvetés</string>
+    <string name="history_budgets_empty_subtitle">Add meg a bevételed és a számláid a Költségvetésben, hogy itt lásd a terved.</string>
+    <string name="history_budgets_go_to_budget">Ugrás a Költségvetéshez</string>
+    <string name="history_open_receipt">Nyugta megnyitása</string>
+    <string name="history_price_avg">átlag %1$s</string>
+    <string name="history_cheapest_at">Legolcsóbb itt: %1$s · %2$s ekkor: %3$s</string>
+    <string name="filter_all">Összes</string>
+    <string name="filter_category">Kategória</string>
+    <string name="filter_store">Bolt</string>
+    <string name="filter_date">Dátum</string>
+    <string name="filter_all_time">Teljes időszak</string>
+    <string name="filter_price">Ár</string>
+    <string name="filter_sort">Rendezés</string>
+    <string name="sort_title">Rendezés</string>
+    <string name="sort_newest">Legújabb elöl</string>
+    <string name="sort_oldest">Legrégebbi elöl</string>
+    <string name="sort_price_high">Ár: csökkenő</string>
+    <string name="sort_price_low">Ár: növekvő</string>
+    <string name="price_range_title">Ártartomány</string>
+    <string name="price_presets">Gyors beállítások</string>
+    <string name="price_range_any">Bármilyen összeg</string>
+    <string name="price_range_value">%1$s – %2$s</string>
+    <string name="price_preset_under">%1$s alatt</string>
+    <string name="price_preset_over">%1$s felett</string>
+    <string name="history_recent_searches">Legutóbbi keresések</string>
+    <string name="history_clear_all">Összes törlése</string>
+    <string name="history_top_stores">Fő boltok</string>
+    <string name="history_top_categories">Fő kategóriák</string>
+    <string name="cd_remove_search">Eltávolítás</string>
+    <string name="cd_reset_price_range">Ártartomány visszaállítása</string>
+
+    <!-- Common (more) -->
+    <string name="action_back">Vissza</string>
+    <string name="action_close">Bezárás</string>
+
+    <!-- Budget -->
+    <string name="budget_monthly">Havi költségvetés</string>
+    <string name="budget_weekly">Heti költségvetés</string>
+    <string name="budget_period_monthly">Havi</string>
+    <string name="budget_period_weekly">Heti</string>
+    <string name="budget_approx_weekly">≈ %1$s / hét</string>
+    <string name="budget_approx_monthly">≈ %1$s / hó</string>
+    <string name="budget_categories">Kategóriák</string>
+    <string name="budget_tap_sub">Koppints alköltségvetések beállításához</string>
+    <string name="budget_tap_set">Koppints költségvetés beállításához</string>
+    <string name="budget_spent_pct">%1$s elköltve · %2$d%%</string>
+    <string name="budget_left">%1$s maradt</string>
+    <string name="budget_over">%1$s túllépés</string>
+    <string name="budget_carried_over">+%1$s átvitt</string>
+    <string name="budget_rollover_title">Fel nem használt keret átvitele</string>
+    <string name="budget_rollover_hint">Az el nem költött keret átgördül a következő időszakra</string>
+    <string name="budget_spent">%1$s elköltve</string>
+    <string name="budget_no_spend">Nincs költés</string>
+    <string name="budget_section_category">KATEGÓRIA KÖLTSÉGVETÉSE</string>
+    <string name="budget_section_subcategories">ALKATEGÓRIÁK</string>
+    <string name="budget_active_subs">Aktív alköltségvetések</string>
+    <string name="budget_show_more">%1$d további megjelenítése</string>
+    <string name="budget_error_monthly_weekly">A havi költségvetésnek legalább a heti költségvetésnek kell lennie. A módosításod nem lett elmentve.</string>
+
+    <!-- Income & recurring payments -->
+    <string name="recurring_income">Bevétel</string>
+    <string name="recurring_payments">Ismétlődő fizetések</string>
+    <string name="recurring_add_income">Bevétel hozzáadása</string>
+    <string name="recurring_add_payment">Ismétlődő fizetés hozzáadása</string>
+    <string name="recurring_per_month">%1$s / hó</string>
+    <string name="recurring_paid">Fizetve</string>
+    <string name="recurring_mark_paid">Megjelölés fizetettként</string>
+    <string name="recurring_paid_count">%1$d/%2$d fizetve</string>
+    <string name="recurring_autopay_title">Automatikus fizetés</string>
+    <string name="recurring_autopay_sub">Automatikus fizetettként jelölés az esedékesség napján</string>
+    <string name="recurring_autopay_badge">Auto</string>
+    <string name="recurring_upgrade_more">Frissíts a továbbiakhoz</string>
+    <string name="recurring_money_empty_hint">Add meg a bevételed és a számláid, hogy lásd, mennyi marad havonta.</string>
+    <string name="recurring_this_month">Ez a hónap</string>
+    <string name="recurring_breakdown_income">Bevétel</string>
+    <string name="recurring_breakdown_bills">Ismétlődő számlák</string>
+    <string name="recurring_breakdown_spent">Eddig elköltve</string>
+    <string name="recurring_breakdown_left">Elkölthető</string>
+    <string name="recurring_monthly">Havi</string>
+    <string name="recurring_weekly">Heti</string>
+    <string name="recurring_yearly">Éves</string>
+    <string name="recurring_once">Egyszeri</string>
+    <string name="recurring_payment_add_title">Fizetés hozzáadása</string>
+    <string name="recurring_payment_edit_title">Fizetés szerkesztése</string>
+    <string name="recurring_income_edit_title">Bevétel szerkesztése</string>
+    <string name="recurring_field_name">Név</string>
+    <string name="recurring_field_amount">Összeg</string>
+    <string name="recurring_field_how_often">Milyen gyakran</string>
+    <string name="recurring_field_due_day">Esedékesség napja</string>
+    <string name="recurring_field_payday">Fizetésnap</string>
+    <string name="recurring_field_day_of_week">A hét napja</string>
+    <string name="recurring_field_category">Kategória</string>
+    <string name="recurring_name_hint_income">Fizetés</string>
+    <string name="recurring_name_hint_payment">Lakbér</string>
+    <string name="budget_spending_budget">Költési keret</string>
+    <string name="budget_spending_budget_hint">Amit a számláidon felül tervezel költeni.</string>
+
+    <!-- Paywall -->
+    <string name="paywall_title">Budgetty Prémium</string>
+    <string name="paywall_hero_title">Hozz ki többet a Budgettyből</string>
+    <string name="paywall_hero_subtitle">Nincs ingyenes próba · bármikor lemondható</string>
+    <string name="paywall_benefit_scans">Korlátlan nyugtabeolvasás</string>
+    <string name="paywall_benefit_scans_detail">Az ingyenes csomag %1$d-nál megáll</string>
+    <string name="paywall_benefit_categories">Korlátlan egyéni kategória</string>
+    <string name="paywall_benefit_categories_detail">Az ingyenes csomag %1$d-t tartalmaz</string>
+    <string name="paywall_benefit_recurring">Korlátlan ismétlődő számla</string>
+    <string name="paywall_benefit_recurring_detail">Az ingyenes csomag %1$d-t tartalmaz</string>
+    <string name="paywall_benefit_widgets">Korlátlan kezdőképernyős widget</string>
+    <string name="paywall_benefit_widgets_detail">Az ingyenes csomag %1$d-t tartalmaz</string>
+    <string name="paywall_benefit_themes">Minden kiemelő téma</string>
+    <string name="paywall_benefit_themes_detail">Sage, Ocean és Plum</string>
+    <string name="paywall_benefit_cloud">Felhőmentés és szinkronizálás</string>
+    <string name="paywall_benefit_soon">Hamarosan</string>
+    <string name="paywall_premium_title">Prémium vagy</string>
+    <string name="paywall_premium_subtitle">Köszönjük a támogatást!</string>
+    <string name="paywall_unavailable_title">Még nem érhető el</string>
+    <string name="paywall_unavailable_subtitle">Az előfizetések itt jelennek meg, amint az áruházi megjelenés élesedik.</string>
+    <string name="paywall_restore">Vásárlások visszaállítása</string>
+    <string name="paywall_best_value">LEGJOBB ÁR-ÉRTÉK</string>
+    <string name="paywall_subscribe">Előfizetés</string>
+
+    <!-- Login -->
+    <string name="login_welcome">Üdv újra</string>
+    <string name="login_create_subtitle">Hozd létre a fiókod</string>
+    <string name="login_email">E-mail</string>
+    <string name="login_password">Jelszó</string>
+    <string name="login_show_password">Jelszó megjelenítése</string>
+    <string name="login_hide_password">Jelszó elrejtése</string>
+    <string name="login_forgot">Elfelejtetted a jelszót?</string>
+    <string name="login_reset_sent">Jelszó-visszaállító e-mail elküldve</string>
+    <string name="login_enter_both">Add meg az e-mail-címed és a jelszavad</string>
+    <string name="login_sign_in">Bejelentkezés</string>
+    <string name="login_create_account">Fiók létrehozása</string>
+    <string name="login_or">vagy</string>
+    <string name="login_google">Folytatás Google-fiókkal</string>
+    <string name="login_have_account">Van már fiókod?</string>
+    <string name="login_new_here">Új vagy itt?</string>
+    <string name="login_create_account_link">Hozz létre fiókot</string>
+    <string name="login_google_failed">A Google-bejelentkezés nem sikerült</string>
+    <string name="login_password_requirements">A jelszónak</string>
+    <string name="login_password_req_length">legalább 8 karakterből kell állnia</string>
+    <string name="login_password_req_case">tartalmaznia kell kis- és nagybetűt</string>
+    <string name="login_password_req_number">tartalmaznia kell számot</string>
+    <string name="login_password_weak">Válassz erősebb jelszót</string>
+    <!-- Tablet split-login (English-only for now) -->
+    <string name="login_subtitle_signin">Jelentkezz be a fiókodba</string>
+    <string name="login_subtitle_signup">Vágj bele pár másodperc alatt</string>
+    <string name="login_tagline">Nyugtaalapú személyes költségvetés</string>
+    <string name="login_feature_1">Olvass be egy nyugtát, és megkapod minden tételét</string>
+    <string name="login_feature_2">Automatikus kategóriarendezés</string>
+    <string name="login_feature_3">Költségvetések, számlák és költési elemzések</string>
+    <string name="login_premium_note">A Prémium feloldja a korlátlan beolvasást, kategóriákat és számlákat</string>
+
+    <!-- Onboarding -->
+    <string name="onb1_title">Fényképezz le bármilyen nyugtát</string>
+    <string name="onb1_body">Fotózz le egy papírnyugtát, vagy tölts fel egy PDF-et. Egy vásárlás rögzítése mindig egy koppintásra van.</string>
+    <string name="onb2_title">Beolvassuk és kategorizáljuk</string>
+    <string name="onb2_body">A Budgetty kiemeli a boltot, a dátumot, a kedvezményt és minden tételt – mindegyiket kategóriába sorolva. Neked már csak ellenőrizned és mentened kell.</string>
+    <string name="onb3_title">Nézd meg, hová megy a pénzed</string>
+    <string name="onb3_body">Áttekinthető diagramok bontják a költéseidet kategória, bolt és idő szerint, így a teljes kép mindig egy pillantásra van.</string>
+    <string name="onb4_title">Állíts be költségvetéseket, amelyek jó úton tartanak</string>
+    <string name="onb4_body">Havi, heti és kategóriánkénti költségvetések barátságos zöld-sárga-piros haladással tartják szem előtt a céljaidat.</string>
+    <string name="onb_skip">Kihagyás</string>
+    <string name="onb_next">Következő</string>
+    <string name="onb_get_started">Vágjunk bele</string>
+
+    <!-- Post-signup Insights setup quiz -->
+    <string name="quiz_progress">%1$d. kérdés a(z) %2$d-ből</string>
+    <string name="quiz_q_goal">Mi a fő célod a Budgettyvel?</string>
+    <string name="quiz_q_goal_sub">Ez alakítja az Elemzéseidet – bármikor módosítható.</string>
+    <string name="quiz_goal_see">Lássam, hová megy a pénzem</string>
+    <string name="quiz_goal_budget">Tartsak be egy költségvetést</string>
+    <string name="quiz_goal_bills">Kordában tartsam a számlákat és előfizetéseket</string>
+    <string name="quiz_goal_savings">Havonta többet tegyek félre</string>
+    <string name="quiz_q_income">A bevételt is szeretnéd követni?</string>
+    <string name="quiz_q_income_sub">A bevétel feloldja a megtakarítási és pénzáramlási kártyákat.</string>
+    <string name="quiz_income_yes">Igen – bevétel és költés</string>
+    <string name="quiz_income_no">Nem – csak a költésem</string>
+    <string name="quiz_q_bills">Van ismétlődő számla vagy előfizetés, amit figyelnél?</string>
+    <string name="quiz_q_bills_sub">Lakbér, streaming, edzőterem – bármi rendszeres.</string>
+    <string name="quiz_bills_yes">Igen, vannak ismétlődő fizetéseim</string>
+    <string name="quiz_bills_no">Nem igazán</string>
+    <string name="quiz_q_budget">Tervezel költési keretet beállítani?</string>
+    <string name="quiz_q_budget_sub">A költségvetések haladáskövetést adnak az Elemzésekhez.</string>
+    <string name="quiz_budget_yes">Igen</string>
+    <string name="quiz_budget_later">Talán később</string>
+    <string name="quiz_budget_no">Nem</string>
+    <string name="quiz_q_detail">Mennyi részletet szeretsz?</string>
+    <string name="quiz_q_detail_sub">Később mindig belemélyedhetsz.</string>
+    <string name="quiz_detail_big">Csak a nagy kép</string>
+    <string name="quiz_detail_full">Minden részlet</string>
+    <string name="quiz_q_entry">Hogyan adod majd hozzá többnyire a kiadásokat?</string>
+    <string name="quiz_q_entry_sub">Csak kíváncsiak vagyunk – segít finomhangolni.</string>
+    <string name="quiz_entry_scan">Nyugták beolvasásával</string>
+    <string name="quiz_entry_manual">Kézzel beírva</string>
+    <string name="quiz_entry_both">Egy kicsit mindkettő</string>
+    <string name="quiz_done_title">Minden kész!</string>
+    <string name="quiz_done_body">Az Elemzések rád vannak szabva – feltöltődnek, ahogy hozzáadod az első nyugtáidat.</string>
+    <string name="quiz_done_footnote">Bármikor módosítható: Elemzések → ⋮ → Szakaszok testreszabása.</string>
+    <string name="quiz_sum_goal_see">Költési áttekintés elrendezés</string>
+    <string name="quiz_sum_goal_budget">Költségvetés-központú elrendezés</string>
+    <string name="quiz_sum_goal_bills">Számlaközpontú elrendezés</string>
+    <string name="quiz_sum_goal_savings">Megtakarítás-központú elrendezés</string>
+    <string name="quiz_sum_income_yes">Bevétel és költés követve</string>
+    <string name="quiz_sum_income_no">Csak költés – bevételi kártyák kikapcsolva</string>
+    <string name="quiz_sum_bills_yes">Számlák és előfizetések bekapcsolva</string>
+    <string name="quiz_sum_bills_no">Számlák és előfizetések kikapcsolva</string>
+    <string name="quiz_sum_detail_big">Nagy képet mutató nézet</string>
+    <string name="quiz_sum_detail_full">Részletes nézet</string>
+    <string name="quiz_q_currency">Melyik pénznemet használod?</string>
+    <string name="quiz_q_currency_sub">Minden összeghez ez lesz használva az appban – bármikor módosítható a Fiókban.</string>
+    <string name="quiz_currency_suggested">A régiódhoz ajánlott</string>
+    <string name="quiz_currency_all">Minden pénznem</string>
+    <string name="quiz_income_field_label">A havi bevételed (nagyjából)</string>
+    <string name="quiz_income_field_helper">Opcionális – pontos bevételi forrásokat később is hozzáadhatsz.</string>
+    <string name="quiz_budget_field_label">Havi költési keret</string>
+    <string name="quiz_budget_field_helper">Opcionális – később a Költségvetés fülön heti költségvetésre válthatsz.</string>
+    <string name="quiz_continue">Tovább</string>
+    <string name="quiz_sum_currency">Pénznem — %1$s</string>
+    <string name="quiz_sum_income_amount">Bevétel beállítva — %1$s/hó</string>
+    <string name="quiz_sum_budget_amount">Havi költségvetés — %1$s</string>
+    <string name="quiz_done_bills_hint">Következő: add hozzá az ismétlődő számláidat a Költségvetés fülön</string>
+
+    <!-- Category picker -->
+    <string name="category_picker_title">Válassz kategóriát</string>
+    <string name="action_search">Keresés</string>
+    <string name="cd_selected">Kiválasztva</string>
+
+    <!-- Toasts -->
+    <string name="toast_backup_exported">Mentés exportálva</string>
+    <string name="toast_export_failed">Az exportálás nem sikerült</string>
+    <string name="toast_read_file_failed">Nem sikerült beolvasni a fájlt</string>
+    <string name="toast_backup_merged">Mentés egyesítve</string>
+    <string name="toast_import_failed">Az importálás nem sikerült</string>
+    <string name="toast_data_replaced">Adatok lecserélve</string>
+    <string name="toast_account_deleted">Fiók törölve</string>
+    <string name="toast_no_link_app">Egyetlen alkalmazás sem tudja megnyitni ezt a linket</string>
+    <string name="toast_no_email_app">Nem található e-mail alkalmazás</string>
+    <string name="delete_error_message">Hiba történt a fiók törlésekor. Kérlek, próbáld újra.</string>
+
+    <!-- Add-receipt sheet quota + premium -->
+    <string name="go_premium">Válts Prémiumra</string>
+    <string name="see_all_categories">Összes kategória megtekintése</string>
+    <string name="add_premium_unlimited">Prémium – korlátlan beolvasás.</string>
+    <string name="add_scans_left">%1$d/%2$d ingyenes beolvasás maradt (fotó vagy fájl). A kézi bevitel mindig ingyenes.</string>
+    <string name="add_scans_used">Elhasználtad mind a(z) %1$d ingyenes beolvasást. Válts Prémiumra a további beolvasáshoz – a kézi bevitel mindig ingyenes.</string>
+    <string name="add_manually_sub">Vidd be a tételeket magad · mindig ingyenes</string>
+    <string name="upload_check_hint">%1$s · ellenőrizd az egyes tételeket, majd véglegesíts</string>
+
+    <!-- Accessibility content descriptions -->
+    <string name="cd_delete_item">Tétel törlése</string>
+    <string name="cd_filter_period">Időszak szűrése</string>
+    <string name="cd_clear_search">Keresés törlése</string>
+    <string name="cd_edit_store">Bolt nevének szerkesztése</string>
+    <string name="cd_edit_date">Nyugta dátumának szerkesztése</string>
+    <string name="cd_customize_sections">Szakaszok testreszabása</string>
+    <string name="cd_move_section_up">Mozgatás felfelé</string>
+    <string name="cd_move_section_down">Mozgatás lefelé</string>
+    <string name="cd_expand_day">Kibontás</string>
+    <string name="cd_collapse_day">Összecsukás</string>
+    <string name="cd_breakdown_show_groups">Fő kategóriák megjelenítése</string>
+    <string name="cd_breakdown_show_all">Összes kategória megjelenítése</string>
+
+    <string name="category_no_transactions">Nincs tétel ebben a kategóriában</string>
+    <string name="store_no_transactions">Nincs tétel</string>
+    <plurals name="item_count">
+        <item quantity="one">%1$d tétel</item>
+        <item quantity="other">%1$d tétel</item>
+    </plurals>
+    <plurals name="receipt_count">
+        <item quantity="one">%1$d nyugta</item>
+        <item quantity="other">%1$d nyugta</item>
+    </plurals>
+    <plurals name="history_bought_count">
+        <item quantity="one">%1$d× megvéve</item>
+        <item quantity="other">%1$d× megvéve</item>
+    </plurals>
+    <plurals name="home_across_receipts">
+        <item quantity="one">%1$d nyugtán</item>
+        <item quantity="other">%1$d nyugtán</item>
+    </plurals>
+    <plurals name="safe_to_spend_per_day">
+        <item quantity="one">%1$s/nap a következő %2$d napra</item>
+        <item quantity="other">%1$s/nap a következő %2$d napra</item>
+    </plurals>
+    <plurals name="safe_to_spend_bills_count">
+        <item quantity="one">%1$d számla</item>
+        <item quantity="other">%1$d számla</item>
+    </plurals>
+    <plurals name="savings_entries">
+        <item quantity="one">%1$d bejegyzés</item>
+        <item quantity="other">%1$d bejegyzés</item>
+    </plurals>
+    <plurals name="sub_found_count">
+        <item quantity="one">%1$d találat a nyugtáidban</item>
+        <item quantity="other">%1$d találat a nyugtáidban</item>
+    </plurals>
+    <plurals name="sub_teaser_count">
+        <item quantity="one">%1$d ismétlődő terhelést találtunk</item>
+        <item quantity="other">%1$d ismétlődő terhelést találtunk</item>
+    </plurals>
+    <plurals name="sub_count_year">
+        <item quantity="one">%1$d előfizetés · %2$s évente</item>
+        <item quantity="other">%1$d előfizetés · %2$s évente</item>
+    </plurals>
+    <plurals name="export_summary">
+        <item quantity="one">%1$d tétel · %2$s</item>
+        <item quantity="other">%1$d tétel · %2$s</item>
+    </plurals>
+
+    <!-- Category display names (canonical DB/AI names stay English; these are display-only) -->
+    <string name="cat_groceries">Élelmiszer</string>
+    <string name="cat_bakery">Pékáru</string>
+    <string name="cat_dairy">Tejtermék</string>
+    <string name="cat_meat_poultry">Hús és baromfi</string>
+    <string name="cat_fish_seafood">Hal és tenger gyümölcsei</string>
+    <string name="cat_fruits_vegetables">Zöldség és gyümölcs</string>
+    <string name="cat_snacks_sweets">Snack és édesség</string>
+    <string name="cat_frozen_foods">Fagyasztott élelmiszer</string>
+    <string name="cat_nuts_snacks">Magvak és snackek</string>
+    <string name="cat_canned_preserved">Konzerv és tartósított</string>
+    <string name="cat_grains_pasta">Gabona és tészta</string>
+    <string name="cat_condiments_sauces">Fűszerek és szószok</string>
+    <string name="cat_beverages">Italok</string>
+    <string name="cat_household_personal">Háztartás és személyes</string>
+    <string name="cat_household_cleaning">Háztartási tisztítószerek</string>
+    <string name="cat_personal_care">Testápolás</string>
+    <string name="cat_beauty">Szépségápolás</string>
+    <string name="cat_baby_products">Babatermékek</string>
+    <string name="cat_pet_supplies">Kisállatkellékek</string>
+    <string name="cat_paper_products">Papíráruk</string>
+    <string name="cat_kitchen_supplies">Konyhai kellékek</string>
+    <string name="cat_health_wellness">Egészség és wellness</string>
+    <string name="cat_health_pharmacy">Egészség és gyógyszertár</string>
+    <string name="cat_medical">Egészségügy</string>
+    <string name="cat_sports_fitness">Sport és fitnesz</string>
+    <string name="cat_dining_entertainment">Étkezés és szórakozás</string>
+    <string name="cat_restaurant_dining">Étterem és étkezés</string>
+    <string name="cat_entertainment">Szórakozás</string>
+    <string name="cat_video_games">Videojátékok</string>
+    <string name="cat_tips">Borravaló</string>
+    <string name="cat_shopping_lifestyle">Vásárlás és életmód</string>
+    <string name="cat_clothing_accessories">Ruházat és kiegészítők</string>
+    <string name="cat_electronics">Elektronika</string>
+    <string name="cat_garden_plants">Kert és növények</string>
+    <string name="cat_home_improvement">Lakásfelújítás</string>
+    <string name="cat_tobacco_alcohol">Dohány és alkohol</string>
+    <string name="cat_transportation">Közlekedés</string>
+    <string name="cat_fuel">Üzemanyag</string>
+    <string name="cat_car_maintenance">Autókarbantartás</string>
+    <string name="cat_services_subscriptions">Szolgáltatások és előfizetések</string>
+    <string name="cat_subscriptions">Előfizetések</string>
+    <string name="cat_services">Szolgáltatások</string>
+    <string name="cat_investments">Befektetések</string>
+    <string name="cat_education">Oktatás</string>
+    <string name="cat_travel_accommodation">Utazás és szállás</string>
+    <string name="cat_utilities">Rezsi</string>
+    <string name="cat_rent">Lakbér</string>
+    <string name="cat_office_work_supplies">Iroda és munkaeszközök</string>
+    <string name="cat_gifts_donations">Ajándékok és adományok</string>
+    <string name="cat_delivery">Kiszállítás</string>
+    <!-- Taxonomy expansion 2026-08: Bills & Finance group, Transportation/Health/Dining fills, and the
+         Insurance & Utilities split (survivor cat_utilities is above). -->
+    <string name="cat_bills_finance">Számlák és pénzügyek</string>
+    <string name="cat_loan_repayment">Hiteltörlesztés</string>
+    <string name="cat_taxes">Adók</string>
+    <string name="cat_bank_fees">Bank és díjak</string>
+    <string name="cat_savings">Megtakarítás</string>
+    <string name="cat_public_transport">Tömegközlekedés</string>
+    <string name="cat_taxi_rideshare">Taxi és telekocsi</string>
+    <string name="cat_parking">Parkolás</string>
+    <string name="cat_tolls_vignette">Útdíj és matrica</string>
+    <string name="cat_dental">Fogászat</string>
+    <string name="cat_optical">Optika</string>
+    <string name="cat_coffee_cafes">Kávé és kávézók</string>
+    <string name="cat_bars_nightlife">Bárok és éjszakai élet</string>
+    <string name="cat_childcare">Gyermekfelügyelet</string>
+    <string name="cat_mortgage">Jelzáloghitel</string>
+    <string name="cat_insurance">Biztosítás</string>
+    <string name="cat_phone_internet">Telefon és internet</string>
+    <string name="cat_other">Egyéb</string>
+
+    <!-- In-app update prompt (Google Play In-App Updates) -->
+    <string name="update_downloaded_message">Egy frissítés letöltődött.</string>
+    <string name="update_restart_action">Újraindítás</string>
+
+    <!-- Home · Budgets card empty state -->
+    <string name="home_no_budgets">Még nincs költségvetés</string>
+    <string name="home_no_budgets_sub">Állíts be egyet, és a Budgetty megmutatja, hogyan haladsz.</string>
+    <string name="home_set_budget_cta">Állíts be költségvetést</string>
+
+    <!-- Wellbeing (score + weekly/monthly coaching) -->
+    <string name="action_dismiss">Elvetés</string>
+    <string name="wellbeing_title">Jóllét</string>
+    <string name="wellbeing_weekly">Heti</string>
+    <string name="wellbeing_monthly">Havi</string>
+    <string name="wellbeing_out_of_100">a 100-ból</string>
+    <string name="wellbeing_built_from">MIBŐL ÁLL ÖSSZE</string>
+    <string name="wellbeing_renormalise_note">Az adat nélküli összetevő nem számít – a pontszámod a többire súlyozódik.</string>
+    <string name="wellbeing_not_counted">Nem számít bele</string>
+    <string name="wellbeing_vs_last_week">az előző héthez képest</string>
+    <string name="wellbeing_trend_label">AZ UTOLSÓ HAT LEZÁRT HÓNAP</string>
+    <string name="wellbeing_trend_up">%1$d-dal feljebb %2$s óta.</string>
+    <string name="wellbeing_trend_down">%1$d-dal lejjebb %2$s óta.</string>
+    <string name="wellbeing_trend_flat">Stabil %1$s óta.</string>
+    <string name="wellbeing_projected_gain">+%1$d a pontszámodhoz</string>
+    <string name="wellbeing_streak_scope_overall">Teljes költségvetés</string>
+    <plurals name="wellbeing_band_up">
+        <item quantity="one">%1$d pont a(z) %2$s eléréséig</item>
+        <item quantity="other">%1$d pont a(z) %2$s eléréséig</item>
+    </plurals>
+    <plurals name="wellbeing_streak_under">
+        <item quantity="one">%1$s — %2$d hónap keret alatt</item>
+        <item quantity="other">%1$s — %2$d hónap keret alatt</item>
+    </plurals>
+    <string name="wellbeing_this_week">Ez a hét</string>
+    <string name="wellbeing_of_weekly_budget">a(z) %1$s heti költségvetésedből</string>
+    <string name="wellbeing_left_days">%1$s maradt · %2$d nap van hátra</string>
+    <string name="wellbeing_updates_monthly">Jólléti pontszám · havonta frissül</string>
+    <string name="wellbeing_not_scored_yet">Még nincs pontszám</string>
+    <string name="wellbeing_first_run_body">Rögzíts pár hét költést, és állíts be költségvetést a jólléti pontszámod feloldásához.</string>
+    <string name="wellbeing_setup_receipts">%1$d nyugta rögzítve</string>
+    <string name="wellbeing_setup_budget">Állítsd be az első költségvetésed</string>
+    <string name="wellbeing_setup_history">Egy hónapnyi előzmény</string>
+    <string name="wellbeing_focus_week">Fókusz ezen a héten</string>
+    <string name="wellbeing_focus_month">Fókusz ebben a hónapban</string>
+    <string name="wellbeing_tip_count">%1$d tipp</string>
+    <string name="wellbeing_got_it">Értem</string>
+    <string name="wellbeing_wins">Sikerek ebben a hónapban</string>
+    <string name="wellbeing_focus_label">FÓKUSZ A KÖVETKEZŐ HÓNAPRA</string>
+    <string name="wellbeing_privacy_footer">Ezen a telefonon számoljuk ki a saját nyugtáidból és költségvetéseidből. Semmi nem hagyja el az eszközt.</string>
+
+    <!-- Wellbeing · band words -->
+    <string name="wellbeing_band_needs_work">Van mit javítani</string>
+    <string name="wellbeing_band_getting_there">Halad</string>
+    <string name="wellbeing_band_healthy">Egészséges</string>
+    <string name="wellbeing_band_thriving">Virágzik</string>
+
+    <!-- Wellbeing · component names -->
+    <string name="wellbeing_comp_savings">Megtakarítási ráta</string>
+    <string name="wellbeing_comp_budget">Költségvetés betartása</string>
+    <string name="wellbeing_comp_trend">Költési trend</string>
+    <string name="wellbeing_comp_subs">Előfizetések</string>
+    <string name="wellbeing_comp_goals">Célok</string>
+
+    <!-- Wellbeing · component explanations -->
+    <string name="wellbeing_why_savings">A bevételed %1$d%%-át megtartottad – %2$s a(z) %3$s-ból. 20%% felett teljes pontszám jár.</string>
+    <string name="wellbeing_why_budget_ok">Mind a(z) %1$d költségvetés terven belül.</string>
+    <string name="wellbeing_why_budget_over">%1$d/%2$d költségvetés túllépve, %3$s a terv felett. Minden kategória a kereten belül teljes pontszámot ér.</string>
+    <string name="wellbeing_why_trend_up">A költés %1$d%%-kal a(z) %2$s átlagod felett van. A változatlan vagy csökkenő teljes pontszámot ér.</string>
+    <string name="wellbeing_why_trend_down">A költés %1$d%%-kal a(z) %2$s átlagod alatt van. A változatlan vagy csökkenő teljes pontszámot ér.</string>
+    <string name="wellbeing_why_trend_none">Még nincs elég előzmény a trended megítéléséhez.</string>
+    <string name="wellbeing_why_subs">%1$s havonta előfizetésekre – a költésed %2$d%%-a. 5%% alatt teljes pontszám jár.</string>
+    <string name="wellbeing_why_goals">%1$d/%2$d cél jó ütemben.</string>
+
+    <!-- Wellbeing · component links -->
+    <string name="wellbeing_link_savings">Megtakarítási ráta megtekintése</string>
+    <string name="wellbeing_link_budget">Költségvetések megtekintése</string>
+    <string name="wellbeing_link_trend">Trend megtekintése</string>
+    <string name="wellbeing_link_subs">Előfizetések áttekintése</string>
+    <string name="wellbeing_link_goals">Célok megtekintése</string>
+
+    <!-- Wellbeing · tip titles -->
+    <string name="wellbeing_tip_cashflow_title">%1$s-sel többet költöttél, mint amennyit kerestél ebben a hónapban</string>
+    <plurals name="wellbeing_tip_overbudget_title">
+        <item quantity="one">Túllépted a keretet %1$d kategóriában — %2$s a terv felett</item>
+        <item quantity="other">Túllépted a keretet %1$d kategóriában — %2$s a terv felett</item>
+    </plurals>
+    <string name="wellbeing_tip_spike_title">%1$s %2$d%%-kal feljebb — %3$s a(z) %4$s átlagodhoz képest</string>
+    <plurals name="wellbeing_tip_subs_title">
+        <item quantity="one">%1$d előfizetés — %2$s havonta</item>
+        <item quantity="other">%1$d előfizetés — %2$s havonta</item>
+    </plurals>
+    <string name="wellbeing_tip_missingbudget_title">Körülbelül %1$s-t költesz havonta erre: %2$s, de nincs rá költségvetés</string>
+    <string name="wellbeing_tip_nogoal_title">Még nincs megtakarítási cél – havi kevés is tartalékot épít</string>
+    <string name="wellbeing_tip_goaloff_title">%1$s lemaradásban van</string>
+    <string name="wellbeing_tip_savingswin_title">Szép – a bevételed %1$d%%-át megtakarítottad ebben a hónapban</string>
+    <string name="wellbeing_tip_improved_title">%1$s %2$d%%-kal lejjebb ebben a hónapban</string>
+    <string name="wellbeing_tip_pace_title">A heti költségvetésed %1$d%%-ánál tartasz</string>
+    <plurals name="wellbeing_tip_leak_title">
+        <item quantity="one">%1$d apró vásárlás itt: %2$s ezen a héten</item>
+        <item quantity="other">%1$d apró vásárlás itt: %2$s ezen a héten</item>
+    </plurals>
+    <string name="wellbeing_tip_underpace_title">Ezen a héten a terv alatt vagy</string>
+
+    <!-- Wellbeing · tip details -->
+    <string name="wellbeing_tip_savingswin_detail">%1$s félretéve ebben a hónapban.</string>
+    <string name="wellbeing_tip_subs_detail">A költésed %1$d%%-a előfizetésekre megy.</string>
+    <string name="wellbeing_tip_pace_detail">%1$s maradt a hét hátralévő részére.</string>
+    <string name="wellbeing_tip_leak_detail">Összesen %1$s – apró, de összeadódik.</string>
+    <string name="wellbeing_tip_missingbudget_detail">Egy költségvetés pontozhatóvá teszi ezt.</string>
+    <string name="wellbeing_tip_nogoal_detail">Már egy kis havi összeg is feladatot ad a maradék pénzednek.</string>
+
+    <!-- Wellbeing · tip CTAs -->
+    <string name="wellbeing_cta_where">Nézd meg, hová ment</string>
+    <string name="wellbeing_cta_view_budgets">Költségvetések megtekintése</string>
+    <string name="wellbeing_cta_review_subs">Előfizetések áttekintése</string>
+    <string name="wellbeing_cta_create_goal">Cél létrehozása</string>
+    <string name="wellbeing_cta_see_txns">Tételek megtekintése</string>
+    <string name="wellbeing_cta_set_budget">Költségvetés beállítása</string>
+    <string name="wellbeing_cta_add_receipt">Nyugta hozzáadása</string>
+
+    <!-- Wellbeing · wins -->
+    <string name="wellbeing_win_savings">A bevétel %1$d%%-a megtakarítva</string>
+    <string name="wellbeing_win_improved">%1$s %2$d%%-kal lejjebb</string>
+    <string name="wellbeing_win_underpace">A terv alatt ezen a héten</string>
+    <string name="wellbeing_win_generic">Szép munka</string>
+
+    <!-- Wellbeing · focus for next month -->
+    <string name="wellbeing_focus_savings">Tegyél félre egy kicsivel többet a jövő hónapban a pontszámod emeléséhez.</string>
+    <string name="wellbeing_focus_budget">Hozd vissza a keretet túllépő kategóriáidat a pontszámod emeléséhez.</string>
+    <string name="wellbeing_focus_trend">Vidd vissza a költést az átlagod felé a pontszámod emeléséhez.</string>
+    <string name="wellbeing_focus_subs">Mondj le egy nem használt előfizetést a pontszámod emeléséhez.</string>
+    <string name="wellbeing_focus_goals">Terelgesd vissza a céljaidat a jó ütembe a pontszámod emeléséhez.</string>
+
+    <!-- Wellbeing · entry points (Home banner + Insights row) -->
+    <string name="wellbeing_entry_label">Jóllét</string>
+    <string name="wellbeing_entry_score">Jólléti pontszám</string>
+    <string name="wellbeing_entry_setup">Beállítás</string>
+    <string name="wellbeing_banner_firstrun">Állíts be költségvetést a feloldásához</string>
+    <string name="wellbeing_banner_cashflow">%1$s-sel több kiadás, mint bevétel</string>
+    <string name="wellbeing_banner_overbudget">Túllépted a keretet ebben a hónapban</string>
+    <string name="wellbeing_banner_spike">%1$s %2$d%%-kal feljebb</string>
+    <string name="wellbeing_banner_subs">%1$s havonta előfizetésekre</string>
+    <string name="wellbeing_banner_missingbudget">Nincs költségvetés erre: %1$s</string>
+    <string name="wellbeing_banner_nogoal">Indíts megtakarítási célt</string>
+    <string name="wellbeing_banner_savingswin">%1$d%% megtakarítva ebben a hónapban</string>
+    <string name="wellbeing_banner_generic">Nézd meg, hogy állsz</string>
+
+    <!-- Category breakdown / pie chart -->
+    <string name="pie_center_total">Összesen</string>
+    <string name="pie_slice_share">a költés %1$d%%-a</string>
+    <string name="pie_all_categories">Minden kategória</string>
+    <string name="pie_amount_total">%1$s összesen</string>
+    <string name="pie_no_spending">Nincs költés ebben az időszakban</string>
+    <!-- Fallback title for a receipt saved without a store name -->
+    <string name="receipt_fallback_name">Nyugta</string>
+    <!-- Home empty-receipts prompt; %1$s is the accented "+ Add receipt" label spliced in by the UI -->
+    <string name="home_empty_receipts_cta">+ Nyugta hozzáadása</string>
+    <string name="home_empty_receipts_body">Koppints a(z) %1$s gombra az első beolvasásához – beolvassuk és kategorizáljuk neked.</string>
+
+    <!-- Buying limits (Account → Buying limits): keyword-based item purchase caps -->
+    <string name="account_buying_limits">Vásárlási limitek</string>
+    <string name="buying_limits_title">Vásárlási limitek</string>
+    <string name="buying_limits_subtitle">A mentett nyugtáid tételei alapján számolva.</string>
+    <string name="buying_limits_empty_title">Állíts be vásárlási limitet</string>
+    <string name="buying_limits_empty_body">Korlátozd, mennyit veszel valamiből – a nyugtáidból számoljuk.</string>
+    <string name="buying_limits_add">Limit hozzáadása</string>
+    <string name="buying_limits_free_hint">%1$d limit ingyenes · korlátlan Prémiummal</string>
+    <string name="buying_limits_explainer">Egy limit néhány kulcsszóból, egy hétből vagy hónapból és egy számból áll.</string>
+    <string name="buying_limits_explainer_example">legfeljebb 1 Coke hetente</string>
+    <string name="buying_limits_status_on_track">Jó úton</string>
+    <string name="buying_limits_status_at_limit">Limiten</string>
+    <string name="buying_limits_status_over">%1$d-dal túllépve</string>
+    <string name="buying_limits_weekly">Heti</string>
+    <string name="buying_limits_monthly">Havi</string>
+    <string name="buying_limits_bought_of">%1$d/%2$d megvéve</string>
+    <string name="buying_limits_bought_over">%1$d megvéve, limit %2$d</string>
+    <string name="buying_limits_resets">nullázódik %1$s</string>
+    <string name="buying_limits_cap_pill">%1$d / %2$d</string>
+    <string name="buying_limits_unlock_title">Korlátlan vásárlási limitek feloldása</string>
+    <string name="buying_limits_unlock_body">Az ingyenes csomag %1$d vásárlási limitet tartalmaz. A Prémiummal annyit adhatsz hozzá, amennyit csak szeretnél – ráadásul korlátlan beolvasás és egyéni kategóriák.</string>
+    <string name="buying_limits_used">%1$d/%2$d ingyenes limit felhasználva</string>
+    <string name="buying_limits_new_title">Új limit</string>
+    <string name="buying_limits_edit_title">Limit szerkesztése</string>
+    <string name="buying_limits_delete">Limit törlése</string>
+    <string name="buying_limits_label">Címke</string>
+    <string name="buying_limits_label_optional">Címke · opcionális</string>
+    <string name="buying_limits_label_hint">pl. Üdítők</string>
+    <string name="buying_limits_keywords">Kulcsszavak</string>
+    <string name="buying_limits_keywords_hint">Kulcsszó hozzáadása</string>
+    <string name="buying_limits_keywords_helper">Bármelyik ugyanabba a limitbe számít.</string>
+    <string name="buying_limits_remove_keyword">%1$s eltávolítása</string>
+    <string name="buying_limits_pick_emoji">Válassz emodzsit</string>
+    <string name="buying_limits_matches_header">Jelenlegi találatok</string>
+    <string name="buying_limits_no_match_title">Még nincs egyező tétel</string>
+    <string name="buying_limits_no_match_body">A mentett nyugtáidon semmi nem egyezik. A következőtől kezdjük a számolást.</string>
+    <string name="buying_limits_broad_header">Sokat fog be</string>
+    <string name="buying_limits_use_instead">Használd inkább ezt: “%1$s”</string>
+    <string name="buying_limits_more">+%1$d további</string>
+    <string name="buying_limits_this_week">ezen a héten</string>
+    <string name="buying_limits_this_month">ebben a hónapban</string>
+    <plurals name="buying_limits_bought_this">
+        <item quantity="one">%1$d megvéve %2$s</item>
+        <item quantity="other">%1$d megvéve %2$s</item>
+    </plurals>
+    <string name="buying_limits_timeframe">Időkeret</string>
+    <string name="buying_limits_per_week">Heti limit</string>
+    <string name="buying_limits_per_month">Havi limit</string>
+    <string name="buying_limits_decrease">Limit csökkentése</string>
+    <string name="buying_limits_increase">Limit növelése</string>
+    <string name="buying_limit_nudge_title">Figyelj – ez %1$d× %2$s %3$s (limit %4$d).</string>
+    <string name="buying_limit_nudge_body">Nyugta mentve. A(z) %1$s limited nullázódik %2$s.</string>
+    <string name="buying_limit_nudge_dismiss">Értem</string>
+    <string name="buying_limit_nudge_view">Limitek megtekintése</string>
+    <!-- Buying-limit / budget streak captions (§2.6, §4.2). Shared calm streak language, no flames. -->
+    <plurals name="streak_weeks_under">
+        <item quantity="one">· %1$d hét keret alatt</item>
+        <item quantity="other">· %1$d hét keret alatt</item>
+    </plurals>
+    <plurals name="streak_months_under">
+        <item quantity="one">· %1$d hónap keret alatt</item>
+        <item quantity="other">· %1$d hónap keret alatt</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_weeks">
+        <item quantity="one">Legjobb sorozat: %1$d hét</item>
+        <item quantity="other">Legjobb sorozat: %1$d hét</item>
+    </plurals>
+    <plurals name="buying_limits_streak_best_months">
+        <item quantity="one">Legjobb sorozat: %1$d hónap</item>
+        <item quantity="other">Legjobb sorozat: %1$d hónap</item>
+    </plurals>
+    <!-- History strip (§4.3): met windows out of the last N. -->
+    <string name="buying_limits_history_weeks">Az utolsó %2$d hétből %1$d teljesítve</string>
+    <string name="buying_limits_history_months">Az utolsó %2$d hónapból %1$d teljesítve</string>
+    <!-- Suggested limits (§4.4). -->
+    <string name="buying_limits_suggest_title">Mostanában a legtöbbet véve</string>
+    <string name="buying_limits_suggest_subtitle">utolsó 60 nap</string>
+    <string name="buying_limits_suggest_prompt">%1$s-t %2$d× vetted a múlt hónapban – korlátozod?</string>
+    <string name="buying_limits_suggest_cap">Javaslat: %1$d</string>
+    <string name="buying_limits_suggest_dismiss">Javaslat elvetése</string>
+    <string name="paywall_benefit_limits">Korlátlan vásárlási limitek</string>
+    <string name="paywall_benefit_limits_detail">Az ingyenes csomag %1$d-t tartalmaz</string>
+
+    <!-- End-of-period recap -->
+    <string name="section_recap">Összegzés</string>
+    <string name="recap_settings_title">Időszaki összegzés</string>
+    <string name="recap_settings_sub_on">Összefoglaló az időszak lezárultakor</string>
+    <string name="recap_settings_sub_off">Kapj összefoglalót, amikor egy hónap vagy hét lezárul</string>
+    <string name="recap_freq_both">Mindkettő</string>
+    <string name="recap_hint_weekly">Minden %1$s, az épp lezárult hétről. Nincs havi értékelő.</string>
+    <string name="recap_hint_monthly">A következő ekkor: %1$s – a havi a fizetési ciklusod kezdőnapját követi.</string>
+    <string name="recap_hint_both">Minden %1$s, és újra ekkor: %2$s a hónapról. A heti egy rövid lendületellenőrzés.</string>
+    <string name="recap_footnote_on">Nem értesítés. Akkor jelenik meg, amikor az időszak után legközelebb megnyitod a Budgettyt, időszakonként egyszer, és a Kezdőlapra zár be.</string>
+    <string name="recap_footnote_off">Kapcsold be, hogy rövid összefoglalót kapj egy hónap vagy hét lezárultakor. A legutóbbit az Elemzésekből is megnyithatod.</string>
+    <string name="recap_reopen_title">A legutóbbi összegzésed</string>
+    <string name="recap_reopen_sub">A legutóbbi lezárt időszakod összefoglalója</string>
+    <string name="recap_reopen_empty">Még nincs összegzés. Akkor látsz majd egyet, amikor egy időszak lezárul.</string>
+    <string name="recap_tag_monthly">HAVI ÖSSZEGZÉS</string>
+    <string name="recap_tag_weekly">HETI ÖSSZEGZÉS</string>
+    <string name="recap_title_week">Ez a hét</string>
+    <string name="recap_action_details">Részletek megtekintése</string>
+    <string name="recap_cover_title_month">A(z) %1$s hónapod összegzése</string>
+    <string name="recap_cover_title_week">A heted összegzése</string>
+    <string name="recap_cover_sub_month">Koppints az előrelépéshez, a bal szélre a visszalépéshez.</string>
+    <string name="recap_cover_hint">Koppints a kezdéshez</string>
+    <string name="recap_total_kicker">%1$s – ENNYIT KÖLTÖTTÉL</string>
+    <string name="recap_vs">vs %1$s</string>
+    <string name="recap_vs_last_week">az előző héthez képest</string>
+    <string name="recap_total_sub_less">%1$s-sel kevesebb, mint %2$s (%3$s).</string>
+    <string name="recap_total_sub_more">%1$s-sel több, mint %2$s (%3$s).</string>
+    <string name="recap_total_sub_none">A teljes költésed erre: %1$s.</string>
+    <string name="recap_score_kicker">JÓLLÉTI PONTSZÁM</string>
+    <string name="recap_score_sub">Megtakarításból, költségvetésből, célokból, trendből és előfizetésekből áll össze. Havonta frissül.</string>
+    <string name="recap_mover_kicker">A LEGNAGYOBB VÁLTOZÁSOD</string>
+    <string name="recap_mover_sub_drop">%1$s csökkent %2$s-ról %3$s-ra.</string>
+    <string name="recap_mover_sub_rise">%1$s nőtt %2$s-ról %3$s-ra.</string>
+    <string name="recap_mover_second_down">%1$s csökkent %2$s-sel.</string>
+    <string name="recap_mover_second_up">%1$s nőtt %2$s-sel.</string>
+    <string name="recap_budget_kicker">KÖLTSÉGVETÉS</string>
+    <string name="recap_budget_streak_one">Kereten belül ebben a hónapban</string>
+    <string name="recap_budget_streak_many">%1$d hónap egymás után kereten belül</string>
+    <string name="recap_budget_panel">%2$d kategóriából %1$d kereten belül</string>
+    <string name="recap_budget_safe">Nyugodtan költhető, záráskor</string>
+    <string name="recap_limits_kicker">VÁSÁRLÁSI LIMITEK</string>
+    <string name="recap_of">%1$d/%2$d</string>
+    <string name="recap_limits_sub">%2$d limitből %1$d alatt maradtál.</string>
+    <string name="recap_limits_chip">%1$s %2$d/%3$d</string>
+    <string name="recap_focus_kicker_month">FÓKUSZ ERRE: %1$s</string>
+    <string name="recap_focus_kicker_week">FÓKUSZ EZEN A HÉTEN</string>
+    <string name="recap_focus_cap">Tartsd a(z) %1$s-t %2$s alatt.</string>
+    <string name="recap_focus_watch">Tartsd szemmel ezt: %1$s.</string>
+    <string name="recap_focus_setbudget">Állíts be költségvetést erre: %1$s.</string>
+    <string name="recap_focus_keep">Csak így tovább – jó irányba haladsz.</string>
+    <string name="recap_focus_week_note">A pontszámod változatlan – havonta frissül.</string>
+    <string name="recap_pace_kicker">EZT KÖLTÖTTED EZEN A HÉTEN</string>
+    <string name="recap_pace_budget">a(z) %2$s heti költségvetésedből %1$s</string>
+    <string name="recap_pace_left">%1$s maradt</string>
+    <string name="recap_pace_over">%1$s a kereten felül</string>
+    <string name="recap_pace_nobudget">Nincs beállítva heti költségvetés</string>
+    <string name="recap_streak_kicker">KÖLTSÉGVETÉSI SOROZAT</string>
+    <string name="recap_streak_week_scope">%1$d hét a(z) %2$s költségvetésed alatt</string>
+    <string name="recap_streak_week_all">%1$d hét kereten belül</string>
+    <string name="recap_streak_best_weeks">Legjobb sorozat: %1$d hét</string>
+    <string name="recap_streak_best_months">Legjobb sorozat: %1$d hónap</string>
+    <string name="recap_streak_week_counted">%1$d lezárt hét beszámítva.</string>
+    <string name="recap_streak_week_live">Ez a hét eddig jó úton van.</string>
+    <string name="recap_streak_best_week_scope_sub">%1$s · a legjobb az utolsó 24 hétben</string>
+    <string name="recap_streak_best_week_sub">A legjobb az utolsó 24 hétben</string>
+    <string name="recap_streak_month_counted">%1$d lezárt hónap</string>
+    <string name="recap_streak_month_live">%1$s eddig jó úton</string>
+    <string name="recap_streak_best_month_sub">A legjobb az utolsó 24 hónapban</string>
+    <string name="recap_freq_row_label">Heti összegzések</string>
+    <string name="recap_freq_change">Módosítás</string>
+    <string name="recap_freq_sheet_title">Összegzés gyakorisága</string>
+    <string name="recap_freq_sheet_sub">Mikor mutat a Budgetty összegzést.</string>
+    <string name="recap_freq_off">Ki</string>
+</resources>
