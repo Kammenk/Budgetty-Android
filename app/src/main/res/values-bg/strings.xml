@@ -42,12 +42,12 @@
     <string name="consent_title">Помогни да подобрим Budgetty</string>
     <string name="consent_subtitle">Две неща, които можеш да споделиш, ако искаш. И двете са изключени, докато не ги включиш.</string>
     <string name="consent_analytics_label">Анализ на употребата</string>
-    <string name="consent_analytics_desc">Анонимни данни за това кои функции използваш, за да можем да подобряваме Budgetty. Никога твоите бележки, суми или лични данни.</string>
+    <string name="consent_analytics_desc">Анонимизирани данни за това кои функции използваш, за да можем да подобряваме Budgetty. Никога твоите бележки, суми или лични данни.</string>
     <string name="consent_crash_label">Сривове и диагностика</string>
     <string name="consent_crash_desc">Автоматични отчети за сривове и данни за производителността, за да отстраняваме проблемите по-бързо.</string>
-    <string name="consent_detail_toggle">Какво събираме и какво никога</string>
+    <string name="consent_detail_toggle">Какво събираме — и какво не</string>
     <string name="consent_collected_header">Събира се</string>
-    <string name="consent_never_header">Никога</string>
+    <string name="consent_never_header">Не се събира</string>
     <string name="consent_collected_1">Кои екрани отваряш</string>
     <string name="consent_collected_2">Кои функции използваш</string>
     <string name="consent_collected_3">Отчети за сривове</string>

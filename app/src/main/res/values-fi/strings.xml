@@ -100,12 +100,12 @@
     <string name="consent_title">Auta parantamaan Budgettya</string>
     <string name="consent_subtitle">Kaksi asiaa, jotka voit jakaa halutessasi. Molemmat ovat pois päältä, kunnes otat ne käyttöön.</string>
     <string name="consent_analytics_label">Käyttöanalytiikka</string>
-    <string name="consent_analytics_desc">Anonyymejä tietoja siitä, mitä ominaisuuksia käytät, jotta voimme parantaa Budgettya. Ei koskaan kuittejasi, summiasi tai henkilötietojasi.</string>
+    <string name="consent_analytics_desc">Anonymisoituja tietoja siitä, mitä ominaisuuksia käytät, jotta voimme parantaa Budgettya. Ei koskaan kuittejasi, summiasi tai henkilötietojasi.</string>
     <string name="consent_crash_label">Kaatumiset ja diagnostiikka</string>
     <string name="consent_crash_desc">Automaattiset kaatumisraportit ja suorituskykytiedot, jotta voimme korjata ongelmat nopeammin.</string>
     <string name="consent_detail_toggle">Mitä keräämme ja mitä emme</string>
     <string name="consent_collected_header">Kerätään</string>
-    <string name="consent_never_header">Ei koskaan</string>
+    <string name="consent_never_header">Ei kerätä</string>
     <string name="consent_collected_1">Mitä näyttöjä avaat</string>
     <string name="consent_collected_2">Mitä ominaisuuksia käytät</string>
     <string name="consent_collected_3">Kaatumisraportit</string>

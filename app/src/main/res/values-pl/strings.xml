@@ -42,12 +42,12 @@
     <string name="consent_title">Pomóż ulepszać Budgetty</string>
     <string name="consent_subtitle">Dwie rzeczy, którymi możesz się podzielić, jeśli chcesz. Obie są wyłączone, dopóki ich nie włączysz.</string>
     <string name="consent_analytics_label">Analiza użytkowania</string>
-    <string name="consent_analytics_desc">Anonimowe dane o tym, których funkcji używasz, abyśmy mogli ulepszać Budgetty. Nigdy Twoich paragonów, kwot ani danych osobowych.</string>
+    <string name="consent_analytics_desc">Zanonimizowane dane o tym, których funkcji używasz, abyśmy mogli ulepszać Budgetty. Nigdy Twoich paragonów, kwot ani danych osobowych.</string>
     <string name="consent_crash_label">Awarie i diagnostyka</string>
     <string name="consent_crash_desc">Automatyczne raporty o awariach i dane o wydajności, abyśmy mogli szybciej rozwiązywać problemy.</string>
-    <string name="consent_detail_toggle">Co zbieramy, a czego nigdy</string>
+    <string name="consent_detail_toggle">Co zbieramy — a czego nie</string>
     <string name="consent_collected_header">Zbierane</string>
-    <string name="consent_never_header">Nigdy</string>
+    <string name="consent_never_header">Niezbierane</string>
     <string name="consent_collected_1">Które ekrany otwierasz</string>
     <string name="consent_collected_2">Których funkcji używasz</string>
     <string name="consent_collected_3">Raporty o awariach</string>

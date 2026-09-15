@@ -132,12 +132,12 @@
     <string name="consent_title">Segíts jobbá tenni a Budgettyt</string>
     <string name="consent_subtitle">Két dolog, amit megoszthatsz, ha szeretnéd. Mindkettő ki van kapcsolva, amíg be nem kapcsolod.</string>
     <string name="consent_analytics_label">Használati analitika</string>
-    <string name="consent_analytics_desc">Névtelen adatok arról, mely funkciókat használod, hogy jobbá tehessük a Budgettyt. Soha nem a nyugtáid, összegeid vagy személyes adataid.</string>
+    <string name="consent_analytics_desc">Anonimizált adatok arról, mely funkciókat használod, hogy jobbá tehessük a Budgettyt. Soha nem a nyugtáid, összegeid vagy személyes adataid.</string>
     <string name="consent_crash_label">Összeomlás és diagnosztika</string>
     <string name="consent_crash_desc">Automatikus összeomlás-jelentések és teljesítményadatok, hogy gyorsabban javíthassuk a hibákat.</string>
-    <string name="consent_detail_toggle">Mit gyűjtünk, és mit soha</string>
+    <string name="consent_detail_toggle">Mit gyűjtünk — és mit nem</string>
     <string name="consent_collected_header">Gyűjtött adatok</string>
-    <string name="consent_never_header">Soha</string>
+    <string name="consent_never_header">Nem gyűjtött adatok</string>
     <string name="consent_collected_1">Mely képernyőket nyitod meg</string>
     <string name="consent_collected_2">Mely funkciókat használod</string>
     <string name="consent_collected_3">Összeomlás-jelentések</string>

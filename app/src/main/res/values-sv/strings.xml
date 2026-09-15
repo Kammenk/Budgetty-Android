@@ -100,12 +100,12 @@
     <string name="consent_title">Hjälp till att förbättra Budgetty</string>
     <string name="consent_subtitle">Två saker du kan dela, om du vill. Båda är av tills du slår på dem.</string>
     <string name="consent_analytics_label">Användningsanalys</string>
-    <string name="consent_analytics_desc">Anonym data om vilka funktioner du använder, så att vi kan förbättra Budgetty. Aldrig dina kvitton, belopp eller personuppgifter.</string>
+    <string name="consent_analytics_desc">Anonymiserad data om vilka funktioner du använder, så att vi kan förbättra Budgetty. Aldrig dina kvitton, belopp eller personuppgifter.</string>
     <string name="consent_crash_label">Krascher och diagnostik</string>
     <string name="consent_crash_desc">Automatiska kraschrapporter och prestandadata så att vi kan åtgärda problem snabbare.</string>
-    <string name="consent_detail_toggle">Vad vi samlar in, och aldrig</string>
+    <string name="consent_detail_toggle">Vad vi samlar in — och vad inte</string>
     <string name="consent_collected_header">Samlas in</string>
-    <string name="consent_never_header">Aldrig</string>
+    <string name="consent_never_header">Samlas inte in</string>
     <string name="consent_collected_1">Vilka skärmar du öppnar</string>
     <string name="consent_collected_2">Vilka funktioner du använder</string>
     <string name="consent_collected_3">Kraschrapporter</string>

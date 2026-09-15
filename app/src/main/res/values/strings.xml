@@ -132,12 +132,12 @@
     <string name="consent_title">Help improve Budgetty</string>
     <string name="consent_subtitle">Two things you can share, if you want to. Both are off until you turn them on.</string>
     <string name="consent_analytics_label">Usage analytics</string>
-    <string name="consent_analytics_desc">Anonymous data about which features you use, so we can improve Budgetty. Never your receipts, amounts, or personal info.</string>
+    <string name="consent_analytics_desc">Anonymized data about which features you use, so we can improve Budgetty. Never your receipts, amounts, or personal info.</string>
     <string name="consent_crash_label">Crash &amp; diagnostics</string>
     <string name="consent_crash_desc">Automatic crash reports and performance data so we can fix problems faster.</string>
-    <string name="consent_detail_toggle">What we collect, and never</string>
+    <string name="consent_detail_toggle">What we collect — and what we don\'t</string>
     <string name="consent_collected_header">Collected</string>
-    <string name="consent_never_header">Never</string>
+    <string name="consent_never_header">Not collected</string>
     <string name="consent_collected_1">Which screens you open</string>
     <string name="consent_collected_2">Which features you use</string>
     <string name="consent_collected_3">Crash reports</string>
