@@ -42,12 +42,12 @@
     <string name="consent_title">Hilf mit, Budgetty zu verbessern</string>
     <string name="consent_subtitle">Zwei Dinge, die du teilen kannst, wenn du möchtest. Beide sind aus, bis du sie einschaltest.</string>
     <string name="consent_analytics_label">Nutzungsanalyse</string>
-    <string name="consent_analytics_desc">Anonyme Daten darüber, welche Funktionen du nutzt, damit wir Budgetty verbessern können. Niemals deine Belege, Beträge oder persönlichen Daten.</string>
+    <string name="consent_analytics_desc">Anonymisierte Daten darüber, welche Funktionen du nutzt, damit wir Budgetty verbessern können. Niemals deine Belege, Beträge oder persönlichen Daten.</string>
     <string name="consent_crash_label">Abstürze und Diagnose</string>
     <string name="consent_crash_desc">Automatische Absturzberichte und Leistungsdaten, damit wir Probleme schneller beheben können.</string>
-    <string name="consent_detail_toggle">Was wir erfassen und was nie</string>
+    <string name="consent_detail_toggle">Was wir erfassen — und was nicht</string>
     <string name="consent_collected_header">Erfasst</string>
-    <string name="consent_never_header">Nie</string>
+    <string name="consent_never_header">Nicht erfasst</string>
     <string name="consent_collected_1">Welche Bildschirme du öffnest</string>
     <string name="consent_collected_2">Welche Funktionen du nutzt</string>
     <string name="consent_collected_3">Absturzberichte</string>

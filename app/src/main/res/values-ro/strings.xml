@@ -100,12 +100,12 @@
     <string name="consent_title">Ajută la îmbunătățirea Budgetty</string>
     <string name="consent_subtitle">Două lucruri pe care le poți partaja, dacă vrei. Ambele sunt dezactivate până când le activezi.</string>
     <string name="consent_analytics_label">Analiză de utilizare</string>
-    <string name="consent_analytics_desc">Date anonime despre funcțiile pe care le folosești, ca să putem îmbunătăți Budgetty. Niciodată bonurile, sumele sau datele tale personale.</string>
+    <string name="consent_analytics_desc">Date anonimizate despre funcțiile pe care le folosești, ca să putem îmbunătăți Budgetty. Niciodată bonurile, sumele sau datele tale personale.</string>
     <string name="consent_crash_label">Blocări și diagnosticare</string>
     <string name="consent_crash_desc">Rapoarte automate despre blocări și date de performanță, ca să putem rezolva problemele mai repede.</string>
     <string name="consent_detail_toggle">Ce colectăm și ce nu</string>
     <string name="consent_collected_header">Se colectează</string>
-    <string name="consent_never_header">Niciodată</string>
+    <string name="consent_never_header">Nu se colectează</string>
     <string name="consent_collected_1">Ce ecrane deschizi</string>
     <string name="consent_collected_2">Ce funcții folosești</string>
     <string name="consent_collected_3">Rapoarte despre blocări</string>

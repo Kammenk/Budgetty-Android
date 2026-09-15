@@ -42,12 +42,12 @@
     <string name="consent_title">Help Budgetty verbeteren</string>
     <string name="consent_subtitle">Twee dingen die je kunt delen, als je wilt. Beide staan uit totdat je ze aanzet.</string>
     <string name="consent_analytics_label">Gebruiksanalyse</string>
-    <string name="consent_analytics_desc">Anonieme gegevens over welke functies je gebruikt, zodat we Budgetty kunnen verbeteren. Nooit je bonnen, bedragen of persoonlijke gegevens.</string>
+    <string name="consent_analytics_desc">Geanonimiseerde gegevens over welke functies je gebruikt, zodat we Budgetty kunnen verbeteren. Nooit je bonnen, bedragen of persoonlijke gegevens.</string>
     <string name="consent_crash_label">Crashes en diagnostiek</string>
     <string name="consent_crash_desc">Automatische crashrapporten en prestatiegegevens zodat we problemen sneller kunnen oplossen.</string>
-    <string name="consent_detail_toggle">Wat we verzamelen, en nooit</string>
+    <string name="consent_detail_toggle">Wat we verzamelen — en wat niet</string>
     <string name="consent_collected_header">Verzameld</string>
-    <string name="consent_never_header">Nooit</string>
+    <string name="consent_never_header">Niet verzameld</string>
     <string name="consent_collected_1">Welke schermen je opent</string>
     <string name="consent_collected_2">Welke functies je gebruikt</string>
     <string name="consent_collected_3">Crashrapporten</string>

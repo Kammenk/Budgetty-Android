@@ -100,12 +100,12 @@
     <string name="consent_title">Pomozte vylepšit Budgetty</string>
     <string name="consent_subtitle">Dvě věci, které můžete sdílet, pokud chcete. Obě jsou vypnuté, dokud je nezapnete.</string>
     <string name="consent_analytics_label">Analýza používání</string>
-    <string name="consent_analytics_desc">Anonymní údaje o tom, které funkce používáte, abychom mohli Budgetty vylepšovat. Nikdy vaše účtenky, částky ani osobní údaje.</string>
+    <string name="consent_analytics_desc">Anonymizované údaje o tom, které funkce používáte, abychom mohli Budgetty vylepšovat. Nikdy vaše účtenky, částky ani osobní údaje.</string>
     <string name="consent_crash_label">Pády a diagnostika</string>
     <string name="consent_crash_desc">Automatická hlášení o pádech a údaje o výkonu, abychom mohli problémy rychleji řešit.</string>
-    <string name="consent_detail_toggle">Co shromažďujeme a co nikdy</string>
+    <string name="consent_detail_toggle">Co shromažďujeme — a co ne</string>
     <string name="consent_collected_header">Shromažďuje se</string>
-    <string name="consent_never_header">Nikdy</string>
+    <string name="consent_never_header">Neshromažďuje se</string>
     <string name="consent_collected_1">Které obrazovky otevíráte</string>
     <string name="consent_collected_2">Které funkce používáte</string>
     <string name="consent_collected_3">Hlášení o pádech</string>
