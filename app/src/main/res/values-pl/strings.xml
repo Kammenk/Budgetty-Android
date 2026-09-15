@@ -598,8 +598,8 @@
     <string name="insights_nws_cta_keep_sub">Nazwij, na co to zbierasz</string>
     <string name="insights_nws_cta_aside_title">Ustaw cel oszczędnościowy</string>
     <string name="insights_nws_cta_aside_sub">Wpłata na cel liczy się do Oszczędności</string>
-    <string name="insights_nws_footer_keep">Liczymy wszystko, co zatrzymujesz. Zmień w Dostosuj sekcje.</string>
-    <string name="insights_nws_footer_aside">Liczymy pieniądze, które odkładasz. Zmień w Dostosuj sekcje.</string>
+    <string name="insights_nws_footer_keep">Liczymy wszystko, co zatrzymujesz.</string>
+    <string name="insights_nws_footer_aside">Liczymy pieniądze, które odkładasz.</string>
     <string name="insights_nws_alloc_header">Oszczędności</string>
     <string name="insights_nws_alloc_desc">Jak Oszczędności są liczone w Twoim podziale 50/30/20.</string>
     <string name="insights_nws_alloc_keep_desc">Przychód minus Potrzeby i Zachcianki liczy się jako zaoszczędzone.</string>

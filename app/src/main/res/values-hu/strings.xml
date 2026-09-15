@@ -587,8 +587,8 @@
     <string name="insights_nws_cta_keep_sub">Nevezd meg, mire teszed félre</string>
     <string name="insights_nws_cta_aside_title">Állíts be megtakarítási célt</string>
     <string name="insights_nws_cta_aside_sub">A célbefizetés beleszámít a Megtakarításba</string>
-    <string name="insights_nws_footer_keep">Minden megtartott pénzt számít. Módosítsd a Szakaszok testreszabása alatt.</string>
-    <string name="insights_nws_footer_aside">A félretett pénzt számít. Módosítsd a Szakaszok testreszabása alatt.</string>
+    <string name="insights_nws_footer_keep">Minden megtartott pénzt számít.</string>
+    <string name="insights_nws_footer_aside">A félretett pénzt számít.</string>
     <string name="insights_nws_alloc_header">Megtakarítás</string>
     <string name="insights_nws_alloc_desc">Hogyan számít a Megtakarítás az 50/30/20 felosztásodban.</string>
     <string name="insights_nws_alloc_keep_desc">A bevétel mínusz a Szükségletek és Vágyak számít megtakarításnak.</string>

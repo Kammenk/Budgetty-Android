@@ -661,6 +661,7 @@ private fun InsightsPhoneBody(
         onNavigateToPaywall = onNavigateToPaywall,
         onChooseSavingsAllocation = onChooseSavingsAllocation,
         onPlannedBadgeClick = onPlannedBadgeClick,
+        onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
     )
     // P1: the sections are grouped into a few tabs (a segmented toggle below the header) instead of
     // one long scroll. Tab is view-only state — default lands on Spending; Overview/Custom arrive later.
@@ -688,8 +689,9 @@ private fun InsightsPhoneBody(
                     .padding(start = MaterialTheme.dimens.xs),
             )
             // Wellbeing + recap live in the toolbar (out of the scroll); recap shows only when ready.
-            // The old "Customize sections" menu is gone on phone (D6): the fixed groups are fixed, the
-            // Custom tab is the curation surface, and the overlay / savings toggles are Overview options.
+            // The old "Customize sections" menu is gone on phone (D6): the fixed groups are fixed and the
+            // Custom tab is the curation surface; the overlay toggle now leads the Spending tab and the
+            // savings-counting choice lives on the Money split card, each next to the charts it changes.
             state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
             if (showRecapEntry) {
                 // A clear gap so the score ring and the recap button read as two separate controls.
@@ -717,7 +719,6 @@ private fun InsightsPhoneBody(
                     onNavigateToBudget = onNavigateToBudget,
                     onNavigateToManageCategories = onNavigateToManageCategories,
                     onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
-                    onChooseSavingsAllocation = onChooseSavingsAllocation,
                     onDismissOverlayNudge = onDismissOverlayNudge,
                     onDismissSetupItem = onDismissSetupItem,
                 ),
@@ -734,6 +735,15 @@ private fun InsightsPhoneBody(
 
             // A fixed group (D1): every section that belongs to it, in the canonical order.
             else -> {
+                // The planned-bills overlay switch leads the Spending tab — the charts its "planned"
+                // layer reshapes live here — so its control sits next to what it changes (was an
+                // Overview option). Only shown when there are bills to overlay.
+                if (selectedTab == InsightsTab.SPENDING && state.isLoaded && state.hasBills) {
+                    SpendingOverlayToggleCard(
+                        checked = state.includeRecurringBills,
+                        onCheckedChange = sectionActions.onToggleIncludeRecurringBills,
+                    )
+                }
                 InsightsSection.entries.forEach { section ->
                     if (section.tab() == selectedTab) {
                         InsightSectionCard(section, state, periodLabel, sectionActions)
@@ -759,6 +769,7 @@ private class SectionCardActions(
     val onNavigateToPaywall: () -> Unit,
     val onChooseSavingsAllocation: (Boolean) -> Unit,
     val onPlannedBadgeClick: (PlannedDialog) -> Unit,
+    val onToggleIncludeRecurringBills: (Boolean) -> Unit,
 )
 
 /**
@@ -1274,6 +1285,13 @@ private fun InsightsTabPane(
     if (tab == InsightsTab.CUSTOM) {
         CustomTabContent(customSections, state, periodLabel, actions, onSetCustomSections)
     } else {
+        // The overlay switch leads the Spending tab (parity with phone), next to the charts it reshapes.
+        if (tab == InsightsTab.SPENDING && state.isLoaded && state.hasBills) {
+            SpendingOverlayToggleCard(
+                checked = state.includeRecurringBills,
+                onCheckedChange = actions.onToggleIncludeRecurringBills,
+            )
+        }
         InsightsSection.entries.forEach { section ->
             if (section.tab() == tab) InsightSectionCard(section, state, periodLabel, actions)
         }
@@ -1324,6 +1342,7 @@ internal fun InsightsTabletBody(
         onNavigateToPaywall = onNavigateToPaywall,
         onChooseSavingsAllocation = onChooseSavingsAllocation,
         onPlannedBadgeClick = onPlannedBadgeClick,
+        onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
     )
     val overviewControls = OverviewControls(
         dismissedSetup = dismissedSetup,
@@ -1331,7 +1350,6 @@ internal fun InsightsTabletBody(
         onNavigateToBudget = onNavigateToBudget,
         onNavigateToManageCategories = onNavigateToManageCategories,
         onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
-        onChooseSavingsAllocation = onChooseSavingsAllocation,
         onDismissOverlayNudge = onDismissOverlayNudge,
         onDismissSetupItem = onDismissSetupItem,
     )
@@ -1812,6 +1830,8 @@ private fun NeedsWantsSplitCard(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            // The control to change how Savings is counted — its former home on Overview is retired.
+            SavingsAllocationSwitchRow(split.allocation, onChooseAllocation)
             Spacer(Modifier.height(MaterialTheme.dimens.md))
             SavingsGoalCta(split.allocation, onGoToBudget)
             Spacer(Modifier.height(MaterialTheme.dimens.md))
@@ -1827,6 +1847,45 @@ private fun NeedsWantsSplitCard(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+    }
+}
+
+/**
+ * The persistent "how Savings is counted" control on the Money split card, shown once the mode is
+ * chosen (the first pick is [SavingsAllocationAsk]). Tapping it flips COUNT_KEPT ↔ SET_ASIDE — this is
+ * the home of that choice now that the Overview options card is gone.
+ */
+@Composable
+private fun SavingsAllocationSwitchRow(allocation: SavingsAllocation, onChoose: (Boolean) -> Unit) {
+    val kept = allocation == SavingsAllocation.COUNT_KEPT
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
+            .clickable { onChoose(!kept) }
+            .padding(vertical = MaterialTheme.dimens.sm),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
+    ) {
+        Text(
+            text = stringResource(R.string.insights_nws_alloc_header),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f),
+        )
+        Text(
+            text = stringResource(if (kept) R.string.insights_nws_ask_keep else R.string.insights_nws_ask_aside),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+        )
+        Icon(
+            Icons.Filled.UnfoldMore,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(MaterialTheme.dimens.icon),
+        )
     }
 }
 
@@ -2466,7 +2525,6 @@ private class OverviewControls(
     val onNavigateToBudget: () -> Unit,
     val onNavigateToManageCategories: () -> Unit,
     val onToggleIncludeRecurringBills: (Boolean) -> Unit,
-    val onChooseSavingsAllocation: (Boolean) -> Unit,
     val onDismissOverlayNudge: () -> Unit,
     val onDismissSetupItem: (String) -> Unit,
 )
@@ -2561,8 +2619,9 @@ private fun OverviewTabContent(
             }
         }
     }
-    // "Things to set up": the consolidated setup checklist, then the two global quick-toggle chips.
-    // Both self-hide when nothing applies; gated on isLoaded so neither flashes on cold start.
+    // "Things to set up": the consolidated setup checklist (self-hides when nothing applies; gated on
+    // isLoaded so it never flashes on cold start). The overlay / savings controls used to sit here too —
+    // they now live on Spending and Money respectively, each next to the charts it changes.
     if (state.isLoaded) {
         OverviewSetupChecklist(
             items = activeSetupItems(state, controls.dismissedSetup, controls.overlayNudgeDismissed),
@@ -2583,11 +2642,6 @@ private fun OverviewTabContent(
                     controls.onDismissSetupItem(item.key)
                 }
             },
-        )
-        OverviewOptionsCard(
-            state = state,
-            onToggleIncludeRecurringBills = controls.onToggleIncludeRecurringBills,
-            onChooseSavingsAllocation = controls.onChooseSavingsAllocation,
         )
     }
 }
@@ -2714,78 +2768,29 @@ private fun SetupDismissButton(tint: Color, onClick: () -> Unit) {
 }
 
 /**
- * The two global Overview options as full settings-style rows in one card (the mockup treatment): the
- * planned-bills overlay switch (shown when there are bills to overlay) and the Needs/Wants savings-
- * allocation mode (shown once a split exists and the mode is set; the first choice is made through the
- * checklist). Each row names what it does and gives a real, comfortably-sized control — replacing the
- * cramped mini-chips. Absent entirely when neither applies.
+ * The planned-bills overlay switch, shown at the top of the Spending tab — the charts its "planned"
+ * layer reshapes (the Breakdown donut; the Trends bars once monthly). A visible switch so its on/off
+ * state stays glanceable; the caller gates it on there actually being bills to overlay. This replaces
+ * the old global options card that sat on Overview, moving the control next to what it changes.
  */
 @Composable
-private fun OverviewOptionsCard(
-    state: InsightsUiState,
-    onToggleIncludeRecurringBills: (Boolean) -> Unit,
-    onChooseSavingsAllocation: (Boolean) -> Unit,
-) {
-    val showPlanned = state.hasBills
-    val showSavings = state.needsWantsSplit != null && state.savingsAllocation != null
-    if (!showPlanned && !showSavings) return
+private fun SpendingOverlayToggleCard(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     InsightCard {
-        if (showPlanned) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.insights_overlay_toggle_title),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Text(
-                        text = stringResource(R.string.insights_overlay_toggle_subtitle),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Spacer(Modifier.width(MaterialTheme.dimens.sm))
-                Switch(checked = state.includeRecurringBills, onCheckedChange = onToggleIncludeRecurringBills)
-            }
-            if (showSavings) {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = MaterialTheme.dimens.sm),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                )
-            }
-        }
-        if (showSavings) {
-            val kept = state.savingsAllocation == true
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(MaterialTheme.dimens.radiusMd))
-                    .clickable { onChooseSavingsAllocation(!kept) }
-                    .padding(vertical = MaterialTheme.dimens.sm),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
-            ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(1f)) {
                 Text(
-                    text = stringResource(R.string.insights_nws_alloc_header),
+                    text = stringResource(R.string.insights_overlay_toggle_title),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.weight(1f),
                 )
                 Text(
-                    text = stringResource(
-                        if (kept) R.string.insights_nws_ask_keep else R.string.insights_nws_ask_aside,
-                    ),
-                    style = MaterialTheme.typography.bodyMedium,
+                    text = stringResource(R.string.insights_overlay_toggle_subtitle),
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                )
-                Icon(
-                    Icons.Filled.UnfoldMore,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(MaterialTheme.dimens.icon),
                 )
             }
+            Spacer(Modifier.width(MaterialTheme.dimens.sm))
+            Switch(checked = checked, onCheckedChange = onCheckedChange)
         }
     }
 }

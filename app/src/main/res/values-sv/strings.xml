@@ -328,8 +328,8 @@
     <string name="insights_nws_cta_keep_sub">Sätt namn på vad du sparar till</string>
     <string name="insights_nws_cta_aside_title">Sätt ett sparmål</string>
     <string name="insights_nws_cta_aside_sub">En målöverföring räknas som sparande</string>
-    <string name="insights_nws_footer_keep">Räknar allt du behåller. Ändra i Anpassa sektioner.</string>
-    <string name="insights_nws_footer_aside">Räknar pengar du lägger undan. Ändra i Anpassa sektioner.</string>
+    <string name="insights_nws_footer_keep">Räknar allt du behåller.</string>
+    <string name="insights_nws_footer_aside">Räknar pengar du lägger undan.</string>
     <string name="insights_nws_alloc_header">Sparande</string>
     <string name="insights_nws_alloc_desc">Så räknas sparande i din 50/30/20-fördelning.</string>
     <string name="insights_nws_alloc_keep_desc">Inkomst minus behov och önskemål räknas som sparat.</string>

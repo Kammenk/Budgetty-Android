@@ -328,8 +328,8 @@
     <string name="insights_nws_cta_keep_sub">Sett navn på hva du sparer til</string>
     <string name="insights_nws_cta_aside_title">Sett et sparemål</string>
     <string name="insights_nws_cta_aside_sub">En måloverføring teller som sparing</string>
-    <string name="insights_nws_footer_keep">Teller alt du beholder. Endre i Tilpass seksjoner.</string>
-    <string name="insights_nws_footer_aside">Teller penger du setter av. Endre i Tilpass seksjoner.</string>
+    <string name="insights_nws_footer_keep">Teller alt du beholder.</string>
+    <string name="insights_nws_footer_aside">Teller penger du setter av.</string>
     <string name="insights_nws_alloc_header">Sparing</string>
     <string name="insights_nws_alloc_desc">Slik telles sparing i 50/30/20-fordelingen din.</string>
     <string name="insights_nws_alloc_keep_desc">Inntekt minus behov og ønsker teller som spart.</string>

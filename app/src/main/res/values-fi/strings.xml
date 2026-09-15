@@ -328,8 +328,8 @@
     <string name="insights_nws_cta_keep_sub">Nimeä, mitä varten säästät</string>
     <string name="insights_nws_cta_aside_title">Aseta säästötavoite</string>
     <string name="insights_nws_cta_aside_sub">Tavoitesiirto lasketaan säästöiksi</string>
-    <string name="insights_nws_footer_keep">Lasketaan kaikki, minkä pidät. Muuta kohdassa Mukauta osioita.</string>
-    <string name="insights_nws_footer_aside">Lasketaan sivuun laittamasi raha. Muuta kohdassa Mukauta osioita.</string>
+    <string name="insights_nws_footer_keep">Lasketaan kaikki, minkä pidät.</string>
+    <string name="insights_nws_footer_aside">Lasketaan sivuun laittamasi raha.</string>
     <string name="insights_nws_alloc_header">Säästöt</string>
     <string name="insights_nws_alloc_desc">Miten säästöt lasketaan 50/30/20-jakaumassasi.</string>
     <string name="insights_nws_alloc_keep_desc">Tulot miinus tarpeet ja halut lasketaan säästöiksi.</string>
