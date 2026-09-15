@@ -601,8 +601,8 @@
     <string name="insights_nws_cta_keep_sub">Indica per cosa lo tieni</string>
     <string name="insights_nws_cta_aside_title">Imposta un obiettivo di risparmio</string>
     <string name="insights_nws_cta_aside_sub">Un versamento verso un obiettivo conta come Risparmio</string>
-    <string name="insights_nws_footer_keep">Conta tutto ciò che tieni. Modifica in Personalizza sezioni.</string>
-    <string name="insights_nws_footer_aside">Conta il denaro che metti da parte. Modifica in Personalizza sezioni.</string>
+    <string name="insights_nws_footer_keep">Conta tutto ciò che tieni.</string>
+    <string name="insights_nws_footer_aside">Conta il denaro che metti da parte.</string>
     <string name="insights_nws_alloc_header">Risparmio</string>
     <string name="insights_nws_alloc_desc">Come viene conteggiato il Risparmio nella tua ripartizione 50/30/20.</string>
     <string name="insights_nws_alloc_keep_desc">Le entrate meno Bisogni e Desideri contano come risparmiate.</string>

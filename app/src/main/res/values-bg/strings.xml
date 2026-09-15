@@ -598,8 +598,8 @@
     <string name="insights_nws_cta_keep_sub">Посочи за какво го пазиш</string>
     <string name="insights_nws_cta_aside_title">Задай цел за спестяване</string>
     <string name="insights_nws_cta_aside_sub">Вноска към цел се брои за Спестявания</string>
-    <string name="insights_nws_footer_keep">Броим всичко, което задържаш. Промени в Персонализирай секциите.</string>
-    <string name="insights_nws_footer_aside">Броим парите, които заделяш. Промени в Персонализирай секциите.</string>
+    <string name="insights_nws_footer_keep">Броим всичко, което задържаш.</string>
+    <string name="insights_nws_footer_aside">Броим парите, които заделяш.</string>
     <string name="insights_nws_alloc_header">Спестявания</string>
     <string name="insights_nws_alloc_desc">Как се броят Спестяванията в твоето разпределение 50/30/20.</string>
     <string name="insights_nws_alloc_keep_desc">Доходът минус Нужди и Желания се брои за спестено.</string>

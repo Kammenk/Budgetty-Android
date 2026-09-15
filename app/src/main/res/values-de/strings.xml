@@ -586,8 +586,8 @@
     <string name="insights_nws_cta_keep_sub">Benenne, wofür du es behältst</string>
     <string name="insights_nws_cta_aside_title">Sparziel festlegen</string>
     <string name="insights_nws_cta_aside_sub">Eine Zielüberweisung zählt als Sparen</string>
-    <string name="insights_nws_footer_keep">Zählt alles, was du behältst. Änderbar unter Bereiche anpassen.</string>
-    <string name="insights_nws_footer_aside">Zählt Geld, das du zurücklegst. Änderbar unter Bereiche anpassen.</string>
+    <string name="insights_nws_footer_keep">Zählt alles, was du behältst.</string>
+    <string name="insights_nws_footer_aside">Zählt Geld, das du zurücklegst.</string>
     <string name="insights_nws_alloc_header">Sparen</string>
     <string name="insights_nws_alloc_desc">Wie Sparen in deiner 50/30/20-Aufteilung gezählt wird.</string>
     <string name="insights_nws_alloc_keep_desc">Einnahmen minus Bedürfnisse und Wünsche zählen als gespart.</string>

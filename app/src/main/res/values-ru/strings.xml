@@ -598,8 +598,8 @@
     <string name="insights_nws_cta_keep_sub">Укажите, на что копите</string>
     <string name="insights_nws_cta_aside_title">Поставьте цель сбережений</string>
     <string name="insights_nws_cta_aside_sub">Пополнение цели засчитывается в Сбережения</string>
-    <string name="insights_nws_footer_keep">Считаем всё, что остаётся. Измените в Настроить разделы.</string>
-    <string name="insights_nws_footer_aside">Считаем деньги, которые вы откладываете. Измените в Настроить разделы.</string>
+    <string name="insights_nws_footer_keep">Считаем всё, что остаётся.</string>
+    <string name="insights_nws_footer_aside">Считаем деньги, которые вы откладываете.</string>
     <string name="insights_nws_alloc_header">Сбережения</string>
     <string name="insights_nws_alloc_desc">Как Сбережения считаются в вашем распределении 50/30/20.</string>
     <string name="insights_nws_alloc_keep_desc">Доход минус Потребности и Желания считается отложенным.</string>

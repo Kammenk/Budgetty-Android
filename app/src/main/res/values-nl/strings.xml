@@ -601,8 +601,8 @@
     <string name="insights_nws_cta_keep_sub">Benoem waarvoor je het bewaart</string>
     <string name="insights_nws_cta_aside_title">Stel een spaardoel in</string>
     <string name="insights_nws_cta_aside_sub">Een doeloverboeking telt als Sparen</string>
-    <string name="insights_nws_footer_keep">Telt alles wat je overhoudt. Wijzig bij Secties aanpassen.</string>
-    <string name="insights_nws_footer_aside">Telt geld dat je apart zet. Wijzig bij Secties aanpassen.</string>
+    <string name="insights_nws_footer_keep">Telt alles wat je overhoudt.</string>
+    <string name="insights_nws_footer_aside">Telt geld dat je apart zet.</string>
     <string name="insights_nws_alloc_header">Sparen</string>
     <string name="insights_nws_alloc_desc">Hoe Sparen wordt geteld in je 50/30/20-verdeling.</string>
     <string name="insights_nws_alloc_keep_desc">Inkomen min Behoeften en Wensen telt als gespaard.</string>

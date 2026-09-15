@@ -601,8 +601,8 @@
     <string name="insights_nws_cta_keep_sub">Indica para qué lo guardas</string>
     <string name="insights_nws_cta_aside_title">Crea un objetivo de ahorro</string>
     <string name="insights_nws_cta_aside_sub">Una transferencia a un objetivo cuenta como Ahorro</string>
-    <string name="insights_nws_footer_keep">Cuenta todo lo que guardas. Cámbialo en Personalizar secciones.</string>
-    <string name="insights_nws_footer_aside">Cuenta el dinero que apartas. Cámbialo en Personalizar secciones.</string>
+    <string name="insights_nws_footer_keep">Cuenta todo lo que guardas.</string>
+    <string name="insights_nws_footer_aside">Cuenta el dinero que apartas.</string>
     <string name="insights_nws_alloc_header">Ahorro</string>
     <string name="insights_nws_alloc_desc">Cómo se cuenta el Ahorro en tu reparto 50/30/20.</string>
     <string name="insights_nws_alloc_keep_desc">Los ingresos menos Necesidades y Deseos cuentan como ahorrado.</string>

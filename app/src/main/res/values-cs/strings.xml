@@ -329,8 +329,8 @@
     <string name="insights_nws_cta_keep_sub">Pojmenujte, na co si to necháváte</string>
     <string name="insights_nws_cta_aside_title">Nastavte spořicí cíl</string>
     <string name="insights_nws_cta_aside_sub">Příspěvek na cíl se počítá do Úspor</string>
-    <string name="insights_nws_footer_keep">Počítáme vše, co si necháte. Změňte v Přizpůsobit sekce.</string>
-    <string name="insights_nws_footer_aside">Počítáme peníze, které dáte stranou. Změňte v Přizpůsobit sekce.</string>
+    <string name="insights_nws_footer_keep">Počítáme vše, co si necháte.</string>
+    <string name="insights_nws_footer_aside">Počítáme peníze, které dáte stranou.</string>
     <string name="insights_nws_alloc_header">Úspory</string>
     <string name="insights_nws_alloc_desc">Jak se počítají Úspory ve vašem rozdělení 50/30/20.</string>
     <string name="insights_nws_alloc_keep_desc">Příjem minus Potřeby a Přání se počítá jako uspořeno.</string>

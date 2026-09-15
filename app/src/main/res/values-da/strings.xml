@@ -328,8 +328,8 @@
     <string name="insights_nws_cta_keep_sub">Sæt navn på, hvad du sparer op til</string>
     <string name="insights_nws_cta_aside_title">Sæt et opsparingsmål</string>
     <string name="insights_nws_cta_aside_sub">En måloverførsel tæller med i opsparingen</string>
-    <string name="insights_nws_footer_keep">Tæller alt, du beholder. Ændr under Tilpas sektioner.</string>
-    <string name="insights_nws_footer_aside">Tæller penge, du lægger til side. Ændr under Tilpas sektioner.</string>
+    <string name="insights_nws_footer_keep">Tæller alt, du beholder.</string>
+    <string name="insights_nws_footer_aside">Tæller penge, du lægger til side.</string>
     <string name="insights_nws_alloc_header">Opsparing</string>
     <string name="insights_nws_alloc_desc">Sådan tælles opsparing i din 50/30/20-fordeling.</string>
     <string name="insights_nws_alloc_keep_desc">Indkomst minus behov og ønsker tæller som sparet op.</string>

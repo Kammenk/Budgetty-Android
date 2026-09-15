@@ -601,8 +601,8 @@
     <string name="insights_nws_cta_keep_sub">Nommez ce pour quoi vous le gardez</string>
     <string name="insights_nws_cta_aside_title">Créez un objectif d\'épargne</string>
     <string name="insights_nws_cta_aside_sub">Un virement vers un objectif compte comme Épargne</string>
-    <string name="insights_nws_footer_keep">Compte tout ce que vous gardez. Modifiable dans Personnaliser les sections.</string>
-    <string name="insights_nws_footer_aside">Compte l\'argent que vous mettez de côté. Modifiable dans Personnaliser les sections.</string>
+    <string name="insights_nws_footer_keep">Compte tout ce que vous gardez.</string>
+    <string name="insights_nws_footer_aside">Compte l\'argent que vous mettez de côté.</string>
     <string name="insights_nws_alloc_header">Épargne</string>
     <string name="insights_nws_alloc_desc">Comment l\'Épargne est comptée dans votre répartition 50/30/20.</string>
     <string name="insights_nws_alloc_keep_desc">Les revenus moins les Besoins et les Envies comptent comme épargnés.</string>

@@ -587,8 +587,8 @@
     <string name="insights_nws_cta_keep_sub">Name what you are keeping it for</string>
     <string name="insights_nws_cta_aside_title">Set a savings goal</string>
     <string name="insights_nws_cta_aside_sub">A goal transfer counts toward Savings</string>
-    <string name="insights_nws_footer_keep">Counting everything you keep. Change in Customize sections.</string>
-    <string name="insights_nws_footer_aside">Counting money you set aside. Change in Customize sections.</string>
+    <string name="insights_nws_footer_keep">Counting everything you keep.</string>
+    <string name="insights_nws_footer_aside">Counting money you set aside.</string>
     <string name="insights_nws_alloc_header">Savings</string>
     <string name="insights_nws_alloc_desc">How Savings is counted in your 50/30/20 split.</string>
     <string name="insights_nws_alloc_keep_desc">Income minus Needs and Wants counts as saved.</string>
