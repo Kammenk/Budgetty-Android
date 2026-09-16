@@ -44,10 +44,10 @@ android {
         // 10.1.0 -> 1010, 11.0.0 -> 1100). Keep verMinor/verPatch in 0..9 so the
         // code stays monotonic; roll over to the next place at 9 (10.0.9 -> 10.1.0).
         val verMajor = 11
-        val verMinor = 3
+        val verMinor = 4
         val verPatch = 0
-        versionCode = verMajor * 100 + verMinor * 10 + verPatch  // 1130
-        versionName = "$verMajor.$verMinor.$verPatch"            // 11.3.0
+        versionCode = verMajor * 100 + verMinor * 10 + verPatch  // 1140
+        versionName = "$verMajor.$verMinor.$verPatch"            // 11.4.0
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
