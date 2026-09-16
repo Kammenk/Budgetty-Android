@@ -15,6 +15,61 @@ When preparing a new release, add a new section at the top describing only what 
 since the previous entry. The Play Console release-notes field wants the text wrapped in
 `<en-US>…</en-US>` language tags, max 500 characters per language.
 
+## 11.4.0 (versionCode 1140) — 2026-09-16
+
+A major Insights overhaul plus the accumulated September work. Everything that landed after
+11.3.0 (which was tagged but never reached Play) ships here, so an upgrade from the live 11.2.0
+build gets both this update and the 11.3.0 retention update below.
+
+### Added
+- **Insights, redesigned (Hybrid)** — the phone Insights screen is now organised into five tabs:
+  **Overview** (a new landing with your headline numbers, a setup checklist and quick-toggle
+  chips), **Spending**, **Money**, **Trends**, and a user-curated **Custom** tab you fill with the
+  sections you care about. Wellbeing and Recap move into a compact stacked toolbar, the period
+  control is now a single-line chip, tabs scroll, and empty Money/Trends panes get friendly
+  first-run states. Tablets get a matching Hybrid layout.
+- **Needs / Wants / Savings (50-30-20)** — Insights can split your spending into the classic
+  50/30/20 buckets with a trend, plus a one-time "what counts as Savings?" ask so the split
+  reflects how you actually budget.
+- **Hungarian (magyar)** — the 17th fully translated language.
+- **HUF and ISK currencies** — Hungarian forint and Icelandic króna, bringing the total to 11.
+- **Backups now include display preferences** — the JSON backup round-trips your display settings,
+  not just your data.
+
+### Changed
+- **Analytics is now strictly opt-in.** A first-run consent screen asks before any anonymised usage
+  or crash analytics are collected — replacing the on-by-default approach described in 11.3.0. No
+  receipts, amounts or personal data are sent, there is no advertising ID, and reports are tied only
+  to a random ID.
+- **Insights controls live on their own tabs** — the planned-overlay and savings-counting switches
+  moved out of a shared menu onto the Spending and Money tabs they affect.
+- Hardened the receipt-scanning backend with Firebase App Check (monitor mode), and trimmed
+  financial values out of the server-side scan log.
+
+### Fixed
+- **Receipt dates** — Bulgarian/EU receipts are now read day-first (DD/MM) rather than US
+  month-first; extraction is steered toward the printed receipt date; and implausible dates (in the
+  future or more than ~45 days old) are flagged for review at scan time.
+- **Receipt discounts** — negative-priced / parenthesised lines are treated as discounts instead of
+  being added as positive-priced products.
+- **Insights pie labels** — on-ring percentage labels show only when a slice owns more than a
+  quarter of the ring, and are hidden while the planned-recurring overlay is on, so the chart stays
+  readable.
+- **Tablet** — the Home navigation rail no longer goes dead after opening Budget from Home.
+
+> Database schema **v26 → v27** — adds the Needs/Wants/Savings allocation. All migrations included;
+> backup/restore updated.
+
+> **Play status — not yet uploaded.** Ships as versionCode 1140. Because 11.3.0 (vc1130) was tagged
+> but never uploaded, this build carries both the 11.4.0 changes above and the full 11.3.0 retention
+> update below; the last build on Play is 11.2.0 (vc1120).
+
+> **Internal — action before uploading:** update the **Play Data-safety** form and **iOS App
+> Privacy** label to reflect analytics now being **opt-in** (App activity / diagnostics; *Data
+> shared: No*; **no** Advertising ID). Reshoot the store screenshots — Home/Budget are stale versus
+> the spent-first layout and Insights is now the Hybrid redesign. Firebase Analytics must be enabled
+> in the console (first flagged for 11.3.0).
+
 ## 11.3.0 (versionCode 1130) — 2026-08-25
 
 The biggest update since Wellbeing: a set of gentle, privacy-first retention features — and the features they build on. Every mechanic rewards a real financial outcome (spending better), never just opening the app, and nothing uses loss framing — no "streak broken", no flames, no countdowns. All free.
