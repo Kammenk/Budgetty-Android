@@ -2564,6 +2564,8 @@ private fun OverviewTabContent(
                 )
             }
         }
+        // "With bills": actual spend + the period's planned recurring bills (see [OverviewWithBillsLine]).
+        OverviewWithBillsLine(state)
         state.needsWantsSplit?.let { split ->
             Spacer(Modifier.height(MaterialTheme.dimens.md))
             BucketSplitBar(split)
@@ -2643,6 +2645,35 @@ private fun OverviewTabContent(
                 }
             },
         )
+    }
+}
+
+/**
+ * The Overview hero's "With bills" line: actual spend + the period's planned recurring bills, shown
+ * only when the user has bills. Additive and clearly labelled — the hero total, its ↓/↑ delta and the
+ * 50/30/20 bar all stay transactions-only, so this never redefines "Total spent". It mirrors the Money
+ * tab's "Total spent + planned bills", and the hatch swatch matches the Spending/Trends overlay key.
+ */
+@Composable
+private fun OverviewWithBillsLine(state: InsightsUiState) {
+    if (state.hasBills) {
+        Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.xs),
+        ) {
+            PlannedSwatch(hatched = true, size = 9.dp)
+            Text(
+                text = stringResource(R.string.home_with_bills),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Text(
+                text = (state.total + state.periodBills).formatMoney(),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 
