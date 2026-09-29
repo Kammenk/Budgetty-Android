@@ -2519,7 +2519,7 @@ private fun StatTile(
  * The Overview tab's setup/global-toggle wiring (P3), bundled so [OverviewTabContent] stays a short
  * parameter list: the two dismissed-state flags the checklist reads, plus the checklist/chip actions.
  */
-private class OverviewControls(
+internal class OverviewControls(
     val dismissedSetup: Set<String>,
     val overlayNudgeDismissed: Boolean,
     val onNavigateToBudget: () -> Unit,
@@ -2530,7 +2530,7 @@ private class OverviewControls(
 )
 
 @Composable
-private fun OverviewTabContent(
+internal fun OverviewTabContent(
     state: InsightsUiState,
     onGoToTab: (InsightsTab) -> Unit,
     onSliceClick: (PieSlice) -> Unit,
