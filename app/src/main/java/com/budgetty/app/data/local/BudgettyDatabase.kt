@@ -13,6 +13,7 @@ import com.budgetty.app.category.Categories
         CategoryRuleEntity::class, RecurringEntity::class, BudgetRolloverEntity::class,
         SavingsGoalEntity::class, SavingsContributionEntity::class,
         IgnoredSubscriptionEntity::class, BuyingLimitEntity::class, WellbeingScoreEntity::class,
+        WarrantyEntity::class,
     ],
     version = BudgettyDatabase.VERSION,
     exportSchema = true,
@@ -30,12 +31,13 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun ignoredSubscriptionDao(): IgnoredSubscriptionDao
     abstract fun buyingLimitDao(): BuyingLimitDao
     abstract fun wellbeingScoreDao(): WellbeingScoreDao
+    abstract fun warrantyDao(): WarrantyDao
 
     companion object {
         // The Room schema version — single source of truth. Used by the @Database annotation above
         // and reported to Crashlytics (see CrashReporting.setDatabaseVersion) so a crash names the
         // schema it hit; sharing one const keeps the annotation and the reported value from drifting.
-        const val VERSION = 27
+        const val VERSION = 28
     }
 }
 
@@ -432,6 +434,25 @@ val MIGRATION_26_27 = object : Migration(26, 27) {
     }
 }
 
+/** v28: the warranty tracker's standalone `warranties` table (no child rows). */
+val MIGRATION_27_28 = object : Migration(27, 28) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `warranties` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`name` TEXT NOT NULL, " +
+                "`emoji` TEXT NOT NULL, " +
+                "`store` TEXT NOT NULL DEFAULT '', " +
+                "`category` TEXT NOT NULL DEFAULT '', " +
+                "`purchaseDate` INTEGER NOT NULL, " +
+                "`durationMonths` INTEGER NOT NULL, " +
+                "`coverageNote` TEXT NOT NULL DEFAULT '', " +
+                "`receiptId` INTEGER NOT NULL DEFAULT 0, " +
+                "`createdAt` INTEGER NOT NULL DEFAULT 0)",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -477,5 +498,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
     MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26,
-    MIGRATION_26_27,
+    MIGRATION_26_27, MIGRATION_27_28,
 )

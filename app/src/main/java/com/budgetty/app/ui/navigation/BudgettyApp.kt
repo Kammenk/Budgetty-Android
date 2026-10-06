@@ -62,6 +62,7 @@ import com.budgetty.app.ui.recap.RecapViewModel
 import com.budgetty.app.ui.util.BuyingLimitCounter
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.account.AccountScreen
+import com.budgetty.app.ui.warranties.WarrantiesScreen
 import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
@@ -478,6 +479,7 @@ private fun BudgettyNavHost(
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
                 onOpenBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
                 onOpenManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
+                onOpenWarranties = { navController.navigate(Routes.WARRANTIES) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
         }
@@ -550,6 +552,15 @@ private fun BudgettyNavHost(
         }
         composable(Routes.CATEGORY_RULES) {
             CategoryRulesScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.WARRANTIES) {
+            WarrantiesScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.WARRANTIES)
+                    navController.navigate(Routes.PAYWALL)
+                },
+            )
         }
         composable(Routes.BUYING_LIMITS) {
             BuyingLimitsScreen(

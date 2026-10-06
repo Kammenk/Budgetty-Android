@@ -1,5 +1,30 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Budgetty</string>
+    <!-- Warranty tracker -->
+    <string name="account_warranties" tools:ignore="MissingTranslation">Warranties</string>
+    <string name="warranties_title" tools:ignore="MissingTranslation">Warranties</string>
+    <string name="warranties_count" tools:ignore="MissingTranslation">%1$d of %2$d free</string>
+    <string name="warranties_group_expiring" tools:ignore="MissingTranslation">EXPIRING SOON</string>
+    <string name="warranties_group_active" tools:ignore="MissingTranslation">ACTIVE</string>
+    <string name="warranties_group_expired" tools:ignore="MissingTranslation">EXPIRED</string>
+    <string name="warranties_chip_expired" tools:ignore="MissingTranslation">Expired %1$s</string>
+    <string name="warranties_chip_days" tools:ignore="MissingTranslation">Expires in %1$d days</string>
+    <string name="warranties_chip_months" tools:ignore="MissingTranslation">%1$d months left</string>
+    <string name="warranties_add" tools:ignore="MissingTranslation">Add warranty</string>
+    <string name="warranties_add_first" tools:ignore="MissingTranslation">Add a warranty</string>
+    <string name="warranties_edit" tools:ignore="MissingTranslation">Edit warranty</string>
+    <string name="warranties_save" tools:ignore="MissingTranslation">Save warranty</string>
+    <string name="warranties_unlock" tools:ignore="MissingTranslation">Unlock unlimited warranties</string>
+    <string name="warranties_cap_reached" tools:ignore="MissingTranslation">You’re tracking %1$d of %2$d free warranties. Your existing ones keep working.</string>
+    <string name="warranties_empty_title" tools:ignore="MissingTranslation">No warranties yet</string>
+    <string name="warranties_empty_body" tools:ignore="MissingTranslation">Track warranties on electronics and appliances, and see what’s expiring at a glance.</string>
+    <string name="warranties_field_name" tools:ignore="MissingTranslation">Product</string>
+    <string name="warranties_field_store" tools:ignore="MissingTranslation">Store</string>
+    <string name="warranties_field_purchased" tools:ignore="MissingTranslation">Purchased · %1$s</string>
+    <string name="warranties_field_length" tools:ignore="MissingTranslation">Warranty length</string>
+    <string name="warranties_field_months" tools:ignore="MissingTranslation">Length in months</string>
+    <string name="warranties_field_note" tools:ignore="MissingTranslation">Coverage note (optional)</string>
+    <string name="warranties_expires_on" tools:ignore="MissingTranslation">Expires %1$s</string>
 
     <!-- Common actions -->
     <string name="action_save">Save</string>

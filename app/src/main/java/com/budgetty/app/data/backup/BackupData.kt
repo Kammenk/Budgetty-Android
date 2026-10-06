@@ -2,6 +2,7 @@ package com.budgetty.app.data.backup
 
 import com.budgetty.app.data.local.BudgetEntity
 import com.budgetty.app.data.local.BuyingLimitEntity
+import com.budgetty.app.data.local.WarrantyEntity
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.CategoryRuleEntity
 import com.budgetty.app.data.local.ReceiptEntity
@@ -27,6 +28,7 @@ data class BackupData(
     val savingsContributions: List<SavingsContributionEntity> = emptyList(),
     val buyingLimits: List<BuyingLimitEntity> = emptyList(),
     val wellbeingScores: List<WellbeingScoreEntity> = emptyList(),
+    val warranties: List<WarrantyEntity> = emptyList(),
     /** User preferences (see [BackupSettings]); null in backups written before this field existed. */
     val settings: BackupSettings? = null,
 )

@@ -51,6 +51,7 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.Share
@@ -138,6 +139,7 @@ fun AccountScreen(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenWarranties: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -159,6 +161,7 @@ fun AccountScreen(
         onOpenCategoryRules = onOpenCategoryRules,
         onOpenBuyingLimits = onOpenBuyingLimits,
         onOpenManageCategories = onOpenManageCategories,
+        onOpenWarranties = onOpenWarranties,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -181,6 +184,7 @@ fun AccountScreen(
     )
 }
 
+@Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod") // One stateless Account body.
 @Composable
 private fun AccountScreenContent(
     email: String?,
@@ -194,6 +198,7 @@ private fun AccountScreenContent(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenWarranties: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -284,6 +289,7 @@ private fun AccountScreenContent(
                 onOpenCategoryRules = onOpenCategoryRules,
                 onOpenBuyingLimits = onOpenBuyingLimits,
                 onOpenManageCategories = onOpenManageCategories,
+                onOpenWarranties = onOpenWarranties,
             )
         }
     }
@@ -628,6 +634,7 @@ private fun AccountSectionRows(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenWarranties: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -637,6 +644,8 @@ private fun AccountSectionRows(
     )
     RowDivider()
     SettingRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.account_budget)) { onOpenBudget() }
+    RowDivider()
+    SettingRow(Icons.Filled.Shield, stringResource(R.string.account_warranties)) { onOpenWarranties() }
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
     RowDivider()
@@ -1320,6 +1329,7 @@ private fun AccountScreenPreview() {
             onOpenCategoryRules = {},
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
+            onOpenWarranties = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1358,6 +1368,7 @@ private fun AccountScreenTabletPreview() {
             onOpenCategoryRules = {},
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
+            onOpenWarranties = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
