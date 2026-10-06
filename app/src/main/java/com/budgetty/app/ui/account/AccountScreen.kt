@@ -46,6 +46,7 @@ import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockClock
 import androidx.compose.material.icons.filled.Password
@@ -140,6 +141,7 @@ fun AccountScreen(
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
+    onOpenTrips: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -162,6 +164,7 @@ fun AccountScreen(
         onOpenBuyingLimits = onOpenBuyingLimits,
         onOpenManageCategories = onOpenManageCategories,
         onOpenTags = onOpenTags,
+        onOpenTrips = onOpenTrips,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -202,6 +205,7 @@ private fun AccountScreenContent(
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
+    onOpenTrips: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -293,6 +297,7 @@ private fun AccountScreenContent(
                 onOpenBuyingLimits = onOpenBuyingLimits,
                 onOpenManageCategories = onOpenManageCategories,
                 onOpenTags = onOpenTags,
+                onOpenTrips = onOpenTrips,
             )
         }
     }
@@ -625,6 +630,7 @@ private fun AccountScreenContent(
 private enum class Picker { THEME, ACCENT, CURRENCY, DATE, MONTH_START, LANGUAGE }
 
 /** Rows of the "Account" settings group, shared by the phone and tablet layouts. */
+@Suppress("LongParameterList") // A flat list of settings-row navigation callbacks, not complex logic.
 @Composable
 private fun AccountSectionRows(
     isPremium: Boolean,
@@ -638,6 +644,7 @@ private fun AccountSectionRows(
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
+    onOpenTrips: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -655,6 +662,8 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.Category, stringResource(R.string.account_manage_categories)) { onOpenManageCategories() }
     RowDivider()
     SettingRow(Icons.Filled.Sell, stringResource(R.string.account_tags)) { onOpenTags() }
+    RowDivider()
+    SettingRow(Icons.Filled.Flight, stringResource(R.string.account_trips)) { onOpenTrips() }
     RowDivider()
     SettingRow(
         icon = Icons.Filled.Upload,
@@ -1333,6 +1342,7 @@ private fun AccountScreenPreview() {
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onOpenTags = {},
+            onOpenTrips = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1372,6 +1382,7 @@ private fun AccountScreenTabletPreview() {
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onOpenTags = {},
+            onOpenTrips = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},

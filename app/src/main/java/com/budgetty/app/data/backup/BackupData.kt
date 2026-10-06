@@ -11,6 +11,7 @@ import com.budgetty.app.data.local.SavingsGoalEntity
 import com.budgetty.app.data.local.TagEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.local.TransactionTagEntity
+import com.budgetty.app.data.local.TripEntity
 import com.budgetty.app.data.local.WellbeingScoreEntity
 
 /**
@@ -34,6 +35,9 @@ data class BackupData(
      *  pre-tags backups. */
     val tags: List<TagEntity> = emptyList(),
     val transactionTags: List<TransactionTagEntity> = emptyList(),
+    /** Trips (Travel mode) — metadata over a tag. The [TripEntity.tag] string points at one of [tags];
+     *  restored with fresh ids. Absent in pre-trips backups. */
+    val trips: List<TripEntity> = emptyList(),
     /** User preferences (see [BackupSettings]); null in backups written before this field existed. */
     val settings: BackupSettings? = null,
 )

@@ -16,6 +16,7 @@ import com.budgetty.app.data.repository.BuyingLimitsRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.TagRepository
+import com.budgetty.app.data.repository.TripRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
@@ -111,6 +112,7 @@ class UploadViewModelDuplicateGuardTest {
             ScanQuota(context),
             ruleRepo,
             TagRepository(dbManager),
+            TripRepository(dbManager),
             BillingManager(context, auth, analytics, crashReporting),
             budgetRepo,
             ReviewTracker(context),

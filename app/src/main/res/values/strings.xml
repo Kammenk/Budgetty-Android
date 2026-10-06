@@ -416,6 +416,46 @@
     <string name="account_category_rules">Category rules</string>
     <string name="account_manage_categories">Manage categories</string>
     <string name="account_tags" tools:ignore="MissingTranslation">Tags</string>
+    <string name="account_trips" tools:ignore="MissingTranslation">Trips</string>
+    <!-- Travel mode (Trips) -->
+    <string name="trips_title" tools:ignore="MissingTranslation">Trips</string>
+    <string name="trips_start" tools:ignore="MissingTranslation">Start</string>
+    <string name="trips_empty_title" tools:ignore="MissingTranslation">No trips yet</string>
+    <string name="trips_empty_body" tools:ignore="MissingTranslation">Start a trip and every expense you add is totalled for it automatically.</string>
+    <string name="trips_start_cta" tools:ignore="MissingTranslation">Start a trip</string>
+    <string name="trips_active_badge" tools:ignore="MissingTranslation">Active</string>
+    <string name="trips_per_day_expenses" tools:ignore="MissingTranslation">%1$s a day · %2$d expenses</string>
+    <string name="trips_day_of" tools:ignore="MissingTranslation">Day %1$d of %2$d</string>
+    <string name="trips_days_left" tools:ignore="MissingTranslation">%1$d days left</string>
+    <string name="trips_budget" tools:ignore="MissingTranslation">Trip budget</string>
+    <string name="trips_budget_of" tools:ignore="MissingTranslation">%1$s of %2$s</string>
+    <string name="trips_pace_under" tools:ignore="MissingTranslation">On track</string>
+    <string name="trips_pace_over" tools:ignore="MissingTranslation">Ahead of pace</string>
+    <string name="trips_pace_over_budget" tools:ignore="MissingTranslation">Over budget</string>
+    <string name="trips_daily_hint" tools:ignore="MissingTranslation">%1$s/day keeps you on budget</string>
+    <string name="trips_over_by" tools:ignore="MissingTranslation">%1$s over budget</string>
+    <string name="trips_under_by" tools:ignore="MissingTranslation">%1$s under budget</string>
+    <string name="trips_top_categories" tools:ignore="MissingTranslation">Top categories</string>
+    <string name="trips_expenses_in_history" tools:ignore="MissingTranslation">%1$d expenses in History</string>
+    <string name="trips_end" tools:ignore="MissingTranslation">End trip</string>
+    <string name="trips_past" tools:ignore="MissingTranslation">PAST TRIPS</string>
+    <string name="trips_delete" tools:ignore="MissingTranslation">Delete trip</string>
+    <string name="trips_per_day_short" tools:ignore="MissingTranslation">%1$s/day</string>
+    <string name="trips_footer" tools:ignore="MissingTranslation">Ended trips keep their tag, so they still filter History and show in Insights → By tag.</string>
+    <string name="trips_open_ended" tools:ignore="MissingTranslation">Open-ended</string>
+    <string name="trips_end_title" tools:ignore="MissingTranslation">End %1$s?</string>
+    <string name="trips_end_body" tools:ignore="MissingTranslation">New expenses will stop being tagged. The expenses already tagged stay, and you can find the trip any time under Account → Trips.</string>
+    <string name="trips_end_keep" tools:ignore="MissingTranslation">Keep going</string>
+    <string name="trips_new_title" tools:ignore="MissingTranslation">Start a trip</string>
+    <string name="trips_name_label" tools:ignore="MissingTranslation">Trip name</string>
+    <string name="trips_dates_label" tools:ignore="MissingTranslation">Dates</string>
+    <string name="trips_dates_sub" tools:ignore="MissingTranslation">Optional</string>
+    <string name="trips_pick_dates" tools:ignore="MissingTranslation">Pick dates</string>
+    <string name="trips_budget_label" tools:ignore="MissingTranslation">Trip budget</string>
+    <string name="trips_budget_sub" tools:ignore="MissingTranslation">Optional · shows a pace bar</string>
+    <string name="trips_autotag_explainer" tools:ignore="MissingTranslation">New expenses will be tagged %1$s until you end the trip. You can remove it from any single expense.</string>
+    <string name="trips_backfill" tools:ignore="MissingTranslation">Also tag the %1$d expenses already added since the start date</string>
+    <string name="trips_start_trip" tools:ignore="MissingTranslation">Start trip</string>
     <string name="category_rules_title">Category rules</string>
     <string name="category_rules_subtitle">Applied automatically when Budgetty scans a new receipt. Delete one to stop using it.</string>
     <plurals name="category_rules_count">
