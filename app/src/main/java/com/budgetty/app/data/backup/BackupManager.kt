@@ -131,6 +131,8 @@ class BackupManager(
             customInsightsSections = s.customInsightsSections,
             recapEnabled = s.recapEnabled,
             recapFrequency = s.recapFrequency.name,
+            hideAmounts = s.hideAmounts,
+            hideAmountsOnBackground = s.hideAmountsOnBackground,
         )
     }
 
@@ -155,6 +157,8 @@ class BackupManager(
         s.homeSectionOrder?.let(settingsStore::setHomeSectionOrder)
         s.insightsSectionOrder?.let(settingsStore::setInsightsSectionOrder)
         s.customInsightsSections?.let(settingsStore::setCustomInsightsSections)
+        s.hideAmounts?.let(settingsStore::setHideAmounts)
+        s.hideAmountsOnBackground?.let(settingsStore::setHideAmountsOnBackground)
     }
 
     /** Parses [name] to an enum of type [T] and applies it via [set]; a null or unknown name is a no-op. */

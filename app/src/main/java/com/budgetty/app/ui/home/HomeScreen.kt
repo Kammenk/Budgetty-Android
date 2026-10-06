@@ -101,7 +101,9 @@ import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeCard
 import com.budgetty.app.ui.components.AdaptiveSheet
+import com.budgetty.app.ui.components.AmountMaskPill
 import com.budgetty.app.ui.components.Avatar
+import com.budgetty.app.ui.components.HideAmountsEye
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.PlannedSwatch
 import com.budgetty.app.ui.components.ReceiptDetailSheet
@@ -110,6 +112,7 @@ import com.budgetty.app.ui.components.SectionsMenu
 import com.budgetty.app.ui.components.StoreLogo
 import com.budgetty.app.ui.components.TransactionRow
 import com.budgetty.app.ui.components.resolveSectionOrder
+import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
 import com.budgetty.app.ui.util.budgetColor
 import com.budgetty.app.ui.util.budgetRatio
@@ -392,6 +395,7 @@ private fun PhoneHomeContent(
                         .weight(1f)
                         .padding(start = MaterialTheme.dimens.xs),
                 )
+                HideAmountsEye()
                 SectionsMenu(
                     sections = HomeSection.entries,
                     order = sectionOrder,
@@ -549,6 +553,7 @@ private fun TabletHomeContent(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.xs),
                     )
+                    HideAmountsEye()
                     HomePeriodFilter(selected = state.filter, onSelected = onFilterSelected)
                 }
             }
@@ -741,6 +746,7 @@ private fun WideHomeHeader(
             modifier = Modifier.weight(1f),
         )
         HomePeriodFilter(selected = filter, onSelected = onFilterSelected)
+        HideAmountsEye()
         Spacer(Modifier.width(MaterialTheme.dimens.md))
         Avatar(
             initials = initials,
@@ -896,15 +902,22 @@ private fun TabletSummaryCard(state: HomeUiState, modifier: Modifier = Modifier)
                 verticalAlignment = Alignment.Bottom,
             ) {
                 if (state.isLoaded) {
-                    Text(
-                        text = state.total.formatMoney(),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        softWrap = false,
-                        overflow = TextOverflow.Clip,
-                        modifier = Modifier.weight(1f).basicMarquee(),
-                    )
+                    if (AppFormats.hideAmounts) {
+                        AmountMaskPill(
+                            style = MaterialTheme.typography.displaySmall,
+                            modifier = Modifier.weight(1f),
+                        )
+                    } else {
+                        Text(
+                            text = state.total.formatMoney(),
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            softWrap = false,
+                            overflow = TextOverflow.Clip,
+                            modifier = Modifier.weight(1f).basicMarquee(),
+                        )
+                    }
                 } else {
                     SkeletonBar(
                         width = 150.dp,
@@ -1363,16 +1376,23 @@ internal fun SafeToSpendCard(
                 SkeletonBar(width = 160.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
             } else {
                 // Spent-first hero: the money already out this cycle, in neutral onSurface.
-                Text(
-                    text = totalSpent.formatMoney(),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Clip,
-                    modifier = Modifier.fillMaxWidth().basicMarquee(),
-                )
+                if (AppFormats.hideAmounts) {
+                    AmountMaskPill(
+                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                } else {
+                    Text(
+                        text = totalSpent.formatMoney(),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.fillMaxWidth().basicMarquee(),
+                    )
+                }
                 // Composition sub-line: split total into spend + paid bills when a bill's been paid
                 // (that's the confusing case), else the receipt count, else the zero state.
                 val composition = when {
@@ -1654,15 +1674,22 @@ private fun SummaryCard(
             }
             Spacer(Modifier.height(MaterialTheme.dimens.sm))
             if (state.isLoaded) {
-                Text(
-                    text = state.total.formatMoney(),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Clip,
-                    modifier = Modifier.fillMaxWidth().basicMarquee(),
-                )
+                if (AppFormats.hideAmounts) {
+                    AmountMaskPill(
+                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                } else {
+                    Text(
+                        text = state.total.formatMoney(),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.fillMaxWidth().basicMarquee(),
+                    )
+                }
             } else {
                 SkeletonBar(width = 150.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
             }

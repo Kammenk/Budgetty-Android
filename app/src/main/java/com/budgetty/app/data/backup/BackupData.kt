@@ -67,4 +67,7 @@ data class BackupSettings(
     val customInsightsSections: List<String>? = null,
     val recapEnabled: Boolean? = null,
     val recapFrequency: String? = null,
+    /** "Hide amounts" privacy mode and its optional auto-hide — display prefs, so they travel with a restore. */
+    val hideAmounts: Boolean? = null,
+    val hideAmountsOnBackground: Boolean? = null,
 )

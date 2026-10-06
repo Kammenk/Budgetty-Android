@@ -83,6 +83,7 @@ import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.Receipt
+import com.budgetty.app.ui.components.HideAmountsEye
 import com.budgetty.app.ui.components.PriceRangeSheet
 import com.budgetty.app.ui.components.ReceiptDetailContent
 import com.budgetty.app.ui.components.ReceiptDetailSheet
@@ -190,12 +191,20 @@ private fun HistoryScreenContent(
     // landscape two-pane. [colModifier] sizes it (capped single-pane, or a weighted panel).
     val historyColumn: @Composable (Modifier) -> Unit = { colModifier ->
         Column(modifier = colModifier.fillMaxHeight()) {
-            Text(
-                text = stringResource(R.string.nav_history),
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = MaterialTheme.dimens.xl, end = MaterialTheme.dimens.xl, top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg),
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = MaterialTheme.dimens.xl, end = MaterialTheme.dimens.sm, top = MaterialTheme.dimens.xxl, bottom = MaterialTheme.dimens.lg),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.nav_history),
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                )
+                HideAmountsEye()
+            }
 
             // Until the first DB load lands, show just the header rather than flashing an empty state.
             if (!state.isLoaded) return@Column

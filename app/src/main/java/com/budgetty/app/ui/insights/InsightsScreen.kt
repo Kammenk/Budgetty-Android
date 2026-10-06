@@ -83,6 +83,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.ui.components.CategoryTransactionsSheet
 import com.budgetty.app.ui.components.CustomDateRangeSheet
+import com.budgetty.app.ui.components.HideAmountsEye
+import com.budgetty.app.ui.components.MoneyText
 import com.budgetty.app.ui.components.PieChart
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.PlannedBadge
@@ -688,6 +690,7 @@ private fun InsightsPhoneBody(
                     .weight(1f)
                     .padding(start = MaterialTheme.dimens.xs),
             )
+            HideAmountsEye()
             // Wellbeing + recap live in the toolbar (out of the scroll); recap shows only when ready.
             // The old "Customize sections" menu is gone on phone (D6): the fixed groups are fixed and the
             // Custom tab is the curation surface; the overlay toggle now leads the Spending tab and the
@@ -1372,6 +1375,7 @@ internal fun InsightsTabletBody(
                 maxLines = 1,
                 modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.xs),
             )
+            HideAmountsEye()
             state.wellbeing?.let { WellbeingScorePip(summary = it, onClick = onNavigateToWellbeing) }
             if (showRecapEntry) {
                 Spacer(Modifier.width(MaterialTheme.dimens.sm))
@@ -2547,8 +2551,8 @@ internal fun OverviewTabContent(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.sm),
         ) {
-            Text(
-                text = state.total.formatMoney(),
+            MoneyText(
+                amount = state.total,
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
             )

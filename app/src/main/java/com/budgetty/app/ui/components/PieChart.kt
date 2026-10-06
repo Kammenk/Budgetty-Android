@@ -495,8 +495,8 @@ fun PieChart(
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
                 )
-                Text(
-                    text = (selected?.value ?: total).formatMoney(),
+                MoneyText(
+                    amount = selected?.value ?: total,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

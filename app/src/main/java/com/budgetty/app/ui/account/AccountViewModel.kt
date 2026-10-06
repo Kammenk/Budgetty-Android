@@ -73,6 +73,10 @@ class AccountViewModel(
     fun setBiometricEnabled(value: Boolean) = settingsStore.setBiometricEnabled(value)
     fun setAutoLockMinutes(value: Int) = settingsStore.setAutoLockMinutes(value)
 
+    // ── Hide amounts (privacy) ──
+    fun setHideAmounts(value: Boolean) = settingsStore.setHideAmounts(value)
+    fun setHideAmountsOnBackground(value: Boolean) = settingsStore.setHideAmountsOnBackground(value)
+
     /** Builds the JSON backup of all local data. */
     suspend fun buildBackupJson(): String {
         val json = backupManager.exportJson()
