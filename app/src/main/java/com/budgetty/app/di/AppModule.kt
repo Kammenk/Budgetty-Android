@@ -17,6 +17,7 @@ import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.BuyingLimitsRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
+import com.budgetty.app.data.repository.TagRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
@@ -47,6 +48,7 @@ import com.budgetty.app.ui.lock.AppLockViewModel
 import com.budgetty.app.ui.quiz.InsightsQuizViewModel
 import com.budgetty.app.ui.categories.ManageCategoriesViewModel
 import com.budgetty.app.ui.rules.CategoryRulesViewModel
+import com.budgetty.app.ui.tags.TagsViewModel
 import com.budgetty.app.ui.upload.UploadViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
@@ -73,6 +75,7 @@ val appModule = module {
     single { BudgetRolloverRepository(get()) }
     single { ReceiptRepository(get()) }
     single { CategoryRuleRepository(get()) }
+    single { TagRepository(get()) }
     single { RecurringRepository(get()) }
     single { SavingsRepository(get()) }
     single { SubscriptionsRepository(get()) }
@@ -153,14 +156,17 @@ val appModule = module {
     viewModel { (goalId: Long) -> SavingsGoalViewModel(get(), get(), goalId) }
     viewModel { SubscriptionsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ExportViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { HistoryViewModel(get(), get(), get(), get()) }
+    viewModel { HistoryViewModel(get(), get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { WellbeingViewModel(get(), get(), get()) }
     viewModel { RecapViewModel(get(), get(), get()) }
     viewModel {
-        UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+        UploadViewModel(
+            get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+        )
     }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
+    viewModel { TagsViewModel(get()) }
     viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
     viewModel { PaywallViewModel(get(), get()) }

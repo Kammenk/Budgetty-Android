@@ -8,6 +8,7 @@ import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.Receipt
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
+import com.budgetty.app.data.repository.TagRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
@@ -39,6 +40,8 @@ enum class SortOrder { NEWEST, OLDEST, PRICE_HIGH, PRICE_LOW }
 data class HistoryItem(
     val transaction: TransactionEntity,
     val store: String,
+    /** The line item's free-form tags (empty when untagged) — rendered as pills on its history row. */
+    val tags: List<String> = emptyList(),
 ) {
     /** Quantity-aware line total — what the row shows and what price filters/sorts compare against. */
     val lineTotal: BigDecimal
@@ -177,17 +180,25 @@ class HistoryViewModel(
     private val receiptRepository: ReceiptRepository,
     private val recurringRepository: RecurringRepository,
     private val settingsStore: SettingsStore,
+    private val tagRepository: TagRepository,
 ) : ViewModel() {
 
     // One filter set drives all three tabs. The Receipts/Items lists read every field; the Budgets
     // snapshot reads only the Date window (below) — so choosing a date on any tab carries across.
     private val filters = MutableStateFlow(HistoryFilters())
 
+    // Transactions paired with their tag links (combine tops out at 5 typed flows, so fold these two
+    // into one before the main combine). tagsByTxn maps a transaction id to its tag names.
+    private val transactionsWithTags =
+        combine(transactionRepository.getAll(), tagRepository.allLinks) { transactions, links ->
+            transactions to links.groupBy({ it.transactionId }, { it.tagName })
+        }
+
     // debounce() on the filter flow is still a preview coroutines API.
     @OptIn(FlowPreview::class)
     val uiState: StateFlow<HistoryUiState> =
         combine(
-            transactionRepository.getAll(),
+            transactionsWithTags,
             receiptRepository.getAll(),
             recurringRepository.items,
             // Debounce so rapid filter changes — above all per-keystroke search — collapse into a
@@ -195,13 +206,13 @@ class HistoryViewModel(
             // on every character. Deliberate taps (category/store/date) just settle ~180 ms later.
             filters.debounce(timeoutMillis = 180),
             settingsStore.settings,
-        ) { transactions, receipts, recurring, activeFilters, settings ->
+        ) { (transactions, tagsByTxn), receipts, recurring, activeFilters, settings ->
             // Transactions join to their receipt by the upload timestamp (see ReceiptEntity).
             // Normalize to the canonical brand so the list, the Store filter dropdown, and store
             // filtering all agree — and legacy receipts saved with a raw name collapse correctly.
             val storeByReceiptId = receipts.associate { it.timestamp to StoreNormalizer.normalize(it.store) }
             val items = transactions.map { txn ->
-                HistoryItem(txn, storeByReceiptId[txn.receiptId].orEmpty())
+                HistoryItem(txn, storeByReceiptId[txn.receiptId].orEmpty(), tagsByTxn[txn.id].orEmpty())
             }
 
             // Dropdown options come from all data (not the filtered subset) so the user can always
@@ -463,6 +474,8 @@ class HistoryViewModel(
                 price = netSum + addedCharges,
                 discount = receiptMeta?.discount ?: BigDecimal.ZERO,
                 tax = receiptMeta?.tax ?: BigDecimal.ZERO,
+                // The distinct tags across the receipt's line items, first-seen order (row pills).
+                tags = its.flatMap { it.tags }.distinct(),
             )
         }
     }

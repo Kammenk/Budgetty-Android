@@ -1,6 +1,7 @@
 package com.budgetty.app.data.backup
 
 import androidx.room.withTransaction
+import com.budgetty.app.data.local.TransactionTagEntity
 import com.budgetty.app.data.local.UserDatabaseManager
 import com.budgetty.app.data.settings.AccentTheme
 import com.budgetty.app.data.settings.Currency
@@ -27,6 +28,7 @@ class BackupManager(
     private val savingsDao get() = db.database.savingsDao()
     private val buyingLimitDao get() = db.database.buyingLimitDao()
     private val wellbeingScoreDao get() = db.database.wellbeingScoreDao()
+    private val tagDao get() = db.database.tagDao()
 
     private val gson = Gson()
 
@@ -43,6 +45,8 @@ class BackupManager(
             savingsContributions = savingsDao.getAllContributions().first(),
             buyingLimits = buyingLimitDao.getAll().first(),
             wellbeingScores = wellbeingScoreDao.getAll().first(),
+            tags = tagDao.allTags().first(),
+            transactionTags = tagDao.allLinks().first(),
             settings = currentBackupSettings(),
         )
         return gson.toJson(data)
@@ -74,9 +78,15 @@ class BackupManager(
                 savingsDao.clearGoals()
                 buyingLimitDao.clearAll()
                 wellbeingScoreDao.clearAll()
+                // Links first (they reference both), then the catalog. Clearing transactions above
+                // already cascades the links, but clearing explicitly keeps this correct regardless.
+                tagDao.clearLinks()
+                tagDao.clearTags()
             }
-            // New ids so a merge never collides with existing transactions.
-            transactionDao.insertAll(data.transactions.map { it.copy(id = 0) })
+            // New ids so a merge never collides with existing transactions; capture them (in input
+            // order) to remap the tag links below onto the freshly-inserted rows.
+            val newTxnIds = transactionDao.insertAll(data.transactions.map { it.copy(id = 0) })
+            val txnIdMap = data.transactions.zip(newTxnIds).associate { (old, newId) -> old.id to newId }
             // .orZero() tolerates older backups without receipts.tax (pre-v15) or receipts.extraCharges
             // (pre-v17) — Gson leaves the non-null column null, which would otherwise fail the insert.
             receiptDao.insertAll(data.receipts.map { it.copy(tax = it.tax.orZero(), extraCharges = it.extraCharges.orZero()) })
@@ -104,6 +114,18 @@ class BackupManager(
             // pre-v26 backups. insertAll IGNOREs a periodId clash, so a merge keeps the on-device
             // snapshot rather than letting the backup rewrite a month's finalized score (§3.1).
             wellbeingScoreDao.insertAll(data.wellbeingScores.orEmpty())
+            // Tags: insert the catalog first (links FK-reference it), then the links with each
+            // transactionId remapped onto the freshly-inserted transaction. A link whose transaction or
+            // tag is missing from the backup is dropped. .orEmpty() tolerates pre-tags backups.
+            tagDao.insertTags(data.tags.orEmpty())
+            val tagNames = data.tags.orEmpty().mapTo(HashSet()) { it.name }
+            tagDao.link(
+                data.transactionTags.orEmpty().mapNotNull { link ->
+                    val newId = txnIdMap[link.transactionId] ?: return@mapNotNull null
+                    if (link.tagName !in tagNames) return@mapNotNull null
+                    TransactionTagEntity(newId, link.tagName)
+                },
+            )
         }
 
         // Preferences live outside Room (a device-global SharedPreferences store), so they're applied

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Budgetty</string>
 
     <!-- Common actions -->
@@ -415,6 +415,7 @@
     <!-- Category rules management screen (Account → Category rules) -->
     <string name="account_category_rules">Category rules</string>
     <string name="account_manage_categories">Manage categories</string>
+    <string name="account_tags" tools:ignore="MissingTranslation">Tags</string>
     <string name="category_rules_title">Category rules</string>
     <string name="category_rules_subtitle">Applied automatically when Budgetty scans a new receipt. Delete one to stop using it.</string>
     <plurals name="category_rules_count">
@@ -961,6 +962,53 @@
     <string name="quiz_sum_income_amount">Income set — %1$s/month</string>
     <string name="quiz_sum_budget_amount">Monthly budget — %1$s</string>
     <string name="quiz_done_bills_hint">Next: add your recurring bills in the Budget tab</string>
+
+    <!-- Free-form tags. New strings ship English-first and are translated via Crowdin; tools:ignore
+         keeps lintDebug green on the interim MissingTranslation gap until that sync lands. -->
+    <string name="upload_tags" tools:ignore="MissingTranslation">Tags</string>
+    <string name="tag_add_chip" tools:ignore="MissingTranslation">tag</string>
+    <string name="tag_remove" tools:ignore="MissingTranslation">Remove #%1$s</string>
+    <string name="upload_tags_note" tools:ignore="MissingTranslation">Tags don’t change the category or your category rules.</string>
+    <string name="tag_sheet_title" tools:ignore="MissingTranslation">Tags</string>
+    <string name="tag_sheet_input_hint" tools:ignore="MissingTranslation">Add a tag</string>
+    <string name="tag_sheet_normalize_hint" tools:ignore="MissingTranslation">Lowercase, spaces become hyphens</string>
+    <string name="tag_sheet_existing" tools:ignore="MissingTranslation">EXISTING TAGS</string>
+    <string name="tag_sheet_similar" tools:ignore="MissingTranslation">SIMILAR</string>
+    <string name="tag_sheet_recent" tools:ignore="MissingTranslation">RECENT</string>
+    <string name="tag_sheet_create" tools:ignore="MissingTranslation">Create “#%1$s”</string>
+    <plurals name="tag_uses" tools:ignore="MissingTranslation">
+        <item quantity="one">%d use</item>
+        <item quantity="other">%d uses</item>
+    </plurals>
+    <!-- Manage tags (Account → Tags) -->
+    <string name="tags_title" tools:ignore="MissingTranslation">Tags</string>
+    <plurals name="tags_count" tools:ignore="MissingTranslation">
+        <item quantity="one">%d tag</item>
+        <item quantity="other">%d tags</item>
+    </plurals>
+    <plurals name="tags_transaction_count" tools:ignore="MissingTranslation">
+        <item quantity="one">%d transaction</item>
+        <item quantity="other">%d transactions</item>
+    </plurals>
+    <string name="tags_footer" tools:ignore="MissingTranslation">Renaming or merging updates every transaction with that tag. Deleting a tag never deletes transactions.</string>
+    <string name="tags_empty" tools:ignore="MissingTranslation">No tags yet</string>
+    <string name="tags_empty_body" tools:ignore="MissingTranslation">Add tags to a transaction while reviewing it — handy for things like #work or #reimbursable.</string>
+    <string name="tags_row_actions" tools:ignore="MissingTranslation">Actions for #%1$s</string>
+    <string name="tag_action_rename" tools:ignore="MissingTranslation">Rename</string>
+    <string name="tag_action_merge" tools:ignore="MissingTranslation">Merge into…</string>
+    <string name="tag_action_delete" tools:ignore="MissingTranslation">Delete tag</string>
+    <string name="tag_rename_title" tools:ignore="MissingTranslation">Rename tag</string>
+    <string name="tag_rename_hint" tools:ignore="MissingTranslation">Lowercase; spaces become hyphens. Using an existing name merges the two.</string>
+    <string name="tag_merge_title" tools:ignore="MissingTranslation">Merge #%1$s</string>
+    <string name="tag_merge_body" tools:ignore="MissingTranslation">Every transaction tagged #%1$s takes the tag you pick instead, and #%1$s is removed.</string>
+    <string name="tag_merge_empty" tools:ignore="MissingTranslation">There are no other tags to merge into yet.</string>
+    <string name="tag_merge_action" tools:ignore="MissingTranslation">Merge</string>
+    <string name="tag_delete_title" tools:ignore="MissingTranslation">Delete #%1$s?</string>
+    <string name="tag_delete_body" tools:ignore="MissingTranslation">This removes the tag everywhere. Your transactions are kept.</string>
+    <!-- Insights "By tag" card -->
+    <string name="insights_by_tag" tools:ignore="MissingTranslation">By tag</string>
+    <string name="insights_by_tag_subtitle" tools:ignore="MissingTranslation">Top tags by spend · %1$s</string>
+    <string name="insights_by_tag_footnote" tools:ignore="MissingTranslation">A transaction can carry several tags, so these don’t add up to your total spend.</string>
 
     <!-- Category picker -->
     <string name="category_picker_title">Choose a category</string>

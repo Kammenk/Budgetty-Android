@@ -9,6 +9,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,6 +88,7 @@ import com.budgetty.app.ui.components.PriceRangeSheet
 import com.budgetty.app.ui.components.ReceiptDetailContent
 import com.budgetty.app.ui.components.ReceiptDetailSheet
 import com.budgetty.app.ui.components.SegmentedToggle
+import com.budgetty.app.ui.components.TagPill
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -1180,7 +1182,31 @@ private fun HistoryRow(
                 )
             }
         }
+        // Tag pills on their own line, indented under the item name (past the category tile).
+        if (item.tags.isNotEmpty()) {
+            TagPillRow(
+                tags = item.tags,
+                modifier = Modifier.padding(
+                    start = MaterialTheme.dimens.xl + 40.dp,
+                    end = MaterialTheme.dimens.xl,
+                    bottom = 8.dp,
+                ),
+            )
+        }
         if (fraction >= 0f) MagnitudeBar(fraction)
+    }
+}
+
+/** A wrapped row of read-only [TagPill]s, used under History item/receipt rows. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun TagPillRow(tags: List<String>, modifier: Modifier = Modifier) {
+    FlowRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        tags.forEach { TagPill(it) }
     }
 }
 
@@ -1255,6 +1281,17 @@ private fun ReceiptHistoryRow(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(MaterialTheme.dimens.iconSmall),
+            )
+        }
+        // The receipt's distinct tags (across its items), indented under the store name.
+        if (receipt.tags.isNotEmpty()) {
+            TagPillRow(
+                tags = receipt.tags,
+                modifier = Modifier.padding(
+                    start = MaterialTheme.dimens.xl + 50.dp,
+                    end = MaterialTheme.dimens.xl,
+                    bottom = 8.dp,
+                ),
             )
         }
         MagnitudeBar(fraction)

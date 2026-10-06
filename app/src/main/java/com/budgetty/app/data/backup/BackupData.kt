@@ -8,7 +8,9 @@ import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.SavingsContributionEntity
 import com.budgetty.app.data.local.SavingsGoalEntity
+import com.budgetty.app.data.local.TagEntity
 import com.budgetty.app.data.local.TransactionEntity
+import com.budgetty.app.data.local.TransactionTagEntity
 import com.budgetty.app.data.local.WellbeingScoreEntity
 
 /**
@@ -27,6 +29,11 @@ data class BackupData(
     val savingsContributions: List<SavingsContributionEntity> = emptyList(),
     val buyingLimits: List<BuyingLimitEntity> = emptyList(),
     val wellbeingScores: List<WellbeingScoreEntity> = emptyList(),
+    /** The free-form tag catalog and the transaction↔tag links. The links' transactionId is remapped
+     *  onto the freshly-inserted transactions on restore (see [BackupManager.import]); absent in
+     *  pre-tags backups. */
+    val tags: List<TagEntity> = emptyList(),
+    val transactionTags: List<TransactionTagEntity> = emptyList(),
     /** User preferences (see [BackupSettings]); null in backups written before this field existed. */
     val settings: BackupSettings? = null,
 )

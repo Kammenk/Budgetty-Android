@@ -81,6 +81,7 @@ import com.budgetty.app.ui.paywall.PaywallScreen
 import com.budgetty.app.ui.quiz.InsightsQuizScreen
 import com.budgetty.app.ui.categories.ManageCategoriesScreen
 import com.budgetty.app.ui.rules.CategoryRulesScreen
+import com.budgetty.app.ui.tags.TagsScreen
 import com.budgetty.app.ui.upload.UploadScreen
 import com.budgetty.app.ui.widgets.WidgetsScreen
 import org.koin.androidx.compose.koinViewModel
@@ -478,6 +479,7 @@ private fun BudgettyNavHost(
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
                 onOpenBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
                 onOpenManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
+                onOpenTags = { navController.navigate(Routes.TAGS) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
         }
@@ -550,6 +552,9 @@ private fun BudgettyNavHost(
         }
         composable(Routes.CATEGORY_RULES) {
             CategoryRulesScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.TAGS) {
+            TagsScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Routes.BUYING_LIMITS) {
             BuyingLimitsScreen(

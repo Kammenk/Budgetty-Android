@@ -14,6 +14,8 @@ import com.budgetty.app.data.ingest.ReceiptIngestManager
 import com.budgetty.app.data.ingest.ReceiptUnreadableException
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.CategoryRuleEntity
+import com.budgetty.app.data.local.TagCount
+import com.budgetty.app.data.local.TagEntity
 import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.quota.ScanQuota
@@ -22,13 +24,16 @@ import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
+import com.budgetty.app.data.repository.TagRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
 import com.budgetty.app.ui.util.CountableItem
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -103,6 +108,7 @@ class UploadViewModel(
     private val receiptRepository: ReceiptRepository,
     private val scanQuota: ScanQuota,
     private val categoryRuleRepository: CategoryRuleRepository,
+    private val tagRepository: TagRepository,
     private val billingManager: BillingManager,
     private val budgetRepository: BudgetRepository,
     private val reviewTracker: ReviewTracker,
@@ -113,6 +119,14 @@ class UploadViewModel(
 
     private val _uiState = MutableStateFlow(UploadUiState())
     val uiState: StateFlow<UploadUiState> = _uiState.asStateFlow()
+
+    /** The tag catalog (name + transaction count), live — the tag input's autocomplete and counts. */
+    val tagCatalog: StateFlow<List<TagCount>> = tagRepository.tagCounts
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    /** Tag names ordered by most recent use — the tag input's "Recent" row. */
+    val recentTags: StateFlow<List<String>> = tagRepository.recentTags
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     /** When editing an existing receipt, its id (upload timestamp); null for a new upload. */
     private var editingReceiptId: Long? = null
@@ -288,6 +302,8 @@ class UploadViewModel(
                     quantity = txn.quantity,
                     category = txn.category,
                     categoryColor = colorOf(txn.category) ?: Categories.colorOf(txn.category),
+                    // Carry the row's existing tags so they survive the delete + re-insert on save.
+                    tags = tagRepository.tagsForTransaction(txn.id),
                 )
             }
             _uiState.update {
@@ -351,6 +367,17 @@ class UploadViewModel(
     }
 
     fun updateName(clientId: String, name: String) = mutate(clientId) { it.copy(name = name) }
+
+    /** Adds a tag to row [clientId]. [raw] is normalized ([TagEntity.normalize]); blanks and
+     *  duplicates are ignored. The catalog row is created when the receipt is saved, not here. */
+    fun addTag(clientId: String, raw: String) {
+        val tag = TagEntity.normalize(raw)
+        if (tag.isEmpty()) return
+        mutate(clientId) { if (tag in it.tags) it else it.copy(tags = it.tags + tag) }
+    }
+
+    /** Removes [tag] from row [clientId]. */
+    fun removeTag(clientId: String, tag: String) = mutate(clientId) { it.copy(tags = it.tags - tag) }
 
     /** Updates the store name as the user edits the store field on the review screen. */
     fun updateStore(name: String) {
@@ -646,8 +673,10 @@ class UploadViewModel(
             )
             // When editing, swap the receipt's previous items for the edited set (kept under the
             // same receiptId); the receipt row itself is REPLACEd by the insert below.
+            // Editing deletes the old rows first; their tag links cascade away (FK), so the links are
+            // re-created below from the tags each review row carried.
             if (editing != null) repository.deleteByReceiptId(uploadId)
-            repository.insertAll(
+            val newIds = repository.insertAll(
                 resolved.map { (parsed, name, _) ->
                     TransactionEntity(
                         name = parsed.name.trim(),
@@ -659,6 +688,11 @@ class UploadViewModel(
                     )
                 },
             )
+            // Link each freshly-inserted row to its tags (insertAll returns ids in input order, so
+            // they line up with `resolved`). Catalog entries are created for any new tag names.
+            resolved.forEachIndexed { index, (parsed, _, _) ->
+                tagRepository.setTagsFor(newIds[index], parsed.tags)
+            }
             receiptRepository.insert(
                 ReceiptEntity(
                     timestamp = uploadId,

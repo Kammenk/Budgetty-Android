@@ -25,4 +25,10 @@ data class ParsedTransaction(
      * category by hand, since it's then their explicit choice rather than the rule's.
      */
     val fromRule: Boolean = false,
+    /**
+     * Normalized free-form tags on this line item, in the order the user added them. Carried through
+     * the review/edit cycle in memory (transactions are deleted + re-inserted on save, so the links
+     * are re-created from this once each row has its new database id). Orthogonal to [category].
+     */
+    val tags: List<String> = emptyList(),
 )

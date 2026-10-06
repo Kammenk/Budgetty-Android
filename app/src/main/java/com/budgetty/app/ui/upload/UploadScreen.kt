@@ -79,6 +79,7 @@ import androidx.compose.ui.res.stringResource
 import com.budgetty.app.R
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -118,6 +119,9 @@ import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.CategoryPickerScreen
 import com.budgetty.app.ui.components.CustomCategoryActions
+import com.budgetty.app.ui.components.LocalTagEditing
+import com.budgetty.app.ui.components.TagEditing
+import com.budgetty.app.ui.components.TagField
 import com.budgetty.app.ui.util.formatDate
 import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
@@ -148,6 +152,8 @@ fun UploadScreen(
     viewModel: UploadViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val tagCatalog by viewModel.tagCatalog.collectAsStateWithLifecycle()
+    val recentTags by viewModel.recentTags.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val isEdit = source == "edit"
     // Resolved here (stringResource is @Composable-only) so the ViewModel can surface localized
@@ -242,26 +248,36 @@ fun UploadScreen(
         onOpenPaywall = onNavigateToPaywall,
     )
 
-    UploadScreenContent(
-        state = state,
-        isEdit = isEdit,
-        isWide = isWideWidth(),
-        customActions = customActions,
-        onStoreChange = viewModel::updateStore,
-        onDateChange = viewModel::updateDate,
-        onNameChange = viewModel::updateName,
-        onCategoryChange = viewModel::updateCategory,
-        onPriceChange = viewModel::updatePrice,
-        onQuantityChange = viewModel::updateQuantity,
-        onDiscountChange = viewModel::updateDiscount,
-        onRemove = viewModel::removeRow,
-        onAddRow = viewModel::addRow,
-        onFinalize = { viewModel.finalizeUpload(noItemsMsg, noAmountMsg, onNavigateBack) },
-        onAddReceipt = { showAddReceiptSheet = true },
-        onRetry = launchSource,
-        onNavigateBack = onNavigateBack,
-        modifier = modifier,
+    // Tag editing (catalog + recent + add/remove) reaches the per-row Tags field ambiently, so it
+    // isn't threaded through every review-screen layer; the field reads it from this local.
+    val tagEditing = TagEditing(
+        catalog = tagCatalog,
+        recent = recentTags,
+        onAdd = viewModel::addTag,
+        onRemove = viewModel::removeTag,
     )
+    CompositionLocalProvider(LocalTagEditing provides tagEditing) {
+        UploadScreenContent(
+            state = state,
+            isEdit = isEdit,
+            isWide = isWideWidth(),
+            customActions = customActions,
+            onStoreChange = viewModel::updateStore,
+            onDateChange = viewModel::updateDate,
+            onNameChange = viewModel::updateName,
+            onCategoryChange = viewModel::updateCategory,
+            onPriceChange = viewModel::updatePrice,
+            onQuantityChange = viewModel::updateQuantity,
+            onDiscountChange = viewModel::updateDiscount,
+            onRemove = viewModel::removeRow,
+            onAddRow = viewModel::addRow,
+            onFinalize = { viewModel.finalizeUpload(noItemsMsg, noAmountMsg, onNavigateBack) },
+            onAddReceipt = { showAddReceiptSheet = true },
+            onRetry = launchSource,
+            onNavigateBack = onNavigateBack,
+            modifier = modifier,
+        )
+    }
 
     if (showAddReceiptSheet) {
         AddReceiptSourceSheet(
@@ -1272,6 +1288,13 @@ private fun ReviewRow(
                 fromRule = transaction.fromRule,
                 onCategoryChange = onCategoryChange,
                 customActions = customActions,
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Spacer(Modifier.padding(MaterialTheme.dimens.xs))
+            // Free-form tags for this line item — sits directly below Category (per the tags design).
+            TagField(
+                clientId = transaction.clientId,
+                tags = transaction.tags,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.padding(MaterialTheme.dimens.xs))
