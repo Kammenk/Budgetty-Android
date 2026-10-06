@@ -1,5 +1,6 @@
 package com.budgetty.app.data.repository
 
+import com.budgetty.app.data.local.CategoryStamp
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.local.UserDatabaseManager
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,10 @@ class TransactionRepository(
 
     /** Earliest recorded transaction timestamp, or null when there are none. */
     fun earliestTimestamp(): Flow<Long?> = db.flow { it.transactionDao().earliestTimestamp() }
+
+    /** Live category + timestamp of recent transactions — ranked into the picker's habit suggestions. */
+    fun recentCategoryStamps(): Flow<List<CategoryStamp>> =
+        db.flow { it.transactionDao().recentCategoryStamps() }
 
     suspend fun getByReceiptId(receiptId: Long): List<TransactionEntity> =
         dao.getByReceiptId(receiptId)

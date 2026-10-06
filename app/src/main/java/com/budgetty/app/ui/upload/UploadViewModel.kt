@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.analytics.ScanFailReason
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.CategorySuggester
 import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.ingest.ParsedTransaction
@@ -23,12 +24,16 @@ import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TransactionRepository
+import com.budgetty.app.ui.components.CategorySuggestions
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
 import com.budgetty.app.ui.util.CountableItem
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
@@ -113,6 +118,27 @@ class UploadViewModel(
 
     private val _uiState = MutableStateFlow(UploadUiState())
     val uiState: StateFlow<UploadUiState> = _uiState.asStateFlow()
+
+    /**
+     * Habit-based category suggestions for the review screen's category picker: the user's categories
+     * ranked by recent use (or generic "Common picks" before there's enough history), plus the learned
+     * name → category rules so the picker can float a context match for the item being categorised.
+     * Recomputed live as transactions or rules change; see [CategorySuggester].
+     */
+    val categorySuggestions: StateFlow<CategorySuggestions> = combine(
+        repository.recentCategoryStamps(),
+        categoryRuleRepository.rules,
+    ) { stamps, rules ->
+        val ranked = CategorySuggester.rank(
+            stamps.map { it.category to it.timestamp },
+            System.currentTimeMillis(),
+        )
+        CategorySuggestions(
+            ranked = ranked.categories,
+            personalized = ranked.personalized,
+            rulesByName = rules.associate { it.name to it.category },
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CategorySuggestions())
 
     /** When editing an existing receipt, its id (upload timestamp); null for a new upload. */
     private var editingReceiptId: Long? = null

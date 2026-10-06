@@ -78,6 +78,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.budgetty.app.R
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -118,6 +119,7 @@ import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.CategoryPickerScreen
 import com.budgetty.app.ui.components.CustomCategoryActions
+import com.budgetty.app.ui.components.LocalCategorySuggestions
 import com.budgetty.app.ui.util.formatDate
 import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
@@ -148,6 +150,7 @@ fun UploadScreen(
     viewModel: UploadViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val categorySuggestions by viewModel.categorySuggestions.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val isEdit = source == "edit"
     // Resolved here (stringResource is @Composable-only) so the ViewModel can surface localized
@@ -242,26 +245,30 @@ fun UploadScreen(
         onOpenPaywall = onNavigateToPaywall,
     )
 
-    UploadScreenContent(
-        state = state,
-        isEdit = isEdit,
-        isWide = isWideWidth(),
-        customActions = customActions,
-        onStoreChange = viewModel::updateStore,
-        onDateChange = viewModel::updateDate,
-        onNameChange = viewModel::updateName,
-        onCategoryChange = viewModel::updateCategory,
-        onPriceChange = viewModel::updatePrice,
-        onQuantityChange = viewModel::updateQuantity,
-        onDiscountChange = viewModel::updateDiscount,
-        onRemove = viewModel::removeRow,
-        onAddRow = viewModel::addRow,
-        onFinalize = { viewModel.finalizeUpload(noItemsMsg, noAmountMsg, onNavigateBack) },
-        onAddReceipt = { showAddReceiptSheet = true },
-        onRetry = launchSource,
-        onNavigateBack = onNavigateBack,
-        modifier = modifier,
-    )
+    // Habit suggestions reach the category picker (opened deep inside each item row) ambiently, so
+    // they aren't threaded through every layer; the picker reads them from this local.
+    CompositionLocalProvider(LocalCategorySuggestions provides categorySuggestions) {
+        UploadScreenContent(
+            state = state,
+            isEdit = isEdit,
+            isWide = isWideWidth(),
+            customActions = customActions,
+            onStoreChange = viewModel::updateStore,
+            onDateChange = viewModel::updateDate,
+            onNameChange = viewModel::updateName,
+            onCategoryChange = viewModel::updateCategory,
+            onPriceChange = viewModel::updatePrice,
+            onQuantityChange = viewModel::updateQuantity,
+            onDiscountChange = viewModel::updateDiscount,
+            onRemove = viewModel::removeRow,
+            onAddRow = viewModel::addRow,
+            onFinalize = { viewModel.finalizeUpload(noItemsMsg, noAmountMsg, onNavigateBack) },
+            onAddReceipt = { showAddReceiptSheet = true },
+            onRetry = launchSource,
+            onNavigateBack = onNavigateBack,
+            modifier = modifier,
+        )
+    }
 
     if (showAddReceiptSheet) {
         AddReceiptSourceSheet(
@@ -1272,6 +1279,9 @@ private fun ReviewRow(
                 fromRule = transaction.fromRule,
                 onCategoryChange = onCategoryChange,
                 customActions = customActions,
+                // The item name drives the picker's context-aware suggestion (a learned-rule match
+                // for this item leads the Suggested row with a "because you usually…" reason).
+                contextName = transaction.name,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.padding(MaterialTheme.dimens.xs))
@@ -1321,6 +1331,7 @@ private fun CategoryField(
     fromRule: Boolean,
     onCategoryChange: (String) -> Unit,
     customActions: CustomCategoryActions = CustomCategoryActions(),
+    contextName: String? = null,
     modifier: Modifier = Modifier,
 ) {
     var showSheet by remember { mutableStateOf(false) }
@@ -1361,6 +1372,7 @@ private fun CategoryField(
             selected = category,
             onSelect = onCategoryChange,
             custom = customActions,
+            contextName = contextName,
             onDismiss = { showSheet = false },
         )
     }

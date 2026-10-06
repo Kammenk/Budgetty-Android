@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.category.Categories
+import com.budgetty.app.category.CategorySuggester
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.local.BudgetRolloverEntity
 import com.budgetty.app.data.local.CategoryEntity
@@ -32,6 +33,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import com.budgetty.app.ui.components.CategorySuggestions
 import com.budgetty.app.ui.savings.SavingsGoalCardUi
 import com.budgetty.app.ui.streaks.BudgetStreakInput
 import com.budgetty.app.ui.streaks.LiveBudgetPeriod
@@ -86,6 +88,26 @@ class BudgetViewModel(
         SharingStarted.WhileSubscribed(5_000),
         emptyMap(),
     )
+
+    /**
+     * Habit-based category suggestions for the category picker opened when choosing a category budget:
+     * the user's categories ranked by recent use (or generic "Common picks" before there's enough
+     * history), plus the learned rules. No item context here, so the picker just shows the ranked row.
+     */
+    val categorySuggestions: StateFlow<CategorySuggestions> = combine(
+        transactionRepository.recentCategoryStamps(),
+        categoryRuleRepository.rules,
+    ) { stamps, rules ->
+        val ranked = CategorySuggester.rank(
+            stamps.map { it.category to it.timestamp },
+            System.currentTimeMillis(),
+        )
+        CategorySuggestions(
+            ranked = ranked.categories,
+            personalized = ranked.personalized,
+            rulesByName = rules.associate { it.name to it.category },
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CategorySuggestions())
 
     /** Whether unspent budget carries into the next period (opt-in). */
     val rolloverEnabled: StateFlow<Boolean> =

@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,6 +50,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,6 +63,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -84,8 +88,10 @@ import androidx.compose.ui.window.DialogProperties
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
 import com.budgetty.app.category.CategoryBucket
+import com.budgetty.app.category.CategorySuggester
 import com.budgetty.app.category.EmojiCatalog
 import com.budgetty.app.data.local.CategoryEntity
+import com.budgetty.app.data.local.CategoryRuleEntity
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.util.categoryDisplayName
 
@@ -108,6 +114,30 @@ data class CustomCategoryActions(
     val onCountTransactions: suspend (String) -> Int = { 0 },
     val onOpenPaywall: () -> Unit = {},
 )
+
+/**
+ * The habit-based suggestions the picker surfaces in its "Suggested for you" row, above the
+ * untouched grid. [ranked] is the category names to chip, best-first (the user's own habits, or the
+ * generic "Common picks" for someone without enough history); [personalized] picks the row's label
+ * and footer between the two. [rulesByName] is the learned name → category rules keyed by
+ * [CategoryRuleEntity.key]; when the picker is opened for a known item (its `contextName`), a rule
+ * match floats to the front of the row with a "because you usually…" reason. Empty [ranked] (the
+ * default, for callers that don't provide suggestions) simply omits the row.
+ */
+data class CategorySuggestions(
+    val ranked: List<String> = emptyList(),
+    val personalized: Boolean = false,
+    val rulesByName: Map<String, String> = emptyMap(),
+)
+
+/**
+ * Ambient habit suggestions for every [CategoryPickerScreen] opened beneath it. Screens that know a
+ * user's spending (Upload review, Budget) provide it from their ViewModel; anywhere it isn't
+ * provided the default is empty, so the picker just shows no Suggested row. Provided (rather than
+ * threaded through each layer) because the picker is opened deep inside unrelated composables and
+ * only it consumes the value — the picker still takes an explicit override for previews/tests.
+ */
+val LocalCategorySuggestions = compositionLocalOf { CategorySuggestions() }
 
 /** The picker's two in-place modes: browsing/picking, or the create/edit form ([Edit.original] is
  *  null when creating a new category). */
@@ -133,6 +163,8 @@ fun CategoryPickerScreen(
     onSelect: (String) -> Unit,
     onDismiss: () -> Unit,
     custom: CustomCategoryActions = CustomCategoryActions(),
+    suggestions: CategorySuggestions = LocalCategorySuggestions.current,
+    contextName: String? = null,
 ) {
     var mode by remember { mutableStateOf<PickerMode>(PickerMode.Pick) }
 
@@ -152,6 +184,8 @@ fun CategoryPickerScreen(
         CategoryPickerContent(
             selected = selected,
             custom = custom,
+            suggestions = suggestions,
+            contextName = contextName,
             mode = mode,
             onModeChange = { mode = it },
             selectAndClose = { onSelect(it); onDismiss() },
@@ -229,6 +263,8 @@ fun CategoryEditorScreen(
 private fun CategoryPickerContent(
     selected: String,
     custom: CustomCategoryActions,
+    suggestions: CategorySuggestions,
+    contextName: String?,
     mode: PickerMode,
     onModeChange: (PickerMode) -> Unit,
     selectAndClose: (String) -> Unit,
@@ -271,6 +307,8 @@ private fun CategoryPickerContent(
                         is PickerMode.Pick -> PickContent(
                             selected = selected,
                             custom = custom,
+                            suggestions = suggestions,
+                            contextName = contextName,
                             onSelect = selectAndClose,
                             onCreate = { onModeChange(PickerMode.Edit(null)) },
                             onEdit = { onModeChange(PickerMode.Edit(it)) },
@@ -329,6 +367,8 @@ private fun buildCategoryTree(all: List<CategoryEntity>): CategoryTree {
 private fun ColumnScope.PickContent(
     selected: String,
     custom: CustomCategoryActions,
+    suggestions: CategorySuggestions,
+    contextName: String?,
     onSelect: (String) -> Unit,
     onCreate: () -> Unit,
     onEdit: (CategoryEntity) -> Unit,
@@ -336,6 +376,20 @@ private fun ColumnScope.PickContent(
     var query by remember { mutableStateOf("") }
     val q = query.trim()
     val context = LocalContext.current
+    // The Suggested-for-you chips: a learned-rule match for the opened item (contextName) leads, then
+    // the habit-ranked categories fill in, de-duped and capped. Recomputed only when inputs change.
+    val suggestionChips = remember(suggestions, contextName) {
+        val ruleMatch = contextName
+            ?.takeIf { it.isNotBlank() }
+            ?.let { suggestions.rulesByName[CategoryRuleEntity.key(it)] }
+        buildList {
+            if (ruleMatch != null) add(ruleMatch)
+            suggestions.ranked.forEach { name ->
+                if (none { it.equals(name, ignoreCase = true) }) add(name)
+            }
+        }.take(CategorySuggester.LIMIT) to ruleMatch
+    }
+    val (chips, leadMatch) = suggestionChips
     val customCats = remember(custom.categories) {
         custom.categories.filter { it.isCustom }.sortedBy { it.createdAt }
     }
@@ -375,6 +429,18 @@ private fun ColumnScope.PickContent(
         contentPadding = PaddingValues(bottom = MaterialTheme.dimens.xxl),
     ) {
         if (q.isBlank()) {
+            if (chips.isNotEmpty()) {
+                item(key = "suggestions", span = { GridItemSpan(maxLineSpan) }) {
+                    SuggestionRow(
+                        chips = chips,
+                        leadMatch = leadMatch,
+                        contextName = contextName?.takeIf { leadMatch != null },
+                        personalized = suggestions.personalized,
+                        selected = selected,
+                        onSelect = onSelect,
+                    )
+                }
+            }
             hierarchyItems(
                 tree = tree,
                 customCats = customCats,
@@ -427,6 +493,157 @@ private fun ColumnScope.PickContent(
             },
             onDismiss = { reparenting = null },
         )
+    }
+}
+
+// ── Suggested-for-you row ────────────────────────────────────────────────────────────────────────
+
+/**
+ * The habit-based "Suggested for you" row above the grid: a label, a wrapped set of category chips —
+ * the [leadMatch] (a learned-rule hit for the opened item) leads, in the primary container, with a
+ * "because you usually…" reason — and a quiet footer when these are generic "Common picks" rather
+ * than the user's own habits. A divider closes it off from the untouched full grid below. Tapping a
+ * chip selects that category exactly like a grid tile. Only shown on the browse view (not a search).
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SuggestionRow(
+    chips: List<String>,
+    leadMatch: String?,
+    contextName: String?,
+    personalized: Boolean,
+    selected: String,
+    onSelect: (String) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 6.dp),
+    ) {
+        Row(
+            modifier = Modifier.padding(vertical = MaterialTheme.dimens.sm),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("✦", color = MaterialTheme.colorScheme.primary, fontSize = 13.sp, fontWeight = FontWeight.Black)
+            Spacer(Modifier.width(6.dp))
+            Text(
+                text = stringResource(
+                    if (personalized) R.string.category_suggestion_header else R.string.category_suggestion_common,
+                ).uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.7.sp,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            chips.forEach { name ->
+                SuggestionChip(
+                    name = name,
+                    isLead = name.equals(leadMatch, ignoreCase = true),
+                    selected = name.equals(selected, ignoreCase = true),
+                    onClick = { onSelect(name) },
+                )
+            }
+        }
+        if (contextName != null && leadMatch != null) {
+            Row(
+                modifier = Modifier.padding(top = MaterialTheme.dimens.sm),
+                verticalAlignment = Alignment.Top,
+            ) {
+                Text("✦", color = MaterialTheme.colorScheme.primary, fontSize = 11.sp)
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = stringResource(
+                        R.string.category_suggestion_reason,
+                        contextName,
+                        categoryDisplayName(leadMatch),
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        } else if (!personalized) {
+            Text(
+                text = stringResource(R.string.category_suggestion_common_hint),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = MaterialTheme.dimens.sm),
+            )
+        }
+        HorizontalDivider(
+            modifier = Modifier.padding(top = MaterialTheme.dimens.md, bottom = MaterialTheme.dimens.sm),
+            color = MaterialTheme.colorScheme.outlineVariant,
+        )
+    }
+}
+
+/**
+ * One chip in the Suggested row: the category's emoji tile + name, with its parent group above when
+ * it's a sub-category so the two-level tree stays legible. Mirrors the grid card's selected treatment
+ * (tinted + outlined); the context-aware [isLead] match sits in the primary container until it's
+ * picked.
+ */
+@Composable
+private fun SuggestionChip(
+    name: String,
+    isLead: Boolean,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    val parent = remember(name) { Categories.parentOf(name) }
+    val background = when {
+        selected -> MaterialTheme.colorScheme.secondaryContainer
+        isLead -> MaterialTheme.colorScheme.primaryContainer
+        else -> MaterialTheme.colorScheme.surfaceContainerLow
+    }
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(background)
+            .then(
+                if (selected) {
+                    Modifier.border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(12.dp))
+                } else {
+                    Modifier
+                },
+            )
+            .clickable(onClick = onClick)
+            .padding(start = 4.dp, end = 10.dp, top = 4.dp, bottom = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(26.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color(Categories.colorOf(name))),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(text = Categories.emojiOf(name), fontSize = 14.sp)
+        }
+        Spacer(Modifier.width(6.dp))
+        Column {
+            if (parent != null) {
+                Text(
+                    text = "${categoryDisplayName(parent)} ›",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontSize = 8.5.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
+            }
+            Text(
+                text = categoryDisplayName(name),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+            )
+        }
     }
 }
 
@@ -1424,6 +1641,30 @@ private fun CategoryPickerContentPreview() {
         CategoryPickerContent(
             selected = "Groceries",
             custom = CustomCategoryActions(),
+            suggestions = CategorySuggestions(),
+            contextName = null,
+            mode = PickerMode.Pick,
+            onModeChange = {},
+            selectAndClose = {},
+            onBack = {},
+            onClose = {},
+        )
+    }
+}
+
+@Preview(name = "Picker — suggestions (context-aware)")
+@Composable
+private fun CategoryPickerSuggestionsPreview() {
+    BudgettyTheme {
+        CategoryPickerContent(
+            selected = "Groceries",
+            custom = CustomCategoryActions(),
+            suggestions = CategorySuggestions(
+                ranked = listOf("Groceries", "Bakery", "Coffee & Cafés", "Fuel", "Public Transport"),
+                personalized = true,
+                rulesByName = mapOf(CategoryRuleEntity.key("Lidl") to "Groceries"),
+            ),
+            contextName = "Lidl",
             mode = PickerMode.Pick,
             onModeChange = {},
             selectAndClose = {},
