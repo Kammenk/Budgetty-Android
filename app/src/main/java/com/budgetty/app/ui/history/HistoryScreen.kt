@@ -84,6 +84,7 @@ import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.Receipt
 import com.budgetty.app.ui.components.HideAmountsEye
+import com.budgetty.app.ui.components.MoneyText
 import com.budgetty.app.ui.components.PriceRangeSheet
 import com.budgetty.app.ui.components.ReceiptDetailContent
 import com.budgetty.app.ui.components.ReceiptDetailSheet
@@ -1060,8 +1061,8 @@ private fun MonthHeader(group: MonthGroup) {
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
         )
-        Text(
-            text = group.total.formatMoney(),
+        MoneyText(
+            amount = group.total,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
         )
@@ -1102,8 +1103,8 @@ private fun DayHeader(
             )
         }
         // Emphasized so the day's spend stands out from the muted label and the per-item prices.
-        Text(
-            text = total.formatMoney(),
+        MoneyText(
+            amount = total,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
             color = MaterialTheme.colorScheme.onSurface,
@@ -1175,8 +1176,8 @@ private fun HistoryRow(
                     )
                 }
             }
-            Text(
-                text = item.lineTotal.formatMoney(),
+            MoneyText(
+                amount = item.lineTotal,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
             )
@@ -1204,7 +1205,7 @@ private fun ReceiptMonthHeader(group: ReceiptMonthGroup) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(group.month.formatMonth(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-        Text(group.total.formatMoney(), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+        MoneyText(amount = group.total, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
     }
 }
 
@@ -1254,8 +1255,8 @@ private fun ReceiptHistoryRow(
                 )
             }
             if (receipt.discount.signum() > 0) DiscountBadge(receipt.discount)
-            Text(
-                text = receipt.paid.formatMoney(),
+            MoneyText(
+                amount = receipt.paid,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold,
             )
@@ -1359,8 +1360,8 @@ private fun HistorySummaryStrip(
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Text(
-                    text = total.formatMoney(),
+                MoneyText(
+                    amount = total,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.ExtraBold,
                 )
@@ -1454,8 +1455,8 @@ private fun ReceiptExpandedPanel(receipt: Receipt, onOpenReceipt: () -> Unit) {
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f),
                     )
-                    Text(
-                        text = txn.price.multiply(BigDecimal(txn.quantity)).formatMoney(),
+                    MoneyText(
+                        amount = txn.price.multiply(BigDecimal(txn.quantity)),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -1740,8 +1741,8 @@ private fun BudgetsSummaryCard(periodLabel: String, income: BigDecimal, bills: B
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
             )
-            Text(
-                text = left.formatMoney(),
+            MoneyText(
+                amount = left,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = if (left.signum() >= 0) budgetGoodColor() else budgetBadColor(),
@@ -1758,7 +1759,7 @@ private fun BudgetsSummaryLine(label: String, amount: String, amountColor: Color
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(text = label, style = MaterialTheme.typography.bodyMedium)
-        Text(
+        MoneyText(
             text = amount,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
@@ -1844,7 +1845,7 @@ private fun BudgetsMoneyRow(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Text(
+        MoneyText(
             text = amount,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold,

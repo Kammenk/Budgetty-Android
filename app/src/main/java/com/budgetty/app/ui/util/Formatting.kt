@@ -44,11 +44,16 @@ object AppFormats {
 /** The masked stand-in for a figure while "Hide amounts" is on — fixed, so no magnitude leaks. */
 private const val MONEY_MASK = "••••"
 
+/** Formats a monetary amount as e.g. "12.50 €" — the real figure, never masked. For amounts the user
+ *  is actively setting (filter bounds, entry-field echoes) that must stay readable even in Hide-amounts
+ *  mode; everything that *displays* spending uses [formatMoney] instead. */
+fun BigDecimal.formatMoneyRaw(): String =
+    "${moneyFormat.format(setScale(2, RoundingMode.HALF_UP))} ${AppFormats.currencySymbol}"
+
 /** Formats a monetary amount as e.g. "12.50 €" (currency symbol from settings), or a privacy mask
  *  (e.g. "•••• €") while [AppFormats.hideAmounts] is on. */
 fun BigDecimal.formatMoney(): String =
-    if (AppFormats.hideAmounts) "$MONEY_MASK ${AppFormats.currencySymbol}"
-    else "${moneyFormat.format(setScale(2, RoundingMode.HALF_UP))} ${AppFormats.currencySymbol}"
+    if (AppFormats.hideAmounts) "$MONEY_MASK ${AppFormats.currencySymbol}" else formatMoneyRaw()
 
 private val monthFormatter: DateTimeFormatter =
     DateTimeFormatter.ofPattern("MMMM yyyy", Locale.getDefault())

@@ -125,8 +125,8 @@ fun ReceiptDetailContent(
                 }
                 Spacer(Modifier.width(MaterialTheme.dimens.sm))
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = receipt.paid.formatMoney(),
+                    MoneyText(
+                        amount = receipt.paid,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
                     )

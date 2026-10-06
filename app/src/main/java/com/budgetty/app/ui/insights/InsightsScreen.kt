@@ -81,6 +81,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.budgetty.app.ui.components.AmountMaskPill
 import com.budgetty.app.ui.components.CategoryTransactionsSheet
 import com.budgetty.app.ui.components.CustomDateRangeSheet
 import com.budgetty.app.ui.components.HideAmountsEye
@@ -96,6 +97,7 @@ import com.budgetty.app.ui.savings.SavingsSheetLabel
 import com.budgetty.app.ui.util.MatchedBillLine
 import com.budgetty.app.ui.components.StoreTransactionsSheet
 import com.budgetty.app.ui.components.TransactionLineRow
+import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.formatMoney
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.R
@@ -832,7 +834,10 @@ private fun InsightSectionCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
                 ) {
-                    StatTile(stringResource(R.string.insights_stat_avg_day), state.avgPerDay.formatMoney(), Modifier.weight(1f))
+                    StatTile(
+                        stringResource(R.string.insights_stat_avg_day),
+                        state.avgPerDay.formatMoney(), Modifier.weight(1f), isAmount = true,
+                    )
                     StatTile(stringResource(R.string.home_receipts), state.receiptCount.toString(), Modifier.weight(1f))
                 }
                 Spacer(Modifier.height(MaterialTheme.dimens.md))
@@ -840,12 +845,16 @@ private fun InsightSectionCard(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
                 ) {
-                    StatTile(stringResource(R.string.insights_stat_avg_receipt), state.avgPerReceipt.formatMoney(), Modifier.weight(1f))
+                    StatTile(
+                        stringResource(R.string.insights_stat_avg_receipt),
+                        state.avgPerReceipt.formatMoney(), Modifier.weight(1f), isAmount = true,
+                    )
                     StatTile(
                         stringResource(R.string.insights_stat_saved),
                         state.totalSaved.formatMoney(),
                         Modifier.weight(1f),
                         valueColor = budgetGoodColor(),
+                        isAmount = true,
                     )
                 }
             }
@@ -1551,7 +1560,12 @@ private fun MoneyFlowRow(
                 )
                 Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
             }
-            Text(amount, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = amountColor)
+            MoneyText(
+                text = amount,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = amountColor,
+            )
         }
         Spacer(Modifier.height(6.dp))
         Box(
@@ -1616,7 +1630,7 @@ private fun IncomeVsSpendingContent(state: InsightsUiState, periodLabel: String,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(stringResource(R.string.insights_income_net), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(
+                MoneyText(
                     text = (if (positive) "+" else "−") + net.abs().formatMoney(),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
@@ -2416,7 +2430,12 @@ private fun IncomeSourceRow(source: IncomeSourceUi, amountColor: Color) {
             Text(recurringSubtitle(source.entity, includeCategory = false), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
         }
         Column(horizontalAlignment = Alignment.End) {
-            Text("+${source.amount.formatMoney()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = amountColor)
+            MoneyText(
+                text = "+${source.amount.formatMoney()}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
+                color = amountColor,
+            )
             Text("${source.percent}%", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -2460,7 +2479,12 @@ private fun IncomeBySourceContent(state: InsightsUiState, periodLabel: String, o
                 Spacer(Modifier.height(MaterialTheme.dimens.sm))
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(stringResource(R.string.insights_income_total), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
-                    Text("+${state.periodIncome.formatMoney()}", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = green)
+                    MoneyText(
+                        text = "+${state.periodIncome.formatMoney()}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = green,
+                    )
                 }
             }
         }
@@ -2487,6 +2511,7 @@ private fun StatTile(
     value: String,
     modifier: Modifier = Modifier,
     valueColor: Color = MaterialTheme.colorScheme.onSurface,
+    isAmount: Boolean = false,
 ) {
     Column(
         modifier = modifier
@@ -2499,18 +2524,26 @@ private fun StatTile(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = valueColor,
-            // Keep the amount on one line in the narrow third-width tile; a value too long for the tile
-            // (a big figure, or a wide currency) scrolls instead of wrapping the currency to a 2nd row.
-            maxLines = 1,
-            softWrap = false,
-            overflow = TextOverflow.Clip,
-            modifier = Modifier.fillMaxWidth().basicMarquee(),
-        )
+        // A money tile pills under Hide-amounts; a count (e.g. receipts) stays readable.
+        if (isAmount && AppFormats.hideAmounts) {
+            AmountMaskPill(
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        } else {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = valueColor,
+                // Keep the amount on one line in the narrow third-width tile; a value too long for the
+                // tile (a big figure, or a wide currency) scrolls instead of wrapping to a 2nd row.
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Clip,
+                modifier = Modifier.fillMaxWidth().basicMarquee(),
+            )
+        }
     }
 }
 
@@ -2585,13 +2618,19 @@ internal fun OverviewTabContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
         ) {
-            StatTile(stringResource(R.string.insights_stat_avg_day), state.avgPerDay.formatMoney(), Modifier.weight(1f))
+            StatTile(
+                stringResource(R.string.insights_stat_avg_day),
+                state.avgPerDay.formatMoney(),
+                Modifier.weight(1f),
+                isAmount = true,
+            )
             StatTile(stringResource(R.string.home_receipts), state.receiptCount.toString(), Modifier.weight(1f))
             StatTile(
                 stringResource(R.string.insights_stat_saved),
                 state.totalSaved.formatMoney(),
                 Modifier.weight(1f),
                 valueColor = budgetGoodColor(),
+                isAmount = true,
             )
         }
     }
@@ -2672,8 +2711,8 @@ private fun OverviewWithBillsLine(state: InsightsUiState) {
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Text(
-                text = (state.total + state.periodBills).formatMoney(),
+            MoneyText(
+                amount = state.total + state.periodBills,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Bold,
             )
@@ -2888,7 +2927,7 @@ private fun TopSliceRow(slice: PieSlice, onClick: () -> Unit) {
             modifier = Modifier.weight(1f),
             maxLines = 1,
         )
-        Text(slice.value.formatMoney(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+        MoneyText(amount = slice.value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -2953,8 +2992,8 @@ private fun CategoryStatRow(slice: PieSlice, total: BigDecimal, onClick: () -> U
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
-            Text(
-                text = slice.value.formatMoney(),
+            MoneyText(
+                amount = slice.value,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
             )
@@ -3003,8 +3042,8 @@ private fun StoreStatRow(store: String, amount: BigDecimal, onClick: () -> Unit)
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
-        Text(
-            text = amount.formatMoney(),
+        MoneyText(
+            amount = amount,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
         )
@@ -3103,7 +3142,7 @@ private fun CategoryDeltaRow(delta: CategoryDelta) {
             overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
-        Text(
+        MoneyText(
             text = "$sign${delta.delta.abs().formatMoney()}",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.SemiBold,
@@ -3171,8 +3210,8 @@ private fun TrendChart(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Text(
-                text = selected.total.formatMoney(),
+            MoneyText(
+                amount = selected.total,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
@@ -3366,7 +3405,7 @@ private fun AmountKey(hatched: Boolean, label: String, amount: BigDecimal) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        Text(amount.formatMoney(), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+        MoneyText(amount = amount, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -3392,7 +3431,7 @@ private fun PlannedBillRow(label: String, amount: BigDecimal) {
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-        Text(amount.formatMoney(), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+        MoneyText(amount = amount, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
     }
 }
 

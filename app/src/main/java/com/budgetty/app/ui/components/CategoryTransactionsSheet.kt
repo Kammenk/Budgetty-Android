@@ -30,7 +30,6 @@ import com.budgetty.app.R
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.ui.util.categoryDisplayName
-import com.budgetty.app.ui.util.formatMoney
 import java.math.BigDecimal
 
 /**
@@ -100,8 +99,8 @@ fun CategoryTransactionsSheet(
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(Modifier.width(MaterialTheme.dimens.sm))
-                Text(
-                    text = total.formatMoney(),
+                MoneyText(
+                    amount = total,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                 )
@@ -205,8 +204,8 @@ fun StoreTransactionsSheet(
                     modifier = Modifier.weight(1f),
                 )
                 Spacer(Modifier.width(MaterialTheme.dimens.sm))
-                Text(
-                    text = total.formatMoney(),
+                MoneyText(
+                    amount = total,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                 )

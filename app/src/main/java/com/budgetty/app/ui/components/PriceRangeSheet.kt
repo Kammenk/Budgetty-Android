@@ -32,7 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.budgetty.app.R
-import com.budgetty.app.ui.util.formatMoney
+import com.budgetty.app.ui.util.formatMoneyRaw
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -97,12 +97,12 @@ fun PriceRangeSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = BigDecimal.ZERO.formatMoney(),
+                    text = BigDecimal.ZERO.formatMoneyRaw(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = upperBound.formatMoney(),
+                    text = upperBound.formatMoneyRaw(),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -167,7 +167,7 @@ private class PricePreset(val label: String, val start: Float, val end: Float)
 /** The fixed Under/range/Over presets, dropping any whose lower bound exceeds the data's max. */
 @Composable
 private fun pricePresets(maxF: Float): List<PricePreset> {
-    fun money(v: Int) = BigDecimal(v).formatMoney()
+    fun money(v: Int) = BigDecimal(v).formatMoneyRaw()
     return buildList {
         add(PricePreset(stringResource(R.string.price_preset_under, money(10)), 0f, 10f))
         add(PricePreset(stringResource(R.string.price_range_value, money(10), money(50)), 10f, 50f))
@@ -181,7 +181,7 @@ private fun rangeReadout(start: Float, end: Float, maxF: Float): String =
     if (start <= 0f && end >= maxF) {
         stringResource(R.string.price_range_any)
     } else {
-        stringResource(R.string.price_range_value, start.toMoney().formatMoney(), end.toMoney().formatMoney())
+        stringResource(R.string.price_range_value, start.toMoney().formatMoneyRaw(), end.toMoney().formatMoneyRaw())
     }
 
 private fun Float.toMoney(): BigDecimal = BigDecimal(toDouble()).setScale(2, RoundingMode.HALF_UP)

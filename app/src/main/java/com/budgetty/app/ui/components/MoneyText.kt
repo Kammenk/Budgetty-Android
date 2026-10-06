@@ -102,7 +102,7 @@ private fun MaskedMoneySlot(
  * path's modifiers intact while the hidden path is a clean fixed-width pill.
  */
 @Composable
-fun AmountMaskPill(style: TextStyle, modifier: Modifier = Modifier) {
+fun AmountMaskPill(style: TextStyle, modifier: Modifier = Modifier, alignEnd: Boolean = false) {
     val fontSize: TextUnit = style.fontSize.takeIf { it != TextUnit.Unspecified } ?: 14.sp
     val density = LocalDensity.current
     val widthDp = with(density) { fontSize.toDp() } * PILL_WIDTH_EM
@@ -114,9 +114,10 @@ fun AmountMaskPill(style: TextStyle, modifier: Modifier = Modifier) {
         modifier = modifier
             .height(with(density) { fontSize.toDp() } * 1.1f)
             .clearAndSetSemantics { contentDescription = hidden },
-        // Start-aligned so that when the caller passes a fillMaxWidth/weight modifier (e.g. a hero that
-        // marquees its number), the pill sits where the number began and any sibling stays put.
-        contentAlignment = Alignment.CenterStart,
+        // Aligned within any fillMaxWidth/weight the caller passes: start for a left-aligned hero that
+        // marquees its number, end for a right-aligned row amount — so the pill lands where the number
+        // was and siblings stay put.
+        contentAlignment = if (alignEnd) Alignment.CenterEnd else Alignment.CenterStart,
     ) {
         Box(
             Modifier
