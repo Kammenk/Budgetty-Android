@@ -1,5 +1,26 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Budgetty</string>
+    <!-- Multiple budgets (envelopes) -->
+    <string name="envelopes_title" tools:ignore="MissingTranslation">Budgets</string>
+    <string name="envelopes_entry_title" tools:ignore="MissingTranslation">Multiple budgets</string>
+    <string name="envelopes_entry_sub" tools:ignore="MissingTranslation">Trips, groceries, envelopes — each with its own pace</string>
+    <string name="envelopes_intro" tools:ignore="MissingTranslation">Create named budgets for trips, groceries or any category group, and track each one’s pace.</string>
+    <string name="envelopes_new" tools:ignore="MissingTranslation">New budget</string>
+    <string name="envelopes_edit" tools:ignore="MissingTranslation">Edit budget</string>
+    <string name="envelopes_save" tools:ignore="MissingTranslation">Save budget</string>
+    <string name="envelopes_unlock" tools:ignore="MissingTranslation">Unlock unlimited budgets</string>
+    <string name="envelopes_cap_reached" tools:ignore="MissingTranslation">Free includes %1$d extra budget. Premium adds as many as you need.</string>
+    <string name="envelopes_scope_all" tools:ignore="MissingTranslation">All spending</string>
+    <string name="envelopes_scope_some" tools:ignore="MissingTranslation">Some categories</string>
+    <string name="envelopes_scope_categories" tools:ignore="MissingTranslation">%1$d categories</string>
+    <string name="envelopes_field_name" tools:ignore="MissingTranslation">Name</string>
+    <string name="envelopes_field_amount" tools:ignore="MissingTranslation">Amount</string>
+    <string name="envelopes_field_scope" tools:ignore="MissingTranslation">Counts</string>
+    <string name="envelopes_this_month" tools:ignore="MissingTranslation">This month</string>
+    <string name="envelopes_sub_on_pace" tools:ignore="MissingTranslation">%1$s/day for %2$d days left</string>
+    <string name="envelopes_sub_ahead" tools:ignore="MissingTranslation">Slightly ahead · %1$s/day for %2$d days left</string>
+    <string name="envelopes_sub_over_pace" tools:ignore="MissingTranslation">Over pace · %1$s left, %2$d days</string>
+    <string name="envelopes_sub_over_budget" tools:ignore="MissingTranslation">Over budget by %1$s · %2$d days left</string>
 
     <!-- Common actions -->
     <string name="action_save">Save</string>
