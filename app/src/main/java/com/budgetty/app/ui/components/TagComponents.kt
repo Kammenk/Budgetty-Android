@@ -41,9 +41,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -165,10 +169,21 @@ private fun RemovableTagChip(name: String, onRemove: () -> Unit) {
 /** The dashed "＋ tag" affordance that opens the tag sheet. */
 @Composable
 private fun AddTagChip(onClick: () -> Unit) {
+    val primary = MaterialTheme.colorScheme.primary
     Row(
         modifier = Modifier
             .height(28.dp)
-            .border(1.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(percent = 50))
+            .drawBehind {
+                val r = size.height / 2f
+                drawRoundRect(
+                    color = primary,
+                    cornerRadius = CornerRadius(r, r),
+                    style = Stroke(
+                        width = 1.dp.toPx(),
+                        pathEffect = PathEffect.dashPathEffect(floatArrayOf(7f, 5f)),
+                    ),
+                )
+            }
             .clickable(onClick = onClick)
             .padding(horizontal = 11.dp),
         verticalAlignment = Alignment.CenterVertically,

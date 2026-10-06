@@ -90,7 +90,7 @@ fun TagsScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TagsContent(
+internal fun TagsContent(
     tags: List<TagRow>,
     isLoaded: Boolean,
     onRename: (from: String, to: String) -> Unit,
