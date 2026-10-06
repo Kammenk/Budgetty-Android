@@ -289,6 +289,9 @@ private fun MainScaffold(
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
+    // The route's path without its query args, so a parameterised tab route (e.g. "history?tag={tag}")
+    // still matches a tab's plain route ("history") for bottom-bar/rail selection + visibility.
+    val currentTabRoute = currentRoute?.substringBefore("?")
     // Telemetry: on every navigation log a screen_view (nav route PATTERN only — placeholders like
     // {source}/{goalId} are never filled, so no ids/PII leak), mirror it into the Crashlytics
     // current-screen key, and drop a breadcrumb so a crash report names where the user was.
@@ -310,7 +313,7 @@ private fun MainScaffold(
     // The bottom bar belongs to the top-level tabs only. Every pushed/detail route — Budget, Widgets,
     // Category rules, the Savings-goal detail, Subscriptions, Set-PIN — hides it. An allowlist of the
     // tab routes (rather than a blocklist of pushed ones) keeps new pushed routes correct by default.
-    val isTabRoute = BottomNavDestination.entries.any { it.route == currentRoute }
+    val isTabRoute = BottomNavDestination.entries.any { it.route == currentTabRoute }
     val showBottomBar = !expanded && isTabRoute
     val showRail = expanded && !isImmersive
 
@@ -320,7 +323,7 @@ private fun MainScaffold(
                 NavigationBar {
                     BottomNavDestination.entries.forEach { destination ->
                         val selected = backStackEntry?.destination?.hierarchy
-                            ?.any { it.route == destination.route } == true
+                            ?.any { it.route?.substringBefore("?") == destination.route } == true
                         NavigationBarItem(
                             selected = selected,
                             onClick = { navController.navigateToTab(destination.route) },
@@ -386,7 +389,7 @@ private fun BudgettyNavRail(
     ) {
         RailDestination.entries.forEach { destination ->
             val selected = currentEntry?.destination?.hierarchy
-                ?.any { it.route == destination.route } == true
+                ?.any { it.route?.substringBefore("?") == destination.route } == true
             NavigationRailItem(
                 selected = selected,
                 onClick = { onSelect(destination.route) },
@@ -450,6 +453,7 @@ private fun BudgettyNavHost(
                 onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
                 onNavigateToRecap = { navController.navigate(Routes.RECAP) },
                 onNavigateToManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
+                onNavigateToHistoryTag = { tag -> navController.navigate(Routes.historyWithTag(tag)) },
             )
         }
         composable(Routes.SUBSCRIPTIONS) {
@@ -535,8 +539,18 @@ private fun BudgettyNavHost(
         composable(Routes.PAYWALL) {
             PaywallScreen(onNavigateBack = { navController.popBackStack() })
         }
-        composable(Routes.HISTORY) {
+        composable(
+            Routes.HISTORY_WITH_TAG,
+            arguments = listOf(
+                navArgument(Routes.HISTORY_ARG_TAG) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+            ),
+        ) { entry ->
             HistoryScreen(
+                initialTag = entry.arguments?.getString(Routes.HISTORY_ARG_TAG),
                 onNavigateToReceipt = { navController.navigate(Routes.editReceipt(it)) },
                 onNavigateToBudget = { navController.navigateToBudget(budgetIsTab) },
             )

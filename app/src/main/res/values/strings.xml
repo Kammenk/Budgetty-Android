@@ -752,12 +752,23 @@
     <string name="filter_date">Date</string>
     <string name="filter_all_time">All time</string>
     <string name="filter_price">Price</string>
+    <string name="filter_tag" tools:ignore="MissingTranslation">Tags</string>
     <string name="filter_sort">Sort</string>
     <string name="sort_title">Sort by</string>
     <string name="sort_newest">Newest first</string>
     <string name="sort_oldest">Oldest first</string>
     <string name="sort_price_high">Price: high to low</string>
     <string name="sort_price_low">Price: low to high</string>
+    <string name="sort_tag_az" tools:ignore="MissingTranslation">Tag A–Z</string>
+    <!-- History "Filter by tag" sheet -->
+    <string name="history_tag_sheet_title" tools:ignore="MissingTranslation">Filter by tag</string>
+    <string name="history_tag_match_any" tools:ignore="MissingTranslation">Any</string>
+    <string name="history_tag_match_all" tools:ignore="MissingTranslation">All</string>
+    <string name="history_tag_match_hint" tools:ignore="MissingTranslation">Show items with any of the chosen tags, or only those carrying all of them.</string>
+    <string name="history_tag_empty" tools:ignore="MissingTranslation">No tags yet. Add tags to your receipt items and they\'ll show up here to filter by.</string>
+    <string name="history_tag_clear" tools:ignore="MissingTranslation">Clear</string>
+    <!-- The Tag chip label when more than one tag is active: "#groceries +2". -->
+    <string name="history_tag_chip_more" tools:ignore="MissingTranslation">#%1$s +%2$d</string>
     <string name="price_range_title">Price range</string>
     <string name="price_presets">Quick presets</string>
     <string name="price_range_any">Any amount</string>

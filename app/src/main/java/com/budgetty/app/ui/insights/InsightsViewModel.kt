@@ -9,6 +9,7 @@ import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.SavingsContributionEntity
 import com.budgetty.app.data.local.TransactionEntity
+import com.budgetty.app.data.local.TransactionTagEntity
 import com.budgetty.app.data.model.paidAdjustmentOf
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.BudgetRolloverRepository
@@ -16,6 +17,7 @@ import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
+import com.budgetty.app.data.repository.TagRepository
 import com.budgetty.app.ui.wellbeing.WellbeingProvider
 import com.budgetty.app.ui.wellbeing.WellbeingSummary
 import com.budgetty.app.data.repository.TransactionRepository
@@ -53,6 +55,9 @@ import java.time.temporal.ChronoUnit
 import kotlin.math.roundToInt
 
 data class StoreSpend(val store: String, val amount: BigDecimal)
+
+/** One tag's total spend in the selected period, for the "By tag" card (tappable into History). */
+data class TagSpend(val tag: String, val amount: BigDecimal)
 
 /** One income source's contribution to the period, for the "Income by source" card. */
 data class IncomeSourceUi(
@@ -279,6 +284,10 @@ data class InsightsUiState(
      *  null for past/complete periods and custom ranges. */
     val projectedTotal: BigDecimal? = null,
     val topStores: List<StoreSpend> = emptyList(),
+    /** The period's top tags by spend (up to 5), largest first; empty when nothing is tagged. A line
+     *  item's spend counts toward every tag it carries, so these can overlap and needn't sum to
+     *  [total] — the card's footnote says as much. */
+    val topTags: List<TagSpend> = emptyList(),
     /** The period's largest single line-item purchases (price × quantity), priciest first. */
     val biggestPurchases: List<TransactionEntity> = emptyList(),
     /** Every transaction in the selected period, newest first. The Insights screen filters this
@@ -349,6 +358,7 @@ class InsightsViewModel(
     private val settingsStore: SettingsStore,
     rolloverRepository: BudgetRolloverRepository,
     wellbeingProvider: WellbeingProvider,
+    tagRepository: TagRepository,
 ) : ViewModel() {
 
     private val selectedPeriod = MutableStateFlow<InsightsPeriod>(
@@ -535,6 +545,11 @@ class InsightsViewModel(
                 )
             }
             .combine(wellbeingProvider.summary()) { state, wb -> state.copy(wellbeing = wb) }
+            // Join the period's transactions against every tag link to total spend per tag. allLinks
+            // spans the whole ledger; links whose transaction isn't in this period fall out below.
+            .combine(tagRepository.allLinks) { state, links ->
+                state.copy(topTags = topTagsOf(state.transactions, links))
+            }
             .combine(plannedOverlayBundle) { state, bundle ->
                 state.copy(
                     includeRecurringBills = bundle.include,
@@ -1096,6 +1111,28 @@ class InsightsViewModel(
 
     private fun List<TransactionEntity>.sumOfSpend(): BigDecimal =
         fold(BigDecimal.ZERO) { acc, t -> acc + t.price.multiply(BigDecimal(t.quantity)) }
+
+    /**
+     * The period's top-5 tags by spend. Each line item's spend (price × quantity) is added to every
+     * tag it carries, so a multi-tagged item counts toward each — totals overlap and needn't sum to
+     * the period total. Ties break by tag name so the order is stable (keeps the golden deterministic).
+     */
+    private fun topTagsOf(
+        txns: List<TransactionEntity>,
+        links: List<TransactionTagEntity>,
+    ): List<TagSpend> {
+        if (txns.isEmpty() || links.isEmpty()) return emptyList()
+        val spendByTxn = txns.associate { it.id to it.price.multiply(BigDecimal(it.quantity)) }
+        val byTag = HashMap<String, BigDecimal>()
+        links.forEach { link ->
+            val spend = spendByTxn[link.transactionId] ?: return@forEach
+            byTag[link.tagName] = (byTag[link.tagName] ?: BigDecimal.ZERO) + spend
+        }
+        return byTag.entries
+            .sortedWith(compareByDescending<Map.Entry<String, BigDecimal>> { it.value }.thenBy { it.key })
+            .take(5)
+            .map { TagSpend(it.key, it.value) }
+    }
 
     /** One slice per category, value = summed price × quantity, colored by the saved category color. */
     private fun List<TransactionEntity>.toSlices(colorByCategory: Map<String, Int>): List<PieSlice> =
