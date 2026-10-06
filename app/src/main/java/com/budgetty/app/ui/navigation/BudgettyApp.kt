@@ -62,6 +62,7 @@ import com.budgetty.app.ui.recap.RecapViewModel
 import com.budgetty.app.ui.util.BuyingLimitCounter
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.account.AccountScreen
+import com.budgetty.app.ui.csvimport.ImportCsvScreen
 import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
@@ -478,6 +479,7 @@ private fun BudgettyNavHost(
                 onOpenCategoryRules = { navController.navigate(Routes.CATEGORY_RULES) },
                 onOpenBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
                 onOpenManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
+                onOpenImportCsv = { navController.navigate(Routes.IMPORT_CSV) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
         }
@@ -550,6 +552,17 @@ private fun BudgettyNavHost(
         }
         composable(Routes.CATEGORY_RULES) {
             CategoryRulesScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.IMPORT_CSV) {
+            ImportCsvScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToHistory = {
+                    navController.navigate(Routes.HISTORY) {
+                        popUpTo(Routes.ACCOUNT) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
+            )
         }
         composable(Routes.BUYING_LIMITS) {
             BuyingLimitsScreen(

@@ -23,6 +23,7 @@ object Routes {
     const val HISTORY = "history"
     const val WIDGETS = "widgets"
     const val CATEGORY_RULES = "category_rules"
+    const val IMPORT_CSV = "import_csv"
     const val BUYING_LIMITS = "buying_limits"
     const val MANAGE_CATEGORIES = "manage_categories"
     const val SAVINGS_GOAL = "savings_goal/{goalId}"

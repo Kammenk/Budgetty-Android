@@ -40,6 +40,7 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Language
@@ -138,6 +139,7 @@ fun AccountScreen(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenImportCsv: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -159,6 +161,7 @@ fun AccountScreen(
         onOpenCategoryRules = onOpenCategoryRules,
         onOpenBuyingLimits = onOpenBuyingLimits,
         onOpenManageCategories = onOpenManageCategories,
+        onOpenImportCsv = onOpenImportCsv,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -181,6 +184,7 @@ fun AccountScreen(
     )
 }
 
+@Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod") // One stateless Account body.
 @Composable
 private fun AccountScreenContent(
     email: String?,
@@ -194,6 +198,7 @@ private fun AccountScreenContent(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenImportCsv: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -284,6 +289,7 @@ private fun AccountScreenContent(
                 onOpenCategoryRules = onOpenCategoryRules,
                 onOpenBuyingLimits = onOpenBuyingLimits,
                 onOpenManageCategories = onOpenManageCategories,
+                onOpenImportCsv = onOpenImportCsv,
             )
         }
     }
@@ -628,6 +634,7 @@ private fun AccountSectionRows(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenImportCsv: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -668,6 +675,14 @@ private fun AccountSectionRows(
             null
         },
         onClick = onExportData,
+    )
+    RowDivider()
+    SettingRow(
+        icon = Icons.Filled.FileDownload,
+        title = stringResource(R.string.account_import_csv),
+        subtitle = stringResource(R.string.account_import_csv_sub),
+        trailing = { StatusBadge(stringResource(R.string.account_import_csv_badge)) },
+        onClick = onOpenImportCsv,
     )
     RowDivider()
     SettingRow(Icons.Filled.Widgets, stringResource(R.string.account_widgets)) { onOpenWidgets() }
@@ -1320,6 +1335,7 @@ private fun AccountScreenPreview() {
             onOpenCategoryRules = {},
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
+            onOpenImportCsv = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1358,6 +1374,7 @@ private fun AccountScreenTabletPreview() {
             onOpenCategoryRules = {},
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
+            onOpenImportCsv = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
