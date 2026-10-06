@@ -37,6 +37,10 @@ class SettingsStore(context: Context) {
         insightsOverlayNudgeDismissed = prefs.getBoolean(KEY_OVERLAY_NUDGE_DISMISSED, false),
         monthStartDay = prefs.getInt(KEY_MONTH_START_DAY, 1).coerceIn(1, 31),
         budgetRolloverEnabled = prefs.getBoolean(KEY_BUDGET_ROLLOVER, false),
+        forecastStartBalance = prefs.getString(KEY_FORECAST_START, "").orEmpty(),
+        forecastComfortThreshold = prefs.getString(KEY_FORECAST_COMFORT, "").orEmpty(),
+        forecastDiscretionary = prefs.getString(KEY_FORECAST_DISCRETIONARY, "").orEmpty(),
+        forecastHorizonMonths = prefs.getInt(KEY_FORECAST_HORIZON, 3),
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
         recentSearches = prefs.getString(KEY_RECENT_SEARCHES, null).toLines(),
         crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, false),
@@ -179,6 +183,24 @@ class SettingsStore(context: Context) {
     /** Toggles budget rollover (unspent budget carries into the next period). */
     fun setBudgetRolloverEnabled(value: Boolean) =
         save(KEY_BUDGET_ROLLOVER, value) { it.copy(budgetRolloverEnabled = value) }
+
+    /** Sets the cash-flow forecast's user-entered starting balance (decimal string; blank clears it). */
+    fun setForecastStartBalance(value: String) =
+        saveString(KEY_FORECAST_START, value) { it.copy(forecastStartBalance = value) }
+
+    /** Sets the forecast "warn me below" comfort line (decimal string). */
+    fun setForecastComfortThreshold(value: String) =
+        saveString(KEY_FORECAST_COMFORT, value) { it.copy(forecastComfortThreshold = value) }
+
+    /** Overrides the forecast's average monthly discretionary spend (blank = use the derived average). */
+    fun setForecastDiscretionary(value: String) =
+        saveString(KEY_FORECAST_DISCRETIONARY, value) { it.copy(forecastDiscretionary = value) }
+
+    /** Remembers the forecast horizon (3 / 6 / 12 months). */
+    fun setForecastHorizonMonths(value: Int) {
+        prefs.edit().putInt(KEY_FORECAST_HORIZON, value).apply()
+        _settings.update { it.copy(forecastHorizonMonths = value) }
+    }
 
     /** Sets the pay-day the financial month starts on (1–31; 1 = calendar month). */
     fun setMonthStartDay(value: Int) {
@@ -350,6 +372,11 @@ class SettingsStore(context: Context) {
             .remove(KEY_INCLUDE_RECURRING_BILLS)
             .remove(KEY_NWS_COUNT_LEFTOVER)
             .remove(KEY_OVERLAY_NUDGE_DISMISSED)
+            // Forecast is per-user financial data (an entered balance): never leak it to the next account.
+            .remove(KEY_FORECAST_START)
+            .remove(KEY_FORECAST_COMFORT)
+            .remove(KEY_FORECAST_DISCRETIONARY)
+            .remove(KEY_FORECAST_HORIZON)
             .apply()
         _settings.update {
             it.copy(
@@ -372,6 +399,10 @@ class SettingsStore(context: Context) {
                 insightsIncludeRecurringBills = false,
                 nwsCountLeftoverAsSavings = null,
                 insightsOverlayNudgeDismissed = false,
+                forecastStartBalance = "",
+                forecastComfortThreshold = "",
+                forecastDiscretionary = "",
+                forecastHorizonMonths = 3,
             )
         }
     }
@@ -462,6 +493,10 @@ class SettingsStore(context: Context) {
         const val KEY_OVERLAY_NUDGE_DISMISSED = "insights_overlay_nudge_dismissed"
         const val KEY_MONTH_START_DAY = "month_start_day"
         const val KEY_BUDGET_ROLLOVER = "budget_rollover_enabled"
+        const val KEY_FORECAST_START = "forecast_start_balance"
+        const val KEY_FORECAST_COMFORT = "forecast_comfort_threshold"
+        const val KEY_FORECAST_DISCRETIONARY = "forecast_discretionary"
+        const val KEY_FORECAST_HORIZON = "forecast_horizon_months"
         const val KEY_HISTORY_SORT = "history_sort"
         const val KEY_RECENT_SEARCHES = "recent_searches"
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"

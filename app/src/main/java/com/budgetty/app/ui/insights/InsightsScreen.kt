@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
@@ -136,6 +137,7 @@ fun InsightsScreen(
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
     onNavigateToManageCategories: () -> Unit = {},
+    onNavigateToForecast: () -> Unit = {},
     viewModel: InsightsViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
@@ -161,6 +163,7 @@ fun InsightsScreen(
         onChooseSavingsAllocation = viewModel::onCountLeftoverAsSavings,
         overlayNudgeDismissed = settings.insightsOverlayNudgeDismissed,
         onNavigateToManageCategories = onNavigateToManageCategories,
+        onNavigateToForecast = onNavigateToForecast,
         dismissedSetup = settings.dismissedInsightsSetup,
         onDismissSetupItem = viewModel::onDismissSetupItem,
         customSections = settings.customInsightsSections,
@@ -169,6 +172,7 @@ fun InsightsScreen(
     )
 }
 
+@Suppress("LongMethod") // One stateless Insights body that fans out to the phone/tablet layouts.
 @Composable
 private fun InsightsScreenContent(
     state: InsightsUiState,
@@ -189,6 +193,7 @@ private fun InsightsScreenContent(
     onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
     onNavigateToManageCategories: () -> Unit = {},
+    onNavigateToForecast: () -> Unit = {},
     dismissedSetup: Set<String> = emptySet(),
     onDismissSetupItem: (String) -> Unit = {},
     customSections: List<String> = emptyList(),
@@ -283,6 +288,7 @@ private fun InsightsScreenContent(
                 onChooseSavingsAllocation = onChooseSavingsAllocation,
                 overlayNudgeDismissed = overlayNudgeDismissed,
                 onNavigateToManageCategories = onNavigateToManageCategories,
+                onNavigateToForecast = onNavigateToForecast,
                 dismissedSetup = dismissedSetup,
                 onDismissSetupItem = onDismissSetupItem,
                 customSections = customSections,
@@ -645,6 +651,7 @@ private fun InsightsPhoneBody(
     onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
     onNavigateToManageCategories: () -> Unit = {},
+    onNavigateToForecast: () -> Unit = {},
     dismissedSetup: Set<String> = emptySet(),
     onDismissSetupItem: (String) -> Unit = {},
     customSections: List<String> = emptyList(),
@@ -753,6 +760,10 @@ private fun InsightsPhoneBody(
                 if (selectedTab == InsightsTab.TRENDS && hasData && state.categoryDeltas.isNotEmpty()) {
                     InsightCard { ByCategoryContent(state.categoryDeltas, state.period) }
                 }
+                // Entry to the premium cash-flow forecast (its own screen gates the content).
+                if (selectedTab == InsightsTab.TRENDS) {
+                    ForecastEntryCard(onClick = onNavigateToForecast)
+                }
                 // Fill an otherwise-blank Money / Trends pane with a friendly state (P8).
                 BlankTabInvitation(selectedTab, state, periodLabel, hasData, onNavigateToBudget)
             }
@@ -771,6 +782,32 @@ private class SectionCardActions(
     val onPlannedBadgeClick: (PlannedDialog) -> Unit,
     val onToggleIncludeRecurringBills: (Boolean) -> Unit,
 )
+
+/** Trends entry to the premium cash-flow forecast; the forecast screen gates the content itself. */
+@Composable
+private fun ForecastEntryCard(onClick: () -> Unit) {
+    InsightCard(modifier = Modifier.clickable(onClick = onClick)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = stringResource(R.string.forecast_title),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = stringResource(R.string.forecast_entry_sub),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Icon(
+                Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
 
 /**
  * Renders one Insights [section]'s card — the body of what used to be the per-tab `when(section)`,
