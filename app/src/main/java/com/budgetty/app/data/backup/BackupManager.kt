@@ -27,6 +27,7 @@ class BackupManager(
     private val savingsDao get() = db.database.savingsDao()
     private val buyingLimitDao get() = db.database.buyingLimitDao()
     private val wellbeingScoreDao get() = db.database.wellbeingScoreDao()
+    private val debtDao get() = db.database.debtDao()
 
     private val gson = Gson()
 
@@ -43,6 +44,7 @@ class BackupManager(
             savingsContributions = savingsDao.getAllContributions().first(),
             buyingLimits = buyingLimitDao.getAll().first(),
             wellbeingScores = wellbeingScoreDao.getAll().first(),
+            debts = debtDao.getAll().first(),
             settings = currentBackupSettings(),
         )
         return gson.toJson(data)
@@ -74,6 +76,7 @@ class BackupManager(
                 savingsDao.clearGoals()
                 buyingLimitDao.clearAll()
                 wellbeingScoreDao.clearAll()
+                debtDao.clearAll()
             }
             // New ids so a merge never collides with existing transactions.
             transactionDao.insertAll(data.transactions.map { it.copy(id = 0) })
@@ -104,6 +107,8 @@ class BackupManager(
             // pre-v26 backups. insertAll IGNOREs a periodId clash, so a merge keeps the on-device
             // snapshot rather than letting the backup rewrite a month's finalized score (§3.1).
             wellbeingScoreDao.insertAll(data.wellbeingScores.orEmpty())
+            // Debts: fresh ids, no child rows; .orEmpty() tolerates pre-v28 backups.
+            debtDao.insertAll(data.debts.orEmpty().map { it.copy(id = 0) })
         }
 
         // Preferences live outside Room (a device-global SharedPreferences store), so they're applied
