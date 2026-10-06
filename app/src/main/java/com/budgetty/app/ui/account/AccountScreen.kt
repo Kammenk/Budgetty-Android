@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.DarkMode
@@ -138,6 +139,7 @@ fun AccountScreen(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenTemplates: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -159,6 +161,7 @@ fun AccountScreen(
         onOpenCategoryRules = onOpenCategoryRules,
         onOpenBuyingLimits = onOpenBuyingLimits,
         onOpenManageCategories = onOpenManageCategories,
+        onOpenTemplates = onOpenTemplates,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -181,6 +184,10 @@ fun AccountScreen(
     )
 }
 
+// The whole Account screen host: profile + every settings group + all their sheets. Its size/params/
+// branching are the aggregate of those sections, not deep logic, so the structural rules are suppressed
+// (the baseline made the same call before the Templates row's param was added).
+@Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
 @Composable
 private fun AccountScreenContent(
     email: String?,
@@ -194,6 +201,7 @@ private fun AccountScreenContent(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenTemplates: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -284,6 +292,7 @@ private fun AccountScreenContent(
                 onOpenCategoryRules = onOpenCategoryRules,
                 onOpenBuyingLimits = onOpenBuyingLimits,
                 onOpenManageCategories = onOpenManageCategories,
+                onOpenTemplates = onOpenTemplates,
             )
         }
     }
@@ -628,6 +637,7 @@ private fun AccountSectionRows(
     onOpenCategoryRules: () -> Unit,
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
+    onOpenTemplates: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -643,6 +653,8 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.Equalizer, stringResource(R.string.account_buying_limits)) { onOpenBuyingLimits() }
     RowDivider()
     SettingRow(Icons.Filled.Category, stringResource(R.string.account_manage_categories)) { onOpenManageCategories() }
+    RowDivider()
+    SettingRow(Icons.Filled.Bookmark, stringResource(R.string.account_templates)) { onOpenTemplates() }
     RowDivider()
     SettingRow(
         icon = Icons.Filled.Upload,
@@ -1320,6 +1332,7 @@ private fun AccountScreenPreview() {
             onOpenCategoryRules = {},
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
+            onOpenTemplates = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1358,6 +1371,7 @@ private fun AccountScreenTabletPreview() {
             onOpenCategoryRules = {},
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
+            onOpenTemplates = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},

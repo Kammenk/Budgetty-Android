@@ -15,6 +15,7 @@ import com.budgetty.app.data.repository.AuthRepository
 import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.BuyingLimitsRepository
+import com.budgetty.app.data.repository.TemplateRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
@@ -32,6 +33,7 @@ import com.budgetty.app.ui.budget.BudgetViewModel
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
 import com.budgetty.app.ui.buyinglimits.BuyingLimitsViewModel
+import com.budgetty.app.ui.templates.TemplatesViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
 import com.budgetty.app.ui.export.ExportViewModel
 import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
@@ -77,6 +79,7 @@ val appModule = module {
     single { SavingsRepository(get()) }
     single { SubscriptionsRepository(get()) }
     single { BuyingLimitsRepository(get()) }
+    single { TemplateRepository(get()) }
     single { WellbeingScoreRepository(get()) }
 
     // App-scoped hand-off for the buying-limit save-time nudge (Upload posts, Home observes).
@@ -158,10 +161,11 @@ val appModule = module {
     viewModel { WellbeingViewModel(get(), get(), get()) }
     viewModel { RecapViewModel(get(), get(), get()) }
     viewModel {
-        UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+        UploadViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
     }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
+    viewModel { TemplatesViewModel(get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
     viewModel { PaywallViewModel(get(), get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get(), get()) }

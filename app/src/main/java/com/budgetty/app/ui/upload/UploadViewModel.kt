@@ -22,6 +22,7 @@ import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
+import com.budgetty.app.data.repository.TemplateRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
@@ -109,6 +110,7 @@ class UploadViewModel(
     private val buyingLimitNudger: BuyingLimitNudger,
     private val analytics: Analytics,
     private val crashReporting: CrashReporting,
+    private val templateRepository: TemplateRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UploadUiState())
@@ -248,15 +250,40 @@ class UploadViewModel(
         )
     }
 
-    /** Starts a manual entry: a single empty row to fill in (no AI scan, no quota use). */
-    fun startManual() {
+    /**
+     * Starts a manual entry: a single empty row to fill in, or pre-filled from [templateId] when it's
+     * a saved template (> 0). No AI scan, no quota use. The plain case stays synchronous; only a
+     * template load defers a tick to read it. An [TemplateEntity.askAmount] template leaves the amount
+     * at zero so the review screen prompts for the price.
+     */
+    fun startManual(templateId: Long = -1L) {
         editingReceiptId = null
         scanPendingCount = false
+        if (templateId <= 0L) {
+            applyManualState(ParsedTransaction(), store = "")
+            return
+        }
+        viewModelScope.launch {
+            val template = templateRepository.getById(templateId)
+            val txn = template?.let {
+                ParsedTransaction(
+                    name = it.name,
+                    price = if (it.askAmount) BigDecimal.ZERO else it.amount,
+                    quantity = 1,
+                    category = it.category,
+                    categoryColor = colorOf(it.category) ?: Categories.colorOf(it.category),
+                )
+            } ?: ParsedTransaction()
+            applyManualState(txn, store = template?.store.orEmpty())
+        }
+    }
+
+    private fun applyManualState(txn: ParsedTransaction, store: String) {
         _uiState.update {
             it.copy(
                 stage = UploadStage.REVIEW,
-                transactions = listOf(ParsedTransaction()),
-                storeName = "",
+                transactions = listOf(txn),
+                storeName = store,
                 receiptDate = System.currentTimeMillis(),
                 discount = BigDecimal.ZERO,
                 tax = BigDecimal.ZERO,

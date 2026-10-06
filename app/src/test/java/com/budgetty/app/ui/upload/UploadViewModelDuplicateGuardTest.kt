@@ -15,6 +15,7 @@ import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.BuyingLimitsRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
+import com.budgetty.app.data.repository.TemplateRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
@@ -120,6 +121,7 @@ class UploadViewModelDuplicateGuardTest {
             ),
             analytics,
             crashReporting,
+            TemplateRepository(dbManager),
         )
 
         // Land on the review screen with one filled-in row.

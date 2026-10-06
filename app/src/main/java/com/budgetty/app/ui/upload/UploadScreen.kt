@@ -137,6 +137,9 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
 
+// The upload/review host wiring the scan launchers, the review list and its sheets; its length and
+// branching are that wiring (now also the template pre-fill source), not deep logic, so suppressed.
+@Suppress("LongMethod", "CyclomaticComplexMethod")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UploadScreen(
@@ -145,6 +148,7 @@ fun UploadScreen(
     onNavigateToPaywall: () -> Unit,
     modifier: Modifier = Modifier,
     receiptId: Long = -1L,
+    templateId: Long = -1L,
     viewModel: UploadViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -212,7 +216,7 @@ fun UploadScreen(
     val launchSource: () -> Unit = {
         when (source) {
             "edit" -> viewModel.startEdit(receiptId)
-            "manual" -> viewModel.startManual()
+            "manual" -> viewModel.startManual(templateId)
             "camera" -> docScanner.getStartScanIntent(context.findActivity())
                 .addOnSuccessListener { sender ->
                     scanLauncher.launch(IntentSenderRequest.Builder(sender).build())

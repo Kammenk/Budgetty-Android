@@ -101,6 +101,7 @@ import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeCard
 import com.budgetty.app.ui.components.AdaptiveSheet
+import com.budgetty.app.ui.templates.AddSheetTemplateStrip
 import com.budgetty.app.ui.components.Avatar
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.PlannedSwatch
@@ -147,6 +148,8 @@ fun HomeScreen(
     onNavigateToAccount: () -> Unit = {},
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToBuyingLimits: () -> Unit = {},
+    onNavigateToTemplateEntry: (Long) -> Unit = {},
+    onOpenTemplates: () -> Unit = {},
     viewModel: HomeViewModel = koinViewModel(),
     authViewModel: AuthViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
@@ -187,6 +190,8 @@ fun HomeScreen(
             onNavigateToInsights = onNavigateToInsights,
             onNavigateToAccount = onNavigateToAccount,
             onNavigateToWellbeing = onNavigateToWellbeing,
+            onNavigateToTemplateEntry = onNavigateToTemplateEntry,
+            onOpenTemplates = onOpenTemplates,
         )
         buyingLimitNudge?.let { nudge ->
             BuyingLimitNudgeCard(
@@ -206,6 +211,9 @@ fun HomeScreen(
     }
 }
 
+// Host for the whole Home tab; its parameter count is the sum of the sections and sheets it wires
+// (the Add sheet's template entry points among them), so the structural rule is suppressed here.
+@Suppress("LongParameterList")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(
@@ -234,6 +242,8 @@ private fun HomeScreenContent(
     onNavigateToInsights: () -> Unit,
     onNavigateToAccount: () -> Unit,
     onNavigateToWellbeing: () -> Unit = {},
+    onNavigateToTemplateEntry: (Long) -> Unit = {},
+    onOpenTemplates: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var showAddSheet by remember { mutableStateOf(false) }
@@ -319,6 +329,14 @@ private fun HomeScreenContent(
             onGetPremium = {
                 showAddSheet = false
                 onNavigateToPaywall()
+            },
+            onPickTemplate = { templateId ->
+                showAddSheet = false
+                onNavigateToTemplateEntry(templateId)
+            },
+            onOpenTemplates = {
+                showAddSheet = false
+                onOpenTemplates()
             },
         )
     }
@@ -1166,6 +1184,8 @@ private fun AddReceiptSheet(
     onDismiss: () -> Unit,
     onSelect: (String) -> Unit,
     onGetPremium: () -> Unit,
+    onPickTemplate: (Long) -> Unit,
+    onOpenTemplates: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     AdaptiveSheet(onDismiss = onDismiss, sheetState = sheetState) {
@@ -1192,6 +1212,12 @@ private fun AddReceiptSheet(
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(Modifier.height(MaterialTheme.dimens.lg))
+            AddSheetTemplateStrip(
+                onPickTemplate = onPickTemplate,
+                onOpenTemplates = onOpenTemplates,
+                modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(MaterialTheme.dimens.lg))
             AddOption(
