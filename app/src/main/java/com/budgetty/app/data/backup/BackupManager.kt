@@ -9,6 +9,7 @@ import com.budgetty.app.data.settings.Language
 import com.budgetty.app.data.settings.RecapFrequency
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.data.settings.ThemeMode
+import com.budgetty.app.ui.util.BudgetCadence
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.first
 import java.math.BigDecimal
@@ -124,6 +125,8 @@ class BackupManager(
             accent = s.accent.name,
             monthStartDay = s.monthStartDay,
             budgetRolloverEnabled = s.budgetRolloverEnabled,
+            budgetCadence = s.budgetCadence.ifBlank { null },
+            fortnightAnchorEpochDay = s.fortnightAnchorEpochDay.takeIf { it > 0L },
             hiddenHomeSections = s.hiddenHomeSections.toList(),
             hiddenInsightsSections = s.hiddenInsightsSections.toList(),
             homeSectionOrder = s.homeSectionOrder,
@@ -149,6 +152,12 @@ class BackupManager(
         applyEnum<RecapFrequency>(s.recapFrequency, settingsStore::setRecapFrequency)
         s.monthStartDay?.let(settingsStore::setMonthStartDay)
         s.budgetRolloverEnabled?.let(settingsStore::setBudgetRolloverEnabled)
+        // Only a recognized cadence name is applied; an unknown value (e.g. from a future/other
+        // platform) is skipped so the on-device cadence is kept rather than blanked.
+        s.budgetCadence?.let { name ->
+            if (BudgetCadence.fromName(name) != null) settingsStore.setBudgetCadence(name)
+        }
+        s.fortnightAnchorEpochDay?.let(settingsStore::setFortnightAnchor)
         s.recapEnabled?.let(settingsStore::setRecapEnabled)
         s.hiddenHomeSections?.let { settingsStore.setHiddenHomeSections(it.toSet()) }
         s.hiddenInsightsSections?.let { settingsStore.setHiddenInsightsSections(it.toSet()) }

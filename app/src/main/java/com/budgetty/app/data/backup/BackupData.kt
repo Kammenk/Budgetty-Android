@@ -60,6 +60,8 @@ data class BackupSettings(
     val accent: String? = null,
     val monthStartDay: Int? = null,
     val budgetRolloverEnabled: Boolean? = null,
+    val budgetCadence: String? = null,
+    val fortnightAnchorEpochDay: Long? = null,
     val hiddenHomeSections: List<String>? = null,
     val hiddenInsightsSections: List<String>? = null,
     val homeSectionOrder: List<String>? = null,

@@ -39,9 +39,11 @@ import com.budgetty.app.ui.streaks.Streak
 import com.budgetty.app.ui.streaks.StreakEngine
 import com.budgetty.app.ui.streaks.StreakKind
 import com.budgetty.app.ui.streaks.StreakTxn
+import com.budgetty.app.ui.util.BudgetCadence
 import com.budgetty.app.ui.util.BudgetRollover
 import com.budgetty.app.ui.util.PayCycle
 import com.budgetty.app.ui.util.currentMonthRange
+import com.budgetty.app.ui.util.windowRange
 import com.budgetty.app.ui.util.isAutoPayActive
 import com.budgetty.app.ui.util.isEffectivelyPaidThisCycle
 import com.budgetty.app.ui.util.monthlyAmount
@@ -63,6 +65,17 @@ data class RecurringUi(
     val monthlyBills: BigDecimal = BigDecimal.ZERO,
     /** Ids of bills marked paid for the current cycle (checkmark + hidden from "upcoming"). */
     val paidBillIds: Set<Long> = emptySet(),
+)
+
+/**
+ * The active budget cadence plus the inputs its window needs — the pay-cycle start day and the pinned
+ * fortnight anchor. Bundled into one state so the Budget screen reads the governing period, the window
+ * dates and the proration factor from a single flow. See [BudgetCadence].
+ */
+data class CadenceState(
+    val cadence: BudgetCadence = BudgetCadence.MONTHLY,
+    val monthStartDay: Int = 1,
+    val fortnightAnchorEpochDay: Long = 0L,
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -155,6 +168,36 @@ class BudgetViewModel(
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BigDecimal.ZERO)
     }
 
+    /**
+     * Total spend in the current fortnight, for the Fortnightly budget card's progress. The 14-day
+     * window follows the pay-cycle day + pinned anchor, so it re-queries when either changes.
+     */
+    val fortnightlySpent: StateFlow<BigDecimal> =
+        settingsStore.settings.map { it.monthStartDay to it.fortnightAnchorEpochDay }.distinctUntilChanged()
+            .flatMapLatest { (day, anchor) ->
+                val (start, end) = BudgetCadence.FORTNIGHTLY.windowRange(
+                    monthStartDay = day,
+                    fortnightAnchorEpochDay = anchor,
+                )
+                combine(transactionRepository.getBetween(start, end), receipts) { txns, receiptList ->
+                    txns.spend() + paidAdjustmentOf(txns, receiptList.associateBy { it.timestamp })
+                }
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), BigDecimal.ZERO)
+
+    /**
+     * The active cadence + its window inputs, for the three-up selector and window header. A blank
+     * cadence pref resolves to the legacy period (which key is set), so an existing Weekly-only user
+     * keeps Weekly on upgrade rather than being switched to an empty Monthly budget.
+     */
+    val cadenceState: StateFlow<CadenceState> =
+        combine(settingsStore.settings, repository.budgets) { s, budgets ->
+            CadenceState(
+                cadence = BudgetCadence.resolve(s.budgetCadence, budgets),
+                monthStartDay = s.monthStartDay,
+                fortnightAnchorEpochDay = s.fortnightAnchorEpochDay,
+            )
+        }.distinctUntilChanged().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CadenceState())
+
     /** Income sources + recurring payments, split and summed to monthly-equivalent totals. */
     val recurring: StateFlow<RecurringUi> =
         combine(recurringRepository.items, monthStartDay) { items, day -> items.toUi(day) }
@@ -182,20 +225,28 @@ class BudgetViewModel(
     }
 
     /**
-     * Saves the single top-level budget: writes the chosen period's amount and clears the other,
-     * so only one of [BudgetRepository.MONTHLY]/[BudgetRepository.WEEKLY] is ever set at a time.
+     * Saves the single top-level budget at the chosen [cadence]: writes the amount under that
+     * cadence's key and pins the cadence as the governing period (so the Budget window, bill proration
+     * and Safe-to-Spend all follow it). Other cadences' amounts are kept, not cleared, so switching
+     * back restores them; the persisted cadence — not "which key is set" — is now the source of truth.
+     * Switching to Fortnightly also pins the fortnight anchor (the pay-cycle start containing today) the
+     * first time, so the 14-day windows stay fixed instead of drifting.
      */
-    fun saveSingleBudget(monthly: Boolean, text: String) {
+    fun saveCadenceBudget(cadence: BudgetCadence, text: String) {
         // Fire-and-forget: the user tapped Save on the main budget (the one amount that needs an
         // explicit save). No amount is logged — the event carries no params.
         analytics.logBudgetSaved()
         val amount = text.replace(',', '.').trim().toBigDecimalOrNull()
-        val (activeKey, otherKey) =
-            if (monthly) BudgetRepository.MONTHLY to BudgetRepository.WEEKLY
-            else BudgetRepository.WEEKLY to BudgetRepository.MONTHLY
         viewModelScope.launch {
-            repository.setBudget(activeKey, amount)
-            repository.setBudget(otherKey, null)
+            repository.setBudget(cadence.budgetKey, amount)
+            settingsStore.setBudgetCadence(cadence.name)
+            if (cadence == BudgetCadence.FORTNIGHTLY &&
+                settingsStore.settings.value.fortnightAnchorEpochDay <= 0L
+            ) {
+                settingsStore.setFortnightAnchor(
+                    PayCycle.defaultFortnightAnchor(LocalDate.now(), settingsStore.settings.value.monthStartDay),
+                )
+            }
         }
     }
 

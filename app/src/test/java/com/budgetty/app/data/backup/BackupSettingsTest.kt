@@ -24,6 +24,8 @@ class BackupSettingsTest {
             accent = "OCEAN",
             monthStartDay = 25,
             budgetRolloverEnabled = true,
+            budgetCadence = "FORTNIGHTLY",
+            fortnightAnchorEpochDay = 20740L,
             hiddenHomeSections = listOf("wellbeing", "streak"),
             hiddenInsightsSections = listOf("trend"),
             homeSectionOrder = listOf("safeToSpend", "budget"),
@@ -52,7 +54,7 @@ class BackupSettingsTest {
         // ever widened to include something it should not.
         val allowed = setOf(
             "currency", "dateFormat", "language", "themeMode", "accent",
-            "monthStartDay", "budgetRolloverEnabled",
+            "monthStartDay", "budgetRolloverEnabled", "budgetCadence", "fortnightAnchorEpochDay",
             "hiddenHomeSections", "hiddenInsightsSections", "homeSectionOrder", "insightsSectionOrder",
             "customInsightsSections",
             "recapEnabled", "recapFrequency",

@@ -150,6 +150,20 @@ data class AppSettings(
      * overall monthly budget and each category budget; overspend is forgiven (never rolls negative).
      */
     val budgetRolloverEnabled: Boolean = false,
+    /**
+     * The governing budget cadence (a [com.budgetty.app.ui.util.BudgetCadence] name): Weekly,
+     * Fortnightly or Monthly. Blank = the user has never explicitly chosen, so the active period is
+     * derived from which budget key is set (preserving pre-fortnightly behaviour on upgrade). The
+     * chosen cadence drives the Budget window, bill proration and Safe-to-Spend. Device/app-level like
+     * [monthStartDay] (not reset on sign-out).
+     */
+    val budgetCadence: String = "",
+    /**
+     * Reference pay day (epoch day) that fortnights are counted from, so the 14-day cadence stays
+     * fixed instead of re-anchoring each month. 0 = unset; derived from [monthStartDay] on demand and
+     * persisted the first time the user switches to Fortnightly. See [com.budgetty.app.ui.util.PayCycle].
+     */
+    val fortnightAnchorEpochDay: Long = 0L,
     /** Remembered History sort order (a SortOrder name); defaults to newest-first. */
     val historySort: String = "NEWEST",
     /** Recent History search terms, most-recent first (capped); powers the search quick-find. */

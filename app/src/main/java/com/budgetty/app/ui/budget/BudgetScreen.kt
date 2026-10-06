@@ -85,8 +85,12 @@ import com.budgetty.app.ui.util.budgetRatio
 import com.budgetty.app.ui.util.formatMoney
 import com.budgetty.app.ui.util.isAutoPayActive
 import com.budgetty.app.ui.util.recurringSubtitle
+import com.budgetty.app.ui.util.BudgetCadence
+import com.budgetty.app.ui.util.monthlyToFortnightly
 import com.budgetty.app.ui.util.monthlyToWeekly
+import com.budgetty.app.ui.util.fortnightlyToMonthly
 import com.budgetty.app.ui.util.weeklyToMonthly
+import com.budgetty.app.ui.util.windowDates
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
 import com.budgetty.app.data.local.CategoryEntity
@@ -108,6 +112,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 import androidx.compose.ui.tooling.preview.Preview
@@ -131,6 +137,8 @@ fun BudgetScreen(
     val categoryStreaks by viewModel.categoryStreaks.collectAsStateWithLifecycle()
     val monthlySpent by viewModel.monthlySpent.collectAsStateWithLifecycle()
     val weeklySpent by viewModel.weeklySpent.collectAsStateWithLifecycle()
+    val fortnightlySpent by viewModel.fortnightlySpent.collectAsStateWithLifecycle()
+    val cadenceState by viewModel.cadenceState.collectAsStateWithLifecycle()
     val recurring by viewModel.recurring.collectAsStateWithLifecycle()
     val categories by viewModel.categories.collectAsStateWithLifecycle()
     val isPremium by viewModel.isPremium.collectAsStateWithLifecycle()
@@ -143,6 +151,8 @@ fun BudgetScreen(
         categoryStreaks = categoryStreaks,
         monthlySpent = monthlySpent,
         weeklySpent = weeklySpent,
+        fortnightlySpent = fortnightlySpent,
+        cadenceState = cadenceState,
         carried = carried,
         rolloverEnabled = rolloverEnabled,
         onSetRolloverEnabled = viewModel::setRolloverEnabled,
@@ -153,7 +163,7 @@ fun BudgetScreen(
         isWide = isWideWidth(),
         onNavigateBack = onNavigateBack,
         onSetBudget = viewModel::setBudget,
-        onSaveSingleBudget = viewModel::saveSingleBudget,
+        onSaveCadenceBudget = viewModel::saveCadenceBudget,
         customActions = CustomCategoryActions(
             categories = categories,
             isPremium = isPremium,
@@ -175,6 +185,7 @@ fun BudgetScreen(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("LongMethod", "CyclomaticComplexMethod") // One stateless screen body that hoists all Budget state.
 @Composable
 private fun BudgetScreenContent(
     budgets: Map<String, BigDecimal>,
@@ -185,7 +196,9 @@ private fun BudgetScreenContent(
     isWide: Boolean,
     onNavigateBack: () -> Unit,
     onSetBudget: (String, String) -> Unit,
-    onSaveSingleBudget: (Boolean, String) -> Unit,
+    onSaveCadenceBudget: (BudgetCadence, String) -> Unit,
+    fortnightlySpent: BigDecimal = BigDecimal.ZERO,
+    cadenceState: CadenceState = CadenceState(),
     categoryStreaks: Map<String, Streak> = emptyMap(),
     carried: Map<String, BigDecimal> = emptyMap(),
     rolloverEnabled: Boolean = false,
@@ -214,48 +227,57 @@ private fun BudgetScreenContent(
         onSetBudget(key, text)
     }
 
-    // A single top-level budget: the user picks Monthly or Weekly and enters one amount; the other
-    // period is derived for display. The active period is whichever of MONTHLY/WEEKLY is stored —
-    // Monthly by default (and if both somehow exist), Weekly only when it alone is set. The amount is
-    // edited in a buffer and committed via the Save button, which writes the active key and clears
-    // the other so the two can never drift apart.
-    val storedMonthly = budgets[BudgetRepository.MONTHLY]
-    val storedWeekly = budgets[BudgetRepository.WEEKLY]
-    val persistedMonthly = storedMonthly != null || storedWeekly == null
-    val persistedAmount = (if (persistedMonthly) storedMonthly else storedWeekly)?.toPlainString() ?: ""
-    var isMonthly by remember { mutableStateOf(persistedMonthly) }
+    // A single top-level budget shown at the chosen cadence (Weekly · Fortnightly · Monthly). The
+    // amount is edited in a buffer and committed via the Save button, which writes it under the
+    // cadence's key and pins that cadence as the governing period. The persisted cadence is the source
+    // of truth; a user who never chose one falls back to which legacy key is set (BudgetCadence.resolve,
+    // applied in the view model), so an existing Weekly-only user keeps Weekly rather than an empty
+    // Monthly. Other cadences' amounts are kept, not cleared, so switching back restores them.
+    val persistedCadence = cadenceState.cadence
+    val persistedAmount = budgets[persistedCadence.budgetKey]?.toPlainString() ?: ""
+    var cadence by remember { mutableStateOf(persistedCadence) }
     var amountText by remember { mutableStateOf(persistedAmount) }
     // Baseline the Save button compares against: advanced on Save and re-synced whenever the saved
     // value loads or changes elsewhere (only while the buffer holds no unsaved edits).
-    var submittedMonthly by remember { mutableStateOf(persistedMonthly) }
+    var submittedCadence by remember { mutableStateOf(persistedCadence) }
     var submittedAmount by remember { mutableStateOf(persistedAmount) }
-    LaunchedEffect(persistedMonthly, persistedAmount) {
-        if (isMonthly == submittedMonthly && amountText == submittedAmount) {
-            isMonthly = persistedMonthly
+    LaunchedEffect(persistedCadence, persistedAmount) {
+        if (cadence == submittedCadence && amountText == submittedAmount) {
+            cadence = persistedCadence
             amountText = persistedAmount
         }
-        submittedMonthly = persistedMonthly
+        submittedCadence = persistedCadence
         submittedAmount = persistedAmount
     }
-    val budgetDirty = isMonthly != submittedMonthly || amountText != submittedAmount
-    // Switching period converts the current amount to the new period so the field stays meaningful.
-    fun selectPeriod(monthly: Boolean) {
-        if (monthly == isMonthly) return
-        amountText.toBudgetAmount()?.let { amt ->
-            val converted = if (monthly) weeklyToMonthly(amt) else monthlyToWeekly(amt)
-            amountText = converted.setScale(0, RoundingMode.HALF_UP).toPlainString()
+    val budgetDirty = cadence != submittedCadence || amountText != submittedAmount
+    // Switching cadence shows the target's saved amount if it has one, otherwise converts the current
+    // buffer (through the monthly pivot) into an editable suggestion so the field stays meaningful.
+    fun selectCadence(target: BudgetCadence) {
+        if (target == cadence) return
+        val stored = budgets[target.budgetKey]
+        amountText = when {
+            stored != null -> stored.toPlainString()
+            else -> amountText.toBudgetAmount()
+                ?.let { convertBudget(it, cadence, target).setScale(0, RoundingMode.HALF_UP).toPlainString() }
+                ?: amountText
         }
-        isMonthly = monthly
+        cadence = target
     }
     fun saveBudget() {
-        onSaveSingleBudget(isMonthly, amountText)
-        submittedMonthly = isMonthly
+        onSaveCadenceBudget(cadence, amountText)
+        submittedCadence = cadence
         submittedAmount = amountText
     }
-    val activeSpent = if (isMonthly) monthlySpent else weeklySpent
-    val activeBudget = if (isMonthly) storedMonthly else storedWeekly
-    val activeLabel = stringResource(if (isMonthly) R.string.budget_monthly else R.string.budget_weekly)
-    val activeKey = if (isMonthly) BudgetRepository.MONTHLY else BudgetRepository.WEEKLY
+    val activeSpent = when (cadence) {
+        BudgetCadence.MONTHLY -> monthlySpent
+        BudgetCadence.WEEKLY -> weeklySpent
+        BudgetCadence.FORTNIGHTLY -> fortnightlySpent
+    }
+    val activeBudget = budgets[cadence.budgetKey]
+    val activeLabel = stringResource(cadence.cardLabelRes)
+    val activeKey = cadence.budgetKey
+    // Choosing Fortnightly opens a one-time explainer sheet before the switch; Weekly/Monthly switch in place.
+    var switchSheetOpen by remember { mutableStateOf(false) }
 
     // Carry-over amount for a budget key (0 unless rollover is on and this key has accrued some), and
     // the effective budget = the saved amount + what's carried in. Progress bars use the effective one.
@@ -321,7 +343,21 @@ private fun BudgetScreenContent(
                 // The spending budget leads: it's what the screen is for, so it sits above the
                 // income/bills context rather than below it.
                 SpendingBudgetHeader()
-                BudgetPeriodToggle(isMonthly = isMonthly, onSelect = { selectPeriod(it) })
+                BudgetPeriodToggle(
+                    cadence = cadence,
+                    onSelect = { target ->
+                        if (target == BudgetCadence.FORTNIGHTLY && cadence != BudgetCadence.FORTNIGHTLY) {
+                            switchSheetOpen = true
+                        } else {
+                            selectCadence(target)
+                        }
+                    },
+                )
+                BudgetWindowCaption(
+                    cadence = cadence,
+                    monthStartDay = cadenceState.monthStartDay,
+                    fortnightAnchorEpochDay = cadenceState.fortnightAnchorEpochDay,
+                )
                 BudgetAmountCard(
                     label = activeLabel,
                     value = amountText,
@@ -334,8 +370,11 @@ private fun BudgetScreenContent(
                 BudgetRolloverToggle(enabled = rolloverEnabled, onToggle = onSetRolloverEnabled)
                 // Live "≈ X / other-period" equivalent, so the single amount reads at both cadences.
                 amountText.toBudgetAmount()?.let { amt ->
-                    val equivalent = if (isMonthly) monthlyToWeekly(amt) else weeklyToMonthly(amt)
-                    val res = if (isMonthly) R.string.budget_approx_weekly else R.string.budget_approx_monthly
+                    val (equivalent, res) = when (cadence) {
+                        BudgetCadence.MONTHLY -> monthlyToWeekly(amt) to R.string.budget_approx_weekly
+                        BudgetCadence.WEEKLY -> weeklyToMonthly(amt) to R.string.budget_approx_monthly
+                        BudgetCadence.FORTNIGHTLY -> fortnightlyToMonthly(amt) to R.string.budget_approx_monthly
+                    }
                     Text(
                         text = stringResource(res, equivalent.formatMoney()),
                         style = MaterialTheme.typography.bodyMedium,
@@ -568,6 +607,20 @@ private fun BudgetScreenContent(
             onDismiss = { savingsCreateOpen = false },
         )
     }
+
+    if (switchSheetOpen) {
+        FortnightSwitchSheet(
+            currentAmount = amountText.toBudgetAmount(),
+            currentCadence = cadence,
+            monthStartDay = cadenceState.monthStartDay,
+            fortnightAnchorEpochDay = cadenceState.fortnightAnchorEpochDay,
+            onConfirm = {
+                selectCadence(BudgetCadence.FORTNIGHTLY)
+                switchSheetOpen = false
+            },
+            onDismiss = { switchSheetOpen = false },
+        )
+    }
 }
 
 /** "Categories" title with the "Tap to set sub-budgets" subtitle beside it, baseline-aligned. */
@@ -590,23 +643,176 @@ private fun CategoriesHeader() {
     }
 }
 
-/** Monthly/Weekly period selector. Picking a period keeps a single budget, viewed at that cadence. */
+/**
+ * Weekly · Fortnightly · Monthly cadence selector; Fortnightly carries a NEW badge for the release.
+ * Shares [SegmentedToggle] with the History "Receipts | Items" toggle so both read identically; the
+ * segment order matches [BudgetCadence]'s declaration order.
+ */
 @Composable
 private fun BudgetPeriodToggle(
-    isMonthly: Boolean,
-    onSelect: (Boolean) -> Unit,
+    cadence: BudgetCadence,
+    onSelect: (BudgetCadence) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // Shares [SegmentedToggle] with the History "Receipts | Items" toggle so both read identically.
     SegmentedToggle(
-        options = listOf(
-            stringResource(R.string.budget_period_monthly),
-            stringResource(R.string.budget_period_weekly),
-        ),
-        selectedIndex = if (isMonthly) 0 else 1,
-        onSelect = { onSelect(it == 0) },
+        options = BudgetCadence.entries.map { stringResource(it.toggleLabelRes) },
+        selectedIndex = cadence.ordinal,
+        onSelect = { onSelect(BudgetCadence.entries[it]) },
         modifier = modifier,
+        badgeIndex = BudgetCadence.FORTNIGHTLY.ordinal,
+        badgeText = stringResource(R.string.budget_period_new_badge),
     )
+}
+
+/** A quiet caption naming the active budget window, e.g. "This fortnight · 14 Oct – 27 Oct". */
+@Composable
+private fun BudgetWindowCaption(
+    cadence: BudgetCadence,
+    monthStartDay: Int,
+    fortnightAnchorEpochDay: Long,
+    modifier: Modifier = Modifier,
+) {
+    val today = remember { LocalDate.now() }
+    val (start, end) = cadence.windowDates(today, monthStartDay, fortnightAnchorEpochDay)
+    val fmt = remember { DateTimeFormatter.ofPattern("d MMM", Locale.getDefault()) }
+    val titleRes = when (cadence) {
+        BudgetCadence.WEEKLY -> R.string.budget_window_week
+        BudgetCadence.FORTNIGHTLY -> R.string.budget_window_fortnight
+        BudgetCadence.MONTHLY -> R.string.budget_window_month
+    }
+    Text(
+        text = stringResource(
+            R.string.budget_window_range,
+            stringResource(titleRes),
+            start.format(fmt),
+            end.format(fmt),
+        ),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = modifier.padding(horizontal = MaterialTheme.dimens.xs),
+    )
+}
+
+/**
+ * A calm one-time explainer before adopting the fortnightly cadence: it names the window the user
+ * lands in and the suggested budget conversion (× 12 ÷ 26), and reassures that nothing is deleted.
+ * Confirming adopts fortnightly; the amount is still committed afterwards by the Save button.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FortnightSwitchSheet(
+    currentAmount: BigDecimal?,
+    currentCadence: BudgetCadence,
+    monthStartDay: Int,
+    fortnightAnchorEpochDay: Long,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val today = remember { LocalDate.now() }
+    val (start, end) = BudgetCadence.FORTNIGHTLY.windowDates(today, monthStartDay, fortnightAnchorEpochDay)
+    val fmt = remember { DateTimeFormatter.ofPattern("d MMM", Locale.getDefault()) }
+    AdaptiveSheet(onDismiss = onDismiss) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = MaterialTheme.dimens.xl,
+                vertical = MaterialTheme.dimens.md,
+            ),
+            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+        ) {
+            Text(
+                text = stringResource(R.string.budget_switch_fortnight_title),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = stringResource(R.string.budget_switch_fortnight_body),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Card(
+                shape = RoundedCornerShape(MaterialTheme.dimens.radiusLg),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                ),
+            ) {
+                Column(
+                    modifier = Modifier.padding(MaterialTheme.dimens.lg),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+                ) {
+                    SwitchInfoRow(
+                        label = stringResource(R.string.budget_switch_window_label),
+                        value = stringResource(
+                            R.string.budget_window_range,
+                            stringResource(R.string.budget_window_fortnight),
+                            start.format(fmt),
+                            end.format(fmt),
+                        ),
+                    )
+                    currentAmount?.let { amt ->
+                        val converted = convertBudget(amt, currentCadence, BudgetCadence.FORTNIGHTLY)
+                        SwitchInfoRow(
+                            label = stringResource(R.string.budget_switch_budget_label),
+                            value = stringResource(
+                                R.string.budget_switch_budget_value,
+                                amt.formatMoney(),
+                                converted.formatMoney(),
+                            ),
+                        )
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+            ) {
+                OutlinedButton(
+                    onClick = onDismiss,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(MaterialTheme.dimens.buttonHeight),
+                ) { Text(stringResource(R.string.action_cancel)) }
+                Button(
+                    onClick = onConfirm,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(MaterialTheme.dimens.buttonHeight),
+                ) { Text(stringResource(R.string.budget_switch_confirm)) }
+            }
+        }
+    }
+}
+
+/** One labelled line in the fortnight-switch explainer card (primary-tinted label over its value). */
+@Composable
+private fun SwitchInfoRow(label: String, value: String) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+/** Converts a budget [amount] between cadences through its monthly equivalent (the shared pivot). */
+private fun convertBudget(amount: BigDecimal, from: BudgetCadence, to: BudgetCadence): BigDecimal {
+    if (from == to) return amount
+    val monthly = when (from) {
+        BudgetCadence.WEEKLY -> weeklyToMonthly(amount)
+        BudgetCadence.FORTNIGHTLY -> fortnightlyToMonthly(amount)
+        BudgetCadence.MONTHLY -> amount
+    }
+    return when (to) {
+        BudgetCadence.WEEKLY -> monthlyToWeekly(monthly)
+        BudgetCadence.FORTNIGHTLY -> monthlyToFortnightly(monthly)
+        BudgetCadence.MONTHLY -> monthly
+    }
 }
 
 /**
@@ -2179,11 +2385,13 @@ private fun BudgetScreenPreview() {
             spending = previewSpending,
             monthlySpent = BigDecimal("712.40"),
             weeklySpent = BigDecimal("73.20"),
+            fortnightlySpent = BigDecimal("212.00"),
+            cadenceState = CadenceState(cadence = BudgetCadence.FORTNIGHTLY),
             isExpanded = false,
             isWide = false,
             onNavigateBack = {},
             onSetBudget = { _, _ -> },
-            onSaveSingleBudget = { _, _ -> },
+            onSaveCadenceBudget = { _, _ -> },
         )
     }
 }
@@ -2201,7 +2409,7 @@ private fun BudgetScreenTabletPreview() {
             isWide = true,
             onNavigateBack = {},
             onSetBudget = { _, _ -> },
-            onSaveSingleBudget = { _, _ -> },
+            onSaveCadenceBudget = { _, _ -> },
         )
     }
 }

@@ -34,6 +34,7 @@ class BudgetRepository(private val db: UserDatabaseManager) {
     companion object {
         const val MONTHLY = "MONTHLY"
         const val WEEKLY = "WEEKLY"
+        const val FORTNIGHTLY = "FORTNIGHTLY"
         const val CATEGORY_PREFIX = "CAT:"
         fun categoryKey(category: String) = "$CATEGORY_PREFIX$category"
     }

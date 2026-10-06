@@ -37,3 +37,18 @@ fun monthlyToWeekly(monthly: BigDecimal): BigDecimal =
 /** The monthly-equivalent of a [weekly] budget (weekly × 4.33), to 2 decimals. */
 fun weeklyToMonthly(weekly: BigDecimal): BigDecimal =
     weekly.multiply(WEEKS_PER_MONTH).setScale(2, RoundingMode.HALF_UP)
+
+/**
+ * Average fortnights per month (26 ÷ 12 ≈ 2.1667) for converting a budget between fortnightly and
+ * monthly. 26 fortnights make a year, so a monthly figure is prorated × 12 ÷ 26 to one fortnight —
+ * the ÷2 shortcut would overstate a monthly bill by ≈8% (26 fortnights ≠ 24 half-months).
+ */
+private val FORTNIGHTS_PER_MONTH: BigDecimal = BigDecimal("26").divide(BigDecimal("12"), 10, RoundingMode.HALF_UP)
+
+/** The fortnightly-equivalent of a [monthly] budget (monthly × 12 ÷ 26), to 2 decimals. */
+fun monthlyToFortnightly(monthly: BigDecimal): BigDecimal =
+    monthly.divide(FORTNIGHTS_PER_MONTH, 2, RoundingMode.HALF_UP)
+
+/** The monthly-equivalent of a [fortnightly] budget (fortnightly × 26 ÷ 12), to 2 decimals. */
+fun fortnightlyToMonthly(fortnightly: BigDecimal): BigDecimal =
+    fortnightly.multiply(FORTNIGHTS_PER_MONTH).setScale(2, RoundingMode.HALF_UP)

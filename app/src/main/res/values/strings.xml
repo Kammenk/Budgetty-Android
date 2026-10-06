@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Budgetty</string>
 
     <!-- Common actions -->
@@ -777,8 +777,21 @@
     <!-- Budget -->
     <string name="budget_monthly">Monthly budget</string>
     <string name="budget_weekly">Weekly budget</string>
+    <string name="budget_fortnightly" tools:ignore="MissingTranslation">Fortnightly budget</string>
     <string name="budget_period_monthly">Monthly</string>
     <string name="budget_period_weekly">Weekly</string>
+    <string name="budget_period_fortnightly" tools:ignore="MissingTranslation">Fortnightly</string>
+    <string name="budget_period_new_badge" tools:ignore="MissingTranslation">New</string>
+    <string name="budget_window_week" tools:ignore="MissingTranslation">This week</string>
+    <string name="budget_window_fortnight" tools:ignore="MissingTranslation">This fortnight</string>
+    <string name="budget_window_month" tools:ignore="MissingTranslation">This month</string>
+    <string name="budget_window_range" tools:ignore="MissingTranslation">%1$s · %2$s – %3$s</string>
+    <string name="budget_switch_fortnight_title" tools:ignore="MissingTranslation">Switch to fortnightly?</string>
+    <string name="budget_switch_fortnight_body" tools:ignore="MissingTranslation">Your budget and bills keep their monthly figures — Budgetty just shows them per fortnight. Nothing is deleted, and past periods stay as they were.</string>
+    <string name="budget_switch_window_label" tools:ignore="MissingTranslation">Your first fortnight</string>
+    <string name="budget_switch_budget_label" tools:ignore="MissingTranslation">Budget</string>
+    <string name="budget_switch_budget_value" tools:ignore="MissingTranslation">%1$s → %2$s / fortnight</string>
+    <string name="budget_switch_confirm" tools:ignore="MissingTranslation">Use fortnightly</string>
     <string name="budget_approx_weekly">≈ %1$s / week</string>
     <string name="budget_approx_monthly">≈ %1$s / month</string>
     <string name="budget_categories">Categories</string>
