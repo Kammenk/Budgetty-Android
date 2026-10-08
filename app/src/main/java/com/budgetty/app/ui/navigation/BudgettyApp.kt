@@ -63,6 +63,7 @@ import com.budgetty.app.ui.util.BuyingLimitCounter
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.account.AccountScreen
 import com.budgetty.app.ui.warranties.WarrantiesScreen
+import com.budgetty.app.ui.budgets.BudgetEnvelopesScreen
 import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
@@ -540,6 +541,16 @@ private fun BudgettyNavHost(
                     navController.navigate(Routes.PAYWALL)
                 },
                 onNavigateToGoal = { navController.navigate(Routes.savingsGoal(it)) },
+                onOpenEnvelopes = { navController.navigate(Routes.ENVELOPES) },
+            )
+        }
+        composable(Routes.ENVELOPES) {
+            BudgetEnvelopesScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.BUDGET)
+                    navController.navigate(Routes.PAYWALL)
+                },
             )
         }
         composable(

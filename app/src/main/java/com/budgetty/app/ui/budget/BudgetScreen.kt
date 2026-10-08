@@ -123,6 +123,7 @@ fun BudgetScreen(
     onNavigateBack: () -> Unit,
     onNavigateToPaywall: () -> Unit,
     onNavigateToGoal: (Long) -> Unit = {},
+    onOpenEnvelopes: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: BudgetViewModel = koinViewModel(),
 ) {
@@ -170,11 +171,13 @@ fun BudgetScreen(
         savingsGoals = savingsGoals,
         onGoalClick = onNavigateToGoal,
         onCreateGoal = viewModel::createSavingsGoal,
+        onOpenEnvelopes = onOpenEnvelopes,
         modifier = modifier,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("LongMethod", "CyclomaticComplexMethod") // One stateless Budget body hoisting all its state.
 @Composable
 private fun BudgetScreenContent(
     budgets: Map<String, BigDecimal>,
@@ -203,6 +206,7 @@ private fun BudgetScreenContent(
     onGoalClick: (Long) -> Unit = {},
     onCreateGoal: (name: String, emoji: String, target: BigDecimal, targetDate: Long?) -> Unit =
         { _, _, _, _ -> },
+    onOpenEnvelopes: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     // Per-category budgets still save live; this buffer keeps typing from being snapped back by the
@@ -411,6 +415,36 @@ private fun BudgetScreenContent(
                     onNewGoal = { savingsCreateOpen = true },
                     onUpgrade = onOpenPaywall,
                 )
+                Card(
+                    modifier = Modifier.fillMaxWidth().clickable { onOpenEnvelopes() },
+                    shape = RoundedCornerShape(MaterialTheme.dimens.radiusLg),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(MaterialTheme.dimens.lg),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
+                    ) {
+                        Text("🧾", style = MaterialTheme.typography.titleMedium)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                stringResource(R.string.envelopes_entry_title),
+                                style = MaterialTheme.typography.bodyLarge,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                            Text(
+                                stringResource(R.string.envelopes_entry_sub),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Text(
+                            "›",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
             }
         }
 

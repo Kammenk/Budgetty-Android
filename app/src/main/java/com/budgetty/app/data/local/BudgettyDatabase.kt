@@ -14,7 +14,7 @@ import com.budgetty.app.category.Categories
         SavingsGoalEntity::class, SavingsContributionEntity::class,
         IgnoredSubscriptionEntity::class, BuyingLimitEntity::class, WellbeingScoreEntity::class,
         TagEntity::class, TransactionTagEntity::class, DebtEntity::class,
-        TemplateEntity::class, WarrantyEntity::class,
+        TemplateEntity::class, WarrantyEntity::class, BudgetEnvelopeEntity::class,
     ],
     version = BudgettyDatabase.VERSION,
     exportSchema = true,
@@ -36,12 +36,13 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun debtDao(): DebtDao
     abstract fun templateDao(): TemplateDao
     abstract fun warrantyDao(): WarrantyDao
+    abstract fun budgetEnvelopeDao(): BudgetEnvelopeDao
 
     companion object {
         // The Room schema version — single source of truth. Used by the @Database annotation above
         // and reported to Crashlytics (see CrashReporting.setDatabaseVersion) so a crash names the
         // schema it hit; sharing one const keeps the annotation and the reported value from drifting.
-        const val VERSION = 31
+        const val VERSION = 32
     }
 }
 
@@ -522,6 +523,24 @@ val MIGRATION_30_31 = object : Migration(30, 31) {
     }
 }
 
+/** v32: the multiple-budgets ("envelopes") standalone table. */
+val MIGRATION_31_32 = object : Migration(31, 32) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `budget_envelopes` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`name` TEXT NOT NULL, " +
+                "`emoji` TEXT NOT NULL, " +
+                "`limitAmount` TEXT NOT NULL, " +
+                "`startDate` INTEGER NOT NULL, " +
+                "`endDate` INTEGER NOT NULL, " +
+                "`categories` TEXT NOT NULL DEFAULT '', " +
+                "`sortOrder` INTEGER NOT NULL DEFAULT 0, " +
+                "`createdAt` INTEGER NOT NULL DEFAULT 0)",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -568,4 +587,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
     MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26,
     MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31,
+    MIGRATION_31_32,
 )

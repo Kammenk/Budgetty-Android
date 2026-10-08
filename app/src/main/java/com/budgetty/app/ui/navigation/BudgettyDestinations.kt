@@ -44,6 +44,7 @@ object Routes {
     const val RECAP = "recap"
     const val TEMPLATES = "templates"
     const val WARRANTIES = "warranties"
+    const val ENVELOPES = "envelopes"
 
     /** Upload route for a given source: "camera", "file", or "manual". */
     fun upload(source: String) = "upload/$source"
