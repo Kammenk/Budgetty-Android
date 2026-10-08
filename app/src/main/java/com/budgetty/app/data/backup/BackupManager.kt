@@ -33,6 +33,7 @@ class BackupManager(
     private val tagDao get() = db.database.tagDao()
     private val debtDao get() = db.database.debtDao()
     private val templateDao get() = db.database.templateDao()
+    private val tripDao get() = db.database.tripDao()
 
     private val gson = Gson()
 
@@ -55,6 +56,7 @@ class BackupManager(
             transactionTags = tagDao.allLinks().first(),
             debts = debtDao.getAll().first(),
             templates = templateDao.getAll().first(),
+            trips = tripDao.getAllOnce(),
             settings = currentBackupSettings(),
         )
         return gson.toJson(data)
@@ -94,6 +96,7 @@ class BackupManager(
                 tagDao.clearTags()
                 debtDao.clearAll()
                 templateDao.clearAll()
+                tripDao.clearAll()
             }
             // New ids so a merge never collides with existing transactions; capture them (in input
             // order) to remap the tag links below onto the freshly-inserted rows.
@@ -144,6 +147,9 @@ class BackupManager(
             debtDao.insertAll(data.debts.orEmpty().map { it.copy(id = 0) })
             // Templates: fresh ids, no child rows; .orEmpty() tolerates pre-v28 backups.
             templateDao.insertAll(data.templates.orEmpty().map { it.copy(id = 0) })
+            // Trips: fresh ids so a merge never collides. The trip's tag string points at a catalog
+            // row inserted above (or is harmlessly dangling if the tag was deleted); no id remap needed.
+            tripDao.insertAll(data.trips.orEmpty().map { it.copy(id = 0) })
         }
 
         // Preferences live outside Room (a device-global SharedPreferences store), so they're applied

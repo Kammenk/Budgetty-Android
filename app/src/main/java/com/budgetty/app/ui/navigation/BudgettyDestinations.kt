@@ -36,6 +36,7 @@ object Routes {
     const val PLANNERS = "planners"
     const val DEBT_PAYOFF = "debt_payoff"
     const val LOAN_CALCULATOR = "loan_calculator"
+    const val TRIPS = "trips"
     const val SAVINGS_GOAL = "savings_goal/{goalId}"
     const val SAVINGS_GOAL_ARG = "goalId"
     const val SUBSCRIPTIONS = "subscriptions"

@@ -20,6 +20,7 @@ import com.budgetty.app.data.repository.TemplateRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.TagRepository
+import com.budgetty.app.data.repository.TripRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
@@ -57,6 +58,7 @@ import com.budgetty.app.ui.quiz.InsightsQuizViewModel
 import com.budgetty.app.ui.categories.ManageCategoriesViewModel
 import com.budgetty.app.ui.rules.CategoryRulesViewModel
 import com.budgetty.app.ui.tags.TagsViewModel
+import com.budgetty.app.ui.trips.TripsViewModel
 import com.budgetty.app.ui.upload.UploadViewModel
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
@@ -84,6 +86,7 @@ val appModule = module {
     single { ReceiptRepository(get()) }
     single { CategoryRuleRepository(get()) }
     single { TagRepository(get()) }
+    single { TripRepository(get()) }
     single { RecurringRepository(get()) }
     single { SavingsRepository(get()) }
     single { SubscriptionsRepository(get()) }
@@ -175,11 +178,12 @@ val appModule = module {
     viewModel {
         UploadViewModel(
             get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
-            get(),
+            get(), get(),
         )
     }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { TagsViewModel(get()) }
+    viewModel { TripsViewModel(get(), get(), get(), get()) }
     viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
     viewModel { DebtsViewModel(get()) }
     viewModel { TemplatesViewModel(get()) }

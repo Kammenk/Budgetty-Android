@@ -26,6 +26,7 @@ import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.TagRepository
 import com.budgetty.app.data.repository.TemplateRepository
+import com.budgetty.app.data.repository.TripRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
@@ -110,6 +111,7 @@ class UploadViewModel(
     private val scanQuota: ScanQuota,
     private val categoryRuleRepository: CategoryRuleRepository,
     private val tagRepository: TagRepository,
+    private val tripRepository: TripRepository,
     private val billingManager: BillingManager,
     private val budgetRepository: BudgetRepository,
     private val reviewTracker: ReviewTracker,
@@ -132,6 +134,10 @@ class UploadViewModel(
 
     /** When editing an existing receipt, its id (upload timestamp); null for a new upload. */
     private var editingReceiptId: Long? = null
+
+    /** The active trip's tag, if any — pre-applied to each new review row so the expense is counted
+     *  for the trip. Kept in sync by the collector in [init]; null when no trip is running. */
+    private var activeTripTag: String? = null
 
     /**
      * True while the receipt currently under review contains a fresh AI scan that hasn't yet been
@@ -184,6 +190,9 @@ class UploadViewModel(
                 _uiState.update { it.copy(isPremium = premium) }
             }
         }
+        viewModelScope.launch {
+            tripRepository.activeTrip.collect { trip -> activeTripTag = trip?.tag }
+        }
     }
 
     /** Saved color for [category], or null if it isn't a known category yet. */
@@ -207,7 +216,7 @@ class UploadViewModel(
                         stage = UploadStage.REVIEW,
                         // Always land on the review screen, even with no rows, so the
                         // user can add transactions manually.
-                        transactions = parsed.ifEmpty { listOf(ParsedTransaction()) },
+                        transactions = seedTrip(parsed.ifEmpty { listOf(ParsedTransaction()) }),
                         storeName = receipt.storeName,
                         receiptDate = receipt.date,
                         discount = receipt.discount,
@@ -265,6 +274,17 @@ class UploadViewModel(
     }
 
     /**
+     * While a trip is active, pre-applies its tag to each fresh review row so the expense is counted
+     * for the trip. Shown as a normal (removable) tag pill — the user can take it off any single row,
+     * and it goes through the ordinary save path. Idempotent, and a no-op when no trip is running.
+     * Not used when editing an existing receipt, which carries its own saved tags.
+     */
+    private fun seedTrip(rows: List<ParsedTransaction>): List<ParsedTransaction> {
+        val tag = activeTripTag ?: return rows
+        return rows.map { if (tag in it.tags) it else it.copy(tags = it.tags + tag) }
+    }
+
+    /**
      * Starts a manual entry: a single empty row to fill in, or pre-filled from [templateId] when it's
      * a saved template (> 0). No AI scan, no quota use. The plain case stays synchronous; only a
      * template load defers a tick to read it. An [TemplateEntity.askAmount] template leaves the amount
@@ -296,7 +316,7 @@ class UploadViewModel(
         _uiState.update {
             it.copy(
                 stage = UploadStage.REVIEW,
-                transactions = listOf(txn),
+                transactions = seedTrip(listOf(txn)),
                 storeName = store,
                 receiptDate = System.currentTimeMillis(),
                 discount = BigDecimal.ZERO,
@@ -373,7 +393,7 @@ class UploadViewModel(
                     val existing = it.transactions.filterNot { row -> row.name.isBlank() }
                     it.copy(
                         stage = UploadStage.REVIEW,
-                        transactions = (existing + scanned).ifEmpty { listOf(ParsedTransaction()) },
+                        transactions = seedTrip((existing + scanned).ifEmpty { listOf(ParsedTransaction()) }),
                     )
                 }
                 // Counts only when the (still-manual) receipt is finalized — see [finalizeUpload].

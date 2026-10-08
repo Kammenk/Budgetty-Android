@@ -15,6 +15,7 @@ import com.budgetty.app.category.Categories
         IgnoredSubscriptionEntity::class, BuyingLimitEntity::class, WellbeingScoreEntity::class,
         TagEntity::class, TransactionTagEntity::class, DebtEntity::class,
         TemplateEntity::class, WarrantyEntity::class, BudgetEnvelopeEntity::class,
+        TripEntity::class,
     ],
     version = BudgettyDatabase.VERSION,
     exportSchema = true,
@@ -37,12 +38,13 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun templateDao(): TemplateDao
     abstract fun warrantyDao(): WarrantyDao
     abstract fun budgetEnvelopeDao(): BudgetEnvelopeDao
+    abstract fun tripDao(): TripDao
 
     companion object {
         // The Room schema version — single source of truth. Used by the @Database annotation above
         // and reported to Crashlytics (see CrashReporting.setDatabaseVersion) so a crash names the
         // schema it hit; sharing one const keeps the annotation and the reported value from drifting.
-        const val VERSION = 32
+        const val VERSION = 33
     }
 }
 
@@ -541,6 +543,19 @@ val MIGRATION_31_32 = object : Migration(31, 32) {
     }
 }
 
+/** v33 adds the `trips` table (Travel mode) — a tag plus name/dates/budget/active metadata. */
+val MIGRATION_32_33 = object : Migration(32, 33) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `trips` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`name` TEXT NOT NULL, `tag` TEXT NOT NULL, " +
+                "`startDate` INTEGER, `endDate` INTEGER, `budgetAmount` TEXT, " +
+                "`active` INTEGER NOT NULL, `createdAt` INTEGER NOT NULL, `endedAt` INTEGER)",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -587,5 +602,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
     MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26,
     MIGRATION_26_27, MIGRATION_27_28, MIGRATION_28_29, MIGRATION_29_30, MIGRATION_30_31,
-    MIGRATION_31_32,
+    MIGRATION_31_32, MIGRATION_32_33,
 )

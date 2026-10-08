@@ -48,6 +48,7 @@ import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Fingerprint
+import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockClock
 import androidx.compose.material.icons.filled.Password
@@ -146,6 +147,7 @@ fun AccountScreen(
     onOpenPlanners: () -> Unit,
     onOpenTemplates: () -> Unit,
     onOpenWarranties: () -> Unit,
+    onOpenTrips: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -171,6 +173,7 @@ fun AccountScreen(
         onOpenPlanners = onOpenPlanners,
         onOpenTemplates = onOpenTemplates,
         onOpenWarranties = onOpenWarranties,
+        onOpenTrips = onOpenTrips,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -214,6 +217,7 @@ private fun AccountScreenContent(
     onOpenPlanners: () -> Unit,
     onOpenTemplates: () -> Unit,
     onOpenWarranties: () -> Unit,
+    onOpenTrips: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -308,6 +312,7 @@ private fun AccountScreenContent(
                 onOpenPlanners = onOpenPlanners,
                 onOpenTemplates = onOpenTemplates,
                 onOpenWarranties = onOpenWarranties,
+                onOpenTrips = onOpenTrips,
             )
         }
     }
@@ -640,6 +645,7 @@ private fun AccountScreenContent(
 private enum class Picker { THEME, ACCENT, CURRENCY, DATE, MONTH_START, LANGUAGE }
 
 /** Rows of the "Account" settings group, shared by the phone and tablet layouts. */
+@Suppress("LongParameterList") // A flat list of settings-row navigation callbacks, not complex logic.
 @Composable
 private fun AccountSectionRows(
     isPremium: Boolean,
@@ -656,6 +662,7 @@ private fun AccountSectionRows(
     onOpenPlanners: () -> Unit,
     onOpenTemplates: () -> Unit,
     onOpenWarranties: () -> Unit,
+    onOpenTrips: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -677,6 +684,8 @@ private fun AccountSectionRows(
     RowDivider()
     SettingRow(Icons.Filled.Sell, stringResource(R.string.account_tags)) { onOpenTags() }
     SettingRow(Icons.Filled.Bookmark, stringResource(R.string.account_templates)) { onOpenTemplates() }
+    RowDivider()
+    SettingRow(Icons.Filled.Flight, stringResource(R.string.account_trips)) { onOpenTrips() }
     RowDivider()
     SettingRow(
         icon = Icons.Filled.Upload,
@@ -1358,6 +1367,7 @@ private fun AccountScreenPreview() {
             onOpenPlanners = {},
             onOpenTemplates = {},
             onOpenWarranties = {},
+            onOpenTrips = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1400,6 +1410,7 @@ private fun AccountScreenTabletPreview() {
             onOpenPlanners = {},
             onOpenTemplates = {},
             onOpenWarranties = {},
+            onOpenTrips = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
