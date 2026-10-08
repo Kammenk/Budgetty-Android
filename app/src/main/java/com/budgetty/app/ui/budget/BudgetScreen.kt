@@ -47,6 +47,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -95,6 +96,7 @@ import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.ui.components.CategoryPickerScreen
 import com.budgetty.app.ui.components.CustomCategoryActions
+import com.budgetty.app.ui.components.LocalCategorySuggestions
 import com.budgetty.app.ui.theme.budgetBadColor
 import com.budgetty.app.ui.theme.budgetGoodColor
 import androidx.compose.foundation.layout.ColumnScope
@@ -139,42 +141,47 @@ fun BudgetScreen(
     val carried by viewModel.carried.collectAsStateWithLifecycle()
     val rolloverEnabled by viewModel.rolloverEnabled.collectAsStateWithLifecycle()
     val savingsGoals by viewModel.savingsGoals.collectAsStateWithLifecycle()
-    BudgetScreenContent(
-        budgets = budgets,
-        spending = spending,
-        categoryStreaks = categoryStreaks,
-        monthlySpent = monthlySpent,
-        weeklySpent = weeklySpent,
-        carried = carried,
-        rolloverEnabled = rolloverEnabled,
-        onSetRolloverEnabled = viewModel::setRolloverEnabled,
-        recurring = recurring,
-        categories = categories,
-        isPremium = isPremium,
-        isExpanded = isExpandedWidth(),
-        isWide = isWideWidth(),
-        onNavigateBack = onNavigateBack,
-        onSetBudget = viewModel::setBudget,
-        onSaveSingleBudget = viewModel::saveSingleBudget,
-        customActions = CustomCategoryActions(
+    val categorySuggestions by viewModel.categorySuggestions.collectAsStateWithLifecycle()
+    // Habit suggestions reach the category-budget picker ambiently (no item context here), so the
+    // picker shows the user's habit-ranked row without threading the data through each layer.
+    CompositionLocalProvider(LocalCategorySuggestions provides categorySuggestions) {
+        BudgetScreenContent(
+            budgets = budgets,
+            spending = spending,
+            categoryStreaks = categoryStreaks,
+            monthlySpent = monthlySpent,
+            weeklySpent = weeklySpent,
+            carried = carried,
+            rolloverEnabled = rolloverEnabled,
+            onSetRolloverEnabled = viewModel::setRolloverEnabled,
+            recurring = recurring,
             categories = categories,
             isPremium = isPremium,
-            onSave = viewModel::saveCustomCategory,
-            onDelete = viewModel::deleteCustomCategory,
-            onReparent = viewModel::setCategoryParent,
-            onCountTransactions = viewModel::transactionCount,
+            isExpanded = isExpandedWidth(),
+            isWide = isWideWidth(),
+            onNavigateBack = onNavigateBack,
+            onSetBudget = viewModel::setBudget,
+            onSaveSingleBudget = viewModel::saveSingleBudget,
+            customActions = CustomCategoryActions(
+                categories = categories,
+                isPremium = isPremium,
+                onSave = viewModel::saveCustomCategory,
+                onDelete = viewModel::deleteCustomCategory,
+                onReparent = viewModel::setCategoryParent,
+                onCountTransactions = viewModel::transactionCount,
+                onOpenPaywall = onNavigateToPaywall,
+            ),
+            onSetBillPaid = viewModel::setBillPaid,
+            onSaveRecurring = viewModel::saveRecurring,
+            onDeleteRecurring = viewModel::deleteRecurring,
             onOpenPaywall = onNavigateToPaywall,
-        ),
-        onSetBillPaid = viewModel::setBillPaid,
-        onSaveRecurring = viewModel::saveRecurring,
-        onDeleteRecurring = viewModel::deleteRecurring,
-        onOpenPaywall = onNavigateToPaywall,
-        savingsGoals = savingsGoals,
-        onGoalClick = onNavigateToGoal,
-        onCreateGoal = viewModel::createSavingsGoal,
-        onOpenEnvelopes = onOpenEnvelopes,
-        modifier = modifier,
-    )
+            savingsGoals = savingsGoals,
+            onGoalClick = onNavigateToGoal,
+            onCreateGoal = viewModel::createSavingsGoal,
+            onOpenEnvelopes = onOpenEnvelopes,
+            modifier = modifier,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

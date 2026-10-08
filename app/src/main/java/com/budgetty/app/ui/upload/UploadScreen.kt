@@ -78,6 +78,7 @@ import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import com.budgetty.app.R
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -122,6 +123,7 @@ import com.budgetty.app.ui.components.CustomCategoryActions
 import com.budgetty.app.ui.components.LocalTagEditing
 import com.budgetty.app.ui.components.TagEditing
 import com.budgetty.app.ui.components.TagField
+import com.budgetty.app.ui.components.LocalCategorySuggestions
 import com.budgetty.app.ui.util.formatDate
 import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
@@ -158,6 +160,7 @@ fun UploadScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val tagCatalog by viewModel.tagCatalog.collectAsStateWithLifecycle()
     val recentTags by viewModel.recentTags.collectAsStateWithLifecycle()
+    val categorySuggestions by viewModel.categorySuggestions.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val isEdit = source == "edit"
     // Resolved here (stringResource is @Composable-only) so the ViewModel can surface localized
@@ -253,14 +256,18 @@ fun UploadScreen(
     )
 
     // Tag editing (catalog + recent + add/remove) reaches the per-row Tags field ambiently, so it
-    // isn't threaded through every review-screen layer; the field reads it from this local.
+    // isn't threaded through every review-screen layer; the field reads it from this local. Habit
+    // category suggestions reach the per-row category picker the same way, so both are provided here.
     val tagEditing = TagEditing(
         catalog = tagCatalog,
         recent = recentTags,
         onAdd = viewModel::addTag,
         onRemove = viewModel::removeTag,
     )
-    CompositionLocalProvider(LocalTagEditing provides tagEditing) {
+    CompositionLocalProvider(
+        LocalTagEditing provides tagEditing,
+        LocalCategorySuggestions provides categorySuggestions,
+    ) {
         UploadScreenContent(
             state = state,
             isEdit = isEdit,
@@ -1292,6 +1299,9 @@ private fun ReviewRow(
                 fromRule = transaction.fromRule,
                 onCategoryChange = onCategoryChange,
                 customActions = customActions,
+                // The item name drives the picker's context-aware suggestion (a learned-rule match
+                // for this item leads the Suggested row with a "because you usually…" reason).
+                contextName = transaction.name,
                 modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.padding(MaterialTheme.dimens.xs))
@@ -1348,6 +1358,7 @@ private fun CategoryField(
     fromRule: Boolean,
     onCategoryChange: (String) -> Unit,
     customActions: CustomCategoryActions = CustomCategoryActions(),
+    contextName: String? = null,
     modifier: Modifier = Modifier,
 ) {
     var showSheet by remember { mutableStateOf(false) }
@@ -1388,6 +1399,7 @@ private fun CategoryField(
             selected = category,
             onSelect = onCategoryChange,
             custom = customActions,
+            contextName = contextName,
             onDismiss = { showSheet = false },
         )
     }

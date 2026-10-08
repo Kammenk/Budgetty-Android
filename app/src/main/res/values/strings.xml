@@ -1214,6 +1214,12 @@
     <string name="category_picker_title">Choose a category</string>
     <string name="action_search">Search</string>
     <string name="cd_selected">Selected</string>
+    <!-- Habit-based category suggestions. New strings ship English-first and are translated via
+         Crowdin; tools:ignore keeps lintDebug green on the interim MissingTranslation gap. -->
+    <string name="category_suggestion_header" tools:ignore="MissingTranslation">Suggested for you</string>
+    <string name="category_suggestion_common" tools:ignore="MissingTranslation">Common picks</string>
+    <string name="category_suggestion_common_hint" tools:ignore="MissingTranslation">These become your own suggestions after a few expenses.</string>
+    <string name="category_suggestion_reason" tools:ignore="MissingTranslation">Because you usually file ‘%1$s’ as %2$s</string>
 
     <!-- Toasts -->
     <string name="toast_backup_exported">Backup exported</string>

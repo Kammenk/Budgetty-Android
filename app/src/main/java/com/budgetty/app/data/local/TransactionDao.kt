@@ -31,6 +31,12 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions")
     suspend fun getAllOnce(): List<TransactionEntity>
 
+    /** The category + timestamp of the most recent transactions, live — the cheap snapshot the
+     *  category picker's habit suggestions are ranked from. Capped so ranking stays bounded in
+     *  memory for power users; the cap is far above the handful of rows ranking needs. */
+    @Query("SELECT category, timestamp FROM transactions ORDER BY timestamp DESC LIMIT 500")
+    fun recentCategoryStamps(): Flow<List<CategoryStamp>>
+
     /** Bulk-recategorizes the given rows (used when propagating a category change by item name). */
     @Query("UPDATE transactions SET category = :category WHERE id IN (:ids)")
     suspend fun updateCategoryForIds(ids: List<Long>, category: String)
@@ -52,3 +58,10 @@ interface TransactionDao {
     @Query("DELETE FROM transactions")
     suspend fun clearAll()
 }
+
+/** A transaction's category and when it happened — the minimal projection the picker's habit
+ *  suggestions are ranked from (see [recentCategoryStamps]). */
+data class CategoryStamp(
+    val category: String,
+    val timestamp: Long,
+)
