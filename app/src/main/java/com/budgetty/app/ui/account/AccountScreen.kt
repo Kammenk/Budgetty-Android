@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Equalizer
 import androidx.compose.material.icons.filled.Language
@@ -149,6 +150,7 @@ fun AccountScreen(
     onOpenTemplates: () -> Unit,
     onOpenWarranties: () -> Unit,
     onOpenTrips: () -> Unit,
+    onOpenImportCsv: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -175,6 +177,7 @@ fun AccountScreen(
         onOpenTemplates = onOpenTemplates,
         onOpenWarranties = onOpenWarranties,
         onOpenTrips = onOpenTrips,
+        onOpenImportCsv = onOpenImportCsv,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -221,6 +224,7 @@ private fun AccountScreenContent(
     onOpenTemplates: () -> Unit,
     onOpenWarranties: () -> Unit,
     onOpenTrips: () -> Unit,
+    onOpenImportCsv: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -318,6 +322,7 @@ private fun AccountScreenContent(
                 onOpenTemplates = onOpenTemplates,
                 onOpenWarranties = onOpenWarranties,
                 onOpenTrips = onOpenTrips,
+                onOpenImportCsv = onOpenImportCsv,
             )
         }
     }
@@ -692,6 +697,7 @@ private fun AccountSectionRows(
     onOpenTemplates: () -> Unit,
     onOpenWarranties: () -> Unit,
     onOpenTrips: () -> Unit,
+    onOpenImportCsv: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -740,6 +746,14 @@ private fun AccountSectionRows(
             null
         },
         onClick = onExportData,
+    )
+    RowDivider()
+    SettingRow(
+        icon = Icons.Filled.FileDownload,
+        title = stringResource(R.string.account_import_csv),
+        subtitle = stringResource(R.string.account_import_csv_sub),
+        trailing = { StatusBadge(stringResource(R.string.account_import_csv_badge)) },
+        onClick = onOpenImportCsv,
     )
     RowDivider()
     SettingRow(Icons.Filled.Widgets, stringResource(R.string.account_widgets)) { onOpenWidgets() }
@@ -1463,6 +1477,7 @@ private fun AccountScreenPreview() {
             onOpenTemplates = {},
             onOpenWarranties = {},
             onOpenTrips = {},
+            onOpenImportCsv = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1508,6 +1523,7 @@ private fun AccountScreenTabletPreview() {
             onOpenTemplates = {},
             onOpenWarranties = {},
             onOpenTrips = {},
+            onOpenImportCsv = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},

@@ -64,6 +64,7 @@ import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.account.AccountScreen
 import com.budgetty.app.ui.warranties.WarrantiesScreen
 import com.budgetty.app.ui.budgets.BudgetEnvelopesScreen
+import com.budgetty.app.ui.csvimport.ImportCsvScreen
 import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
@@ -497,6 +498,7 @@ private fun BudgettyNavHost(
                 onOpenTemplates = { navController.navigate(Routes.TEMPLATES) },
                 onOpenWarranties = { navController.navigate(Routes.WARRANTIES) },
                 onOpenTrips = { navController.navigate(Routes.TRIPS) },
+                onOpenImportCsv = { navController.navigate(Routes.IMPORT_CSV) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
         }
@@ -627,6 +629,17 @@ private fun BudgettyNavHost(
             TripsScreen(
                 onNavigateBack = { navController.popBackStack() },
                 onOpenHistory = { tag -> navController.navigate(Routes.historyWithTag(tag)) },
+            )
+        }
+        composable(Routes.IMPORT_CSV) {
+            ImportCsvScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToHistory = {
+                    navController.navigate(Routes.HISTORY) {
+                        popUpTo(Routes.ACCOUNT) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                },
             )
         }
         composable(Routes.BUYING_LIMITS) {

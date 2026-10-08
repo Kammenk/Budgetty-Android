@@ -398,6 +398,56 @@
     <string name="account_export_file">Export CSV or PDF</string>
     <string name="account_export_file_sub">Spreadsheet or statement, for people</string>
     <string name="account_export_file_locked">Unlock export with Premium</string>
+    <!-- CSV import -->
+    <string name="account_import_csv" tools:ignore="MissingTranslation">Import from CSV</string>
+    <string name="account_import_csv_sub" tools:ignore="MissingTranslation">From a bank or another app</string>
+    <string name="account_import_csv_badge" tools:ignore="MissingTranslation">New</string>
+    <string name="import_csv_title" tools:ignore="MissingTranslation">Import CSV</string>
+    <string name="import_step" tools:ignore="MissingTranslation">Step %1$d of 4</string>
+    <string name="import_choose_file" tools:ignore="MissingTranslation">Choose a file</string>
+    <string name="import_choose_another" tools:ignore="MissingTranslation">Choose another file</string>
+    <string name="import_pick_hint" tools:ignore="MissingTranslation">Opens the Android file picker. Works with exports from most banks and budgeting apps.</string>
+    <string name="import_file_summary" tools:ignore="MissingTranslation">%1$d rows · %2$d columns</string>
+    <string name="import_error_read" tools:ignore="MissingTranslation">Couldn’t read that file. Try another.</string>
+    <string name="import_error_empty" tools:ignore="MissingTranslation">That file has no rows to import.</string>
+    <string name="import_cta_map" tools:ignore="MissingTranslation">Map columns</string>
+    <string name="import_map_title" tools:ignore="MissingTranslation">Map columns</string>
+    <string name="import_map_hint" tools:ignore="MissingTranslation">We guessed from the headers. Tap a field to change it.</string>
+    <string name="import_field_date" tools:ignore="MissingTranslation">Date</string>
+    <string name="import_field_amount" tools:ignore="MissingTranslation">Amount</string>
+    <string name="import_field_store" tools:ignore="MissingTranslation">Store</string>
+    <string name="import_field_category" tools:ignore="MissingTranslation">Category</string>
+    <string name="import_field_ignore" tools:ignore="MissingTranslation">Ignore</string>
+    <string name="import_map_missing" tools:ignore="MissingTranslation">%1$s must be mapped to continue.</string>
+    <string name="import_map_duplicate" tools:ignore="MissingTranslation">%1$s is mapped twice; only one column can feed it.</string>
+    <string name="import_preview_count" tools:ignore="MissingTranslation">first %1$d of %2$d</string>
+    <string name="import_cta_review" tools:ignore="MissingTranslation">Review</string>
+    <string name="import_review_title" tools:ignore="MissingTranslation">Review</string>
+    <string name="import_date_format" tools:ignore="MissingTranslation">Date format</string>
+    <string name="import_date_dmy" tools:ignore="MissingTranslation">DD/MM/YYYY</string>
+    <string name="import_date_mdy" tools:ignore="MissingTranslation">MM/DD/YYYY</string>
+    <string name="import_date_iso" tools:ignore="MissingTranslation">YYYY-MM-DD</string>
+    <string name="import_amounts" tools:ignore="MissingTranslation">Amounts</string>
+    <string name="import_sign_minus_expense" tools:ignore="MissingTranslation">− is an expense</string>
+    <string name="import_sign_minus_income" tools:ignore="MissingTranslation">− is income</string>
+    <string name="import_skip_dupes_title" tools:ignore="MissingTranslation">Skip likely duplicates</string>
+    <string name="import_skip_dupes_sub" tools:ignore="MissingTranslation">Same date, amount and store as something already in Budgetty</string>
+    <string name="import_ready" tools:ignore="MissingTranslation">Ready to import</string>
+    <string name="import_dupes_skipped" tools:ignore="MissingTranslation">Likely duplicates · skipped</string>
+    <string name="import_income_skipped" tools:ignore="MissingTranslation">Income rows · not imported</string>
+    <string name="import_invalid_skipped" tools:ignore="MissingTranslation">Couldn’t read · skipped</string>
+    <string name="import_filed_other" tools:ignore="MissingTranslation">Filed as Other</string>
+    <string name="import_income_note" tools:ignore="MissingTranslation">Budgetty tracks income as recurring, so income rows are counted but not imported.</string>
+    <string name="import_cta_import" tools:ignore="MissingTranslation">Import %1$d</string>
+    <string name="import_done_title" tools:ignore="MissingTranslation">%1$d imported</string>
+    <string name="import_done_sub" tools:ignore="MissingTranslation">%1$d skipped</string>
+    <string name="import_summary_range" tools:ignore="MissingTranslation">Date range</string>
+    <string name="import_summary_expenses" tools:ignore="MissingTranslation">Expenses</string>
+    <string name="import_summary_income" tools:ignore="MissingTranslation">Income (not imported)</string>
+    <string name="import_summary_other" tools:ignore="MissingTranslation">Filed as Other</string>
+    <string name="import_done_note" tools:ignore="MissingTranslation">Imported rows appear in History, Insights and Budget.</string>
+    <string name="import_undo" tools:ignore="MissingTranslation">Undo this import</string>
+    <string name="import_view_history" tools:ignore="MissingTranslation">View in History</string>
     <string name="export_title">Export</string>
     <string name="export_subtitle">A spreadsheet to work with, or a statement to send.</string>
     <string name="export_format">Format</string>
