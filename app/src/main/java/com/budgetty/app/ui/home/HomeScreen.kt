@@ -102,7 +102,10 @@ import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeCard
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.templates.AddSheetTemplateStrip
+import com.budgetty.app.ui.components.AmountMaskPill
 import com.budgetty.app.ui.components.Avatar
+import com.budgetty.app.ui.components.HideAmountsEye
+import com.budgetty.app.ui.components.MoneyText
 import com.budgetty.app.ui.components.PieSlice
 import com.budgetty.app.ui.components.PlannedSwatch
 import com.budgetty.app.ui.components.ReceiptDetailSheet
@@ -111,6 +114,7 @@ import com.budgetty.app.ui.components.SectionsMenu
 import com.budgetty.app.ui.components.StoreLogo
 import com.budgetty.app.ui.components.TransactionRow
 import com.budgetty.app.ui.components.resolveSectionOrder
+import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
 import com.budgetty.app.ui.util.budgetColor
 import com.budgetty.app.ui.util.budgetRatio
@@ -410,6 +414,7 @@ private fun PhoneHomeContent(
                         .weight(1f)
                         .padding(start = MaterialTheme.dimens.xs),
                 )
+                HideAmountsEye()
                 SectionsMenu(
                     sections = HomeSection.entries,
                     order = sectionOrder,
@@ -567,6 +572,7 @@ private fun TabletHomeContent(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.xs),
                     )
+                    HideAmountsEye()
                     HomePeriodFilter(selected = state.filter, onSelected = onFilterSelected)
                 }
             }
@@ -759,6 +765,7 @@ private fun WideHomeHeader(
             modifier = Modifier.weight(1f),
         )
         HomePeriodFilter(selected = filter, onSelected = onFilterSelected)
+        HideAmountsEye()
         Spacer(Modifier.width(MaterialTheme.dimens.md))
         Avatar(
             initials = initials,
@@ -914,15 +921,22 @@ private fun TabletSummaryCard(state: HomeUiState, modifier: Modifier = Modifier)
                 verticalAlignment = Alignment.Bottom,
             ) {
                 if (state.isLoaded) {
-                    Text(
-                        text = state.total.formatMoney(),
-                        style = MaterialTheme.typography.displaySmall,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                        softWrap = false,
-                        overflow = TextOverflow.Clip,
-                        modifier = Modifier.weight(1f).basicMarquee(),
-                    )
+                    if (AppFormats.hideAmounts) {
+                        AmountMaskPill(
+                            style = MaterialTheme.typography.displaySmall,
+                            modifier = Modifier.weight(1f),
+                        )
+                    } else {
+                        Text(
+                            text = state.total.formatMoney(),
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            softWrap = false,
+                            overflow = TextOverflow.Clip,
+                            modifier = Modifier.weight(1f).basicMarquee(),
+                        )
+                    }
                 } else {
                     SkeletonBar(
                         width = 150.dp,
@@ -937,15 +951,19 @@ private fun TabletSummaryCard(state: HomeUiState, modifier: Modifier = Modifier)
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
-                        Text(
-                            text = (state.total + state.monthlyBills).formatMoney(),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                            maxLines = 1,
-                            softWrap = false,
-                            overflow = TextOverflow.Clip,
-                            modifier = Modifier.widthIn(max = 220.dp).basicMarquee(),
-                        )
+                        if (AppFormats.hideAmounts) {
+                            AmountMaskPill(style = MaterialTheme.typography.titleLarge)
+                        } else {
+                            Text(
+                                text = (state.total + state.monthlyBills).formatMoney(),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                softWrap = false,
+                                overflow = TextOverflow.Clip,
+                                modifier = Modifier.widthIn(max = 220.dp).basicMarquee(),
+                            )
+                        }
                     }
                 }
             }
@@ -976,6 +994,7 @@ private fun TabletSummaryCard(state: HomeUiState, modifier: Modifier = Modifier)
                 StatPill(
                     label = stringResource(R.string.home_daily_avg),
                     value = state.dailyAvg.formatMoney(),
+                    isAmount = true,
                 )
             }
         }
@@ -989,6 +1008,7 @@ private fun StatPill(
     value: String,
     modifier: Modifier = Modifier,
     valueColor: Color = MaterialTheme.colorScheme.onSurface,
+    isAmount: Boolean = false,
 ) {
     Column(
         modifier = modifier
@@ -1001,12 +1021,22 @@ private fun StatPill(
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = valueColor,
-        )
+        // Money pills under Hide-amounts; a non-money stat (a count, a %) always stays readable.
+        if (isAmount) {
+            MoneyText(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = valueColor,
+            )
+        } else {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = valueColor,
+            )
+        }
     }
 }
 
@@ -1122,8 +1152,8 @@ private fun HomeCategoryRow(slice: PieSlice, total: BigDecimal) {
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
-            Text(
-                text = slice.value.formatMoney(),
+            MoneyText(
+                amount = slice.value,
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
             )
@@ -1389,16 +1419,23 @@ internal fun SafeToSpendCard(
                 SkeletonBar(width = 160.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
             } else {
                 // Spent-first hero: the money already out this cycle, in neutral onSurface.
-                Text(
-                    text = totalSpent.formatMoney(),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Clip,
-                    modifier = Modifier.fillMaxWidth().basicMarquee(),
-                )
+                if (AppFormats.hideAmounts) {
+                    AmountMaskPill(
+                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                } else {
+                    Text(
+                        text = totalSpent.formatMoney(),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.fillMaxWidth().basicMarquee(),
+                    )
+                }
                 // Composition sub-line: split total into spend + paid bills when a bill's been paid
                 // (that's the confusing case), else the receipt count, else the zero state.
                 val composition = when {
@@ -1544,16 +1581,23 @@ private fun SafeToSpendStat(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Text(
-            text = amount.formatMoney(),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = amountColor,
-            maxLines = 1,
-            softWrap = false,
-            overflow = TextOverflow.Clip,
-            modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.xs).basicMarquee(),
-        )
+        if (AppFormats.hideAmounts) {
+            AmountMaskPill(
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.xs),
+            )
+        } else {
+            Text(
+                text = amount.formatMoney(),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = amountColor,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Clip,
+                modifier = Modifier.fillMaxWidth().padding(top = MaterialTheme.dimens.xs).basicMarquee(),
+            )
+        }
         if (sub != null) {
             // Up to two lines so the per-day runway ("€29/day for the next 15 days") isn't clipped in
             // the narrow half-width column; the bills-count sub stays a single line.
@@ -1680,15 +1724,22 @@ private fun SummaryCard(
             }
             Spacer(Modifier.height(MaterialTheme.dimens.sm))
             if (state.isLoaded) {
-                Text(
-                    text = state.total.formatMoney(),
-                    style = MaterialTheme.typography.displaySmall,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Clip,
-                    modifier = Modifier.fillMaxWidth().basicMarquee(),
-                )
+                if (AppFormats.hideAmounts) {
+                    AmountMaskPill(
+                        style = MaterialTheme.typography.displaySmall,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                } else {
+                    Text(
+                        text = state.total.formatMoney(),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.fillMaxWidth().basicMarquee(),
+                    )
+                }
             } else {
                 SkeletonBar(width = 150.dp, height = 40.dp, modifier = Modifier.padding(vertical = 2.dp))
             }
@@ -1823,16 +1874,24 @@ private fun BillsBreakdown(
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                 )
-                Text(
-                    text = combined.formatMoney(),
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.End,
-                    maxLines = 1,
-                    softWrap = false,
-                    overflow = TextOverflow.Clip,
-                    modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.md).basicMarquee(),
-                )
+                if (AppFormats.hideAmounts) {
+                    AmountMaskPill(
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.md),
+                        alignEnd = true,
+                    )
+                } else {
+                    Text(
+                        text = combined.formatMoney(),
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.End,
+                        maxLines = 1,
+                        softWrap = false,
+                        overflow = TextOverflow.Clip,
+                        modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.md).basicMarquee(),
+                    )
+                }
             }
         }
     }
@@ -1858,17 +1917,25 @@ private fun LegendMoneyRow(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        Text(
-            text = amount.formatMoney(),
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.End,
-            maxLines = 1,
-            softWrap = false,
-            overflow = TextOverflow.Clip,
-            modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.sm).basicMarquee(),
-        )
+        if (AppFormats.hideAmounts) {
+            AmountMaskPill(
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.sm),
+                alignEnd = true,
+            )
+        } else {
+            Text(
+                text = amount.formatMoney(),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.End,
+                maxLines = 1,
+                softWrap = false,
+                overflow = TextOverflow.Clip,
+                modifier = Modifier.weight(1f).padding(start = MaterialTheme.dimens.sm).basicMarquee(),
+            )
+        }
     }
 }
 
@@ -1957,13 +2024,13 @@ private fun ReceiptRowBody(
         }
         Spacer(Modifier.width(MaterialTheme.dimens.sm))
         Column(horizontalAlignment = Alignment.End) {
-            Text(
-                text = receipt.paid.formatMoney(),
+            MoneyText(
+                amount = receipt.paid,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
             )
             if (receipt.discount.signum() > 0) {
-                Text(
+                MoneyText(
                     text = "−${receipt.discount.formatMoney()}",
                     style = MaterialTheme.typography.bodySmall,
                     color = budgetGoodColor(),
@@ -2064,7 +2131,7 @@ private fun BudgetProgressCard(
                     fontWeight = FontWeight.SemiBold,
                 )
                 if (state.isLoaded) {
-                    Text(
+                    MoneyText(
                         text = if (hasBudget) "${spent.formatMoney()} / ${budget!!.formatMoney()}"
                         else BigDecimal.ZERO.formatMoney(),
                         style = MaterialTheme.typography.bodyMedium,

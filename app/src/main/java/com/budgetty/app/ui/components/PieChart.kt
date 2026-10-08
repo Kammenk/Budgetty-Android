@@ -495,8 +495,8 @@ fun PieChart(
                     overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Center,
                 )
-                Text(
-                    text = (selected?.value ?: total).formatMoney(),
+                MoneyText(
+                    amount = selected?.value ?: total,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -668,8 +668,8 @@ private fun CategoryBreakdownRow(
                     modifier = Modifier.weight(1f).alignByBaseline(),
                 )
                 Spacer(Modifier.width(8.dp))
-                Text(
-                    text = slice.value.formatMoney(),
+                MoneyText(
+                    amount = slice.value,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.alignByBaseline(),
@@ -848,11 +848,9 @@ private fun SliceRow(
                     modifier = Modifier.alignByBaseline(),
                 )
                 Spacer(Modifier.width(5.dp))
-                Text(
-                    text = slice.value.formatMoney(),
-                    style = LEGEND_TIGHT,
-                    fontSize = 10.5.sp,
-                    lineHeight = 13.sp,
+                MoneyText(
+                    amount = slice.value,
+                    style = LEGEND_TIGHT.copy(fontSize = 10.5.sp, lineHeight = 13.sp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.alignByBaseline(),
                 )

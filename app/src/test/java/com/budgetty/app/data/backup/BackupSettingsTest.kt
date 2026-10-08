@@ -31,6 +31,8 @@ class BackupSettingsTest {
             customInsightsSections = listOf("breakdown", "top_categories"),
             recapEnabled = false,
             recapFrequency = "MONTHLY",
+            hideAmounts = true,
+            hideAmountsOnBackground = true,
         )
         val restored = gson.fromJson(gson.toJson(BackupData(settings = settings)), BackupData::class.java)
         assertThat(restored.settings).isEqualTo(settings)
@@ -56,6 +58,8 @@ class BackupSettingsTest {
             "hiddenHomeSections", "hiddenInsightsSections", "homeSectionOrder", "insightsSectionOrder",
             "customInsightsSections",
             "recapEnabled", "recapFrequency",
+            // Display prefs — safe to travel with a backup (not security/consent/transient).
+            "hideAmounts", "hideAmountsOnBackground",
         )
         val actual = BackupSettings::class.java.declaredFields
             .map { it.name }

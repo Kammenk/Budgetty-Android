@@ -73,6 +73,7 @@ import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.savings.SavingsGoalCardUi
 import com.budgetty.app.ui.savings.SavingsGoalEditSheet
 import com.budgetty.app.ui.savings.SavingsSection
+import com.budgetty.app.ui.components.MoneyText
 import com.budgetty.app.ui.components.SegmentedToggle
 import com.budgetty.app.ui.streaks.Streak
 import com.budgetty.app.ui.streaks.StreakMotif
@@ -1540,7 +1541,7 @@ private fun MoneyRow(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Text(
+        MoneyText(
             text = amount,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.SemiBold,
@@ -1789,8 +1790,8 @@ private fun BreakdownCard(monthlyIncome: BigDecimal, monthlyBills: BigDecimal, s
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
                 )
-                Text(
-                    text = left.formatMoney(),
+                MoneyText(
+                    amount = left,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (left.signum() >= 0) budgetGoodColor() else budgetBadColor(),

@@ -110,8 +110,8 @@ fun TransactionLineRow(
                 overflow = TextOverflow.Ellipsis,
             )
         }
-        Text(
-            text = lineTotal.formatMoney(),
+        MoneyText(
+            amount = lineTotal,
             style = amountStyle,
             fontWeight = FontWeight.SemiBold,
         )

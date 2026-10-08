@@ -18,6 +18,7 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,6 +80,9 @@ class MainActivity : ComponentActivity() {
             DebugAuth.skipAuth = true
         }
         startRoute.value = startRouteFor(intent)
+        // Seed the amount-mask before the first composition so a user who keeps amounts hidden never
+        // flashes real figures on cold start (the snapshot state defaults to visible otherwise).
+        AppFormats.hideAmounts = settingsStore.settings.value.hideAmounts
         enableEdgeToEdge()
         setContent {
             val settings by settingsStore.settings.collectAsStateWithLifecycle()
@@ -86,6 +90,11 @@ class MainActivity : ComponentActivity() {
             AppFormats.currencySymbol = settings.currency.symbol
             AppFormats.datePattern = settings.dateFormat.pattern
             AppFormats.dayMonthPattern = settings.dateFormat.dayMonthPattern
+            // hideAmounts is Compose snapshot state (so every amount re-masks reactively when it flips).
+            // Synced in a SideEffect rather than inline so we don't write snapshot state during
+            // composition; the cold-start value is seeded in onCreate before setContent, so a user who
+            // keeps amounts hidden never sees a first-frame flash of real figures.
+            SideEffect { AppFormats.hideAmounts = settings.hideAmounts }
 
             // Re-create the activity when the language changes so attachBaseContext re-applies the
             // new locale and every string/resource re-resolves. The captured initial value resets
@@ -178,6 +187,21 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         // Resume an interrupted IMMEDIATE update and surface any FLEXIBLE download that finished.
         inAppUpdateManager.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // "Hide amounts → Hide when I leave the app": re-arm the mask on background so a returning
+        // glance (or whoever picks up the phone next) never catches figures still showing. The eye
+        // on Home/History/Insights/Budget reveals them again. No-op when already hidden or opted out.
+        val s = settingsStore.settings.value
+        if (s.hideAmountsOnBackground && !s.hideAmounts) {
+            settingsStore.setHideAmounts(true)
+            // Also flip the snapshot flag now (not only via the composition SideEffect, which runs after
+            // the next recomposition) so the first frame on resume is already masked — no flash of real
+            // figures before the settings flow re-collects.
+            AppFormats.hideAmounts = true
+        }
     }
 
     override fun onDestroy() {

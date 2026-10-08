@@ -140,6 +140,17 @@
     <string name="account_language">Language</string>
     <string name="section_support">Support &amp; About</string>
     <string name="section_security">Security</string>
+    <!-- Hide amounts (privacy blur). New strings ship English-first and are translated via Crowdin;
+         tools:ignore keeps lintDebug green on the interim MissingTranslation gap until that sync lands. -->
+    <string name="section_privacy" tools:ignore="MissingTranslation">Privacy</string>
+    <string name="account_hide_amounts" tools:ignore="MissingTranslation">Hide amounts</string>
+    <string name="account_hide_amounts_sub" tools:ignore="MissingTranslation">Blur every money value. Also on the eye in the top bar.</string>
+    <string name="account_hide_amounts_bg" tools:ignore="MissingTranslation">Hide when I leave the app</string>
+    <string name="account_hide_amounts_bg_sub" tools:ignore="MissingTranslation">Amounts start hidden each time you come back.</string>
+    <string name="account_hide_amounts_footnote" tools:ignore="MissingTranslation">Labels, categories and charts stay readable. Only the numbers are covered.</string>
+    <string name="amount_hidden" tools:ignore="MissingTranslation">Amount hidden</string>
+    <string name="action_hide_amounts" tools:ignore="MissingTranslation">Hide amounts</string>
+    <string name="action_show_amounts" tools:ignore="MissingTranslation">Show amounts</string>
 
     <!-- App lock (PIN + biometric) -->
     <string name="account_app_lock">App lock</string>

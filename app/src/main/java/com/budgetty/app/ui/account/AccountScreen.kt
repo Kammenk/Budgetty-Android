@@ -60,6 +60,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Upload
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Widgets
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
@@ -189,6 +190,8 @@ fun AccountScreen(
         onSetLanguage = { accountViewModel.setLanguage(it) },
         onSetCrashReporting = accountViewModel::setCrashReporting,
         onSetAnalytics = accountViewModel::setAnalytics,
+        onSetHideAmounts = accountViewModel::setHideAmounts,
+        onSetHideAmountsOnBackground = accountViewModel::setHideAmountsOnBackground,
         onBuildBackupJson = { accountViewModel.buildBackupJson() },
         onImportBackup = { json, replace, onResult -> accountViewModel.importBackup(json, replace, onResult) },
         onDeleteAccount = { onResult -> accountViewModel.deleteAccount(onResult) },
@@ -233,6 +236,8 @@ private fun AccountScreenContent(
     onSetLanguage: (Language) -> Unit,
     onSetCrashReporting: (Boolean) -> Unit,
     onSetAnalytics: (Boolean) -> Unit,
+    onSetHideAmounts: (Boolean) -> Unit,
+    onSetHideAmountsOnBackground: (Boolean) -> Unit,
     onBuildBackupJson: suspend () -> String,
     onImportBackup: (String, Boolean, (Boolean) -> Unit) -> Unit,
     onDeleteAccount: ((DeleteAccountResult) -> Unit) -> Unit,
@@ -364,6 +369,26 @@ private fun AccountScreenContent(
             )
         }
     }
+    val privacySection: @Composable () -> Unit = {
+        AccountCard {
+            PrivacySectionRows(
+                hideAmounts = settings.hideAmounts,
+                hideAmountsOnBackground = settings.hideAmountsOnBackground,
+                onSetHideAmounts = onSetHideAmounts,
+                onSetHideAmountsOnBackground = onSetHideAmountsOnBackground,
+            )
+        }
+        Text(
+            text = stringResource(R.string.account_hide_amounts_footnote),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                start = MaterialTheme.dimens.sm,
+                end = MaterialTheme.dimens.sm,
+                top = MaterialTheme.dimens.sm,
+            ),
+        )
+    }
     val supportSection: @Composable () -> Unit = {
         AccountCard {
             SupportSectionRows(
@@ -466,6 +491,7 @@ private fun AccountScreenContent(
                             AccountSection.PREFERENCES -> preferencesSection()
                             AccountSection.RECAP -> recapSection()
                             AccountSection.SECURITY -> securitySection()
+                            AccountSection.PRIVACY -> privacySection()
                             AccountSection.SUPPORT -> supportSection()
                         }
                     }
@@ -493,6 +519,9 @@ private fun AccountScreenContent(
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_security))
                 securitySection()
+                Spacer(Modifier.height(MaterialTheme.dimens.xxl))
+                SectionHeader(stringResource(R.string.section_privacy))
+                privacySection()
                 Spacer(Modifier.height(MaterialTheme.dimens.xxl))
                 SectionHeader(stringResource(R.string.section_support))
                 supportSection()
@@ -956,6 +985,71 @@ private fun autoLockLabel(minutes: Int): Int = when (minutes) {
 }
 
 /**
+ * Rows of the "Privacy" group. The master switch turns the app-wide amount mask on/off — the same
+ * preference the Home/History/Insights/Budget app-bar eye flips. The auto-hide sub-row stays visible
+ * whatever the mask state, because its whole point is to re-hide amounts the next time the app is
+ * reopened even when they're shown right now. Free feature — no gating.
+ */
+@Composable
+private fun PrivacySectionRows(
+    hideAmounts: Boolean,
+    hideAmountsOnBackground: Boolean,
+    onSetHideAmounts: (Boolean) -> Unit,
+    onSetHideAmountsOnBackground: (Boolean) -> Unit,
+) {
+    SettingRow(
+        icon = Icons.Filled.VisibilityOff,
+        title = stringResource(R.string.account_hide_amounts),
+        subtitle = stringResource(R.string.account_hide_amounts_sub),
+        trailing = { Switch(checked = hideAmounts, onCheckedChange = null) },
+        onClick = { onSetHideAmounts(!hideAmounts) },
+    )
+    RowDivider()
+    ToggleSubRow(
+        title = stringResource(R.string.account_hide_amounts_bg),
+        subtitle = stringResource(R.string.account_hide_amounts_bg_sub),
+        checked = hideAmountsOnBackground,
+        onToggle = { onSetHideAmountsOnBackground(!hideAmountsOnBackground) },
+    )
+}
+
+/** An indented toggle sub-row (no leading icon) aligned under a parent [SettingRow]'s title. */
+@Composable
+private fun ToggleSubRow(title: String, subtitle: String?, checked: Boolean, onToggle: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onToggle)
+            .padding(
+                start = 60.dp,
+                end = MaterialTheme.dimens.xl,
+                top = MaterialTheme.dimens.lg,
+                bottom = MaterialTheme.dimens.lg,
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            if (subtitle != null) {
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
+        }
+        Switch(checked = checked, onCheckedChange = null)
+        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+    }
+}
+
+/**
  * Profile card: avatar, display name, signed-in email. The pencil turns the name into an inline
  * editable field (no separate screen) with X (discard) / ✓ (save) actions.
  */
@@ -1086,6 +1180,7 @@ private enum class AccountSection(val titleRes: Int, val icon: ImageVector) {
     PREFERENCES(R.string.section_preferences, Icons.Filled.Palette),
     RECAP(R.string.section_recap, Icons.Filled.EventAvailable),
     SECURITY(R.string.section_security, Icons.Filled.Lock),
+    PRIVACY(R.string.section_privacy, Icons.Filled.VisibilityOff),
     SUPPORT(R.string.section_support, Icons.AutoMirrored.Filled.HelpOutline),
 }
 
@@ -1383,6 +1478,8 @@ private fun AccountScreenPreview() {
             onSetLanguage = {},
             onSetCrashReporting = {},
             onSetAnalytics = {},
+            onSetHideAmounts = {},
+            onSetHideAmountsOnBackground = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},
@@ -1426,6 +1523,8 @@ private fun AccountScreenTabletPreview() {
             onSetLanguage = {},
             onSetCrashReporting = {},
             onSetAnalytics = {},
+            onSetHideAmounts = {},
+            onSetHideAmountsOnBackground = {},
             onBuildBackupJson = { "" },
             onImportBackup = { _, _, _ -> },
             onDeleteAccount = {},

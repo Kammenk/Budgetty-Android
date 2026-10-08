@@ -46,6 +46,8 @@ class SettingsStore(context: Context) {
         pinHash = prefs.getString(KEY_PIN_HASH, "").orEmpty(),
         biometricEnabled = prefs.getBoolean(KEY_BIOMETRIC, false),
         autoLockMinutes = prefs.getInt(KEY_AUTO_LOCK, 1),
+        hideAmounts = prefs.getBoolean(KEY_HIDE_AMOUNTS, false),
+        hideAmountsOnBackground = prefs.getBoolean(KEY_HIDE_AMOUNTS_BG, false),
         dismissedWellbeingTips = prefs.getStringSet(KEY_DISMISSED_TIPS, emptySet()).orEmpty().toSet(),
         dismissedLimitSuggestions = prefs.getStringSet(KEY_DISMISSED_LIMIT_SUGGESTIONS, emptySet()).orEmpty().toSet(),
         dismissedInsightsSetup = prefs.getStringSet(KEY_DISMISSED_INSIGHTS_SETUP, emptySet()).orEmpty().toSet(),
@@ -240,6 +242,19 @@ class SettingsStore(context: Context) {
         prefs.edit().remove(KEY_PIN_HASH).putBoolean(KEY_APP_LOCK, false).putBoolean(KEY_BIOMETRIC, false).apply()
         _settings.update { it.copy(appLockEnabled = false, pinHash = "", biometricEnabled = false) }
     }
+
+    // ── Hide amounts (privacy) ──
+
+    /** Turns the app-wide amount mask on/off. The Home app-bar eye and the Account switch share this. */
+    fun setHideAmounts(value: Boolean) =
+        save(KEY_HIDE_AMOUNTS, value) { it.copy(hideAmounts = value) }
+
+    /** Flips the amount mask from its current state (the Home app-bar eye button). */
+    fun toggleHideAmounts() = setHideAmounts(!_settings.value.hideAmounts)
+
+    /** Toggles the optional auto-hide: when on, amounts re-hide whenever the app is backgrounded. */
+    fun setHideAmountsOnBackground(value: Boolean) =
+        save(KEY_HIDE_AMOUNTS_BG, value) { it.copy(hideAmountsOnBackground = value) }
 
     /** Records [query] as the most-recent History search, de-duplicated and capped. */
     fun addRecentSearch(query: String) {
@@ -456,6 +471,8 @@ class SettingsStore(context: Context) {
         const val KEY_PIN_HASH = "app_lock_pin_hash"
         const val KEY_BIOMETRIC = "app_lock_biometric"
         const val KEY_AUTO_LOCK = "app_lock_auto_minutes"
+        const val KEY_HIDE_AMOUNTS = "hide_amounts"
+        const val KEY_HIDE_AMOUNTS_BG = "hide_amounts_on_background"
         const val KEY_PERIOD_UNIT_INSIGHTS = "insights_period_unit"
         const val KEY_INCLUDE_RECURRING_BILLS = "insights_include_recurring_bills"
         const val KEY_NWS_COUNT_LEFTOVER = "nws_count_leftover_as_savings"

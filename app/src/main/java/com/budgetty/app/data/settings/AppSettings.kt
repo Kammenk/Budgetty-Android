@@ -182,6 +182,20 @@ data class AppSettings(
     val biometricEnabled: Boolean = false,
     /** Idle minutes before re-locking on resume; 0 = immediately. Cold start always locks. */
     val autoLockMinutes: Int = 1,
+    // ── Hide amounts (privacy) ──
+    /**
+     * When true, every monetary value app-wide renders as a privacy pill instead of the number, so the
+     * app can be opened in public without flashing finances. Labels, categories, bars and chart shapes
+     * stay readable — only the figures are masked. A display preference (device-global, like theme):
+     * toggled from the Home app-bar eye and the Account → Privacy switch, and round-tripped by backup.
+     */
+    val hideAmounts: Boolean = false,
+    /**
+     * When true, amounts start hidden again every time the app returns from the background ([hideAmounts]
+     * is forced on in onStop). Off by default; the optional auto-hide sub-option under the Hide-amounts
+     * switch. Independent of the app-lock gate.
+     */
+    val hideAmountsOnBackground: Boolean = false,
     /**
      * Wellbeing tips the user has dismissed, each stored as "periodId|tipId" so a dismissal is scoped
      * to its pay-cycle month — the tip resurfaces next month if it still qualifies. The only new
