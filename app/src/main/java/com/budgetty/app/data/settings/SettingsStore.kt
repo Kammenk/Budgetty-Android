@@ -37,6 +37,8 @@ class SettingsStore(context: Context) {
         insightsOverlayNudgeDismissed = prefs.getBoolean(KEY_OVERLAY_NUDGE_DISMISSED, false),
         monthStartDay = prefs.getInt(KEY_MONTH_START_DAY, 1).coerceIn(1, 31),
         budgetRolloverEnabled = prefs.getBoolean(KEY_BUDGET_ROLLOVER, false),
+        budgetCadence = prefs.getString(KEY_BUDGET_CADENCE, "").orEmpty(),
+        fortnightAnchorEpochDay = prefs.getLong(KEY_FORTNIGHT_ANCHOR, 0L),
         historySort = prefs.getString(KEY_HISTORY_SORT, "NEWEST") ?: "NEWEST",
         recentSearches = prefs.getString(KEY_RECENT_SEARCHES, null).toLines(),
         crashReportingEnabled = prefs.getBoolean(KEY_CRASH_REPORTING, false),
@@ -187,6 +189,16 @@ class SettingsStore(context: Context) {
         val day = value.coerceIn(1, 31)
         prefs.edit().putInt(KEY_MONTH_START_DAY, day).apply()
         _settings.update { it.copy(monthStartDay = day) }
+    }
+
+    /** Persists the governing budget cadence (a [com.budgetty.app.ui.util.BudgetCadence] name). */
+    fun setBudgetCadence(name: String) =
+        saveString(KEY_BUDGET_CADENCE, name) { it.copy(budgetCadence = name) }
+
+    /** Pins the reference pay day (epoch day) that fortnights are counted from. */
+    fun setFortnightAnchor(epochDay: Long) {
+        prefs.edit().putLong(KEY_FORTNIGHT_ANCHOR, epochDay).apply()
+        _settings.update { it.copy(fortnightAnchorEpochDay = epochDay) }
     }
 
     /** Persists the crash-reporting opt-out. Applying it to the Crashlytics SDK is the caller's job. */
@@ -479,6 +491,8 @@ class SettingsStore(context: Context) {
         const val KEY_OVERLAY_NUDGE_DISMISSED = "insights_overlay_nudge_dismissed"
         const val KEY_MONTH_START_DAY = "month_start_day"
         const val KEY_BUDGET_ROLLOVER = "budget_rollover_enabled"
+        const val KEY_BUDGET_CADENCE = "budget_cadence"
+        const val KEY_FORTNIGHT_ANCHOR = "fortnight_anchor_epoch_day"
         const val KEY_HISTORY_SORT = "history_sort"
         const val KEY_RECENT_SEARCHES = "recent_searches"
         const val KEY_CRASH_REPORTING = "crash_reporting_enabled"

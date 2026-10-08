@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +33,8 @@ fun SegmentedToggle(
     selectedIndex: Int,
     onSelect: (Int) -> Unit,
     modifier: Modifier = Modifier,
+    badgeIndex: Int? = null,
+    badgeText: String? = null,
 ) {
     Row(
         modifier = modifier
@@ -42,6 +46,14 @@ fun SegmentedToggle(
     ) {
         options.forEachIndexed { index, label ->
             val selected = index == selectedIndex
+            val labelText = @Composable {
+                Text(
+                    text = label,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                    color = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -51,12 +63,32 @@ fun SegmentedToggle(
                     .padding(vertical = MaterialTheme.dimens.sm),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-                    color = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                if (badgeText != null) {
+                    // A "New"-style pill sits in a reserved strip above the label; every segment reserves
+                    // the strip so the labels stay vertically aligned, and only [badgeIndex] draws the pill.
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
+                    ) {
+                        Box(modifier = Modifier.height(16.dp), contentAlignment = Alignment.Center) {
+                            if (index == badgeIndex) {
+                                Text(
+                                    text = badgeText,
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(50))
+                                        .background(MaterialTheme.colorScheme.primary)
+                                        .padding(horizontal = 6.dp, vertical = 1.dp),
+                                )
+                            }
+                        }
+                        labelText()
+                    }
+                } else {
+                    labelText()
+                }
             }
         }
     }
