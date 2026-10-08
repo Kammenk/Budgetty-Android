@@ -54,6 +54,7 @@ import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.Share
@@ -144,6 +145,7 @@ fun AccountScreen(
     onOpenTags: () -> Unit,
     onOpenPlanners: () -> Unit,
     onOpenTemplates: () -> Unit,
+    onOpenWarranties: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -168,6 +170,7 @@ fun AccountScreen(
         onOpenTags = onOpenTags,
         onOpenPlanners = onOpenPlanners,
         onOpenTemplates = onOpenTemplates,
+        onOpenWarranties = onOpenWarranties,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -192,9 +195,8 @@ fun AccountScreen(
 
 // The whole Account screen host: profile + every settings group + all their sheets. Its size/params/
 // branching are the aggregate of those sections, not deep logic, so the structural rules are suppressed
-// (the baseline made the same call before the Tags and Planners rows' params were added).
-// (the baseline made the same call before the Templates row's param was added).
-@Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
+// (the baseline made the same call; the new feature rows only add more pass-through params).
+@Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod") // One stateless Account body.
 @Composable
 private fun AccountScreenContent(
     email: String?,
@@ -211,6 +213,7 @@ private fun AccountScreenContent(
     onOpenTags: () -> Unit,
     onOpenPlanners: () -> Unit,
     onOpenTemplates: () -> Unit,
+    onOpenWarranties: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -304,6 +307,7 @@ private fun AccountScreenContent(
                 onOpenTags = onOpenTags,
                 onOpenPlanners = onOpenPlanners,
                 onOpenTemplates = onOpenTemplates,
+                onOpenWarranties = onOpenWarranties,
             )
         }
     }
@@ -651,6 +655,7 @@ private fun AccountSectionRows(
     onOpenTags: () -> Unit,
     onOpenPlanners: () -> Unit,
     onOpenTemplates: () -> Unit,
+    onOpenWarranties: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -662,6 +667,7 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.account_budget)) { onOpenBudget() }
     RowDivider()
     SettingRow(Icons.Filled.Calculate, stringResource(R.string.account_planners)) { onOpenPlanners() }
+    SettingRow(Icons.Filled.Shield, stringResource(R.string.account_warranties)) { onOpenWarranties() }
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
     RowDivider()
@@ -1351,6 +1357,7 @@ private fun AccountScreenPreview() {
             onOpenTags = {},
             onOpenPlanners = {},
             onOpenTemplates = {},
+            onOpenWarranties = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1392,6 +1399,7 @@ private fun AccountScreenTabletPreview() {
             onOpenTags = {},
             onOpenPlanners = {},
             onOpenTemplates = {},
+            onOpenWarranties = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},

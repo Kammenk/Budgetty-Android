@@ -25,6 +25,7 @@ import com.budgetty.app.data.repository.RecurringRepository
 import com.budgetty.app.data.repository.SavingsRepository
 import com.budgetty.app.data.repository.SubscriptionsRepository
 import com.budgetty.app.data.repository.TransactionRepository
+import com.budgetty.app.data.repository.WarrantyRepository
 import com.budgetty.app.data.repository.WellbeingScoreRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.widget.WidgetDataProvider
@@ -37,6 +38,7 @@ import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
 import com.budgetty.app.ui.buyinglimits.BuyingLimitsViewModel
 import com.budgetty.app.ui.planners.DebtsViewModel
 import com.budgetty.app.ui.templates.TemplatesViewModel
+import com.budgetty.app.ui.warranties.WarrantiesViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
 import com.budgetty.app.ui.export.ExportViewModel
 import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
@@ -87,6 +89,7 @@ val appModule = module {
     single { TemplateRepository(get()) }
     single { WellbeingScoreRepository(get()) }
     single { DebtRepository(get()) }
+    single { WarrantyRepository(get()) }
 
     // App-scoped hand-off for the buying-limit save-time nudge (Upload posts, Home observes).
     single { BuyingLimitNudgeBus() }
@@ -177,6 +180,7 @@ val appModule = module {
     viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
     viewModel { DebtsViewModel(get()) }
     viewModel { TemplatesViewModel(get()) }
+    viewModel { WarrantiesViewModel(get(), get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
     viewModel { PaywallViewModel(get(), get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get(), get()) }

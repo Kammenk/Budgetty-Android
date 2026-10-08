@@ -27,6 +27,7 @@ class BackupManager(
     private val recurringDao get() = db.database.recurringDao()
     private val savingsDao get() = db.database.savingsDao()
     private val buyingLimitDao get() = db.database.buyingLimitDao()
+    private val warrantyDao get() = db.database.warrantyDao()
     private val wellbeingScoreDao get() = db.database.wellbeingScoreDao()
     private val tagDao get() = db.database.tagDao()
     private val debtDao get() = db.database.debtDao()
@@ -46,6 +47,7 @@ class BackupManager(
             savingsGoals = savingsDao.getGoals().first(),
             savingsContributions = savingsDao.getAllContributions().first(),
             buyingLimits = buyingLimitDao.getAll().first(),
+            warranties = warrantyDao.getAll().first(),
             wellbeingScores = wellbeingScoreDao.getAll().first(),
             tags = tagDao.allTags().first(),
             transactionTags = tagDao.allLinks().first(),
@@ -81,6 +83,7 @@ class BackupManager(
                 savingsDao.clearContributions()
                 savingsDao.clearGoals()
                 buyingLimitDao.clearAll()
+                warrantyDao.clearAll()
                 wellbeingScoreDao.clearAll()
                 // Links first (they reference both), then the catalog. Clearing transactions above
                 // already cascades the links, but clearing explicitly keeps this correct regardless.
@@ -116,6 +119,7 @@ class BackupManager(
             // Buying limits: fresh ids so a merge never collides; .orEmpty() tolerates pre-v25 backups
             // (Gson leaves the absent field null). Limits carry no child rows, so no id remap is needed.
             buyingLimitDao.insertAll(data.buyingLimits.orEmpty().map { it.copy(id = 0) })
+            warrantyDao.insertAll(data.warranties.orEmpty().map { it.copy(id = 0) })
             // Wellbeing history: keyed by periodId (a natural key, no id to remap); .orEmpty() tolerates
             // pre-v26 backups. insertAll IGNOREs a periodId clash, so a merge keeps the on-device
             // snapshot rather than letting the backup rewrite a month's finalized score (§3.1).
