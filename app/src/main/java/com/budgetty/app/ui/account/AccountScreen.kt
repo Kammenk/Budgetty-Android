@@ -137,6 +137,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 
+@Suppress("LongParameterList") // Flat list of navigation callbacks threaded to the stateless body.
 @Composable
 fun AccountScreen(
     onOpenPaywall: () -> Unit,
