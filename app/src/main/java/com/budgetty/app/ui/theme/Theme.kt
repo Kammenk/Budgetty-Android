@@ -8,6 +8,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import com.budgetty.app.data.settings.AccentTheme
 import com.budgetty.app.ui.util.isExpandedWidth
 
@@ -60,6 +62,12 @@ private fun accentPrimary(accent: AccentTheme, dark: Boolean): Color? = when (ac
 }
 
 /**
+ * Upper bound for the OS font-size multiplier the app honors. 1f = never render text larger than the
+ * design; raise it (e.g. 1.1f) to allow some accessibility enlargement before the layout tightens.
+ */
+private const val MAX_FONT_SCALE = 1f
+
+/**
  * App theme. [darkTheme] comes from the user's Theme setting (System / Light / Dark),
  * [accent] from their (premium) accent choice.
  *
@@ -82,7 +90,20 @@ fun BudgettyTheme(
     // configuration (rotation, fold, split-screen) via isExpandedWidth().
     val dimens = if (isExpandedWidth()) ExpandedDimens else CompactDimens
 
-    CompositionLocalProvider(LocalDimens provides dimens) {
+    // Budgetty's spacing, rows and cards are tuned to its own type scale, so an enlarged OS font-size
+    // ("Settings → Display → Font size") would overflow tight rows and overlap labels. Cap the font
+    // scale at the design size: the system setting can still shrink text but never enlarges it past
+    // what the layouts were built for. Only fontScale is clamped — density (dp sizing) is left as-is,
+    // so "Display size" / screen-zoom still scales the whole UI normally.
+    val density = LocalDensity.current
+    val cappedDensity =
+        if (density.fontScale <= MAX_FONT_SCALE) density
+        else Density(density.density, MAX_FONT_SCALE)
+
+    CompositionLocalProvider(
+        LocalDimens provides dimens,
+        LocalDensity provides cappedDensity,
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = Typography,   // Type.kt
