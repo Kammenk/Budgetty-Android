@@ -416,6 +416,74 @@
     <string name="account_category_rules">Category rules</string>
     <string name="account_manage_categories">Manage categories</string>
     <string name="account_tags" tools:ignore="MissingTranslation">Tags</string>
+    <string name="account_planners" tools:ignore="MissingTranslation">Planners</string>
+
+    <!-- Planners hub (Account → Planners) -->
+    <string name="planners_title" tools:ignore="MissingTranslation">Planners</string>
+    <string name="planners_subtitle" tools:ignore="MissingTranslation">Free tools to plan ahead — nothing here is linked to an account.</string>
+    <string name="planners_debt_title" tools:ignore="MissingTranslation">Debt payoff</string>
+    <string name="planners_debt_subtitle" tools:ignore="MissingTranslation">Snowball or avalanche to a debt-free date</string>
+    <string name="planners_loan_title" tools:ignore="MissingTranslation">Loan calculator</string>
+    <string name="planners_loan_subtitle" tools:ignore="MissingTranslation">Monthly payment and total interest</string>
+
+    <!-- Loan calculator -->
+    <string name="loan_calc_title" tools:ignore="MissingTranslation">Loan calculator</string>
+    <string name="loan_calc_amount" tools:ignore="MissingTranslation">Loan amount</string>
+    <string name="loan_calc_apr" tools:ignore="MissingTranslation">Interest rate (APR)</string>
+    <string name="loan_calc_term" tools:ignore="MissingTranslation">Term</string>
+    <string name="loan_calc_years" tools:ignore="MissingTranslation">%1$d yr</string>
+    <string name="loan_calc_monthly_payment" tools:ignore="MissingTranslation">Monthly payment</string>
+    <string name="loan_calc_for_months" tools:ignore="MissingTranslation">for %1$d months</string>
+    <string name="loan_calc_total_interest" tools:ignore="MissingTranslation">Total interest</string>
+    <string name="loan_calc_total_paid" tools:ignore="MissingTranslation">Total paid</string>
+    <string name="loan_calc_where" tools:ignore="MissingTranslation">Where your money goes</string>
+    <string name="loan_calc_principal_pct" tools:ignore="MissingTranslation">Principal %1$d%%</string>
+    <string name="loan_calc_interest_pct" tools:ignore="MissingTranslation">Interest %1$d%%</string>
+    <string name="loan_calc_by_year" tools:ignore="MissingTranslation">By year</string>
+    <string name="loan_calc_amortisation" tools:ignore="MissingTranslation">Amortisation</string>
+    <string name="loan_calc_col_year" tools:ignore="MissingTranslation">Year</string>
+    <string name="loan_calc_col_principal" tools:ignore="MissingTranslation">Principal</string>
+    <string name="loan_calc_col_interest" tools:ignore="MissingTranslation">Interest</string>
+    <string name="loan_calc_col_balance" tools:ignore="MissingTranslation">Balance</string>
+    <string name="loan_calc_estimate_note" tools:ignore="MissingTranslation">Estimate only. Lenders may add fees or round differently.</string>
+
+    <!-- Debt payoff planner -->
+    <string name="debt_title" tools:ignore="MissingTranslation">Debt payoff</string>
+    <string name="debt_snowball" tools:ignore="MissingTranslation">Snowball</string>
+    <string name="debt_avalanche" tools:ignore="MissingTranslation">Avalanche</string>
+    <string name="debt_snowball_hint" tools:ignore="MissingTranslation">Smallest balance first, for quick wins that keep you going.</string>
+    <string name="debt_avalanche_hint" tools:ignore="MissingTranslation">Highest APR first, which costs the least interest.</string>
+    <string name="debt_free_by" tools:ignore="MissingTranslation">Debt-free by</string>
+    <string name="debt_months_sooner" tools:ignore="MissingTranslation">%1$d months · %2$d months sooner</string>
+    <string name="debt_saves_interest" tools:ignore="MissingTranslation">Saves %1$s interest vs minimums</string>
+    <string name="debt_not_clearing" tools:ignore="MissingTranslation">Not clearing at this rate</string>
+    <string name="debt_not_clearing_hint" tools:ignore="MissingTranslation">Your minimums don\'t cover the interest. Add a little extra each month to start making progress.</string>
+    <string name="debt_cheapest" tools:ignore="MissingTranslation">CHEAPEST</string>
+    <string name="debt_quick_wins" tools:ignore="MissingTranslation">QUICK WINS</string>
+    <string name="debt_interest_suffix" tools:ignore="MissingTranslation">%1$s interest</string>
+    <string name="debt_balance_to_zero" tools:ignore="MissingTranslation">Balance to zero</string>
+    <string name="debt_owed" tools:ignore="MissingTranslation">%1$s owed</string>
+    <string name="debt_legend_plan" tools:ignore="MissingTranslation">Your plan</string>
+    <string name="debt_legend_minimums" tools:ignore="MissingTranslation">Minimums only</string>
+    <string name="debt_extra_each_month" tools:ignore="MissingTranslation">Extra each month</string>
+    <string name="debt_on_top_of" tools:ignore="MissingTranslation">on top of %1$s minimums</string>
+    <string name="debt_your_debts" tools:ignore="MissingTranslation">Your debts</string>
+    <string name="debt_add" tools:ignore="MissingTranslation">Add debt</string>
+    <string name="debt_row_sub" tools:ignore="MissingTranslation">%1$s%% APR · %2$s/mo min</string>
+    <string name="debt_untitled" tools:ignore="MissingTranslation">Debt</string>
+    <string name="debt_payoff_order" tools:ignore="MissingTranslation">Payoff order · %1$s</string>
+    <string name="debt_paid_off" tools:ignore="MissingTranslation">Paid off %1$s</string>
+    <string name="debt_estimate_note" tools:ignore="MissingTranslation">Estimate only. Assumes fixed APRs and no new borrowing. Nothing is linked to an account.</string>
+    <string name="debt_empty_title" tools:ignore="MissingTranslation">Plan your way to zero</string>
+    <string name="debt_empty_body" tools:ignore="MissingTranslation">Add your debts and see when you\'ll be debt-free, how much interest you\'ll save, and which one to clear first.</string>
+    <string name="debt_empty_cta" tools:ignore="MissingTranslation">Add your first debt</string>
+    <string name="debt_add_title" tools:ignore="MissingTranslation">Add debt</string>
+    <string name="debt_edit_title" tools:ignore="MissingTranslation">Edit debt</string>
+    <string name="debt_field_name" tools:ignore="MissingTranslation">Name</string>
+    <string name="debt_field_balance" tools:ignore="MissingTranslation">Balance owed</string>
+    <string name="debt_field_apr" tools:ignore="MissingTranslation">APR</string>
+    <string name="debt_field_min" tools:ignore="MissingTranslation">Minimum / mo</string>
+    <string name="debt_solo_cost" tools:ignore="MissingTranslation">At the minimum only, this debt takes %1$d months and costs %2$s in interest.</string>
     <string name="category_rules_title">Category rules</string>
     <string name="category_rules_subtitle">Applied automatically when Budgetty scans a new receipt. Delete one to stop using it.</string>
     <plurals name="category_rules_count">

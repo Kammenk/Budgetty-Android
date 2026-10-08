@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Sell
@@ -140,6 +141,7 @@ fun AccountScreen(
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
+    onOpenPlanners: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -162,6 +164,7 @@ fun AccountScreen(
         onOpenBuyingLimits = onOpenBuyingLimits,
         onOpenManageCategories = onOpenManageCategories,
         onOpenTags = onOpenTags,
+        onOpenPlanners = onOpenPlanners,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -184,9 +187,9 @@ fun AccountScreen(
     )
 }
 
-// Pre-existing size/complexity (a long settings screen); adding the Tags row resurfaced the baselined
-// findings and pushed the param count one over. Suppressed rather than split — it's a flat list of
-// settings rows, not genuinely complex logic.
+// The whole Account screen host: profile + every settings group + all their sheets. Its size/params/
+// branching are the aggregate of those sections, not deep logic, so the structural rules are suppressed
+// (the baseline made the same call before the Tags and Planners rows' params were added).
 @Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
 @Composable
 private fun AccountScreenContent(
@@ -202,6 +205,7 @@ private fun AccountScreenContent(
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
+    onOpenPlanners: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -293,6 +297,7 @@ private fun AccountScreenContent(
                 onOpenBuyingLimits = onOpenBuyingLimits,
                 onOpenManageCategories = onOpenManageCategories,
                 onOpenTags = onOpenTags,
+                onOpenPlanners = onOpenPlanners,
             )
         }
     }
@@ -638,6 +643,7 @@ private fun AccountSectionRows(
     onOpenBuyingLimits: () -> Unit,
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
+    onOpenPlanners: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -647,6 +653,8 @@ private fun AccountSectionRows(
     )
     RowDivider()
     SettingRow(Icons.Filled.AccountBalanceWallet, stringResource(R.string.account_budget)) { onOpenBudget() }
+    RowDivider()
+    SettingRow(Icons.Filled.Calculate, stringResource(R.string.account_planners)) { onOpenPlanners() }
     RowDivider()
     SettingRow(Icons.Filled.AutoAwesome, stringResource(R.string.account_category_rules)) { onOpenCategoryRules() }
     RowDivider()
@@ -1333,6 +1341,7 @@ private fun AccountScreenPreview() {
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onOpenTags = {},
+            onOpenPlanners = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1372,6 +1381,7 @@ private fun AccountScreenTabletPreview() {
             onOpenBuyingLimits = {},
             onOpenManageCategories = {},
             onOpenTags = {},
+            onOpenPlanners = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},

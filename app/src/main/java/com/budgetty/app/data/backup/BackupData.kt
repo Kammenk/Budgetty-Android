@@ -4,6 +4,7 @@ import com.budgetty.app.data.local.BudgetEntity
 import com.budgetty.app.data.local.BuyingLimitEntity
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.CategoryRuleEntity
+import com.budgetty.app.data.local.DebtEntity
 import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.SavingsContributionEntity
@@ -34,6 +35,7 @@ data class BackupData(
      *  pre-tags backups. */
     val tags: List<TagEntity> = emptyList(),
     val transactionTags: List<TransactionTagEntity> = emptyList(),
+    val debts: List<DebtEntity> = emptyList(),
     /** User preferences (see [BackupSettings]); null in backups written before this field existed. */
     val settings: BackupSettings? = null,
 )

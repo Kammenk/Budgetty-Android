@@ -80,6 +80,9 @@ import com.budgetty.app.ui.onboarding.OnboardingScreen
 import com.budgetty.app.ui.paywall.PaywallScreen
 import com.budgetty.app.ui.quiz.InsightsQuizScreen
 import com.budgetty.app.ui.categories.ManageCategoriesScreen
+import com.budgetty.app.ui.planners.DebtPayoffScreen
+import com.budgetty.app.ui.planners.LoanCalculatorScreen
+import com.budgetty.app.ui.planners.PlannersScreen
 import com.budgetty.app.ui.rules.CategoryRulesScreen
 import com.budgetty.app.ui.tags.TagsScreen
 import com.budgetty.app.ui.upload.UploadScreen
@@ -484,6 +487,7 @@ private fun BudgettyNavHost(
                 onOpenBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
                 onOpenManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
                 onOpenTags = { navController.navigate(Routes.TAGS) },
+                onOpenPlanners = { navController.navigate(Routes.PLANNERS) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
         }
@@ -569,6 +573,19 @@ private fun BudgettyNavHost(
         }
         composable(Routes.TAGS) {
             TagsScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.PLANNERS) {
+            PlannersScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onOpenDebtPayoff = { navController.navigate(Routes.DEBT_PAYOFF) },
+                onOpenLoanCalculator = { navController.navigate(Routes.LOAN_CALCULATOR) },
+            )
+        }
+        composable(Routes.DEBT_PAYOFF) {
+            DebtPayoffScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.LOAN_CALCULATOR) {
+            LoanCalculatorScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Routes.BUYING_LIMITS) {
             BuyingLimitsScreen(
