@@ -484,6 +484,30 @@
     <string name="debt_field_apr" tools:ignore="MissingTranslation">APR</string>
     <string name="debt_field_min" tools:ignore="MissingTranslation">Minimum / mo</string>
     <string name="debt_solo_cost" tools:ignore="MissingTranslation">At the minimum only, this debt takes %1$d months and costs %2$s in interest.</string>
+    <string name="account_templates" tools:ignore="MissingTranslation">Templates</string>
+
+    <!-- Transaction templates -->
+    <string name="templates_title" tools:ignore="MissingTranslation">Templates</string>
+    <string name="templates_subtitle" tools:ignore="MissingTranslation">Saved regulars you can log in one tap. A template never posts by itself — it fills in the review screen, and you confirm.</string>
+    <string name="templates_untitled" tools:ignore="MissingTranslation">Template</string>
+    <string name="templates_new" tools:ignore="MissingTranslation">New template</string>
+    <string name="templates_new_short" tools:ignore="MissingTranslation">New</string>
+    <string name="templates_section" tools:ignore="MissingTranslation">TEMPLATES</string>
+    <string name="templates_manage" tools:ignore="MissingTranslation">Manage</string>
+    <string name="templates_ask_amount_short" tools:ignore="MissingTranslation">Ask amount</string>
+    <string name="templates_ask_amount" tools:ignore="MissingTranslation">Ask for the amount each time</string>
+    <string name="templates_ask_amount_hint" tools:ignore="MissingTranslation">For variable regulars like groceries.</string>
+    <string name="templates_add_title" tools:ignore="MissingTranslation">New template</string>
+    <string name="templates_edit_title" tools:ignore="MissingTranslation">Edit template</string>
+    <string name="templates_field_name" tools:ignore="MissingTranslation">Name</string>
+    <string name="templates_field_amount" tools:ignore="MissingTranslation">Amount</string>
+    <string name="templates_field_category" tools:ignore="MissingTranslation">Category</string>
+    <string name="templates_field_store" tools:ignore="MissingTranslation">Store (optional)</string>
+    <string name="templates_pick_category" tools:ignore="MissingTranslation">Pick a category</string>
+    <string name="templates_save" tools:ignore="MissingTranslation">Save template</string>
+    <string name="templates_footer_note" tools:ignore="MissingTranslation">Templates never post by themselves. For that, use a recurring bill.</string>
+    <string name="templates_invite_title" tools:ignore="MissingTranslation">Log your regulars in one tap</string>
+    <string name="templates_invite_body" tools:ignore="MissingTranslation">Save a coffee, a fare or the rent as a template.</string>
     <string name="category_rules_title">Category rules</string>
     <string name="category_rules_subtitle">Applied automatically when Budgetty scans a new receipt. Delete one to stop using it.</string>
     <plurals name="category_rules_count">

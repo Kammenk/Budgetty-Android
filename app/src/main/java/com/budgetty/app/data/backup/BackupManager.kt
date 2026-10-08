@@ -30,6 +30,7 @@ class BackupManager(
     private val wellbeingScoreDao get() = db.database.wellbeingScoreDao()
     private val tagDao get() = db.database.tagDao()
     private val debtDao get() = db.database.debtDao()
+    private val templateDao get() = db.database.templateDao()
 
     private val gson = Gson()
 
@@ -49,6 +50,7 @@ class BackupManager(
             tags = tagDao.allTags().first(),
             transactionTags = tagDao.allLinks().first(),
             debts = debtDao.getAll().first(),
+            templates = templateDao.getAll().first(),
             settings = currentBackupSettings(),
         )
         return gson.toJson(data)
@@ -85,6 +87,7 @@ class BackupManager(
                 tagDao.clearLinks()
                 tagDao.clearTags()
                 debtDao.clearAll()
+                templateDao.clearAll()
             }
             // New ids so a merge never collides with existing transactions; capture them (in input
             // order) to remap the tag links below onto the freshly-inserted rows.
@@ -131,6 +134,8 @@ class BackupManager(
             )
             // Debts: fresh ids, no child rows; .orEmpty() tolerates pre-v28 backups.
             debtDao.insertAll(data.debts.orEmpty().map { it.copy(id = 0) })
+            // Templates: fresh ids, no child rows; .orEmpty() tolerates pre-v28 backups.
+            templateDao.insertAll(data.templates.orEmpty().map { it.copy(id = 0) })
         }
 
         // Preferences live outside Room (a device-global SharedPreferences store), so they're applied

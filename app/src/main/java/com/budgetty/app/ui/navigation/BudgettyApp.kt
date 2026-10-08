@@ -85,6 +85,7 @@ import com.budgetty.app.ui.planners.LoanCalculatorScreen
 import com.budgetty.app.ui.planners.PlannersScreen
 import com.budgetty.app.ui.rules.CategoryRulesScreen
 import com.budgetty.app.ui.tags.TagsScreen
+import com.budgetty.app.ui.templates.TemplatesScreen
 import com.budgetty.app.ui.upload.UploadScreen
 import com.budgetty.app.ui.widgets.WidgetsScreen
 import org.koin.androidx.compose.koinViewModel
@@ -443,6 +444,8 @@ private fun BudgettyNavHost(
                 onNavigateToAccount = { navController.navigateToTab(Routes.ACCOUNT) },
                 onNavigateToWellbeing = { navController.navigate(Routes.WELLBEING) },
                 onNavigateToBuyingLimits = { navController.navigate(Routes.BUYING_LIMITS) },
+                onNavigateToTemplateEntry = { id -> navController.navigate(Routes.uploadFromTemplate(id)) },
+                onOpenTemplates = { navController.navigate(Routes.TEMPLATES) },
             )
         }
         composable(Routes.INSIGHTS) {
@@ -488,6 +491,7 @@ private fun BudgettyNavHost(
                 onOpenManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
                 onOpenTags = { navController.navigate(Routes.TAGS) },
                 onOpenPlanners = { navController.navigate(Routes.PLANNERS) },
+                onOpenTemplates = { navController.navigate(Routes.TEMPLATES) },
                 onSetupPin = { navController.navigate(Routes.SET_PIN) },
             )
         }
@@ -508,11 +512,16 @@ private fun BudgettyNavHost(
                     type = NavType.LongType
                     defaultValue = -1L
                 },
+                navArgument(Routes.UPLOAD_ARG_TEMPLATE_ID) {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
             ),
         ) { entry ->
             UploadScreen(
                 source = entry.arguments?.getString(Routes.UPLOAD_ARG_SOURCE) ?: "file",
                 receiptId = entry.arguments?.getLong(Routes.UPLOAD_ARG_RECEIPT_ID) ?: -1L,
+                templateId = entry.arguments?.getLong(Routes.UPLOAD_ARG_TEMPLATE_ID) ?: -1L,
                 onNavigateBack = { navController.popBackStack() },
                 // Upload's only paywall entry is the custom-category create cap → CATEGORIES.
                 onNavigateToPaywall = {
@@ -586,6 +595,9 @@ private fun BudgettyNavHost(
         }
         composable(Routes.LOAN_CALCULATOR) {
             LoanCalculatorScreen(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(Routes.TEMPLATES) {
+            TemplatesScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Routes.BUYING_LIMITS) {
             BuyingLimitsScreen(

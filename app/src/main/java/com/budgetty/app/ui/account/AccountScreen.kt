@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Sell
 import androidx.compose.material.icons.filled.Event
@@ -142,6 +143,7 @@ fun AccountScreen(
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
     onOpenPlanners: () -> Unit,
+    onOpenTemplates: () -> Unit,
     onSetupPin: () -> Unit,
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel = koinViewModel(),
@@ -165,6 +167,7 @@ fun AccountScreen(
         onOpenManageCategories = onOpenManageCategories,
         onOpenTags = onOpenTags,
         onOpenPlanners = onOpenPlanners,
+        onOpenTemplates = onOpenTemplates,
         onSetupPin = onSetupPin,
         onDisableAppLock = accountViewModel::disableAppLock,
         onSetBiometric = accountViewModel::setBiometricEnabled,
@@ -190,6 +193,7 @@ fun AccountScreen(
 // The whole Account screen host: profile + every settings group + all their sheets. Its size/params/
 // branching are the aggregate of those sections, not deep logic, so the structural rules are suppressed
 // (the baseline made the same call before the Tags and Planners rows' params were added).
+// (the baseline made the same call before the Templates row's param was added).
 @Suppress("LongParameterList", "LongMethod", "CyclomaticComplexMethod")
 @Composable
 private fun AccountScreenContent(
@@ -206,6 +210,7 @@ private fun AccountScreenContent(
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
     onOpenPlanners: () -> Unit,
+    onOpenTemplates: () -> Unit,
     onSetupPin: () -> Unit,
     onDisableAppLock: () -> Unit,
     onSetBiometric: (Boolean) -> Unit,
@@ -298,6 +303,7 @@ private fun AccountScreenContent(
                 onOpenManageCategories = onOpenManageCategories,
                 onOpenTags = onOpenTags,
                 onOpenPlanners = onOpenPlanners,
+                onOpenTemplates = onOpenTemplates,
             )
         }
     }
@@ -644,6 +650,7 @@ private fun AccountSectionRows(
     onOpenManageCategories: () -> Unit,
     onOpenTags: () -> Unit,
     onOpenPlanners: () -> Unit,
+    onOpenTemplates: () -> Unit,
 ) {
     SettingRow(
         icon = Icons.Filled.Star,
@@ -663,6 +670,7 @@ private fun AccountSectionRows(
     SettingRow(Icons.Filled.Category, stringResource(R.string.account_manage_categories)) { onOpenManageCategories() }
     RowDivider()
     SettingRow(Icons.Filled.Sell, stringResource(R.string.account_tags)) { onOpenTags() }
+    SettingRow(Icons.Filled.Bookmark, stringResource(R.string.account_templates)) { onOpenTemplates() }
     RowDivider()
     SettingRow(
         icon = Icons.Filled.Upload,
@@ -1342,6 +1350,7 @@ private fun AccountScreenPreview() {
             onOpenManageCategories = {},
             onOpenTags = {},
             onOpenPlanners = {},
+            onOpenTemplates = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},
@@ -1382,6 +1391,7 @@ private fun AccountScreenTabletPreview() {
             onOpenManageCategories = {},
             onOpenTags = {},
             onOpenPlanners = {},
+            onOpenTemplates = {},
             onSetupPin = {},
             onDisableAppLock = {},
             onSetBiometric = {},

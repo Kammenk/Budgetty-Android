@@ -16,6 +16,7 @@ import com.budgetty.app.data.repository.BudgetRepository
 import com.budgetty.app.data.repository.BudgetRolloverRepository
 import com.budgetty.app.data.repository.BuyingLimitsRepository
 import com.budgetty.app.data.repository.DebtRepository
+import com.budgetty.app.data.repository.TemplateRepository
 import com.budgetty.app.data.repository.CategoryRepository
 import com.budgetty.app.data.repository.CategoryRuleRepository
 import com.budgetty.app.data.repository.TagRepository
@@ -35,6 +36,7 @@ import com.budgetty.app.ui.buyinglimits.BuyingLimitNudgeBus
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
 import com.budgetty.app.ui.buyinglimits.BuyingLimitsViewModel
 import com.budgetty.app.ui.planners.DebtsViewModel
+import com.budgetty.app.ui.templates.TemplatesViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
 import com.budgetty.app.ui.export.ExportViewModel
 import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
@@ -82,6 +84,7 @@ val appModule = module {
     single { SavingsRepository(get()) }
     single { SubscriptionsRepository(get()) }
     single { BuyingLimitsRepository(get()) }
+    single { TemplateRepository(get()) }
     single { WellbeingScoreRepository(get()) }
     single { DebtRepository(get()) }
 
@@ -166,12 +169,14 @@ val appModule = module {
     viewModel {
         UploadViewModel(
             get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(),
+            get(),
         )
     }
     viewModel { CategoryRulesViewModel(get(), get(), get()) }
     viewModel { TagsViewModel(get()) }
     viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
     viewModel { DebtsViewModel(get()) }
+    viewModel { TemplatesViewModel(get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }
     viewModel { PaywallViewModel(get(), get()) }
     viewModel { InsightsQuizViewModel(get(), get(), get(), get()) }

@@ -16,9 +16,10 @@ object Routes {
     const val HOME = "home"
     const val INSIGHTS = "insights"
     const val ACCOUNT = "account"
-    const val UPLOAD = "upload/{source}?receiptId={receiptId}"
+    const val UPLOAD = "upload/{source}?receiptId={receiptId}&templateId={templateId}"
     const val UPLOAD_ARG_SOURCE = "source"
     const val UPLOAD_ARG_RECEIPT_ID = "receiptId"
+    const val UPLOAD_ARG_TEMPLATE_ID = "templateId"
     const val BUDGET = "budget"
     const val PAYWALL = "paywall"
     const val HISTORY = "history"
@@ -41,6 +42,7 @@ object Routes {
     const val WELLBEING = "wellbeing"
     const val SET_PIN = "set_pin"
     const val RECAP = "recap"
+    const val TEMPLATES = "templates"
 
     /** Upload route for a given source: "camera", "file", or "manual". */
     fun upload(source: String) = "upload/$source"
@@ -51,6 +53,8 @@ object Routes {
     /** History pre-filtered by a single tag (used by the Insights "By tag" card). The name is
      *  URL-encoded so Cyrillic / multi-byte tags survive the route. */
     fun historyWithTag(tag: String) = "history?tag=${Uri.encode(tag)}"
+    /** Manual-entry route pre-filled from a saved transaction template. */
+    fun uploadFromTemplate(templateId: Long) = "upload/manual?templateId=$templateId"
 
     fun savingsGoal(goalId: Long) = "savings_goal/$goalId"
 }
