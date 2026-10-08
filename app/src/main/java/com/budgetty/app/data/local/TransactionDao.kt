@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface TransactionDao {
 
+    /** Inserts the rows and returns their new auto-generated ids, in the same order as [transactions]
+     *  — the upload save path zips them back onto the review rows to link each row's tags. */
     @Insert
-    suspend fun insertAll(transactions: List<TransactionEntity>)
+    suspend fun insertAll(transactions: List<TransactionEntity>): List<Long>
 
     @Query("SELECT * FROM transactions ORDER BY timestamp DESC")
     fun getAll(): Flow<List<TransactionEntity>>

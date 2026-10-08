@@ -8,6 +8,7 @@ import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.Receipt
 import com.budgetty.app.data.repository.ReceiptRepository
 import com.budgetty.app.data.repository.RecurringRepository
+import com.budgetty.app.data.repository.TagRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.store.StoreNormalizer
@@ -33,12 +34,14 @@ import java.time.YearMonth
 import java.time.ZoneId
 
 /** How the History list is ordered. Persisted in settings so it survives relaunch. */
-enum class SortOrder { NEWEST, OLDEST, PRICE_HIGH, PRICE_LOW }
+enum class SortOrder { NEWEST, OLDEST, PRICE_HIGH, PRICE_LOW, TAG_AZ }
 
 /** A purchased line item joined with the store it came from (taken from its receipt). */
 data class HistoryItem(
     val transaction: TransactionEntity,
     val store: String,
+    /** The line item's free-form tags (empty when untagged) — rendered as pills on its history row. */
+    val tags: List<String> = emptyList(),
 ) {
     /** Quantity-aware line total — what the row shows and what price filters/sorts compare against. */
     val lineTotal: BigDecimal
@@ -100,7 +103,7 @@ data class ReceiptMonthGroup(
     val total: BigDecimal,
 )
 
-/** The active search query plus the Category / Store / Date / Price filters. */
+/** The active search query plus the Category / Store / Date / Price / Tag filters. */
 data class HistoryFilters(
     val query: String = "",
     val category: String? = null,
@@ -109,14 +112,21 @@ data class HistoryFilters(
     /** Inclusive line-total bounds; null means that end is unbounded. */
     val priceMin: BigDecimal? = null,
     val priceMax: BigDecimal? = null,
+    /** Tags to narrow by (normalized names); empty = no tag filter. */
+    val tags: Set<String> = emptySet(),
+    /** When several [tags] are chosen: true = an item must carry all of them; false = any one. */
+    val tagMatchAll: Boolean = false,
 ) {
     /** True when nothing is narrowing the list — used to highlight the "All" chip. */
     val isEmpty: Boolean
         get() = query.isBlank() && category == null && store == null && date == null &&
-            priceMin == null && priceMax == null
+            priceMin == null && priceMax == null && tags.isEmpty()
 
     /** True when a price range is active (drives the Price chip's selected state + label). */
     val hasPrice: Boolean get() = priceMin != null || priceMax != null
+
+    /** True when a tag filter is active (drives the Tag chip's selected state + the receipt recompute). */
+    val hasTags: Boolean get() = tags.isNotEmpty()
 }
 
 data class HistoryUiState(
@@ -135,6 +145,8 @@ data class HistoryUiState(
     val categories: List<String> = emptyList(),
     /** Distinct stores present across all receipts, for the Store dropdown. */
     val stores: List<String> = emptyList(),
+    /** Distinct tags present across all transactions, A–Z — the Tag filter sheet's choices. */
+    val tagOptions: List<String> = emptyList(),
     /** Most-used stores (by item count) shown as quick-find chips when the search is empty. */
     val topStores: List<String> = emptyList(),
     /** Most-used categories (by item count) shown as quick-find chips when the search is empty. */
@@ -177,17 +189,25 @@ class HistoryViewModel(
     private val receiptRepository: ReceiptRepository,
     private val recurringRepository: RecurringRepository,
     private val settingsStore: SettingsStore,
+    private val tagRepository: TagRepository,
 ) : ViewModel() {
 
     // One filter set drives all three tabs. The Receipts/Items lists read every field; the Budgets
     // snapshot reads only the Date window (below) — so choosing a date on any tab carries across.
     private val filters = MutableStateFlow(HistoryFilters())
 
+    // Transactions paired with their tag links (combine tops out at 5 typed flows, so fold these two
+    // into one before the main combine). tagsByTxn maps a transaction id to its tag names.
+    private val transactionsWithTags =
+        combine(transactionRepository.getAll(), tagRepository.allLinks) { transactions, links ->
+            transactions to links.groupBy({ it.transactionId }, { it.tagName })
+        }
+
     // debounce() on the filter flow is still a preview coroutines API.
     @OptIn(FlowPreview::class)
     val uiState: StateFlow<HistoryUiState> =
         combine(
-            transactionRepository.getAll(),
+            transactionsWithTags,
             receiptRepository.getAll(),
             recurringRepository.items,
             // Debounce so rapid filter changes — above all per-keystroke search — collapse into a
@@ -195,13 +215,13 @@ class HistoryViewModel(
             // on every character. Deliberate taps (category/store/date) just settle ~180 ms later.
             filters.debounce(timeoutMillis = 180),
             settingsStore.settings,
-        ) { transactions, receipts, recurring, activeFilters, settings ->
+        ) { (transactions, tagsByTxn), receipts, recurring, activeFilters, settings ->
             // Transactions join to their receipt by the upload timestamp (see ReceiptEntity).
             // Normalize to the canonical brand so the list, the Store filter dropdown, and store
             // filtering all agree — and legacy receipts saved with a raw name collapse correctly.
             val storeByReceiptId = receipts.associate { it.timestamp to StoreNormalizer.normalize(it.store) }
             val items = transactions.map { txn ->
-                HistoryItem(txn, storeByReceiptId[txn.receiptId].orEmpty())
+                HistoryItem(txn, storeByReceiptId[txn.receiptId].orEmpty(), tagsByTxn[txn.id].orEmpty())
             }
 
             // Dropdown options come from all data (not the filtered subset) so the user can always
@@ -214,6 +234,7 @@ class HistoryViewModel(
                 .filter { it.isNotBlank() }
                 .distinct()
                 .sorted()
+            val tagOptions = items.flatMap { it.tags }.distinct().sorted()
 
             val sort = runCatching { SortOrder.valueOf(settings.historySort) }.getOrDefault(SortOrder.NEWEST)
 
@@ -240,7 +261,7 @@ class HistoryViewModel(
             HistoryUiState(
                 isLoaded = true,
                 groups = items.applyFilters(activeFilters, monthStartDay).groupIntoMonths(sort),
-                receiptGroups = items.buildReceipts(receipts)
+                receiptGroups = items.buildReceipts(receipts, activeFilters)
                     .applyReceiptFilters(activeFilters, monthStartDay)
                     .groupReceiptsIntoMonths(sort),
                 // Price history spans the whole ledger, so it's built from the unfiltered items.
@@ -249,6 +270,7 @@ class HistoryViewModel(
                 sort = sort,
                 categories = categories,
                 stores = stores,
+                tagOptions = tagOptions,
                 topStores = items.topBy { it.store }.take(8),
                 topCategories = items.topBy { it.transaction.category }.take(8),
                 recentSearches = settings.recentSearches,
@@ -284,6 +306,27 @@ class HistoryViewModel(
     /** Applies (or clears, when both are null) the price-range filter. */
     fun onPriceRangeSelected(min: BigDecimal?, max: BigDecimal?) =
         filters.update { it.copy(priceMin = min, priceMax = max) }
+
+    /** Adds or removes [tag] from the active tag filter (the sheet's checkbox list). */
+    fun onToggleTag(tag: String) = filters.update {
+        it.copy(tags = if (tag in it.tags) it.tags - tag else it.tags + tag)
+    }
+
+    /** Switches the multi-tag match between "all of" (true) and "any of" (false). */
+    fun onTagMatchAllChanged(all: Boolean) = filters.update { it.copy(tagMatchAll = all) }
+
+    /** Clears just the tag filter, leaving the other filters in place. */
+    fun onClearTags() = filters.update { it.copy(tags = emptySet(), tagMatchAll = false) }
+
+    /**
+     * Opens History on a single tag (the Insights "By tag" deep-link). Replaces the whole filter set
+     * so the drill-in shows a clean "#tag" view rather than stacking onto whatever was active before.
+     * No-ops on a blank tag.
+     */
+    fun applyTagFilter(tag: String) {
+        if (tag.isBlank()) return
+        filters.value = HistoryFilters(tags = setOf(tag))
+    }
 
     fun onSortSelected(order: SortOrder) = settingsStore.setHistorySort(order.name)
 
@@ -350,8 +393,17 @@ class HistoryViewModel(
                 (f.store == null || item.store.equals(f.store, ignoreCase = true)) &&
                 (dateRange == null || txn.timestamp in dateRange.first..dateRange.second) &&
                 (f.priceMin == null || item.lineTotal >= f.priceMin) &&
-                (f.priceMax == null || item.lineTotal <= f.priceMax)
+                (f.priceMax == null || item.lineTotal <= f.priceMax) &&
+                item.matchesTags(f)
         }
+    }
+
+    /** Whether this item satisfies the tag filter: trivially true when none is set, otherwise all of
+     *  (match-all) or any of (match-any) the chosen tags appear among the item's own tags. */
+    private fun HistoryItem.matchesTags(f: HistoryFilters): Boolean = when {
+        f.tags.isEmpty() -> true
+        f.tagMatchAll -> tags.containsAll(f.tags)
+        else -> tags.any { it in f.tags }
     }
 
     /** Distinct values of [selector] ordered by how often they occur (most-used first). */
@@ -384,6 +436,9 @@ class HistoryViewModel(
             SortOrder.OLDEST -> compareBy { it.transaction.timestamp }
             SortOrder.PRICE_HIGH -> compareByDescending { it.lineTotal }
             SortOrder.PRICE_LOW -> compareBy { it.lineTotal }
+            // By the item's alphabetically-first tag; untagged items sink to the end, newest-first within a tag.
+            SortOrder.TAG_AZ -> compareBy(nullsLast<String>()) { item: HistoryItem -> item.tags.minOrNull() }
+                .thenByDescending { it.transaction.timestamp }
         }
         val monthComparator: Comparator<YearMonth> =
             if (dateAscending) compareBy { it } else compareByDescending { it }
@@ -443,26 +498,44 @@ class HistoryViewModel(
             }
     }
 
-    /** Re-assembles whole [Receipt]s from the line items (grouped by upload id), with each receipt's
-     *  store (already normalized on the items), total, item list and saved discount. */
-    private fun List<HistoryItem>.buildReceipts(meta: List<ReceiptEntity>): List<Receipt> {
+    /**
+     * Re-assembles whole [Receipt]s from the line items (grouped by upload id), with each receipt's
+     * store (already normalized on the items), total, item list and saved discount.
+     *
+     * Under an active tag filter ([HistoryFilters.hasTags]) a receipt narrows to just its matching
+     * items and its total is recomputed from only those, so the list answers "how much of this receipt
+     * was tagged #x". Receipt-level figures (the on-top tax / extra charges / order discount) can't be
+     * apportioned to a subset, so they're dropped in that mode; a receipt with no matching item isn't
+     * built at all. Without a tag filter the receipt is whole and still reconciles to what was paid.
+     */
+    private fun List<HistoryItem>.buildReceipts(meta: List<ReceiptEntity>, f: HistoryFilters): List<Receipt> {
         val metaById = meta.associateBy { it.timestamp }
-        return groupBy { it.transaction.receiptId }.map { (receiptId, its) ->
+        val tagActive = f.hasTags
+        return groupBy { it.transaction.receiptId }.mapNotNull { (receiptId, allIts) ->
+            val its = if (tagActive) allIts.filter { it.matchesTags(f) } else allIts
+            if (its.isEmpty()) return@mapNotNull null
             val receiptMeta = metaById[receiptId]
             val netSum = its.fold(BigDecimal.ZERO) { acc, i -> acc + i.lineTotal }
             // Anchor on the printed total: add on-top tax (tax-exclusive receipts) plus any extra
             // charges (delivery/service fees, a courier tip) so the receipt total equals what was paid —
             // item rows still show the printed net prices; a reconciling tax-inclusive receipt adds nothing.
-            val addedCharges = (if (receiptMeta?.taxOnTop == true) receiptMeta.tax else BigDecimal.ZERO) +
-                (receiptMeta?.extraCharges ?: BigDecimal.ZERO)
+            // A tagged subset gets none of these (they belong to the whole receipt, not these items).
+            val addedCharges = if (tagActive) {
+                BigDecimal.ZERO
+            } else {
+                (if (receiptMeta?.taxOnTop == true) receiptMeta.tax else BigDecimal.ZERO) +
+                    (receiptMeta?.extraCharges ?: BigDecimal.ZERO)
+            }
             Receipt(
                 id = receiptId,
                 store = its.firstOrNull()?.store.orEmpty(),
                 transactions = its.map { it.transaction },
                 timestamp = its.firstOrNull()?.transaction?.timestamp ?: receiptId,
                 price = netSum + addedCharges,
-                discount = receiptMeta?.discount ?: BigDecimal.ZERO,
-                tax = receiptMeta?.tax ?: BigDecimal.ZERO,
+                discount = if (tagActive) BigDecimal.ZERO else (receiptMeta?.discount ?: BigDecimal.ZERO),
+                tax = if (tagActive) BigDecimal.ZERO else (receiptMeta?.tax ?: BigDecimal.ZERO),
+                // The distinct tags across the receipt's (possibly narrowed) line items, first-seen order.
+                tags = its.flatMap { it.tags }.distinct(),
             )
         }
     }
@@ -492,6 +565,9 @@ class HistoryViewModel(
             SortOrder.OLDEST -> compareBy { it.timestamp }
             SortOrder.PRICE_HIGH -> compareByDescending { it.paid }
             SortOrder.PRICE_LOW -> compareBy { it.paid }
+            // By the receipt's alphabetically-first tag; untagged receipts sink to the end, newest-first within a tag.
+            SortOrder.TAG_AZ -> compareBy(nullsLast<String>()) { r: Receipt -> r.tags.minOrNull() }
+                .thenByDescending { it.timestamp }
         }
         val monthComparator: Comparator<YearMonth> =
             if (dateAscending) compareBy { it } else compareByDescending { it }

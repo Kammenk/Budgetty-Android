@@ -93,6 +93,7 @@ import com.budgetty.app.ui.components.drawPlannedHatch
 import com.budgetty.app.ui.savings.SavingsSheetLabel
 import com.budgetty.app.ui.util.MatchedBillLine
 import com.budgetty.app.ui.components.StoreTransactionsSheet
+import com.budgetty.app.ui.components.TagPill
 import com.budgetty.app.ui.components.TransactionLineRow
 import com.budgetty.app.ui.util.formatMoney
 import androidx.compose.ui.tooling.preview.Preview
@@ -136,6 +137,7 @@ fun InsightsScreen(
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
     onNavigateToManageCategories: () -> Unit = {},
+    onNavigateToHistoryTag: (String) -> Unit = {},
     viewModel: InsightsViewModel = koinViewModel(),
     settingsStore: SettingsStore = koinInject(),
 ) {
@@ -161,6 +163,7 @@ fun InsightsScreen(
         onChooseSavingsAllocation = viewModel::onCountLeftoverAsSavings,
         overlayNudgeDismissed = settings.insightsOverlayNudgeDismissed,
         onNavigateToManageCategories = onNavigateToManageCategories,
+        onNavigateToHistoryTag = onNavigateToHistoryTag,
         dismissedSetup = settings.dismissedInsightsSetup,
         onDismissSetupItem = viewModel::onDismissSetupItem,
         customSections = settings.customInsightsSections,
@@ -169,6 +172,8 @@ fun InsightsScreen(
     )
 }
 
+// Dispatcher for the whole screen; its length tracks the two large bodies it wires, not real branching.
+@Suppress("LongMethod")
 @Composable
 private fun InsightsScreenContent(
     state: InsightsUiState,
@@ -189,6 +194,7 @@ private fun InsightsScreenContent(
     onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
     onNavigateToManageCategories: () -> Unit = {},
+    onNavigateToHistoryTag: (String) -> Unit = {},
     dismissedSetup: Set<String> = emptySet(),
     onDismissSetupItem: (String) -> Unit = {},
     customSections: List<String> = emptyList(),
@@ -253,6 +259,7 @@ private fun InsightsScreenContent(
                 onNavigateToWellbeing = onNavigateToWellbeing,
                 onNavigateToRecap = onNavigateToRecap,
                 onNavigateToManageCategories = onNavigateToManageCategories,
+                onNavigateToHistoryTag = onNavigateToHistoryTag,
                 showRecapEntry = showRecapEntry,
                 onToggleIncludeRecurringBills = onToggleIncludeRecurringBills,
                 onPlannedBadgeClick = { plannedDialog = it },
@@ -283,6 +290,7 @@ private fun InsightsScreenContent(
                 onChooseSavingsAllocation = onChooseSavingsAllocation,
                 overlayNudgeDismissed = overlayNudgeDismissed,
                 onNavigateToManageCategories = onNavigateToManageCategories,
+                onNavigateToHistoryTag = onNavigateToHistoryTag,
                 dismissedSetup = dismissedSetup,
                 onDismissSetupItem = onDismissSetupItem,
                 customSections = customSections,
@@ -501,6 +509,76 @@ private fun TopStoresContent(stores: List<StoreSpend>, onStoreClick: (String) ->
     }
 }
 
+/**
+ * "By tag" card body: the period's biggest tags by spend, each an outlined #pill with a bar, tappable
+ * to open History filtered by that tag. Bars are relative to the top tag (not the period total) — a
+ * line item counts toward every tag it carries, so tags overlap and needn't sum to total; the footnote
+ * says so.
+ */
+@Composable
+internal fun ByTagContent(tags: List<TagSpend>, periodLabel: String, onTagClick: (String) -> Unit) {
+    Text(
+        text = stringResource(R.string.insights_by_tag),
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.Bold,
+    )
+    Spacer(Modifier.height(MaterialTheme.dimens.xs))
+    Text(
+        text = stringResource(R.string.insights_by_tag_subtitle, periodLabel),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Spacer(Modifier.height(MaterialTheme.dimens.md))
+    val maxAmount = tags.first().amount
+    tags.forEachIndexed { index, tag ->
+        if (index > 0) Spacer(Modifier.height(10.dp))
+        TagStatRow(
+            tag = tag.tag,
+            amount = tag.amount,
+            fraction = barFraction(tag.amount, maxAmount),
+            onClick = { onTagClick(tag.tag) },
+        )
+    }
+    Spacer(Modifier.height(MaterialTheme.dimens.md))
+    Text(
+        text = stringResource(R.string.insights_by_tag_footnote),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+}
+
+/** A "By tag" row: outlined #pill, period spend, and a primary-tinted bar. Tags have no colour of
+ *  their own (the key visual separation from categories), so the bar uses the shared primary accent. */
+@Composable
+private fun TagStatRow(tag: String, amount: BigDecimal, fraction: Float, onClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusSm))
+            .clickable(onClick = onClick),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(modifier = Modifier.weight(1f)) { TagPill(tag) }
+            Spacer(Modifier.width(MaterialTheme.dimens.sm))
+            Text(
+                text = amount.formatMoney(),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+            )
+        }
+        Spacer(Modifier.height(MaterialTheme.dimens.xs))
+        LinearProgressIndicator(
+            progress = { fraction },
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(6.dp)
+                .clip(RoundedCornerShape(50)),
+        )
+    }
+}
+
 /** "Biggest purchases" card body: the period's largest single line-item buys, priciest first. */
 @Composable
 private fun BiggestPurchasesContent(purchases: List<TransactionEntity>, storeByReceiptId: Map<Long, String>) {
@@ -645,6 +723,7 @@ private fun InsightsPhoneBody(
     onChooseSavingsAllocation: (Boolean) -> Unit = {},
     overlayNudgeDismissed: Boolean = false,
     onNavigateToManageCategories: () -> Unit = {},
+    onNavigateToHistoryTag: (String) -> Unit = {},
     dismissedSetup: Set<String> = emptySet(),
     onDismissSetupItem: (String) -> Unit = {},
     customSections: List<String> = emptyList(),
@@ -656,6 +735,7 @@ private fun InsightsPhoneBody(
     val sectionActions = SectionCardActions(
         onSliceClick = onSliceClick,
         onStoreClick = onStoreClick,
+        onTagClick = onNavigateToHistoryTag,
         onNavigateToBudget = onNavigateToBudget,
         onNavigateToSubscriptions = onNavigateToSubscriptions,
         onNavigateToPaywall = onNavigateToPaywall,
@@ -764,6 +844,7 @@ private fun InsightsPhoneBody(
 private class SectionCardActions(
     val onSliceClick: (PieSlice) -> Unit,
     val onStoreClick: (String) -> Unit,
+    val onTagClick: (String) -> Unit,
     val onNavigateToBudget: () -> Unit,
     val onNavigateToSubscriptions: () -> Unit,
     val onNavigateToPaywall: () -> Unit,
@@ -809,6 +890,11 @@ private fun InsightSectionCard(
                 // the empty donut, so stepping into an empty month isn't a blank screen.
                 InsightCard { PeriodEmptyState(periodLabel, hasAnyData = state.earliestDate != null) }
             }
+        }
+
+        // Mirrors Breakdown, for tags: only appears once something in the period is tagged.
+        InsightsSection.BY_TAG -> if (state.topTags.isNotEmpty()) {
+            InsightCard { ByTagContent(state.topTags, periodLabel, actions.onTagClick) }
         }
 
         InsightsSection.SUBSCRIPTIONS -> SubscriptionsInsightsCard(
@@ -1323,6 +1409,7 @@ internal fun InsightsTabletBody(
     onNavigateToWellbeing: () -> Unit = {},
     onNavigateToRecap: () -> Unit = {},
     onNavigateToManageCategories: () -> Unit = {},
+    onNavigateToHistoryTag: (String) -> Unit = {},
     showRecapEntry: Boolean = false,
     onToggleIncludeRecurringBills: (Boolean) -> Unit = {},
     onPlannedBadgeClick: (PlannedDialog) -> Unit = {},
@@ -1337,6 +1424,7 @@ internal fun InsightsTabletBody(
     val sectionActions = SectionCardActions(
         onSliceClick = onSliceClick,
         onStoreClick = onStoreClick,
+        onTagClick = onNavigateToHistoryTag,
         onNavigateToBudget = onNavigateToBudget,
         onNavigateToSubscriptions = onNavigateToSubscriptions,
         onNavigateToPaywall = onNavigateToPaywall,
@@ -2464,7 +2552,7 @@ private fun IncomeBySourceContent(state: InsightsUiState, periodLabel: String, o
 }
 
 @Composable
-private fun InsightCard(
+internal fun InsightCard(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {

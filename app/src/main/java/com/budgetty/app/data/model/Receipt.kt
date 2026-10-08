@@ -22,6 +22,9 @@ data class Receipt(
     val discount: BigDecimal = BigDecimal.ZERO,
     /** Tax/VAT contained in [price] (see [com.budgetty.app.data.local.ReceiptEntity.tax]); shown as "incl. VAT". */
     val tax: BigDecimal = BigDecimal.ZERO,
+    /** The distinct free-form tags across this receipt's line items, in first-seen order — the pills
+     *  shown on the receipt row. Empty for a receipt whose items carry no tags. */
+    val tags: List<String> = emptyList(),
 ) {
     /**
      * What was actually paid: the pre-discount [price] less the order [discount], never below zero.

@@ -17,6 +17,8 @@ enum class InsightsSection(val key: String, @param:StringRes val labelRes: Int) 
     // section loop), but listed here so it hides/reorders via the same Customize-sections machinery.
     WELLBEING("wellbeing", R.string.wellbeing_entry_label),
     BREAKDOWN("breakdown", R.string.insights_breakdown),
+    // Spend by free-form tag — the tag counterpart of the category Breakdown, so it sits right after it.
+    BY_TAG("by_tag", R.string.insights_by_tag),
     // On-device recurring-merchant detection (Premium; a locked teaser for free).
     SUBSCRIPTIONS("subscriptions", R.string.sub_title),
     SUMMARY("summary", R.string.insights_summary),

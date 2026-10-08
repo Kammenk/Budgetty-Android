@@ -30,7 +30,8 @@ class TransactionRepository(
 
     suspend fun countByCategory(category: String): Int = dao.countByCategory(category)
 
-    suspend fun insertAll(transactions: List<TransactionEntity>) =
+    /** Inserts the rows and returns their new ids, in input order (so callers can link per-row tags). */
+    suspend fun insertAll(transactions: List<TransactionEntity>): List<Long> =
         dao.insertAll(transactions)
 
     suspend fun deleteById(id: Long) = dao.deleteById(id)

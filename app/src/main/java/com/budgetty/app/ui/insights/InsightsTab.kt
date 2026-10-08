@@ -36,6 +36,7 @@ fun InsightsSection.tab(): InsightsTab? = when (this) {
     InsightsSection.SUMMARY -> InsightsTab.OVERVIEW
 
     InsightsSection.BREAKDOWN,
+    InsightsSection.BY_TAG,
     InsightsSection.TOP_CATEGORIES,
     InsightsSection.TOP_STORES,
     InsightsSection.BIGGEST_PURCHASES,

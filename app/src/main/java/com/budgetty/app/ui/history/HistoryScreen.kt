@@ -9,6 +9,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -38,7 +39,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -56,6 +59,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -83,10 +87,12 @@ import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.model.Receipt
+import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.PriceRangeSheet
 import com.budgetty.app.ui.components.ReceiptDetailContent
 import com.budgetty.app.ui.components.ReceiptDetailSheet
 import com.budgetty.app.ui.components.SegmentedToggle
+import com.budgetty.app.ui.components.TagPill
 import com.budgetty.app.ui.util.SinglePaneMaxWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -114,11 +120,14 @@ import java.time.ZoneId
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
+    initialTag: String? = null,
     onNavigateToReceipt: (Long) -> Unit = {},
     onNavigateToBudget: () -> Unit = {},
     viewModel: HistoryViewModel = koinViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    // A deep-link from the Insights "By tag" card arrives with a tag to pre-filter by; apply it once.
+    LaunchedEffect(initialTag) { initialTag?.let(viewModel::applyTagFilter) }
     HistoryScreenContent(
         state = state,
         isExpanded = isExpandedWidth(),
@@ -133,6 +142,9 @@ fun HistoryScreen(
         onBudgetPeriodSelected = viewModel::onBudgetPeriodSelected,
         onSortSelected = viewModel::onSortSelected,
         onPriceRangeSelected = viewModel::onPriceRangeSelected,
+        onToggleTag = viewModel::onToggleTag,
+        onTagMatchAllChanged = viewModel::onTagMatchAllChanged,
+        onClearTags = viewModel::onClearTags,
         onCommitSearch = viewModel::commitRecentSearch,
         onRemoveRecent = viewModel::removeRecentSearch,
         onClearRecent = viewModel::clearRecentSearches,
@@ -143,6 +155,10 @@ fun HistoryScreen(
     )
 }
 
+// The single stateful host for all three History tabs: search, filters, the two lists and every sheet.
+// Its size/branching come from wiring those pieces together, not from deep logic, so the structural
+// rules are suppressed here (the same call the baseline made before the tag-filter params were added).
+@Suppress("LongMethod", "LongParameterList", "CyclomaticComplexMethod")
 @Composable
 private fun HistoryScreenContent(
     state: HistoryUiState,
@@ -158,6 +174,9 @@ private fun HistoryScreenContent(
     onBudgetPeriodSelected: (DateRangeFilter) -> Unit,
     onSortSelected: (SortOrder) -> Unit,
     onPriceRangeSelected: (BigDecimal?, BigDecimal?) -> Unit,
+    onToggleTag: (String) -> Unit = {},
+    onTagMatchAllChanged: (Boolean) -> Unit = {},
+    onClearTags: () -> Unit = {},
     onCommitSearch: (String) -> Unit,
     onRemoveRecent: (String) -> Unit,
     onClearRecent: () -> Unit,
@@ -169,6 +188,7 @@ private fun HistoryScreenContent(
     val focusManager = LocalFocusManager.current
     var searchFocused by remember { mutableStateOf(false) }
     var showPriceSheet by remember { mutableStateOf(false) }
+    var showTagSheet by remember { mutableStateOf(false) }
     // Receipts vs Items is a pure view toggle over the same data, so it lives in UI state.
     var mode by remember { mutableStateOf(HistoryMode.RECEIPTS) }
     // Tapping a receipt opens the same detail sheet as Home (rather than jumping into the editor).
@@ -248,6 +268,7 @@ private fun HistoryScreenContent(
                     onDate = onDateSelected,
                     onSort = onSortSelected,
                     onOpenPrice = { showPriceSheet = true },
+                    onOpenTags = { showTagSheet = true },
                 )
                 Spacer(Modifier.height(MaterialTheme.dimens.sm))
             } else if (mode == HistoryMode.BUDGETS && state.hasBudgetPlan) {
@@ -571,6 +592,18 @@ private fun HistoryScreenContent(
         )
     }
 
+    if (showTagSheet) {
+        TagFilterSheet(
+            options = state.tagOptions,
+            selected = state.filters.tags,
+            matchAll = state.filters.tagMatchAll,
+            onToggle = onToggleTag,
+            onMatchAllChange = onTagMatchAllChanged,
+            onClear = onClearTags,
+            onDismiss = { showTagSheet = false },
+        )
+    }
+
     if (selectedReceipt != null && !isWide) {
         ReceiptDetailSheet(
             receipt = selectedReceipt,
@@ -647,9 +680,17 @@ private fun FilterRow(
     onDate: (DateRangeFilter?) -> Unit,
     onSort: (SortOrder) -> Unit,
     onOpenPrice: () -> Unit,
+    onOpenTags: () -> Unit,
 ) {
     val f = state.filters
     val context = LocalContext.current
+    // Chip label: "Tags" when none, "#one" for a single tag, "#first +N" for several (stable first tag).
+    val repTag = f.tags.minOrNull()
+    val tagChipLabel = when {
+        repTag == null -> stringResource(R.string.filter_tag)
+        f.tags.size == 1 -> "#$repTag"
+        else -> stringResource(R.string.history_tag_chip_more, repTag, f.tags.size - 1)
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -679,6 +720,12 @@ private fun FilterRow(
             selected = f.hasPrice,
             onClick = onOpenPrice,
             label = stringResource(R.string.filter_price),
+            trailingIcon = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null) },
+        )
+        HistoryFilterChip(
+            selected = f.hasTags,
+            onClick = onOpenTags,
+            label = tagChipLabel,
             trailingIcon = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null) },
         )
         SortChip(current = state.sort, onSelect = onSort)
@@ -849,6 +896,7 @@ private fun SortOrder.labelRes(): Int = when (this) {
     SortOrder.OLDEST -> R.string.sort_oldest
     SortOrder.PRICE_HIGH -> R.string.sort_price_high
     SortOrder.PRICE_LOW -> R.string.sort_price_low
+    SortOrder.TAG_AZ -> R.string.sort_tag_az
 }
 
 @Composable
@@ -862,6 +910,90 @@ private fun MenuItem(text: String, checked: Boolean, onClick: () -> Unit) {
             null
         },
     )
+}
+
+/**
+ * The "Filter by tag" bottom sheet (centered dialog on tablets, via [AdaptiveSheet]): an Any/All match
+ * toggle over a scrollable checklist of every tag in use. Tapping a row toggles it live — the list
+ * behind the sheet re-filters as you go — so there's no separate Apply. Empty when nothing is tagged.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TagFilterSheet(
+    options: List<String>,
+    selected: Set<String>,
+    matchAll: Boolean,
+    onToggle: (String) -> Unit,
+    onMatchAllChange: (Boolean) -> Unit,
+    onClear: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AdaptiveSheet(onDismiss = onDismiss, containerColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
+        Column(modifier = Modifier.padding(horizontal = MaterialTheme.dimens.lg)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.history_tag_sheet_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f),
+                )
+                if (selected.isNotEmpty()) {
+                    TextButton(onClick = onClear) { Text(stringResource(R.string.history_tag_clear)) }
+                }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_done)) }
+            }
+            if (options.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.history_tag_empty),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(vertical = MaterialTheme.dimens.lg),
+                )
+            } else {
+                Spacer(Modifier.height(MaterialTheme.dimens.sm))
+                // Any/All only bites once two or more tags are picked; shown throughout (with a hint)
+                // so the choice is discoverable before the second tag goes on.
+                SegmentedToggle(
+                    options = listOf(
+                        stringResource(R.string.history_tag_match_any),
+                        stringResource(R.string.history_tag_match_all),
+                    ),
+                    selectedIndex = if (matchAll) 1 else 0,
+                    onSelect = { onMatchAllChange(it == 1) },
+                )
+                Text(
+                    text = stringResource(R.string.history_tag_match_hint),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 5.dp, bottom = MaterialTheme.dimens.sm),
+                )
+                LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
+                    items(options, key = { it }) { tag ->
+                        TagFilterRow(tag = tag, checked = tag in selected, onToggle = { onToggle(tag) })
+                    }
+                }
+            }
+            Spacer(Modifier.height(MaterialTheme.dimens.sm))
+        }
+    }
+}
+
+/** One checkable row in [TagFilterSheet]: a checkbox beside the outlined #pill. */
+@Composable
+private fun TagFilterRow(tag: String, checked: Boolean, onToggle: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.dimens.radiusSm))
+            .clickable(onClick = onToggle)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Checkbox(checked = checked, onCheckedChange = { onToggle() })
+        Spacer(Modifier.width(MaterialTheme.dimens.sm))
+        TagPill(tag)
+    }
 }
 
 /** Shown when the search field is focused but empty: recent searches + most-used stores/categories. */
@@ -1180,7 +1312,31 @@ private fun HistoryRow(
                 )
             }
         }
+        // Tag pills on their own line, indented under the item name (past the category tile).
+        if (item.tags.isNotEmpty()) {
+            TagPillRow(
+                tags = item.tags,
+                modifier = Modifier.padding(
+                    start = MaterialTheme.dimens.xl + 40.dp,
+                    end = MaterialTheme.dimens.xl,
+                    bottom = 8.dp,
+                ),
+            )
+        }
         if (fraction >= 0f) MagnitudeBar(fraction)
+    }
+}
+
+/** A wrapped row of read-only [TagPill]s, used under History item/receipt rows. */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun TagPillRow(tags: List<String>, modifier: Modifier = Modifier) {
+    FlowRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        tags.forEach { TagPill(it) }
     }
 }
 
@@ -1255,6 +1411,17 @@ private fun ReceiptHistoryRow(
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(MaterialTheme.dimens.iconSmall),
+            )
+        }
+        // The receipt's distinct tags (across its items), indented under the store name.
+        if (receipt.tags.isNotEmpty()) {
+            TagPillRow(
+                tags = receipt.tags,
+                modifier = Modifier.padding(
+                    start = MaterialTheme.dimens.xl + 50.dp,
+                    end = MaterialTheme.dimens.xl,
+                    bottom = 8.dp,
+                ),
             )
         }
         MagnitudeBar(fraction)

@@ -13,6 +13,7 @@ import com.budgetty.app.category.Categories
         CategoryRuleEntity::class, RecurringEntity::class, BudgetRolloverEntity::class,
         SavingsGoalEntity::class, SavingsContributionEntity::class,
         IgnoredSubscriptionEntity::class, BuyingLimitEntity::class, WellbeingScoreEntity::class,
+        TagEntity::class, TransactionTagEntity::class,
     ],
     version = BudgettyDatabase.VERSION,
     exportSchema = true,
@@ -30,12 +31,13 @@ abstract class BudgettyDatabase : RoomDatabase() {
     abstract fun ignoredSubscriptionDao(): IgnoredSubscriptionDao
     abstract fun buyingLimitDao(): BuyingLimitDao
     abstract fun wellbeingScoreDao(): WellbeingScoreDao
+    abstract fun tagDao(): TagDao
 
     companion object {
         // The Room schema version — single source of truth. Used by the @Database annotation above
         // and reported to Crashlytics (see CrashReporting.setDatabaseVersion) so a crash names the
         // schema it hit; sharing one const keeps the annotation and the reported value from drifting.
-        const val VERSION = 27
+        const val VERSION = 28
     }
 }
 
@@ -432,6 +434,36 @@ val MIGRATION_26_27 = object : Migration(26, 27) {
     }
 }
 
+/**
+ * v28 adds free-form tags: the `tags` catalog (a normalized name + createdAt) and the
+ * `transaction_tags` many-to-many join to line-item transactions. A transaction's links cascade away
+ * when it is deleted (so editing a receipt, which deletes + re-inserts its items, drops the old links
+ * and the review screen re-creates them); a tag's links cascade away when the tag is deleted, never
+ * touching the transactions. Both tables start empty, so there's nothing to backfill. The DDL mirrors
+ * [TagEntity] / [TransactionTagEntity] exactly so Room's schema validation passes.
+ */
+val MIGRATION_27_28 = object : Migration(27, 28) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `tags` " +
+                "(`name` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`name`))",
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `transaction_tags` (" +
+                "`transactionId` INTEGER NOT NULL, `tagName` TEXT NOT NULL, " +
+                "PRIMARY KEY(`transactionId`, `tagName`), " +
+                "FOREIGN KEY(`transactionId`) REFERENCES `transactions`(`id`) " +
+                "ON UPDATE NO ACTION ON DELETE CASCADE, " +
+                "FOREIGN KEY(`tagName`) REFERENCES `tags`(`name`) " +
+                "ON UPDATE NO ACTION ON DELETE CASCADE)",
+        )
+        db.execSQL(
+            "CREATE INDEX IF NOT EXISTS `index_transaction_tags_tagName` " +
+                "ON `transaction_tags` (`tagName`)",
+        )
+    }
+}
+
 /** Inserts the predefined categories. Idempotent — never overwrites an existing row. */
 fun seedCategories(db: SupportSQLiteDatabase) {
     Categories.predefined.forEach { category ->
@@ -477,5 +509,5 @@ val ALL_MIGRATIONS: Array<Migration> = arrayOf(
     MIGRATION_14_15, MIGRATION_15_16, MIGRATION_16_17, MIGRATION_17_18,
     MIGRATION_18_19, MIGRATION_19_20, MIGRATION_20_21, MIGRATION_21_22,
     MIGRATION_22_23, MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26,
-    MIGRATION_26_27,
+    MIGRATION_26_27, MIGRATION_27_28,
 )
