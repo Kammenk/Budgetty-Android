@@ -65,6 +65,7 @@ import com.budgetty.app.ui.account.AccountScreen
 import com.budgetty.app.ui.warranties.WarrantiesScreen
 import com.budgetty.app.ui.budgets.BudgetEnvelopesScreen
 import com.budgetty.app.ui.csvimport.ImportCsvScreen
+import com.budgetty.app.ui.forecast.ForecastScreen
 import com.budgetty.app.ui.auth.AuthState
 import com.budgetty.app.ui.auth.AuthViewModel
 import com.budgetty.app.ui.auth.LoginScreen
@@ -464,6 +465,7 @@ private fun BudgettyNavHost(
                 onNavigateToRecap = { navController.navigate(Routes.RECAP) },
                 onNavigateToManageCategories = { navController.navigate(Routes.MANAGE_CATEGORIES) },
                 onNavigateToHistoryTag = { tag -> navController.navigate(Routes.historyWithTag(tag)) },
+                onNavigateToForecast = { navController.navigate(Routes.FORECAST) },
             )
         }
         composable(Routes.SUBSCRIPTIONS) {
@@ -640,6 +642,16 @@ private fun BudgettyNavHost(
                         launchSingleTop = true
                     }
                 },
+            )
+        }
+        composable(Routes.FORECAST) {
+            ForecastScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPaywall = {
+                    analytics.logPaywallShown(PaywallSource.FORECAST)
+                    navController.navigate(Routes.PAYWALL)
+                },
+                onNavigateToBudget = { navController.navigateToBudget(budgetIsTab) },
             )
         }
         composable(Routes.BUYING_LIMITS) {

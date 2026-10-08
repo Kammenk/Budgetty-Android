@@ -46,6 +46,35 @@
     <string name="envelopes_sub_ahead" tools:ignore="MissingTranslation">Slightly ahead · %1$s/day for %2$d days left</string>
     <string name="envelopes_sub_over_pace" tools:ignore="MissingTranslation">Over pace · %1$s left, %2$d days</string>
     <string name="envelopes_sub_over_budget" tools:ignore="MissingTranslation">Over budget by %1$s · %2$d days left</string>
+    <!-- Cash-flow forecast -->
+    <string name="forecast_title" tools:ignore="MissingTranslation">Cash-flow forecast</string>
+    <string name="forecast_entry_sub" tools:ignore="MissingTranslation">See where your balance is heading</string>
+    <string name="forecast_setup_title" tools:ignore="MissingTranslation">A couple of things first</string>
+    <string name="forecast_setup_body" tools:ignore="MissingTranslation">The forecast is built from your recurring income and bills. Add them on the Budget tab and it fills in.</string>
+    <string name="forecast_setup_income" tools:ignore="MissingTranslation">Add your income</string>
+    <string name="forecast_setup_bills" tools:ignore="MissingTranslation">Add your recurring bills</string>
+    <string name="forecast_go_to_budget" tools:ignore="MissingTranslation">Go to Budget</string>
+    <string name="forecast_locked_title" tools:ignore="MissingTranslation">See where you’ll be in 3 months</string>
+    <string name="forecast_locked_body" tools:ignore="MissingTranslation">Forecast projects your balance from your income, bills and usual spending, and warns you before it dips low.</string>
+    <string name="forecast_unlock" tools:ignore="MissingTranslation">Unlock Forecast</string>
+    <string name="forecast_balance_title" tools:ignore="MissingTranslation">Add your current balance</string>
+    <string name="forecast_balance_body" tools:ignore="MissingTranslation">The forecast starts from the balance you have today. Budgetty never connects to your bank.</string>
+    <string name="forecast_add_balance" tools:ignore="MissingTranslation">Add balance</string>
+    <string name="forecast_horizon" tools:ignore="MissingTranslation">Next %1$d months</string>
+    <string name="forecast_projected_end" tools:ignore="MissingTranslation">Projected balance · end of %1$s</string>
+    <string name="forecast_lowest_point" tools:ignore="MissingTranslation">Lowest point %1$s on %2$s</string>
+    <string name="forecast_dips_to" tools:ignore="MissingTranslation">Dips to %1$s on %2$s</string>
+    <string name="forecast_month_by_month" tools:ignore="MissingTranslation">Month by month</string>
+    <string name="forecast_month_flows" tools:ignore="MissingTranslation">In %1$s · Bills %2$s · Spend %3$s</string>
+    <string name="forecast_month_dips" tools:ignore="MissingTranslation">Dips to %1$s · %2$s</string>
+    <string name="forecast_assumptions" tools:ignore="MissingTranslation">Assumptions</string>
+    <string name="forecast_assumptions_sub" tools:ignore="MissingTranslation">Start %1$s · spending %2$s/mo</string>
+    <string name="forecast_disclaimer" tools:ignore="MissingTranslation">An estimate, not a bank balance. It starts from the balance you entered and assumes your recurring income, bills and average spending continue.</string>
+    <string name="forecast_start_balance" tools:ignore="MissingTranslation">Starting balance</string>
+    <string name="forecast_no_bank" tools:ignore="MissingTranslation">You enter this yourself — Budgetty doesn’t connect to your bank.</string>
+    <string name="forecast_discretionary" tools:ignore="MissingTranslation">Average monthly spending (excl. bills)</string>
+    <string name="forecast_discretionary_reset" tools:ignore="MissingTranslation">Reset to %1$s average</string>
+    <string name="forecast_comfort" tools:ignore="MissingTranslation">Warn me below</string>
 
     <!-- Common actions -->
     <string name="action_save">Save</string>

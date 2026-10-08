@@ -11,7 +11,9 @@ import com.google.firebase.analytics.FirebaseAnalytics
 enum class LimitSource(val paramValue: String) { MANUAL("manual"), SUGGESTION("suggestion") }
 
 /** Which in-app gate opened the paywall — the `source` param of [Analytics.logPaywallShown]. */
-enum class PaywallSource { HOME, INSIGHTS, ACCOUNT, BUDGET, WIDGETS, BUYING_LIMITS, CATEGORIES, WARRANTIES }
+enum class PaywallSource {
+    HOME, INSIGHTS, ACCOUNT, BUDGET, WIDGETS, BUYING_LIMITS, CATEGORIES, WARRANTIES, FORECAST
+}
 
 /** The subscription plan a purchase refers to — the `plan` param of the purchase events. */
 enum class SubPlan { MONTHLY, YEARLY, UNKNOWN }

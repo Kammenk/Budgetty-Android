@@ -164,6 +164,16 @@ data class AppSettings(
      * persisted the first time the user switches to Fortnightly. See [com.budgetty.app.ui.util.PayCycle].
      */
     val fortnightAnchorEpochDay: Long = 0L,
+    // ── Cash-flow forecast (per-user; cleared on sign-out, kept out of backup — a stored balance
+    // goes stale). Budgetty never connects to a bank; the start balance is user-entered. ──
+    /** The current balance the projection starts from (decimal string; blank = not set → setup prompt). */
+    val forecastStartBalance: String = "",
+    /** The "warn me below" comfort line (decimal string; blank = 0). */
+    val forecastComfortThreshold: String = "",
+    /** Optional override for average monthly discretionary spend (decimal string; blank = last-3-mo average). */
+    val forecastDiscretionary: String = "",
+    /** Remembered forecast horizon in months (3 / 6 / 12). */
+    val forecastHorizonMonths: Int = 3,
     /** Remembered History sort order (a SortOrder name); defaults to newest-first. */
     val historySort: String = "NEWEST",
     /** Recent History search terms, most-recent first (capped); powers the search quick-find. */

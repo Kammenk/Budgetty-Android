@@ -45,6 +45,7 @@ import com.budgetty.app.ui.warranties.WarrantiesViewModel
 import com.budgetty.app.ui.savings.SavingsGoalViewModel
 import com.budgetty.app.ui.csvimport.ImportCsvViewModel
 import com.budgetty.app.ui.export.ExportViewModel
+import com.budgetty.app.ui.forecast.ForecastViewModel
 import com.budgetty.app.ui.subscriptions.SubscriptionsViewModel
 import com.budgetty.app.ui.recap.RecapProvider
 import com.budgetty.app.ui.recap.RecapViewModel
@@ -173,6 +174,7 @@ val appModule = module {
     viewModel { SubscriptionsViewModel(get(), get(), get(), get(), get()) }
     viewModel { ExportViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { ImportCsvViewModel(get(), get(), get(), get()) }
+    viewModel { ForecastViewModel(get(), get(), get(), get()) }
     viewModel { HistoryViewModel(get(), get(), get(), get(), get()) }
     viewModel { InsightsViewModel(get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { WellbeingViewModel(get(), get(), get()) }
