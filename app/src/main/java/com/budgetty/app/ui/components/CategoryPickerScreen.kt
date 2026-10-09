@@ -339,6 +339,9 @@ private fun effectiveParentOf(cat: CategoryEntity): String? =
 private data class CategoryTree(
     val customTopLevel: List<CategoryEntity>,
     val childrenByParent: Map<String, List<CategoryEntity>>,
+    /** Customs filed under a built-in group: listed there, and also under "Your categories" so that
+     *  section shows every custom its header counts. */
+    val customInBuiltInGroups: List<CategoryEntity>,
 )
 
 private fun buildCategoryTree(all: List<CategoryEntity>): CategoryTree {
@@ -359,7 +362,11 @@ private fun buildCategoryTree(all: List<CategoryEntity>): CategoryTree {
     val customTopLevel = all
         .filter { it.isCustom && effectiveParentOf(it) == null }
         .sortedBy { it.createdAt }
-    return CategoryTree(customTopLevel, childrenByParent)
+    val customNames = all.filter { it.isCustom }.mapTo(HashSet()) { it.name }
+    val customInBuiltInGroups = all
+        .filter { cat -> cat.isCustom && effectiveParentOf(cat).let { it != null && it !in customNames } }
+        .sortedBy { it.createdAt }
+    return CategoryTree(customTopLevel, childrenByParent, customInBuiltInGroups)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1232,6 +1239,16 @@ private fun LazyGridScope.hierarchyItems(
             isPremium = isPremium,
             onCreate = onCreate,
             onOpenPaywall = onOpenPaywall,
+        )
+    }
+    items(tree.customInBuiltInGroups, key = { "customg_${it.name}" }) { cat ->
+        CategoryCard(
+            emoji = cat.icon,
+            name = cat.name,
+            color = Color(cat.colorArgb),
+            selected = cat.name.equals(selected, ignoreCase = true),
+            onClick = { onSelect(cat.name) },
+            onEdit = { onEdit(cat) },
         )
     }
     tree.customTopLevel.forEach { primary ->

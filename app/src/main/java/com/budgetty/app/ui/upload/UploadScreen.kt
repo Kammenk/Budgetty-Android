@@ -109,6 +109,11 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -126,11 +131,14 @@ import com.budgetty.app.ui.components.LocalCategorySuggestions
 import com.budgetty.app.ui.util.formatDate
 import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
+import com.budgetty.app.ui.util.fromDatePickerMillis
 import com.budgetty.app.ui.util.isExpandedWidth
 import com.budgetty.app.ui.util.isWideWidth
 import com.budgetty.app.ui.util.receiptDateNeedsReview
+import com.budgetty.app.ui.util.toDatePickerMillis
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.ui.theme.BudgettyTheme
+import com.budgetty.app.ui.util.categoryDisplayName
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
@@ -138,9 +146,6 @@ import org.koin.androidx.compose.koinViewModel
 import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZoneOffset
 
 // The upload/review host wiring the scan launchers, the review list and its sheets; its length and
 // branching are that wiring (now also the template pre-fill source), not deep logic, so suppressed.
@@ -1114,12 +1119,12 @@ private fun DateCard(date: Long, onDateChange: (Long) -> Unit, modifier: Modifie
         }
     }
     if (showPicker) {
-        val pickerState = rememberDatePickerState(initialSelectedDateMillis = date.toUtcDayMillis())
+        val pickerState = rememberDatePickerState(initialSelectedDateMillis = date.toDatePickerMillis())
         DatePickerDialog(
             onDismissRequest = { showPicker = false },
             confirmButton = {
                 TextButton(onClick = {
-                    pickerState.selectedDateMillis?.let { onDateChange(it.toLocalDayMillis()) }
+                    pickerState.selectedDateMillis?.let { onDateChange(it.fromDatePickerMillis()) }
                     showPicker = false
                 }) { Text(stringResource(R.string.action_done)) }
             },
@@ -1133,16 +1138,6 @@ private fun DateCard(date: Long, onDateChange: (Long) -> Unit, modifier: Modifie
         }
     }
 }
-
-/** Local-day millis → the UTC-midnight millis the date picker uses to highlight that calendar day. */
-private fun Long.toUtcDayMillis(): Long =
-    Instant.ofEpochMilli(this).atZone(ZoneId.systemDefault()).toLocalDate()
-        .atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
-
-/** Date picker's UTC-midnight selection → local noon on that calendar day (stable for bucketing). */
-private fun Long.toLocalDayMillis(): Long =
-    Instant.ofEpochMilli(this).atZone(ZoneOffset.UTC).toLocalDate()
-        .atTime(12, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 
 /** Dashed-outline "Add transaction" button, matching the design's tonal add affordance. */
 @Composable
@@ -1362,6 +1357,9 @@ private fun CategoryField(
 ) {
     var showSheet by remember { mutableStateOf(false) }
     val display = if (category.isBlank()) "" else "${Categories.emojiOf(category)} $category".trim()
+    val a11yLabel = stringResource(R.string.upload_category)
+    val a11yValue =
+        if (category.isBlank()) stringResource(R.string.upload_select_category) else categoryDisplayName(category)
     Box(modifier = modifier) {
         TextField(
             value = display,
@@ -1383,13 +1381,18 @@ private fun CategoryField(
             singleLine = true,
             shape = FieldShape,
             colors = reviewFieldColors(),
-            modifier = Modifier.fillMaxWidth(),
+            // TalkBack reads the click target below instead, as one "Category, <value>" button.
+            modifier = Modifier.fillMaxWidth().clearAndSetSemantics {},
         )
         // A read-only field won't receive taps, so overlay a transparent click target.
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .clickable { showSheet = true },
+                .semantics {
+                    contentDescription = a11yLabel
+                    stateDescription = a11yValue
+                }
+                .clickable(role = Role.Button) { showSheet = true },
         )
     }
 

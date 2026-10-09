@@ -33,4 +33,15 @@ data class TripEntity(
 ) {
     val hasDates: Boolean get() = startDate != null && endDate != null
     val hasBudget: Boolean get() = budgetAmount != null && budgetAmount.signum() > 0
+
+    companion object {
+        /**
+         * "lisbon-2026" from "Lisbon" + [year]: the trip's normalized, year-stamped tag. A name that
+         * already ends in that year ("Lisbon 2026") isn't stamped twice. Same rule on iOS (`TripOps`).
+         */
+        fun tagFor(name: String, year: Int): String {
+            val base = TagEntity.normalize(name).ifBlank { "trip" }
+            return if (base.endsWith("-$year")) base else "$base-$year"
+        }
+    }
 }

@@ -72,6 +72,8 @@ import com.budgetty.app.ui.theme.budgetGoodColor
 import com.budgetty.app.ui.theme.budgetWarnColor
 import com.budgetty.app.ui.theme.dimens
 import org.koin.androidx.compose.koinViewModel
+import com.budgetty.app.ui.util.fromDatePickerMillis
+import com.budgetty.app.ui.util.toDatePickerMillis
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -467,12 +469,12 @@ private fun WarrantyEditSheet(
     }
 
     if (showDatePicker) {
-        val dpState = rememberDatePickerState(initialSelectedDateMillis = purchaseMillis)
+        val dpState = rememberDatePickerState(initialSelectedDateMillis = purchaseMillis.toDatePickerMillis())
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
                 TextButton(onClick = {
-                    dpState.selectedDateMillis?.let { purchaseMillis = it.toLocalDate().toMillis() }
+                    dpState.selectedDateMillis?.let { purchaseMillis = it.fromDatePickerMillis() }
                     showDatePicker = false
                 }) { Text(stringResource(R.string.action_ok)) }
             },

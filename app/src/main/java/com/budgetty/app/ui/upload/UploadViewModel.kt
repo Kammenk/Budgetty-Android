@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.budgetty.app.analytics.Analytics
 import com.budgetty.app.analytics.ScanFailReason
 import com.budgetty.app.category.Categories
-import com.budgetty.app.category.CategorySuggester
 import com.budgetty.app.crash.CrashReporting
 import com.budgetty.app.data.billing.BillingManager
 import com.budgetty.app.data.ingest.ParsedTransaction
@@ -30,6 +29,7 @@ import com.budgetty.app.data.repository.TemplateRepository
 import com.budgetty.app.data.repository.TripRepository
 import com.budgetty.app.data.repository.TransactionRepository
 import com.budgetty.app.ui.components.CategorySuggestions
+import com.budgetty.app.ui.components.categorySuggestionsFlow
 import com.budgetty.app.store.StoreNormalizer
 import com.budgetty.app.ui.buyinglimits.BuyingLimitNudger
 import com.budgetty.app.ui.util.CountableItem
@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -138,29 +137,14 @@ class UploadViewModel(
      * Habit-based category suggestions for the review screen's category picker: the user's categories
      * ranked by recent use (or generic "Common picks" before there's enough history), plus the learned
      * name → category rules so the picker can float a context match for the item being categorised.
-     * Recomputed live as transactions or rules change; see [CategorySuggester].
+     * Recomputed live as transactions or rules change; see [categorySuggestionsFlow].
      */
-    val categorySuggestions: StateFlow<CategorySuggestions> = combine(
-        repository.recentCategoryStamps(),
-        categoryRuleRepository.rules,
-    ) { stamps, rules ->
-        val ranked = CategorySuggester.rank(
-            stamps.map { it.category to it.timestamp },
-            System.currentTimeMillis(),
-        )
-        CategorySuggestions(
-            ranked = ranked.categories,
-            personalized = ranked.personalized,
-            rulesByName = rules.associate { it.name to it.category },
-        )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CategorySuggestions())
+    val categorySuggestions: StateFlow<CategorySuggestions> =
+        categorySuggestionsFlow(repository, categoryRuleRepository)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CategorySuggestions())
 
     /** When editing an existing receipt, its id (upload timestamp); null for a new upload. */
     private var editingReceiptId: Long? = null
-
-    /** The active trip's tag, if any — pre-applied to each new review row so the expense is counted
-     *  for the trip. Kept in sync by the collector in [init]; null when no trip is running. */
-    private var activeTripTag: String? = null
 
     /**
      * True while the receipt currently under review contains a fresh AI scan that hasn't yet been
@@ -213,9 +197,6 @@ class UploadViewModel(
                 _uiState.update { it.copy(isPremium = premium) }
             }
         }
-        viewModelScope.launch {
-            tripRepository.activeTrip.collect { trip -> activeTripTag = trip?.tag }
-        }
     }
 
     /** Saved color for [category], or null if it isn't a known category yet. */
@@ -234,12 +215,13 @@ class UploadViewModel(
                 val receipt = ingestManager.extract(uri)
                 val rules = categoryRuleRepository.rulesByName()
                 val parsed = receipt.items.map { applyRule(it, rules) }.map(::applySavedColor)
+                val tripTag = activeTripTag()
                 _uiState.update {
                     it.copy(
                         stage = UploadStage.REVIEW,
                         // Always land on the review screen, even with no rows, so the
                         // user can add transactions manually.
-                        transactions = seedTrip(parsed.ifEmpty { listOf(ParsedTransaction()) }),
+                        transactions = parsed.ifEmpty { listOf(ParsedTransaction()) }.withTripTag(tripTag),
                         storeName = receipt.storeName,
                         receiptDate = receipt.date,
                         discount = receipt.discount,
@@ -297,14 +279,21 @@ class UploadViewModel(
     }
 
     /**
-     * While a trip is active, pre-applies its tag to each fresh review row so the expense is counted
+     * The running trip's tag, or null when no trip is active. Read from the database at the moment a
+     * fresh entry starts: a collector started in `init` hasn't delivered yet when the screen calls
+     * [startManual] straight away, which left manual entries untagged.
+     */
+    private suspend fun activeTripTag(): String? = tripRepository.getActiveOnce()?.tag
+
+    /**
+     * While a trip is active, pre-applies its [tag] to each fresh review row so the expense is counted
      * for the trip. Shown as a normal (removable) tag pill — the user can take it off any single row,
-     * and it goes through the ordinary save path. Idempotent, and a no-op when no trip is running.
+     * and it goes through the ordinary save path. Idempotent, and a no-op when [tag] is null.
      * Not used when editing an existing receipt, which carries its own saved tags.
      */
-    private fun seedTrip(rows: List<ParsedTransaction>): List<ParsedTransaction> {
-        val tag = activeTripTag ?: return rows
-        return rows.map { if (tag in it.tags) it else it.copy(tags = it.tags + tag) }
+    private fun List<ParsedTransaction>.withTripTag(tag: String?): List<ParsedTransaction> {
+        if (tag == null) return this
+        return map { if (tag in it.tags) it else it.copy(tags = it.tags + tag) }
     }
 
     /**
@@ -317,7 +306,18 @@ class UploadViewModel(
         editingReceiptId = null
         scanPendingCount = false
         if (templateId <= 0L) {
-            applyManualState(ParsedTransaction(), store = "")
+            applyManualState(ParsedTransaction(), store = "", tripTag = null)
+            // The trip lookup is a database read, so its tag joins the row a moment after it shows.
+            viewModelScope.launch {
+                val tag = activeTripTag() ?: return@launch
+                _uiState.update { state ->
+                    if (state.isManual && editingReceiptId == null) {
+                        state.copy(transactions = state.transactions.withTripTag(tag))
+                    } else {
+                        state
+                    }
+                }
+            }
             return
         }
         viewModelScope.launch {
@@ -331,15 +331,15 @@ class UploadViewModel(
                     categoryColor = colorOf(it.category) ?: Categories.colorOf(it.category),
                 )
             } ?: ParsedTransaction()
-            applyManualState(txn, store = template?.store.orEmpty())
+            applyManualState(txn, store = template?.store.orEmpty(), tripTag = activeTripTag())
         }
     }
 
-    private fun applyManualState(txn: ParsedTransaction, store: String) {
+    private fun applyManualState(txn: ParsedTransaction, store: String, tripTag: String?) {
         _uiState.update {
             it.copy(
                 stage = UploadStage.REVIEW,
-                transactions = seedTrip(listOf(txn)),
+                transactions = listOf(txn).withTripTag(tripTag),
                 storeName = store,
                 receiptDate = System.currentTimeMillis(),
                 discount = BigDecimal.ZERO,
@@ -411,12 +411,16 @@ class UploadViewModel(
                 val receipt = ingestManager.extract(uri)
                 val rules = categoryRuleRepository.rulesByName()
                 val scanned = receipt.items.map { applyRule(it, rules) }.map(::applySavedColor)
+                val tripTag = activeTripTag()
                 _uiState.update {
                     // Drop a single blank placeholder row so the appended items read cleanly.
                     val existing = it.transactions.filterNot { row -> row.name.isBlank() }
+                    // Only the newly scanned rows are fresh expenses; rows of a receipt being edited
+                    // keep the tags they were saved with.
+                    val rows = existing + scanned.withTripTag(tripTag)
                     it.copy(
                         stage = UploadStage.REVIEW,
-                        transactions = seedTrip((existing + scanned).ifEmpty { listOf(ParsedTransaction()) }),
+                        transactions = rows.ifEmpty { listOf(ParsedTransaction()) },
                     )
                 }
                 // Counts only when the (still-manual) receipt is finalized — see [finalizeUpload].

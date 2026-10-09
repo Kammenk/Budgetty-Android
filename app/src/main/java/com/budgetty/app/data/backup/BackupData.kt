@@ -7,6 +7,7 @@ import com.budgetty.app.data.local.WarrantyEntity
 import com.budgetty.app.data.local.CategoryEntity
 import com.budgetty.app.data.local.CategoryRuleEntity
 import com.budgetty.app.data.local.DebtEntity
+import com.budgetty.app.data.local.IgnoredSubscriptionEntity
 import com.budgetty.app.data.local.ReceiptEntity
 import com.budgetty.app.data.local.RecurringEntity
 import com.budgetty.app.data.local.SavingsContributionEntity
@@ -46,6 +47,8 @@ data class BackupData(
     /** Trips (Travel mode) — metadata over a tag. The [TripEntity.tag] string points at one of [tags];
      *  restored with fresh ids. Absent in pre-trips backups. */
     val trips: List<TripEntity> = emptyList(),
+    /** Merchants dismissed from subscription detection; absent in older backups. */
+    val ignoredSubscriptions: List<IgnoredSubscriptionEntity> = emptyList(),
     /** User preferences (see [BackupSettings]); null in backups written before this field existed. */
     val settings: BackupSettings? = null,
 )

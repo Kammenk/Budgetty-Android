@@ -62,7 +62,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
-import com.budgetty.app.data.local.TagEntity
 import com.budgetty.app.data.local.TripEntity
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.CustomDateRangeSheet
@@ -168,7 +167,9 @@ internal fun TripsContent(
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp)
+                        // Cap first, then fill: the other order fills the whole row and the label
+                        // drifts left of the centred 520dp card column on wide screens.
+                        modifier = Modifier.widthIn(max = 520.dp).fillMaxWidth()
                             .padding(top = MaterialTheme.dimens.sm),
                     )
                 }
@@ -587,8 +588,8 @@ private fun StartTripSheet(
 
     val startMillis = start?.takeIf { datesOn }?.atStartOfDay(ZoneId.systemDefault())?.toInstant()?.toEpochMilli()
     val backfillCount = startMillis?.let { s -> transactionTimestamps.count { it >= s } } ?: 0
-    val tagPreview = "#" + TagEntity.normalize(name).ifBlank { "trip" } +
-        "-" + (start?.year ?: LocalDate.now().year)
+    // Same year the saved tag uses: the start date's when dates are on, else this year's.
+    val tagPreview = "#" + TripEntity.tagFor(name, start?.takeIf { datesOn }?.year ?: LocalDate.now().year)
 
     AdaptiveSheet(onDismiss = onDismiss) {
         Column(

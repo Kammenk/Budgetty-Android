@@ -259,9 +259,10 @@ private fun RecapActions(onDone: () -> Unit, onSeeDetails: () -> Unit, modifier:
         Button(
             onClick = onDone,
             shape = ButtonDefaults.filledTonalShape,
+            // Cap first, then fill — the other order ignores the cap and stretches across a tablet.
             modifier = Modifier
-                .fillMaxWidth()
                 .widthIn(max = RecapContentMaxWidth)
+                .fillMaxWidth()
                 .height(MaterialTheme.dimens.buttonHeight),
         ) {
             Text(stringResource(R.string.action_done), fontWeight = FontWeight.SemiBold)

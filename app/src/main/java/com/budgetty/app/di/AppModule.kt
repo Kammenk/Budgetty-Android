@@ -111,7 +111,7 @@ val appModule = module {
 
     // Backup / restore (import-export). Takes SettingsStore too, so a full restore round-trips the
     // user's display / data-interpretation preferences (currency, date format, …), not just data.
-    single { BackupManager(get(), get()) }
+    single { BackupManager(get<UserDatabaseManager>(), get()) }
 
     // Free-tier scan quota
     single { ScanQuota(androidContext()) }
@@ -190,7 +190,7 @@ val appModule = module {
     viewModel { TripsViewModel(get(), get(), get(), get()) }
     viewModel { BuyingLimitsViewModel(get(), get(), get(), get(), get()) }
     viewModel { DebtsViewModel(get()) }
-    viewModel { TemplatesViewModel(get()) }
+    viewModel { TemplatesViewModel(get(), get(), get()) }
     viewModel { WarrantiesViewModel(get(), get()) }
     viewModel { BudgetEnvelopesViewModel(get(), get(), get(), get(), get()) }
     viewModel { ManageCategoriesViewModel(get(), get(), get(), get(), get()) }

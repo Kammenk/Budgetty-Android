@@ -616,7 +616,13 @@ private fun BudgettyNavHost(
             LoanCalculatorScreen(onNavigateBack = { navController.popBackStack() })
         }
         composable(Routes.TEMPLATES) {
-            TemplatesScreen(onNavigateBack = { navController.popBackStack() })
+            TemplatesScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onOpenPaywall = {
+                    analytics.logPaywallShown(PaywallSource.CATEGORIES)
+                    navController.navigate(Routes.PAYWALL)
+                },
+            )
         }
         composable(Routes.WARRANTIES) {
             WarrantiesScreen(

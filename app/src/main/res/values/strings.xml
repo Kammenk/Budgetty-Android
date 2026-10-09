@@ -37,7 +37,10 @@
     <string name="envelopes_cap_reached" tools:ignore="MissingTranslation">Free includes %1$d extra budget. Premium adds as many as you need.</string>
     <string name="envelopes_scope_all" tools:ignore="MissingTranslation">All spending</string>
     <string name="envelopes_scope_some" tools:ignore="MissingTranslation">Some categories</string>
-    <string name="envelopes_scope_categories" tools:ignore="MissingTranslation">%1$d categories</string>
+    <plurals name="envelopes_scope_categories" tools:ignore="MissingTranslation">
+        <item quantity="one">%1$d category</item>
+        <item quantity="other">%1$d categories</item>
+    </plurals>
     <string name="envelopes_field_name" tools:ignore="MissingTranslation">Name</string>
     <string name="envelopes_field_amount" tools:ignore="MissingTranslation">Amount</string>
     <string name="envelopes_field_scope" tools:ignore="MissingTranslation">Counts</string>
