@@ -48,6 +48,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -220,8 +221,9 @@ private fun EnvelopeCard(card: EnvelopeCardUi, onClick: () -> Unit) {
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
+                    val categoryCount = e.categoryList().size
                     val scope = if (e.isAllSpending) stringResource(R.string.envelopes_scope_all)
-                    else stringResource(R.string.envelopes_scope_categories, e.categoryList().size)
+                    else pluralStringResource(R.plurals.envelopes_scope_categories, categoryCount, categoryCount)
                     Text(
                         "${formatDateRange(card.startDate, card.endDate)} · $scope",
                         style = MaterialTheme.typography.bodySmall,

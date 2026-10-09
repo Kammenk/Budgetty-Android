@@ -109,6 +109,11 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
@@ -133,6 +138,7 @@ import com.budgetty.app.ui.util.receiptDateNeedsReview
 import com.budgetty.app.ui.util.toDatePickerMillis
 import androidx.compose.ui.tooling.preview.Preview
 import com.budgetty.app.ui.theme.BudgettyTheme
+import com.budgetty.app.ui.util.categoryDisplayName
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
@@ -1351,6 +1357,9 @@ private fun CategoryField(
 ) {
     var showSheet by remember { mutableStateOf(false) }
     val display = if (category.isBlank()) "" else "${Categories.emojiOf(category)} $category".trim()
+    val a11yLabel = stringResource(R.string.upload_category)
+    val a11yValue =
+        if (category.isBlank()) stringResource(R.string.upload_select_category) else categoryDisplayName(category)
     Box(modifier = modifier) {
         TextField(
             value = display,
@@ -1372,13 +1381,18 @@ private fun CategoryField(
             singleLine = true,
             shape = FieldShape,
             colors = reviewFieldColors(),
-            modifier = Modifier.fillMaxWidth(),
+            // TalkBack reads the click target below instead, as one "Category, <value>" button.
+            modifier = Modifier.fillMaxWidth().clearAndSetSemantics {},
         )
         // A read-only field won't receive taps, so overlay a transparent click target.
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .clickable { showSheet = true },
+                .semantics {
+                    contentDescription = a11yLabel
+                    stateDescription = a11yValue
+                }
+                .clickable(role = Role.Button) { showSheet = true },
         )
     }
 

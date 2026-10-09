@@ -307,7 +307,8 @@ private fun HomeScreenContent(
         // "Add receipt" stays one tap away via the floating action button in every layout.
         ExtendedFloatingActionButton(
             onClick = { showAddSheet = true },
-            icon = { Icon(Icons.Filled.AddAPhoto, contentDescription = null) },
+            // M3 hides the text from TalkBack and labels an extended FAB with its icon's description.
+            icon = { Icon(Icons.Filled.AddAPhoto, contentDescription = stringResource(R.string.add_receipt_title)) },
             text = { Text(stringResource(R.string.add_receipt_title)) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
