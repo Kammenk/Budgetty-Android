@@ -111,7 +111,7 @@ val appModule = module {
 
     // Backup / restore (import-export). Takes SettingsStore too, so a full restore round-trips the
     // user's display / data-interpretation preferences (currency, date format, …), not just data.
-    single { BackupManager(get(), get()) }
+    single { BackupManager(get<UserDatabaseManager>(), get()) }
 
     // Free-tier scan quota
     single { ScanQuota(androidContext()) }
