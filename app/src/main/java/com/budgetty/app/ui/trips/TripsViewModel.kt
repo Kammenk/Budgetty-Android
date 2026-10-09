@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.ReceiptEntity
-import com.budgetty.app.data.local.TagEntity
 import com.budgetty.app.data.local.TransactionEntity
 import com.budgetty.app.data.local.TransactionTagEntity
 import com.budgetty.app.data.local.TripEntity
@@ -164,12 +163,12 @@ class TripsViewModel(
         viewModelScope.launch { tripRepository.delete(id) }
     }
 
-    /** "lisbon-2026" from "Lisbon" + the start year (or this year) — a normalized, year-stamped tag. */
+    /** The trip's tag, stamped with the start year (or this year) — see [TripEntity.tagFor]. */
     private fun tripTag(name: String, startMillis: Long?): String {
         val year = startMillis
             ?.let { Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate().year }
             ?: LocalDate.now().year
-        return "${TagEntity.normalize(name).ifBlank { "trip" }}-$year"
+        return TripEntity.tagFor(name, year)
     }
 
     private fun List<TransactionEntity>.spend(): BigDecimal =
