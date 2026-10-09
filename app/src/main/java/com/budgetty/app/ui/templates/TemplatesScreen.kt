@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,18 +42,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.budgetty.app.R
 import com.budgetty.app.category.Categories
 import com.budgetty.app.data.local.TemplateEntity
+import com.budgetty.app.ui.categories.ManageCategoriesViewModel
 import com.budgetty.app.ui.components.AdaptiveSheet
 import com.budgetty.app.ui.components.CategoryPickerScreen
+import com.budgetty.app.ui.components.CustomCategoryActions
+import com.budgetty.app.ui.components.LocalCategorySuggestions
 import com.budgetty.app.ui.theme.BudgettyTheme
 import com.budgetty.app.ui.theme.dimens
 import com.budgetty.app.ui.util.AppFormats
@@ -73,17 +82,35 @@ private val TEMPLATE_EMOJIS =
 @Composable
 fun TemplatesScreen(
     onNavigateBack: () -> Unit,
+    onOpenPaywall: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TemplatesViewModel = koinViewModel(),
+    // The editor's category picker creates/edits custom categories exactly like Manage categories does.
+    categoriesViewModel: ManageCategoriesViewModel = koinViewModel(),
 ) {
     val templates by viewModel.templates.collectAsStateWithLifecycle()
-    TemplatesContent(
-        templates = templates,
-        onNavigateBack = onNavigateBack,
-        onSave = viewModel::save,
-        onDelete = viewModel::delete,
-        modifier = modifier,
+    val suggestions by viewModel.categorySuggestions.collectAsStateWithLifecycle()
+    val categories by categoriesViewModel.uiState.collectAsStateWithLifecycle()
+    val customActions = CustomCategoryActions(
+        categories = categories.categories,
+        isPremium = categories.isPremium,
+        onSave = categoriesViewModel::saveCustomCategory,
+        onDelete = categoriesViewModel::deleteCustomCategory,
+        onReparent = categoriesViewModel::setCategoryParent,
+        onUpdateBucket = categoriesViewModel::updateBucket,
+        onCountTransactions = categoriesViewModel::transactionCount,
+        onOpenPaywall = onOpenPaywall,
     )
+    CompositionLocalProvider(LocalCategorySuggestions provides suggestions) {
+        TemplatesContent(
+            templates = templates,
+            onNavigateBack = onNavigateBack,
+            onSave = viewModel::save,
+            onDelete = viewModel::delete,
+            customActions = customActions,
+            modifier = modifier,
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,6 +121,7 @@ internal fun TemplatesContent(
     onSave: (TemplateEntity) -> Unit,
     onDelete: (Long) -> Unit,
     modifier: Modifier = Modifier,
+    customActions: CustomCategoryActions = CustomCategoryActions(),
 ) {
     var editorFor by remember { mutableStateOf<TemplateEntity?>(null) }
 
@@ -154,6 +182,7 @@ internal fun TemplatesContent(
             onSave = { onSave(it); editorFor = null },
             onDelete = if (target.id != 0L) { { onDelete(target.id); editorFor = null } } else null,
             onDismiss = { editorFor = null },
+            customActions = customActions,
         )
     }
 }
@@ -254,6 +283,7 @@ private fun TemplateEditorSheet(
     onSave: (TemplateEntity) -> Unit,
     onDelete: (() -> Unit)?,
     onDismiss: () -> Unit,
+    customActions: CustomCategoryActions,
 ) {
     var emoji by remember { mutableStateOf(initial.emoji.ifBlank { TEMPLATE_EMOJIS.first() }) }
     var name by remember { mutableStateOf(initial.name) }
@@ -364,6 +394,8 @@ private fun TemplateEditorSheet(
             selected = category,
             onSelect = { category = it },
             onDismiss = { showCategoryPicker = false },
+            custom = customActions,
+            contextName = name.trim().ifEmpty { null },
         )
     }
 }
@@ -394,6 +426,9 @@ private fun EmojiRow(selected: String, onSelect: (String) -> Unit) {
 
 @Composable
 private fun CategoryField(category: String, onClick: () -> Unit) {
+    val a11yLabel = stringResource(R.string.templates_field_category)
+    val a11yValue =
+        if (category.isBlank()) stringResource(R.string.templates_pick_category) else categoryDisplayName(category)
     Box {
         OutlinedTextField(
             value = if (category.isBlank()) "" else categoryDisplayName(category),
@@ -414,9 +449,18 @@ private fun CategoryField(category: String, onClick: () -> Unit) {
                 disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
                 disabledLeadingIconColor = MaterialTheme.colorScheme.onSurface,
             ),
-            modifier = Modifier.fillMaxWidth(),
+            // TalkBack reads the click target below instead, as one "Category, <value>" button.
+            modifier = Modifier.fillMaxWidth().clearAndSetSemantics {},
         )
-        Box(modifier = Modifier.matchParentSize().clickable(onClick = onClick))
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .semantics {
+                    contentDescription = a11yLabel
+                    stateDescription = a11yValue
+                }
+                .clickable(role = Role.Button, onClick = onClick),
+        )
     }
 }
 
