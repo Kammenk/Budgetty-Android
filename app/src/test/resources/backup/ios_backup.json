@@ -1,0 +1,362 @@
+{
+  "app" : "Budgetty iOS",
+  "budgetEnvelopes" : [
+    {
+      "categories" : [
+        "Restaurant & Dining",
+        "Coffee & Cafés"
+      ],
+      "createdAt" : "2026-09-25T08:00:00Z",
+      "emoji" : "🍽️",
+      "endDate" : "2026-10-31T00:00:00Z",
+      "limitAmount" : 300,
+      "name" : "Eating out",
+      "sortOrder" : 0,
+      "startDate" : "2026-10-01T00:00:00Z"
+    },
+    {
+      "categories" : [
+
+      ],
+      "createdAt" : "2026-09-26T08:00:00Z",
+      "emoji" : "🧾",
+      "endDate" : "2026-10-05T00:00:00Z",
+      "limitAmount" : 900,
+      "name" : "Lisbon spending",
+      "sortOrder" : 1,
+      "startDate" : "2026-09-29T00:00:00Z"
+    }
+  ],
+  "budgets" : [
+    {
+      "amount" : 250.5,
+      "key" : "CAT:Groceries"
+    },
+    {
+      "amount" : 1500,
+      "key" : "MONTHLY"
+    }
+  ],
+  "buyingLimits" : [
+    {
+      "count" : 2,
+      "createdAt" : "2026-09-10T12:00:00Z",
+      "emoji" : "🥤",
+      "keywords" : [
+        "coke",
+        "pepsi max"
+      ],
+      "label" : "Fizzy drinks",
+      "timeframeRaw" : "WEEKLY"
+    }
+  ],
+  "categories" : [
+    {
+      "bucket" : "WANT",
+      "colorArgb" : 4287458915,
+      "createdAt" : "2026-07-15T10:00:00Z",
+      "icon" : "☕️",
+      "name" : "Specialty Coffee",
+      "parent" : "Groceries"
+    }
+  ],
+  "categoryOverrides" : [
+    {
+      "bucket" : "NEED",
+      "name" : "Coffee & Cafés"
+    },
+    {
+      "name" : "Fuel",
+      "parent" : "Bills & Finance"
+    }
+  ],
+  "debts" : [
+    {
+      "aprPercent" : 19.9,
+      "balance" : 2450.75,
+      "createdAt" : "2026-08-02T09:00:00Z",
+      "emoji" : "💳",
+      "minPayment" : 75,
+      "name" : "Visa"
+    }
+  ],
+  "exportedAt" : "2026-10-09T08:00:00Z",
+  "ignoredSubscriptions" : [
+    {
+      "ignoredAt" : "2026-09-15T10:00:00Z",
+      "merchant" : "spotify"
+    }
+  ],
+  "receipts" : [
+    {
+      "createdAt" : "2026-10-01T09:30:00Z",
+      "date" : "2026-09-30T00:00:00Z",
+      "discount" : 0.5,
+      "extraCharges" : 0,
+      "isManual" : false,
+      "items" : [
+        {
+          "category" : "Dairy",
+          "createdAt" : "2026-10-01T09:30:00Z",
+          "name" : "Milk 1L",
+          "price" : 1.89,
+          "quantity" : 2,
+          "tags" : [
+            "Lisbon 2026",
+            "#groceries"
+          ]
+        },
+        {
+          "category" : "Bakery",
+          "createdAt" : "2026-10-01T09:30:00Z",
+          "name" : "Sourdough",
+          "price" : 2.1,
+          "quantity" : 1,
+          "tags" : [
+            "groceries",
+            "groceries"
+          ]
+        },
+        {
+          "category" : "Specialty Coffee",
+          "createdAt" : "2026-10-01T09:30:00Z",
+          "name" : "Coffee beans",
+          "price" : 12.49,
+          "quantity" : 1,
+          "tags" : [
+
+          ]
+        }
+      ],
+      "store" : "Lidl",
+      "tax" : 1.23,
+      "taxOnTop" : false
+    },
+    {
+      "createdAt" : "2026-10-03T18:45:12Z",
+      "date" : "2026-10-03T00:00:00Z",
+      "discount" : 0,
+      "extraCharges" : 0,
+      "isManual" : true,
+      "items" : [
+        {
+          "category" : "Coffee & Cafés",
+          "createdAt" : "2026-10-03T18:45:12Z",
+          "name" : "Flat white",
+          "price" : 3.8,
+          "quantity" : 1
+        }
+      ],
+      "store" : "Corner Café",
+      "tax" : 0,
+      "taxOnTop" : false
+    },
+    {
+      "createdAt" : "2026-10-01T09:30:00Z",
+      "date" : "2026-10-01T00:00:00Z",
+      "discount" : 0,
+      "extraCharges" : 1.5,
+      "isManual" : false,
+      "items" : [
+        {
+          "category" : "Fuel",
+          "createdAt" : "2026-10-01T09:30:00Z",
+          "name" : "Diesel",
+          "price" : 65.2,
+          "quantity" : 1,
+          "tags" : [
+            "lisbon-2026"
+          ]
+        }
+      ],
+      "store" : "Shell",
+      "tax" : 10.87,
+      "taxOnTop" : true
+    }
+  ],
+  "recurring" : [
+    {
+      "active" : true,
+      "amount" : 1200,
+      "autoPay" : true,
+      "cadenceRaw" : "MONTHLY",
+      "category" : "Rent",
+      "createdAt" : "2026-08-01T08:00:00Z",
+      "dueDay" : 1,
+      "isIncome" : false,
+      "label" : "Rent",
+      "lastPosted" : "2026-10-01T07:00:00Z"
+    },
+    {
+      "active" : true,
+      "amount" : 3200,
+      "cadenceRaw" : "MONTHLY",
+      "category" : "",
+      "createdAt" : "2026-08-01T08:05:00Z",
+      "dueDay" : 25,
+      "isIncome" : true,
+      "label" : "Salary"
+    },
+    {
+      "active" : true,
+      "amount" : 9.99,
+      "autoPay" : false,
+      "cadenceRaw" : "WEEKLY",
+      "category" : "Sports & Fitness",
+      "createdAt" : "2026-08-03T08:00:00Z",
+      "dueDay" : 5,
+      "isIncome" : false,
+      "label" : "Gym"
+    }
+  ],
+  "rules" : [
+    {
+      "category" : "Dairy",
+      "name" : "milk 1l"
+    }
+  ],
+  "savingsGoals" : [
+    {
+      "contributions" : [
+        {
+          "amount" : 200,
+          "date" : "2026-09-01T09:00:00Z",
+          "note" : "First deposit"
+        },
+        {
+          "amount" : -25.5,
+          "date" : "2026-09-20T09:00:00Z",
+          "note" : ""
+        }
+      ],
+      "createdAt" : "2026-08-20T12:00:00Z",
+      "emoji" : "🏝️",
+      "name" : "Holiday",
+      "targetAmount" : 2000,
+      "targetDate" : "2027-06-01T00:00:00Z"
+    },
+    {
+      "contributions" : [
+
+      ],
+      "createdAt" : "2026-08-21T12:00:00Z",
+      "emoji" : "🚗",
+      "name" : "Car",
+      "targetAmount" : 8000
+    }
+  ],
+  "settings" : {
+    "accent" : "ocean",
+    "budgetCadence" : "FORTNIGHTLY",
+    "budgetRolloverEnabled" : true,
+    "currency" : "GBP",
+    "customInsightsSections" : [
+      "breakdown",
+      "topCategories",
+      "byTag"
+    ],
+    "dateFormat" : "dots",
+    "fortnightAnchor" : 20725,
+    "hiddenHomeSections" : [
+      "weekComparison",
+      "receipts"
+    ],
+    "hiddenInsightsSections" : [
+      "stats",
+      "income"
+    ],
+    "hideAmounts" : true,
+    "hideAmountsOnBackground" : false,
+    "homeSectionOrder" : [
+      "budgets",
+      "totalSpent",
+      "weekComparison",
+      "upcomingBills",
+      "wellbeing",
+      "receipts"
+    ],
+    "insightsSectionOrder" : [
+      "breakdown",
+      "trend",
+      "comparison"
+    ],
+    "language" : "bg",
+    "monthStartDay" : 25,
+    "recapEnabled" : false,
+    "recapFrequency" : "MONTHLY",
+    "themeMode" : "dark"
+  },
+  "tags" : [
+    {
+      "createdAt" : "2026-06-01T09:00:00Z",
+      "name" : "gifts"
+    },
+    {
+      "createdAt" : "2026-09-28T07:00:00Z",
+      "name" : "lisbon-2026"
+    }
+  ],
+  "templates" : [
+    {
+      "amount" : 3.8,
+      "askAmount" : false,
+      "category" : "Coffee & Cafés",
+      "createdAt" : "2026-09-01T08:00:00Z",
+      "emoji" : "☕️",
+      "name" : "Flat white",
+      "store" : "Corner Café"
+    }
+  ],
+  "trips" : [
+    {
+      "active" : true,
+      "budgetAmount" : 900,
+      "createdAt" : "2026-09-28T07:00:00Z",
+      "endDate" : "2026-10-05T00:00:00Z",
+      "name" : "Lisbon",
+      "startDate" : "2026-09-29T00:00:00Z",
+      "tag" : "lisbon-2026"
+    },
+    {
+      "active" : false,
+      "createdAt" : "2026-05-01T07:00:00Z",
+      "endedAt" : "2026-05-10T18:00:00Z",
+      "name" : "Ski week",
+      "tag" : "ski-week"
+    }
+  ],
+  "version" : 1,
+  "warranties" : [
+    {
+      "category" : "Electronics",
+      "coverageNote" : "Battery covered 1 yr",
+      "createdAt" : "2026-10-03T19:00:00Z",
+      "durationMonths" : 24,
+      "emoji" : "🎧",
+      "name" : "Headphones",
+      "purchaseDate" : "2026-10-03T00:00:00Z",
+      "receiptId" : 1791053112.2503,
+      "store" : "Corner Café"
+    },
+    {
+      "category" : "",
+      "coverageNote" : "",
+      "createdAt" : "2026-06-10T10:00:00Z",
+      "durationMonths" : 12,
+      "emoji" : "🛡️",
+      "name" : "Kettle",
+      "purchaseDate" : "2026-06-01T00:00:00Z",
+      "receiptId" : 0,
+      "store" : ""
+    }
+  ],
+  "wellbeingScores" : [
+    {
+      "band" : "HEALTHY",
+      "componentsJson" : "{\"SAVINGS\":80,\"BUDGET\":70,\"TREND\":null,\"SUBSCRIPTIONS\":90,\"GOALS\":60}",
+      "computedAt" : "2026-09-01T06:00:00Z",
+      "periodId" : "2026-08",
+      "score" : 74
+    }
+  ]
+}

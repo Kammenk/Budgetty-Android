@@ -13,6 +13,9 @@ import com.budgetty.app.data.settings.SettingsStore
 import com.budgetty.app.data.settings.ThemeMode
 import com.budgetty.app.ui.util.BudgetCadence
 import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import kotlinx.coroutines.flow.first
 import java.math.BigDecimal
 
@@ -71,13 +74,15 @@ class BackupManager(
     }
 
     /**
-     * Restores a JSON backup. When [replace] is true the current data is wiped first; otherwise the
-     * backup is merged on top — transactions/receipts are added, and existing categories/budgets are
-     * kept (only missing ones are filled in). Throws [IllegalArgumentException] on invalid JSON.
+     * Restores a JSON backup — this app's own format, or one exported by Budgetty iOS (converted by
+     * [IosBackupConverter], then restored exactly like an Android file). When [replace] is true the
+     * current data is wiped first; otherwise the backup is merged on top — transactions/receipts are
+     * added, and existing categories/budgets are kept (only missing ones are filled in). Throws
+     * [IllegalArgumentException] on invalid JSON.
      */
     suspend fun import(json: String, replace: Boolean) {
         val data = try {
-            gson.fromJson(json, BackupData::class.java)
+            parse(JsonParser.parseString(json))
         } catch (e: Exception) {
             throw IllegalArgumentException("Not a valid Budgetty backup file", e)
         } ?: throw IllegalArgumentException("Empty backup file")
@@ -176,6 +181,22 @@ class BackupManager(
         if (replace) data.settings?.let { applySettings(it) }
     }
 
+    /**
+     * Reads a parsed backup in either format. An iOS file is recognised by its `app` marker (or its
+     * receipts-with-items shape) and converted; anything else must look like an Android backup and
+     * takes the Gson path. Null only for an empty file.
+     */
+    private fun parse(root: JsonElement): BackupData? {
+        if (IosBackupConverter.isIosBackup(root)) return IosBackupConverter.convert(root.asJsonObject)
+        // Gson builds BackupData through its no-arg constructor, so any JSON object at all — `{}`, another
+        // app's file — would read as an empty backup, and "Replace all" would wipe the account and report
+        // success. Every Android export writes these collections, so a real one carries at least one.
+        if (root is JsonObject) {
+            require(root.keySet().any { it in ANDROID_BACKUP_KEYS }) { "Not a Budgetty backup file" }
+        }
+        return gson.fromJson(root, BackupData::class.java)
+    }
+
     /** Snapshots the current display / data-interpretation preferences for an export. */
     private fun currentBackupSettings(): BackupSettings {
         val s = settingsStore.settings.value
@@ -238,6 +259,9 @@ class BackupManager(
         set(value)
     }
 }
+
+/** Core collections every Android export writes; a real backup carries at least one (see [BackupManager.parse]). */
+private val ANDROID_BACKUP_KEYS = setOf("transactions", "categories", "budgets", "receipts")
 
 /** Treats a money figure missing from an older backup (deserialized as null by Gson) as zero. */
 private fun BigDecimal?.orZero(): BigDecimal = this ?: BigDecimal.ZERO
