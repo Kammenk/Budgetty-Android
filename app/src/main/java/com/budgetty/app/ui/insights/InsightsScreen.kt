@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -2672,6 +2673,51 @@ private fun StatTile(
 }
 
 /**
+ * The Overview hero's three headline stats. Side by side normally; in a narrow column (the unfolded
+ * Fold's Insights side pane, ~260dp) three tiles leave each ~47dp — labels wrap and every value
+ * scrolls — so there they stack two-up with the third tile on its own row.
+ */
+@Composable
+private fun OverviewStatTiles(state: InsightsUiState) {
+    val avgDay: @Composable (Modifier) -> Unit = {
+        StatTile(stringResource(R.string.insights_stat_avg_day), state.avgPerDay.formatMoney(), it, isAmount = true)
+    }
+    val receipts: @Composable (Modifier) -> Unit = {
+        StatTile(stringResource(R.string.home_receipts), state.receiptCount.toString(), it)
+    }
+    val saved: @Composable (Modifier) -> Unit = {
+        StatTile(
+            stringResource(R.string.insights_stat_saved),
+            state.totalSaved.formatMoney(),
+            it,
+            valueColor = budgetGoodColor(),
+            isAmount = true,
+        )
+    }
+    val spacing = Arrangement.spacedBy(MaterialTheme.dimens.md)
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        if (maxWidth >= OVERVIEW_STATS_ONE_ROW_MIN_WIDTH) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = spacing) {
+                avgDay(Modifier.weight(1f))
+                receipts(Modifier.weight(1f))
+                saved(Modifier.weight(1f))
+            }
+        } else {
+            Column(verticalArrangement = spacing) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = spacing) {
+                    avgDay(Modifier.weight(1f))
+                    receipts(Modifier.weight(1f))
+                }
+                saved(Modifier.fillMaxWidth())
+            }
+        }
+    }
+}
+
+/** Narrowest hero width kept on one row: every phone (even a 360dp one, ~296dp here) stays as it was. */
+private val OVERVIEW_STATS_ONE_ROW_MIN_WIDTH = 280.dp
+
+/**
  * The Overview tab (P2): a bespoke summary that leads the screen — total spent, the 50/30/20 split,
  * a few headline stats, the top categories, and a couple of highlights, each linking into the tab
  * that holds the full detail. Built entirely from existing [InsightsUiState] data (no new derivation).
@@ -2738,25 +2784,7 @@ internal fun OverviewTabContent(
             }
         }
         Spacer(Modifier.height(MaterialTheme.dimens.lg))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.md),
-        ) {
-            StatTile(
-                stringResource(R.string.insights_stat_avg_day),
-                state.avgPerDay.formatMoney(),
-                Modifier.weight(1f),
-                isAmount = true,
-            )
-            StatTile(stringResource(R.string.home_receipts), state.receiptCount.toString(), Modifier.weight(1f))
-            StatTile(
-                stringResource(R.string.insights_stat_saved),
-                state.totalSaved.formatMoney(),
-                Modifier.weight(1f),
-                valueColor = budgetGoodColor(),
-                isAmount = true,
-            )
-        }
+        OverviewStatTiles(state)
     }
     // Top spending: a compact donut + the top three categories, linking into the Spending tab.
     if (state.slices.isNotEmpty()) {

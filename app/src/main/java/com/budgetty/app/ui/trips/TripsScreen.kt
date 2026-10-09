@@ -167,7 +167,9 @@ internal fun TripsContent(
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.fillMaxWidth().widthIn(max = 520.dp)
+                        // Cap first, then fill: the other order fills the whole row and the label
+                        // drifts left of the centred 520dp card column on wide screens.
+                        modifier = Modifier.widthIn(max = 520.dp).fillMaxWidth()
                             .padding(top = MaterialTheme.dimens.sm),
                     )
                 }
