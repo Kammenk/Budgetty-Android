@@ -54,6 +54,8 @@ import com.budgetty.app.ui.theme.dimens
 import com.budgetty.app.ui.util.AppFormats
 import com.budgetty.app.ui.util.formatDayMonth
 import com.budgetty.app.ui.util.formatMoney
+import com.budgetty.app.ui.util.fromDatePickerMillis
+import com.budgetty.app.ui.util.toDatePickerMillis
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.ZoneId
@@ -237,12 +239,12 @@ fun SavingsGoalEditSheet(
     }
 
     if (showPicker) {
-        val state = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
+        val state = rememberDatePickerState(initialSelectedDateMillis = dateMillis?.toDatePickerMillis())
         DatePickerDialog(
             onDismissRequest = { showPicker = false },
             confirmButton = {
                 TextButton(onClick = {
-                    dateMillis = state.selectedDateMillis
+                    dateMillis = state.selectedDateMillis?.fromDatePickerMillis()
                     if (dateMillis == null) hasDate = false
                     showPicker = false
                 }) { Text(stringResource(R.string.action_ok)) }
@@ -387,12 +389,12 @@ fun SavingsContributionSheet(
     }
 
     if (showPicker) {
-        val state = rememberDatePickerState(initialSelectedDateMillis = dateMillis)
+        val state = rememberDatePickerState(initialSelectedDateMillis = dateMillis.toDatePickerMillis())
         DatePickerDialog(
             onDismissRequest = { showPicker = false },
             confirmButton = {
                 TextButton(onClick = {
-                    state.selectedDateMillis?.let { dateMillis = it }
+                    state.selectedDateMillis?.let { dateMillis = it.fromDatePickerMillis() }
                     showPicker = false
                 }) { Text(stringResource(R.string.action_ok)) }
             },
