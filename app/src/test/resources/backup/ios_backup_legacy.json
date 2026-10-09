@@ -1,0 +1,58 @@
+{
+  "app" : "Budgetty iOS",
+  "budgets" : [
+    {
+      "amount" : 800,
+      "key" : "MONTHLY"
+    }
+  ],
+  "categories" : [
+    {
+      "colorArgb" : 4293467747,
+      "createdAt" : "2026-06-02T10:00:00Z",
+      "icon" : "🎸",
+      "name" : "Music"
+    }
+  ],
+  "exportedAt" : "2026-07-01T08:00:00Z",
+  "receipts" : [
+    {
+      "createdAt" : "2026-06-20T17:00:00Z",
+      "date" : "2026-06-20T00:00:00Z",
+      "discount" : 0,
+      "extraCharges" : 0,
+      "isManual" : false,
+      "items" : [
+        {
+          "category" : "Music",
+          "createdAt" : "2026-06-20T17:00:00Z",
+          "name" : "Guitar strings",
+          "price" : 14.99,
+          "quantity" : 1
+        }
+      ],
+      "store" : "Thomann",
+      "tax" : 2.5,
+      "taxOnTop" : false
+    }
+  ],
+  "recurring" : [
+    {
+      "active" : true,
+      "amount" : 10.99,
+      "cadenceRaw" : "MONTHLY",
+      "category" : "Subscriptions",
+      "createdAt" : "2026-06-01T08:00:00Z",
+      "dueDay" : 12,
+      "isIncome" : false,
+      "label" : "Spotify"
+    }
+  ],
+  "rules" : [
+
+  ],
+  "savingsGoals" : [
+
+  ],
+  "version" : 1
+}
